@@ -1,1 +1,0 @@
-java -jar bin/org.apache.felix.main-4.2.1.jar
