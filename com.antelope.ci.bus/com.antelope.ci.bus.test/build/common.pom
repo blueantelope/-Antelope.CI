@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.antelope.bi.bus</groupId>
+	<artifactId>test</artifactId>
+	<version>0.1.0</version>
+	<packaging>pom</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<sourceDirectory>${basedir}/src/java</sourceDirectory>
+		<outputDirectory>${project.build.directory}/dist</outputDirectory>
+		<resources>
+			<resource>
+				<directory>src/conf</directory>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+					<excludes>
+						<exclude>**/*.svn</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>
+							src/conf/META-INF/MANIFEST.MF
+						</manifestFile>
+						<manifestEntries>
+							<Implementation-Vendor>BGL Corporate Solutions Pty. Ltd.</Implementation-Vendor>
+							<Specification-Vendor>BGL Corporate Solutions Pty. Ltd.</Specification-Vendor>
+							<url>${project.url}</url>
+							<Built-Version>${project.version}</Built-Version>
+							<Built-Time>${maven.build.timestamp}</Built-Time>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
