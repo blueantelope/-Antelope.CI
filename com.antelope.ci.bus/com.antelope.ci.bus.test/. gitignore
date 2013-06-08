@@ -1,2 +1,4 @@
 target
+felix-cache
+classes
 *.class
