@@ -11,7 +11,8 @@
 	</target>
 
 	<target name="install" depends="init, logger.deploy">
-		<copy file="${logger.dependency.dir}/log4j-1.2.16.jar" todir="${test.lib.dir}" />
+		<copy file="${thridpart.bundle.dir}/log4j-1.2.17.jar" todir="${test.lib.dir}" />
+		<copy file="${logger.dependency.dir}/slf4j-nop-1.7.5.jar" todir="${test.lib.dir}" />
 		<copy file="${logger.dependency.dir}/slf4j-api-1.7.5.jar" todir="${test.lib.dir}" />
 	</target>
 	
