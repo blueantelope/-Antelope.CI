@@ -8,68 +8,16 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>main</artifactId>
+			<version>4.2.1</version>
+			<scope>system</scope>
+			<systemPath>d:/data/git/Antelope CI/com.antelope.ci.bus/com.antelope.ci.bus.test/bin/felix.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
 		</dependency>
 	</dependencies>
-
-
-	<build>
-		<sourceDirectory>${basedir}/java</sourceDirectory>
-		<outputDirectory>${project.build.directory}/dist</outputDirectory>
-		<resources>
-			<resource>
-				<directory>conf</directory>
-			</resource>
-		</resources>
-
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>UTF-8</encoding>
-					<excludes>
-						<exclude>**/*.svn</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>
-							${basedir}/conf/META-INF/MANIFEST.MF
-						</manifestFile>
-						<manifestEntries>
-							<Implementation-Vendor>BGL Corporate Solutions Pty. Ltd.</Implementation-Vendor>
-							<Specification-Vendor>BGL Corporate Solutions Pty. Ltd.</Specification-Vendor>
-							<url>${project.url}</url>
-							<Built-Version>${project.version}</Built-Version>
-							<Built-Time>${maven.build.timestamp}</Built-Time>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-		</plugins>
-	</build>
 </project>

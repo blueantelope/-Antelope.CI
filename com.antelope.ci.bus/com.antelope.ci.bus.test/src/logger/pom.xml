@@ -9,19 +9,84 @@
 	<modelVersion>4.0.0</modelVersion>
 	<name>log test</name>
 	<description>log test for CI bus</description>
-	<artifactId>logtest</artifactId>
+	<artifactId>loggertest</artifactId>
 	<version>0.1.0</version>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+			<scope>system</scope>
+			<systemPath>d:/data/git/Antelope CI/com.antelope.ci.bus/com.antelope.ci.bus.test/lib/log4j-1.2.17.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
 			<version>1.7.5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
 	</dependencies>
+
+	<build>
+		<sourceDirectory>${basedir}/java</sourceDirectory>
+		<outputDirectory>${project.build.directory}/dist</outputDirectory>
+		<resources>
+			<resource>
+				<directory>conf</directory>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+					<excludes>
+						<exclude>**/*.svn</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>
+							${basedir}/conf/META-INF/MANIFEST.MF
+						</manifestFile>
+						<manifestEntries>
+							<Implementation-Vendor>BGL Corporate Solutions Pty. Ltd.</Implementation-Vendor>
+							<Specification-Vendor>BGL Corporate Solutions Pty. Ltd.</Specification-Vendor>
+							<url>${project.url}</url>
+							<Built-Version>${project.version}</Built-Version>
+							<Built-Time>${maven.build.timestamp}</Built-Time>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>

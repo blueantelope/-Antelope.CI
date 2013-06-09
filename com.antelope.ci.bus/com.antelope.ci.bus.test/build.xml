@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="osgi-demo" basedir="." default="install">
+	<property file="build.properties" />
+
+	<target name="install" depends="init, install.deploy">
+		<copydir src="${dependency.dir}" dest="lib" />
+		<copy file="${thridpart.bundle.dir}/log4j-1.2.17.jar" todir="lib" />
+	</target>
+
+	<target name="install.deploy" depends="install.clean">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${maven.file}" />
+			<arg line="dependency:copy-dependencies" />
+		</exec>
+	</target>
+
+	<target name="install.clean">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${maven.file}" />
+			<arg line="clean" />
+		</exec>
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="lib" />
+	</target>
+
+	<target name="clean">
+		<delete dir="lib" />
+	</target>
+
+</project>

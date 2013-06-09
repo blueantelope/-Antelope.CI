@@ -10,13 +10,26 @@
 		</exec>
 	</target>
 
-	<target name="install" depends="init, logger.deploy">
+	<target name="install" depends="logger.support, logger.compile">
+		<copy file="${logger.target.dir}/loggertest-0.1.0.jar" todir="${test.lib.dir}" />
+	</target>
+
+	<target name="logger.compile">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${logger.maven}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="logger.support" depends="init, logger.depends">
 		<copy file="${thridpart.bundle.dir}/log4j-1.2.17.jar" todir="${test.lib.dir}" />
 		<copy file="${logger.dependency.dir}/slf4j-nop-1.7.5.jar" todir="${test.lib.dir}" />
 		<copy file="${logger.dependency.dir}/slf4j-api-1.7.5.jar" todir="${test.lib.dir}" />
 	</target>
-	
-	<target name="logger.deploy" depends="logger.clean">
+
+	<target name="logger.depends" depends="logger.clean">
 		<exec executable="cmd">
 			<arg line="/c" />
 			<arg line="mvn" />
@@ -43,9 +56,9 @@
 		<mkdir dir="${test.lib.dir}" />
 
 		<copydir src="${bundle.dir}" dest="${test.bundle.dir}" />
-		<copydir src="${bin.dir}" dest="${test.bin.dir}" />
+		<copy file="${bin.dir}/felix.jar" todir="${test.lib.dir}" />
+		<copy file="${test.bat}" todir="${test.bin.dir}" />
 		<copydir src="${conf.dir}" dest="${test.conf.dir}" />
-		<copy file="${test.bat}" todir="${test.dir}" />
 	</target>
 
 	<target name="clean">

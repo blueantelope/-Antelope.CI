@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <delete dir="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/bin"/>
+  <mkdir dir="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/bin"/>
+  <delete dir="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/conf"/>
+  <mkdir dir="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/conf"/>
+  <copy file="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/target/org.apache.felix.main-4.2.1.jar" tofile="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/bin/felix.jar"/>
+  <copy todir="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/conf" file="D:\programing\eclipse-ci\workspace\com.antelope.ci.bus.felix.main/target/classes/config.properties"/>
+</target>
+</project>
