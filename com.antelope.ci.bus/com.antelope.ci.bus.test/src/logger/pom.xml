@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<name>log test</name>
 	<description>log test for CI bus</description>
-	<artifactId>loggertest</artifactId>
+	<artifactId>logger-test</artifactId>
 	<version>0.1.0</version>
 
 	<dependencies>

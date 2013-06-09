@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ci-bus-test" basedir="." default="test.all">
+	<property file="build.properties" />
+	<target name="test.all">
+		<antcall target="test.logger" /> 
+		<antcall target="test.server" /> 
+	</target>
+
+	<target name="test.logger">
+		<ant antfile="${basedir}/build-logger.xml" target="test.win" /> 
+	</target>
+
+	<target name="test.server">
+		<ant antfile="${basedir}/build-server.xml" target="test.win" /> 
+	</target>
+
+</project>

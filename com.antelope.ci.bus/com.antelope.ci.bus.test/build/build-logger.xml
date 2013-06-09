@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="logger-test" basedir="." default="test.win">
+	<property name="testdir" location="${basedir}/test" />
+	<property file="build.properties" />
+
+	<target name="test.win" depends="install">
+		<exec executable="cmd">
+			<arg line="/${testdir}" />
+			<arg line="test.bat" />
+		</exec>
+	</target>
+
+	<target name="install" depends="logger.support, logger.compile">
+		<copy file="${logger.target.dir}/logger-test-0.1.0.jar" todir="${logger.test.lib.dir}" />
+	</target>
+
+	<target name="logger.compile">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${logger.maven}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="logger.support" depends="init, logger.depends">
+		<copy file="${thridpart.bundle.dir}/log4j-1.2.17.jar" todir="${logger.test.lib.dir}" />
+		<copy file="${logger.dependency.dir}/slf4j-nop-1.7.5.jar" todir="${logger.test.lib.dir}" />
+		<copy file="${logger.dependency.dir}/slf4j-api-1.7.5.jar" todir="${logger.test.lib.dir}" />
+	</target>
+
+	<target name="logger.depends" depends="logger.clean">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${logger.maven}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+
+	<target name="logger.clean">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${logger.maven}" />
+			<arg line="clean" />
+		</exec>
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="${logger.test.dir}" />
+		<mkdir dir="${logger.test.bundle.dir}" />
+		<mkdir dir="${logger.test.bin.dir}" />
+		<mkdir dir="${logger.test.conf.dir}" />
+		<mkdir dir="${logger.test.lib.dir}" />
+
+		<copydir src="${bundle.dir}" dest="${logger.test.bundle.dir}" />
+		<copy file="${bin.dir}/felix.jar" todir="${logger.test.lib.dir}" />
+		<copy file="${test.bat}" todir="${logger.test.bin.dir}" />
+		<copy file="${logger.src.conf.dir}/config.properties" todir="${logger.test.conf.dir}" />
+		<copy file="${logger.src.conf.dir}/log4j.properties" todir="${logger.test.conf.dir}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${logger.test.dir}" />
+	</target>
+
+</project>

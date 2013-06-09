@@ -6,6 +6,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="bin/felix.jar"/>
+	<classpathentry kind="lib" path="bin/felix.jar" sourcepath="/framework"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
