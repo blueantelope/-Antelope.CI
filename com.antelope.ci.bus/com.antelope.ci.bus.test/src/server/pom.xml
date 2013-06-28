@@ -73,6 +73,10 @@
 		<resources>
 			<resource>
 				<directory>conf</directory>
+				<includes>
+					<include>hostkey.pem</include>
+					<include>log4j.properties</include>
+				</includes>
 			</resource>
 		</resources>
 

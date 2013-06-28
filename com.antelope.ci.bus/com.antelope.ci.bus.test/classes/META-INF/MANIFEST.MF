@@ -1,17 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Version: 0.1.0
-Bundle-Name: Server Test
+Bundle-Name: Logger Test
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.antelope.ci.bus.server.test
-Bundle-Activator: com.antelope.ci.bus.server.test.TestServer
-Import-Package: org.apache.sshd.common,
-  org.apache.sshd.server,
-  org.apache.sshd,
-  org.apache.sshd.common.keyprovider,
-  org.osgi.framework,
-  javax.crypto,
-  javax.crypto.spec,
-  org.xml.sax,
-  org.xml.sax.helpers,
-  org.xml.sax.ext,
-  org.bouncycastle.openssl
+Import-Package: org.apache.log4j,org.osgi.framework
+Bundle-SymbolicName: com.antelope.ci.bus.logger.test
+Bundle-Activator: com.antelope.ci.bus.logger.test.TestLogger

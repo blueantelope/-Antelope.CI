@@ -8,21 +8,16 @@
 
 package com.antelope.ci.bus.server.test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.sshd.SshServer;
-import org.apache.sshd.common.Factory;
-import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
-import org.apache.sshd.server.Command;
-import org.apache.sshd.server.Environment;
-import org.apache.sshd.server.ExitCallback;
+import org.apache.sshd.common.keyprovider.ResourceKeyPairProvider;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.command.ScpCommandFactory;
 import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.session.SessionFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -36,6 +31,8 @@ import org.osgi.framework.BundleContext;
 public class TestServer implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
+		PropertyConfigurator.configure(TestServer.class.getResourceAsStream("/log4j.properties"));
+		Logger.getLogger(TestServer.class).debug("debug mode");
 		start();
 	}
 
@@ -47,7 +44,7 @@ public class TestServer implements BundleActivator {
 	private static void start() throws IOException {
 		SshServer sshd = SshServer.setUpDefaultServer();
 		sshd.setPort(9022);
-		sshd.setKeyPairProvider(new FileKeyPairProvider(
+		sshd.setKeyPairProvider(new ResourceKeyPairProvider(
 				new String[] { TestServer.class.getResource("/hostkey.pem").getPath() }));
 		sshd.setShellFactory(new EchoShellFactory());
 		sshd.setCommandFactory(new ScpCommandFactory());
@@ -59,87 +56,11 @@ public class TestServer implements BundleActivator {
 			}
 			
 		});
+		
+		SessionFactory sessionFactory = new SessionFactoryExt();
+		sshd.setSessionFactory(sessionFactory);
 		sshd.start();
-	}
-	
-	private static class EchoShellFactory implements Factory<Command> {
-
-	    public Command create() {
-	        return new EchoShell();
-	    }
-
-	    public static class EchoShell implements Command, Runnable {
-
-	        private InputStream in;
-	        private OutputStream out;
-	        private OutputStream err;
-	        private ExitCallback callback;
-	        private Environment environment;
-	        private Thread thread;
-
-	        public InputStream getIn() {
-	            return in;
-	        }
-
-	        public OutputStream getOut() {
-	            return out;
-	        }
-
-	        public OutputStream getErr() {
-	            return err;
-	        }
-
-	        public Environment getEnvironment() {
-	            return environment;
-	        }
-
-	        public void setInputStream(InputStream in) {
-	            this.in = in;
-	        }
-
-	        public void setOutputStream(OutputStream out) {
-	            this.out = out;
-	        }
-
-	        public void setErrorStream(OutputStream err) {
-	            this.err = err;
-	        }
-
-	        public void setExitCallback(ExitCallback callback) {
-	            this.callback = callback;
-	        }
-
-	        public void start(Environment env) throws IOException {
-	            environment = env;
-	            thread = new Thread(this, "EchoShell");
-	            thread.start();
-	        }
-
-	        public void destroy() {
-	            thread.interrupt();
-	        }
-
-	        public void run() {
-	            BufferedReader r = new BufferedReader(new InputStreamReader(in));
-	            try {
-	                for (;;) {
-	                    String s = r.readLine();
-	                    if (s == null) {
-	                        return;
-	                    }
-	                    out.write((s + "\n").getBytes());
-	                    out.flush();
-	                    if ("exit".equals(s)) {
-	                        return;
-	                    }
-	                }
-	            } catch (Exception e) {
-	                e.printStackTrace();
-	            } finally {
-	                callback.onExit(0);
-	            }
-	        }
-	    }
+		System.out.println("ssh server startup");
 	}
 
 	public static void main(String[] args) throws IOException {

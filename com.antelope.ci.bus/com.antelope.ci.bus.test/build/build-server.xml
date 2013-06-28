@@ -33,7 +33,7 @@
 		<copy file="${server.dependency.dir}/mina-core-2.0.7.jar" todir="${server.test.lib.dir}" />
 		<copy file="${server.dependency.dir}/sshd-core-0.8.0.jar" todir="${server.test.lib.dir}" />
 		<copy file="${server.dependency.dir}/sshd-pam-0.8.0.jar" todir="${server.test.lib.dir}" />
-		<copy file="${server.dependency.dir}/bcprov-jdk15-140.jar" todir="${server.test.lib.dir}" />
+		<copy file="${thridpart.dir}/bundle/bcprov-jdk15-140.jar" todir="${server.test.lib.dir}" />
 	</target>
 
 	<target name="server.depends" depends="server.clean">

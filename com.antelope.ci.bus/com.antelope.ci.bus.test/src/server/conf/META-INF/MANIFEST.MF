@@ -4,14 +4,7 @@ Bundle-Name: Server Test
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.server.test
 Bundle-Activator: com.antelope.ci.bus.server.test.TestServer
-Import-Package: org.apache.sshd.common,
-  org.apache.sshd.server,
-  org.apache.sshd,
-  org.apache.sshd.common.keyprovider,
-  org.osgi.framework,
-  javax.crypto,
-  javax.crypto.spec,
-  org.xml.sax,
-  org.xml.sax.helpers,
-  org.xml.sax.ext,
-  org.bouncycastle.openssl
+Import-Package: org.apache.sshd, org.apache.sshd.common, org.apache.sshd.server,
+  org.apache.sshd.server.command, org.apache.sshd.common.keyprovider, org.osgi.framework,
+  javax.crypto, javax.crypto.spec, org.xml.sax, org.xml.sax.helpers, org.xml.sax.ext,
+  org.apache.log4j, org.bouncycastle.openssl, org.apache.sshd.server.session,org.apache.sshd.common.session
