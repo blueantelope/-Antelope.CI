@@ -1,1 +1,0 @@
-java -classpath ../lib/felix.jar org.apache.felix.main.Main -b ../bundle

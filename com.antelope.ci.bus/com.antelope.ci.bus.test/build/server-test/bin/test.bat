@@ -1,1 +1,0 @@
-java -classpath ../lib/felix.jar -Djava.ext.dirs=../lib/ext org.apache.felix.main.Main -b ../bundle
