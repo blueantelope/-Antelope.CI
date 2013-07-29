@@ -1,0 +1,6 @@
+target
+felix-cache
+classes
+*.class
+logger-test
+server-test
