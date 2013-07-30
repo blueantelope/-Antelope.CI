@@ -1,45 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>com.antelope.ci.bus.test</groupId>
-		<artifactId>common</artifactId>
-		<version>0.1.0</version>
-		<relativePath>..</relativePath>
-	</parent>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<name>log test</name>
-	<description>log test for CI bus</description>
-	<artifactId>logger-test</artifactId>
+	<groupId>com.antelope.ci.bus</groupId>
+	<artifactId>server</artifactId>
 	<version>0.1.0</version>
 
 	<dependencies>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-			<scope>system</scope>
-			<systemPath>d:/data/git/Antelope CI/com.antelope.ci.bus/com.antelope.ci.bus.test/lib/log4j-1.2.17.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-nop</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>4.2.1</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<sourceDirectory>${basedir}/java</sourceDirectory>
-		<outputDirectory>${project.build.directory}/dist</outputDirectory>
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<finalName>${artifactId}-${version}</finalName>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
-				<directory>conf</directory>
+				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
 
 		<plugins>
 			<plugin>
@@ -61,7 +52,7 @@
 				<configuration>
 					<archive>
 						<manifestFile>
-							${basedir}/conf/META-INF/MANIFEST.MF
+							src/main/resources/META-INF/MANIFEST.MF
 						</manifestFile>
 						<manifestEntries>
 							<Implementation-Vendor>BGL Corporate Solutions Pty. Ltd.</Implementation-Vendor>

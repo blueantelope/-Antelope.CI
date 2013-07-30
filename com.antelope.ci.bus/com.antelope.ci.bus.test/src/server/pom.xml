@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<groupId>com.antelope.bi.bus.test</groupId>
+		<groupId>com.antelope.ci.bus.test</groupId>
 		<artifactId>common</artifactId>
 		<version>0.1.0</version>
 		<relativePath>..</relativePath>
@@ -18,7 +18,10 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 			<scope>system</scope>
+			<!--
 			<systemPath>d:/data/git/Antelope CI/com.antelope.ci.bus/com.antelope.ci.bus.test/lib/log4j-1.2.17.jar</systemPath>
+			-->
+			<systemPath>/data/software/eclipse/workspace/@Antelope.CI/com.antelope.ci.bus/com.antelope.ci.bus.test/lib/log4j-1.2.17.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

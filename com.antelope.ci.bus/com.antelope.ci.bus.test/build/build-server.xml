@@ -3,18 +3,29 @@
 	<property name="testdir" location="${basedir}/test" />
 	<property file="build.properties" />
 
-	<target name="test.win" depends="install">
+	<target name="test.win" depends="install.win">
 		<exec executable="cmd">
 			<arg line="/${testdir}" />
 			<arg line="test.bat" />
 		</exec>
 	</target>
-
-	<target name="install" depends="server.support, server.compile">
+	
+	<target name="install.unix" depends="unix.server.support, unix.server.compile">
 		<copy file="${server.target.dir}/server-test-0.1.0.jar" todir="${server.test.lib.dir}" />
 	</target>
 
-	<target name="server.compile">
+	<target name="install.win" depends="win.server.support, win.server.compile">
+		<copy file="${server.target.dir}/server-test-0.1.0.jar" todir="${server.test.lib.dir}" />
+	</target>
+	
+	<target name="unix.server.compile">
+		<exec executable="mvn">
+			<arg line="-f ${server.maven}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="win.server.compile">
 		<exec executable="cmd">
 			<arg line="/c" />
 			<arg line="mvn" />
@@ -22,8 +33,8 @@
 			<arg line="install" />
 		</exec>
 	</target>
-
-	<target name="server.support" depends="init, server.depends">
+	
+	<target name="unix.server.support" depends="init, unix.server.depends">
 		<copy file="${thridpart.bundle.dir}/log4j-1.2.17.jar" todir="${server.test.lib.dir}" />
 		<copy file="${server.dependency.dir}/slf4j-nop-1.7.5.jar" todir="${server.test.lib.dir}" />
 		<copy file="${server.dependency.dir}/slf4j-api-1.7.5.jar" todir="${server.test.lib.dir}" />
@@ -35,8 +46,37 @@
 		<copy file="${server.dependency.dir}/sshd-pam-0.8.0.jar" todir="${server.test.lib.dir}" />
 		<copy file="${thridpart.dir}/bundle/bcprov-jdk15-140.jar" todir="${server.test.lib.dir}" />
 	</target>
+		
 
-	<target name="server.depends" depends="server.clean">
+	<target name="win.server.support" depends="init, win.server.depends">
+		<copy file="${thridpart.bundle.dir}/log4j-1.2.17.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/slf4j-nop-1.7.5.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/slf4j-api-1.7.5.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/jaxen-1.1.4.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/xalan-2.7.1.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/dom4j-1.6.1.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/mina-core-2.0.7.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/sshd-core-0.8.0.jar" todir="${server.test.lib.dir}" />
+		<copy file="${server.dependency.dir}/sshd-pam-0.8.0.jar" todir="${server.test.lib.dir}" />
+		<copy file="${thridpart.dir}/bundle/bcprov-jdk15-140.jar" todir="${server.test.lib.dir}" />
+	</target>
+	
+	<target name="unix.server.depends" depends="unix.server.clean">
+		<exec executable="mvn">
+			<arg line="-f ${server.maven}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+
+	<target name="unix.server.clean">
+		<exec executable="mvn">
+			<arg line="-f ${server.maven}" />
+			<arg line="clean" />
+		</exec>
+	</target>	
+
+	<target name="win.server.depends" depends="win.server.clean">
 		<exec executable="cmd">
 			<arg line="/c" />
 			<arg line="mvn" />
@@ -46,7 +86,7 @@
 		</exec>
 	</target>
 
-	<target name="server.clean">
+	<target name="win.server.clean">
 		<exec executable="cmd">
 			<arg line="/c" />
 			<arg line="mvn" />
@@ -66,6 +106,7 @@
 		<copy file="${bin.dir}/felix.jar" todir="${server.test.lib.dir}" />
 		<copy file="${test.bat}" todir="${server.test.bin.dir}" />
 		<copy file="${test_debug.bat}" todir="${server.test.bin.dir}" />
+		<copy file="${test.sh}" todir="${server.test.bin.dir}" />
 		<copy file="${server.src.conf.dir}/config.properties" todir="${server.test.conf.dir}" />
 	</target>
 
