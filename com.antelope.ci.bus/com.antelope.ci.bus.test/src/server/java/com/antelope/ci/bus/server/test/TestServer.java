@@ -13,9 +13,9 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.sshd.SshServer;
-import org.apache.sshd.common.keyprovider.ResourceKeyPairProvider;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.command.ScpCommandFactory;
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.session.SessionFactory;
 import org.osgi.framework.BundleActivator;
@@ -44,8 +44,7 @@ public class TestServer implements BundleActivator {
 	private static void start() throws IOException {
 		SshServer sshd = SshServer.setUpDefaultServer();
 		sshd.setPort(9022);
-		sshd.setKeyPairProvider(new ResourceKeyPairProvider(
-				new String[] { TestServer.class.getResource("/hostkey.pem").getPath() }));
+		sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("key.ser"));
 		sshd.setShellFactory(new EchoShellFactory());
 		sshd.setCommandFactory(new ScpCommandFactory());
 		sshd.setPasswordAuthenticator(new PasswordAuthenticator() {

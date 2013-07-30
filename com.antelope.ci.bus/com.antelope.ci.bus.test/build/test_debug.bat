@@ -1,0 +1,1 @@
+java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8765 -classpath ../lib/felix.jar org.apache.felix.main.Main -b ../bundle

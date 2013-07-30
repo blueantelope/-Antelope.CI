@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.server.test;
 
-import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.sshd.common.session.AbstractSession;
 import org.apache.sshd.server.session.ServerSession;
@@ -25,17 +24,19 @@ public class SessionFactoryExt extends SessionFactory {
 
 	protected AbstractSession doCreateSession(IoSession ioSession)
 			throws Exception {
-		System.out.println("建立新的连接");
-		AbstractSession session = null;
-		try {
-			session = new ServerSession(server, ioSession);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("建立sessoin = " + session);
-		AbstractSession.attachSession(ioSession, session);
-		System.out.println("附加session = " + ioSession.getAttribute(AbstractSession.SESSION));
-		return session;
+		return super.doCreateSession(ioSession);
+//		System.out.println("建立新的连接");
+//		AbstractSession session = null;
+//		try {
+//			session = new ServerSession(server, ioSession);
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			e.printStackTrace();
+//		}
+//		System.out.println("建立sessoin = " + session);
+//		AbstractSession.attachSession(ioSession, session);
+//		System.out.println("附加session = " + ioSession.getAttribute(AbstractSession.SESSION));
+//		return session;
 	}
 	
 	@Override

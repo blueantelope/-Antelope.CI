@@ -65,6 +65,7 @@
 		<copydir src="${bundle.dir}" dest="${server.test.bundle.dir}" />
 		<copy file="${bin.dir}/felix.jar" todir="${server.test.lib.dir}" />
 		<copy file="${test.bat}" todir="${server.test.bin.dir}" />
+		<copy file="${test_debug.bat}" todir="${server.test.bin.dir}" />
 		<copy file="${server.src.conf.dir}/config.properties" todir="${server.test.conf.dir}" />
 	</target>
 
