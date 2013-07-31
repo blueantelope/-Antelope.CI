@@ -17,7 +17,13 @@ package com.antelope.ci.bus.common;
  * @Date	 2013-7-31		下午12:24:31 
  */
 public class Constants {
-	/* etc目录表示key */
-	public static final String ETC_DIR = "etc.dir";
+	/* ci bus的根目录 */
+	public static final String BUS_HOME					= "bus.home";
+	/* etc目录 */
+	public static final String ETC_DIR 					= "etc.dir";
+	/* osgi bundle包目录 */
+	public static final String BUNDLE_DIR				= "bundle.dir";
+	/* 系统jar目录 */
+	public static final String LIB_DIR						= "lib.dir";
 }
 

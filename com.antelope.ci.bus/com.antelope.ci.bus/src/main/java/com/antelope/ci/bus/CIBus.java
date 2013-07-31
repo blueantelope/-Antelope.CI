@@ -8,8 +8,14 @@
 
 package com.antelope.ci.bus;
 
+import java.io.File;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import com.antelope.ci.bus.common.CIBusException;
 import com.antelope.ci.bus.common.Constants;
+import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.ResourceUtil;
 
 
@@ -40,8 +46,14 @@ public class CIBus {
 	/* 非法选项信息 */
 	private static final String FATAL = "invalid options\n" +
 									"\tTry '--help' for more information\n";
+	/* 根目录不存在 */
+	private static final String HOME_ERROR = "home directory is not exist or not a direcotry";
 	
-	private static String etc;								// etc目录
+	private static final Logger log = Logger.getLogger(CIBus.class);
+	private static String bus_home;								// 根目录
+	private static String etc_dir;										// 配置目录
+	private static String bundle_dir;								// osgi包目录
+	private static String lib_dir;										// 系统jar目录
 	
 	/**
 	 * 输入参数处理
@@ -62,10 +74,9 @@ public class CIBus {
 				while (argLen > n) {
 					String key = args[n];
 					String value = args[n+1];
-					if ("-e".equalsIgnoreCase(key) || 
-							"-etc".equalsIgnoreCase(key)) {	// etc目录配置
-						etc = value;
-						System.setProperty(Constants.ETC_DIR, etc);
+					if ("-h".equalsIgnoreCase(key) || 
+							"-home".equalsIgnoreCase(key)) {	// etc目录配置
+						bus_home = value;
 					} else {									// 非法选项
 						System.err.print(FATAL);
 						System.exit(-1);		
@@ -75,11 +86,18 @@ public class CIBus {
 			}
 		}
 		
-		if (etc == null) {
+		// 根目录是否设置，如果未设置就将上级目录做为根目录
+		// 如果设置了根目录，判断此设置是否正确
+		if (bus_home == null || "".equals(bus_home)) {
 			try {
-				etc = ResourceUtil.getJarParent().getPath();
+				bus_home = ResourceUtil.getJarParent().getPath();
 			} catch (CIBusException e) {
 				e.printStackTrace();
+				System.exit(-1);
+			}
+		} else {
+			if (!FileUtil.existDir(bus_home)) {
+				System.err.println(HOME_ERROR);
 				System.exit(-1);
 			}
 		}
@@ -93,14 +111,41 @@ public class CIBus {
 	 * @throws
 	 */
 	public void start() {
-		initSystem();
+		init();			// 初始化
 	}
 	
 	/*
-	 * 初始化系统参数
+	 *  各种初始化汇总
 	 */
-	private void initSystem() {
-		System.setProperty(Constants.ETC_DIR, etc);
+	private void init() {
+		initPath();				// 目录
+		initLog();				// 日志
+	}
+	
+	/*
+	 * 初始化目录
+	 */
+	private void initPath() {
+		System.setProperty(Constants.BUS_HOME , bus_home);
+		etc_dir = bus_home+File.separator + "etc";
+		System.setProperty(Constants.ETC_DIR, etc_dir);
+		bundle_dir = bus_home+File.separator + "bundle";
+		System.setProperty(Constants.BUNDLE_DIR, bundle_dir);
+		lib_dir = bus_home+File.separator + "lib";
+		System.setProperty(Constants.LIB_DIR, lib_dir);
+	}
+	
+	/*
+	 * 初始化日志
+	 */
+	private void initLog() {
+		String log_cnf = etc_dir + File.separator + "log.cnf";
+		if (FileUtil.existFile(log_cnf)) {
+			PropertyConfigurator.configure(log_cnf);
+		} else {
+			PropertyConfigurator.configure(Logger.class.getResource("/log4j.properties"));
+		}
+		log.info("Welcome to Logger World!");
 	}
 }
 
