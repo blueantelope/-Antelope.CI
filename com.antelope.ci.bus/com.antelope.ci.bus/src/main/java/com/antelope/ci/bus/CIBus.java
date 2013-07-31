@@ -17,6 +17,16 @@ package com.antelope.ci.bus;
  * @Date	 2013-7-31		上午10:12:15 
  */
 public class CIBus {
-
+	/**
+	 * 入口
+	 * @param  @param args
+	 * @return void
+	 * @throws
+	 */
+	public static void main(String[] args) {
+		
+	}
+	
+	
 }
 

@@ -55,8 +55,8 @@
 							src/main/resources/META-INF/MANIFEST.MF
 						</manifestFile>
 						<manifestEntries>
-							<Implementation-Vendor>BGL Corporate Solutions Pty. Ltd.</Implementation-Vendor>
-							<Specification-Vendor>BGL Corporate Solutions Pty. Ltd.</Specification-Vendor>
+							<Implementation-Vendor>blueantelope</Implementation-Vendor>
+							<Specification-Vendor>blueantelope@gmail.com</Specification-Vendor>
 							<url>${project.url}</url>
 							<Built-Version>${project.version}</Built-Version>
 							<Built-Time>${maven.build.timestamp}</Built-Time>

@@ -1,0 +1,6 @@
+目录结构：
+bin				可执行程序
+etc				配置文件
+lib					系统运行时即加载的jar
+bundle			系统运行后，由OSGI加载应用包
+log				日志目录
