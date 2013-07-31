@@ -4,4 +4,4 @@ Bundle-Name: Logger Test
 Bundle-ManifestVersion: 2
 Import-Package: org.apache.log4j,org.osgi.framework
 Bundle-SymbolicName: com.antelope.ci.bus.server
-Bundle-Activator: com.antelope.ci.bus.MainServer
+Bundle-Activator: com.antelope.ci.bus.server.Server

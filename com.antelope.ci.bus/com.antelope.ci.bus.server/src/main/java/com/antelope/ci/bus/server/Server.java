@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
  * @version  0.1
  * @Date	 2013-7-30		下午11:23:33 
  */
-public class MainServer implements BundleActivator {
+public class Server implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
