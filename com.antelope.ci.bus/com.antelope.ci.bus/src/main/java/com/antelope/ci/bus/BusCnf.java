@@ -18,6 +18,6 @@ package com.antelope.ci.bus;
  * @Date	 2013-7-31		下午9:12:33 
  */
 public class BusCnf {
-
+	
 }
 

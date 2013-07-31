@@ -9,6 +9,10 @@
 package com.antelope.ci.bus;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -54,6 +58,7 @@ public class CIBus {
 	private static String etc_dir;										// 配置目录
 	private static String bundle_dir;								// osgi包目录
 	private static String lib_dir;										// 系统jar目录
+	private static String lib_ext_dir;								// 系统扩展jar目录
 	
 	/**
 	 * 输入参数处理
@@ -127,12 +132,14 @@ public class CIBus {
 	 */
 	private void initPath() {
 		System.setProperty(Constants.BUS_HOME , bus_home);
-		etc_dir = bus_home+File.separator + "etc";
+		etc_dir = bus_home +File.separator + "etc";
 		System.setProperty(Constants.ETC_DIR, etc_dir);
-		bundle_dir = bus_home+File.separator + "bundle";
+		bundle_dir = bus_home +File.separator + "bundle";
 		System.setProperty(Constants.BUNDLE_DIR, bundle_dir);
-		lib_dir = bus_home+File.separator + "lib";
+		lib_dir = bus_home +File.separator + "lib";
 		System.setProperty(Constants.LIB_DIR, lib_dir);
+		lib_ext_dir = lib_dir + File.separator + "ext";
+		System.setProperty(Constants.LIB_EXT_DIR, lib_ext_dir); 
 	}
 	
 	/*
@@ -146,6 +153,20 @@ public class CIBus {
 			PropertyConfigurator.configure(Logger.class.getResource("/log4j.properties"));
 		}
 		log.info("Welcome to Logger World!");
+	}
+	
+	
+	/*
+	 * 建立系统级的classloader,
+	 * 此claassloader为felix的加载loader，
+	 * 对于所在的bundle来说是可见的
+	 */
+	private ClassLoader createSystemClassLoader() {
+		List<URL> urlList = new ArrayList<URL>();
+		urlList.addAll(FileUtil.getAllJar(lib_dir));
+		urlList.addAll(FileUtil.getAllJar(lib_ext_dir));
+        return new URLClassLoader(urlList.toArray(new URL[urlList.size()]), CIBus.class.getClassLoader());
+
 	}
 }
 
