@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: CI Bus Common
+Bundle-ManifestVersion: 2
+Import-Package:
+Bundle-SymbolicName: com.antelope.ci.bus.common
