@@ -8,7 +8,9 @@
 
 package com.antelope.ci.bus;
 
+import com.antelope.ci.bus.common.CIBusException;
 import com.antelope.ci.bus.common.Constants;
+import com.antelope.ci.bus.common.ResourceUtil;
 
 
 /**
@@ -27,7 +29,8 @@ public class CIBus {
 	 */
 	public static void main(String[] args) {
 		CIBus bus = new CIBus();
-		bus.opts(args);
+		bus.opts(args);				// 参数处理
+		bus.start();						// 启动
 	}
 	
 	
@@ -73,9 +76,15 @@ public class CIBus {
 		}
 		
 		if (etc == null) {
-			
+			try {
+				etc = ResourceUtil.getJarParent().getPath();
+			} catch (CIBusException e) {
+				e.printStackTrace();
+				System.exit(-1);
+			}
 		}
 	}
+	
 	
 	/**
 	 * 启动
@@ -84,7 +93,14 @@ public class CIBus {
 	 * @throws
 	 */
 	public void start() {
-		
+		initSystem();
+	}
+	
+	/*
+	 * 初始化系统参数
+	 */
+	private void initSystem() {
+		System.setProperty(Constants.ETC_DIR, etc);
 	}
 }
 

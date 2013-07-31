@@ -26,22 +26,22 @@ public class ResourceUtil {
 	/**
 	 * 取得jar所在的上级目录
 	 * @param  @return
-	 * @param  @throws MalformedURLException
+	 * @param  @throws  CIBusException
 	 * @return URL
 	 * @throws
 	 */
-	public static URL getJarParent() throws MalformedURLException {
+	public static URL getJarParent() throws  CIBusException {
 		return urlParent(getJarDir());
 	}
 	
 	/**
 	 * 取得jar所在的目录
 	 * @param  @return
-	 * @param  @throws MalformedURLException
+	 * @param  @throws  CIBusException
 	 * @return URL
 	 * @throws
 	 */
-	public static URL getJarDir() throws MalformedURLException {
+	public static URL getJarDir() throws  CIBusException {
 		URL jarUrl = ResourceUtil.class.getProtectionDomain().getCodeSource().getLocation();
 		return urlParent(jarUrl);
 	}
@@ -49,23 +49,27 @@ public class ResourceUtil {
 	/*
 	 * 取得url指向文件的上级目录
 	 */
-	private static URL urlParent(URL url) throws MalformedURLException {
-		return new File(url.getFile()).getParentFile().toURI().toURL();
+	private static URL urlParent(URL url) throws CIBusException {
+		try {
+			return new File(url.getFile()).getParentFile().toURI().toURL();
+		} catch (MalformedURLException e) {
+			 throw new CIBusException("00002", e);
+		}
 	}
 	
 	/**
 	 * 取得class对应的路径
 	 * @param  @return
+	 * @param  @throws CIBusException
 	 * @return String
 	 * @throws
 	 */
-    public static String getClassPath() {
+    public static String getClassPath() throws CIBusException {
         try {
             return java.net.URLDecoder.decode(getClassPathFile(ResourceUtil.class)
                     .getAbsolutePath(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return "";
+            throw new CIBusException("00001", e);
         }
     } 
     

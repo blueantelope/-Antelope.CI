@@ -8,13 +8,13 @@
 
 package com.antelope.ci.bus.common.test;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.antelope.ci.bus.common.CIBusException;
 import com.antelope.ci.bus.common.ResourceUtil;
 
 
@@ -27,13 +27,13 @@ import com.antelope.ci.bus.common.ResourceUtil;
  */
 public class TestResourceUtil extends TestCase {
 	@Test
-	public void testGetClassPath() {
+	public void testGetClassPath() throws CIBusException {
 		String cp = ResourceUtil.getClassPath();
 		System.out.println(cp);
 	}
 	
 	@Test
-	public void testGetJarParent() throws MalformedURLException {
+	public void testGetJarParent() throws CIBusException {
 		URL path = ResourceUtil.getJarParent();
 		System.out.println("====testGetJarParent==== : " + path);
 	}
