@@ -13,6 +13,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+
 
 /**
  * 资源类工具类

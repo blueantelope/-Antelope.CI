@@ -8,19 +8,21 @@
 
 package com.antelope.ci.bus;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.felix.framework.FrameworkFactory;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
-import com.antelope.ci.bus.common.CIBusException;
 import com.antelope.ci.bus.common.Constants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.ResourceUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -35,9 +37,9 @@ public class CIBus {
 	 * 入口
 	 * @param  @param args
 	 * @return void
-	 * @throws
+	 * @throws CIBusException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws CIBusException {
 		CIBus bus = new CIBus();
 		bus.opts(args);				// 参数处理
 		bus.start();						// 启动
@@ -53,12 +55,16 @@ public class CIBus {
 	/* 根目录不存在 */
 	private static final String HOME_ERROR = "home directory is not exist or not a direcotry";
 	
+	private static ClassLoader systemLoader;				// 系统classLoader
+	private static FrameworkFactory factory;					// osgi factory
+	
 	private static final Logger log = Logger.getLogger(CIBus.class);
 	private static String bus_home;								// 根目录
-	private static String etc_dir;										// 配置目录
+	private static String etc_dir;									// 配置目录
 	private static String bundle_dir;								// osgi包目录
-	private static String lib_dir;										// 系统jar目录
+	private static String lib_dir;									// 系统jar目录
 	private static String lib_ext_dir;								// 系统扩展jar目录
+	private static String etc_bus_cnf;								// bus.cnf路径
 	
 	/**
 	 * 输入参数处理
@@ -113,18 +119,27 @@ public class CIBus {
 	 * 启动
 	 * @param  
 	 * @return void
-	 * @throws
+	 * @throws CIBusException 
 	 */
-	public void start() {
+	public void start() throws CIBusException {
 		init();			// 初始化
+		createSystemClassLoader();
+		if (null == systemLoader) {
+			throw new CIBusException("");
+		}
+		loadFrameworkFactory();
+		if (null == factory) {
+			throw new CIBusException("");
+		}
+		
 	}
 	
 	/*
 	 *  各种初始化汇总
 	 */
-	private void init() {
+	private void init() throws CIBusException {
 		initPath();				// 目录
-		initLog();				// 日志
+		initEtc();					// 初始化etc配置 
 	}
 	
 	/*
@@ -132,41 +147,58 @@ public class CIBus {
 	 */
 	private void initPath() {
 		System.setProperty(Constants.BUS_HOME , bus_home);
-		etc_dir = bus_home +File.separator + "etc";
+		etc_dir = bus_home + File.separator + "etc";
 		System.setProperty(Constants.ETC_DIR, etc_dir);
 		bundle_dir = bus_home +File.separator + "bundle";
 		System.setProperty(Constants.BUNDLE_DIR, bundle_dir);
 		lib_dir = bus_home +File.separator + "lib";
 		System.setProperty(Constants.LIB_DIR, lib_dir);
 		lib_ext_dir = lib_dir + File.separator + "ext";
-		System.setProperty(Constants.LIB_EXT_DIR, lib_ext_dir); 
+		System.setProperty(Constants.LOG_CNF, etc_dir + File.separator + "log.cnf"); 
+		etc_bus_cnf = etc_dir + File.separator + "bus.cnf";
 	}
 	
 	/*
-	 * 初始化日志
+	 * 初始化etc下的配置
 	 */
-	private void initLog() {
-		String log_cnf = etc_dir + File.separator + "log.cnf";
-		if (FileUtil.existFile(log_cnf)) {
-			PropertyConfigurator.configure(log_cnf);
-		} else {
-			PropertyConfigurator.configure(Logger.class.getResource("/log4j.properties"));
-		}
-		log.info("Welcome to Logger World!");
+	private void initEtc() throws CIBusException {
+		CnfReader reader = CnfReader.getCnf();
+		reader.loadCnf(etc_bus_cnf);
 	}
 	
-	
 	/*
-	 * 建立系统级的classloader,
-	 * 此claassloader为felix的加载loader，
-	 * 对于所在的bundle来说是可见的
+	 * 建立系统loader，做为其它osgi包的共用loader，加载进的jar对其它bundle可见
 	 */
-	private ClassLoader createSystemClassLoader() {
+	private void createSystemClassLoader() {
 		List<URL> urlList = new ArrayList<URL>();
 		urlList.addAll(FileUtil.getAllJar(lib_dir));
 		urlList.addAll(FileUtil.getAllJar(lib_ext_dir));
-        return new URLClassLoader(urlList.toArray(new URL[urlList.size()]), CIBus.class.getClassLoader());
-
+		systemLoader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]), CIBus.class.getClassLoader());
+	}
+	
+	/*
+	 * 加载osgi framework factory
+	 */
+	private void loadFrameworkFactory() throws CIBusException {
+		if (null != systemLoader) {
+			try {
+				URL url = systemLoader.getResource( "META-INF/services/org.osgi.framework.launch.FrameworkFactory");
+				if (null != url) {
+					 BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+					 String line = null;
+					 while(null != (line=br.readLine())) {
+						 line = line.trim();
+						 if (!"".equals(line) && '#' != (line.charAt(0))) {
+							 factory = (FrameworkFactory) Class.forName(line).newInstance();
+							 break;
+						 }
+					 }
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new CIBusException("");
+			}
+		}
 	}
 }
 

@@ -20,12 +20,14 @@ public class Constants {
 	/* ci bus的根目录 */
 	public static final String BUS_HOME					= "bus.home";
 	/* etc目录 */
-	public static final String ETC_DIR 					= "etc.dir";
+	public static final String ETC_DIR 						= "etc.dir";
 	/* osgi bundle包目录 */
 	public static final String BUNDLE_DIR				= "bundle.dir";
 	/* 系统jar目录 */
 	public static final String LIB_DIR						= "lib.dir";
 	/* 系统扩展jar目录 */
-	public static final String LIB_EXT_DIR				= "lib.ext.dir";
+	public static final String LIB_EXT_DIR					= "lib.ext.dir";
+	/* 日志配置文件 */
+	public static final String LOG_CNF						="log.cnf";
 }
 

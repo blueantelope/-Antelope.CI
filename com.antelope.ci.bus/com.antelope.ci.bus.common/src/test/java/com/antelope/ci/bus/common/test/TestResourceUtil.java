@@ -14,8 +14,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import com.antelope.ci.bus.common.CIBusException;
 import com.antelope.ci.bus.common.ResourceUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**

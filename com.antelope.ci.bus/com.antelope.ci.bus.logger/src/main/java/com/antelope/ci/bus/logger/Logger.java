@@ -12,6 +12,9 @@ import org.apache.log4j.PropertyConfigurator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.antelope.ci.bus.common.Constants;
+import com.antelope.ci.bus.common.FileUtil;
+
 
 /**
  * 启动日志服务
@@ -30,7 +33,12 @@ public class Logger implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Start Logger for @Antelope CI Bus");
-		PropertyConfigurator.configure(Logger.class.getResource("/log4j.properties"));
+		String log_cnf = System.getProperty(Constants.LOG_CNF);
+		if (FileUtil.existFile(log_cnf)) {
+			PropertyConfigurator.configure(log_cnf);
+		} else {
+			PropertyConfigurator.configure(Logger.class.getResource("/log4j.properties"));
+		}
 		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Logger.class);
 		log.info("Welcome to Logger World!");
 	}

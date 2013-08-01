@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common;
+package com.antelope.ci.bus.common.exception;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
