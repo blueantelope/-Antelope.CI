@@ -60,12 +60,14 @@ public class FileUtil {
 	public static List<URL> getAllJar(String path) {
 		List<URL> urlList = new ArrayList<URL>();
 		File[] files = new File(path).listFiles();
-		for (File file : files) {
-			if (file.isFile() && file.getName().endsWith("jar")) {
-				try {
-					urlList.add(file.toURI().toURL());
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
+		if (null != files) {
+			for (File file : files) {
+				if (file.isFile() && file.getName().endsWith("jar")) {
+					try {
+						urlList.add(file.toURI().toURL());
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

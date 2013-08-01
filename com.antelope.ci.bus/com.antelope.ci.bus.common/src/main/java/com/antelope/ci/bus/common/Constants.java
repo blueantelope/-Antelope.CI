@@ -18,19 +18,21 @@ package com.antelope.ci.bus.common;
  */
 public class Constants {
 	/* ci bus的根目录 */
-	public static final String BUS_HOME					= "bus.home";
+	public static final String BUS_HOME						= "antelope.ci.bus.home";
 	/* etc目录 */
-	public static final String ETC_DIR 						= "etc.dir";
+	public static final String ETC_DIR 							= "antelope.ci.bus.etc.dir";
 	/* osgi bundle包目录 */
-	public static final String BUNDLE_DIR				= "bundle.dir";
+	public static final String SYSTEM_DIR					= "antelope.ci.bus.system.dir";
 	/* 系统jar目录 */
-	public static final String LIB_DIR						= "lib.dir";
+	public static final String LIB_DIR							= "lantelope.ci.bus.ib.dir";
 	/* 系统扩展jar目录 */
-	public static final String LIB_EXT_DIR					= "lib.ext.dir";
+	public static final String LIB_EXT_DIR						= "antelope.ci.bus.lib.ext.dir";
 	/* 运行时缓存目录 */
-	public static final String CACHE_DIR					= "cache.dir";
+	public static final String CACHE_DIR						= "antelope.ci.bus.cache.dir";
+	/* osgi plugin运行时包目录 */
+	public static final String PLUGIN_DIR						= "antelope.ci.bus.plugin.dir";
 	/* 日志配置文件 */
-	public static final String LOG_CNF						="log.cnf";
+	public static final String LOG_CNF							=	"antelope.ci.bus.log.cnf";
 	
 	
 }

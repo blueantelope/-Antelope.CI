@@ -21,8 +21,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2013-8-1		下午12:02:50 
  */
-public class CnfFileReader extends BasicConfigrationReader {
-	public CnfFileReader() {
+public class CfgFileReader extends BasicConfigrationReader {
+	public CfgFileReader() {
 		super();
 	}
 

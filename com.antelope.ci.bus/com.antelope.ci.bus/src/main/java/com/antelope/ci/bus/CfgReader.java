@@ -9,7 +9,7 @@
 package com.antelope.ci.bus;
 
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
-import com.antelope.ci.bus.common.configration.CnfFileReader;
+import com.antelope.ci.bus.common.configration.CfgFileReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -21,17 +21,17 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2013-7-31		下午9:12:33 
  */
-class CnfReader {
+public class CfgReader {
 	// singleton
-	private static final CnfReader cnf = new CnfReader();
+	private static final CfgReader cfg = new CfgReader();
 	
-	public static final CnfReader getCnf() {
-		return cnf;
+	public static final CfgReader getCfg() {
+		return cfg;
 	}
 	
 	private BasicConfigrationReader reader;
-	private CnfReader() {
-		reader = new CnfFileReader();
+	private CfgReader() {
+		reader = new CfgFileReader();
 	}
 	
 	/*

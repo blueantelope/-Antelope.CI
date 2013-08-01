@@ -10,18 +10,22 @@ package com.antelope.ci.bus;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.felix.framework.FrameworkFactory;
 import org.apache.log4j.Logger;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.launch.Framework;
+import org.osgi.service.startlevel.StartLevel;
 
 import com.antelope.ci.bus.common.Constants;
 import com.antelope.ci.bus.common.FileUtil;
@@ -59,19 +63,20 @@ public class CIBus {
 	/* 根目录不存在 */
 	private static final String HOME_ERROR = "home directory is not exist or not a direcotry";
 	
-	private static ClassLoader systemLoader;				// 系统classLoader
+	private static ClassLoader systemLoader;					// 系统classLoader
 	private static FrameworkFactory factory;					// osgi factory
-	private static Framework framkework;					// osgi framework
+	private static Framework framework;							// osgi framework
 	private static Map<String, String> osgiProps;			// osgi参数 
 	
 	private static final Logger log = Logger.getLogger(CIBus.class);
-	private static String bus_home;								// 根目录
-	private static String etc_dir;									// 配置目录
-	private static String bundle_dir;								// osgi包目录
-	private static String lib_dir;									// 系统jar目录
-	private static String lib_ext_dir;								// 系统扩展jar目录
-	private static String cache_dir;								// 运行时缓存目录
-	private static String etc_bus_cnf;								// bus.cnf路径
+	private static String bus_home;									// 根目录
+	private static String etc_dir;										// 配置目录
+	private static String system_dir;								// osgi系统包目录
+	private static String lib_dir;										// 系统jar目录
+	private static String lib_ext_dir;									// 系统扩展jar目录
+	private static String cache_dir;									// 运行时缓存目录
+	private static String plugin_dir;									// osgi plugin目录
+	private static String etc_bus_cfg;								// bus.cfg路径
 	
 	/**
 	 * 输入参数处理
@@ -138,7 +143,8 @@ public class CIBus {
 		if (null == factory) {
 			throw new CIBusException("");
 		}
-		
+		shutdownHook();			// 关闭钩子
+		run();						// 运行osgi
 	}
 	
 	/*
@@ -146,9 +152,8 @@ public class CIBus {
 	 */
 	private void init() throws CIBusException {
 		initPath();				// 目录
-		initEtc();					// 初始化etc配置 
+		initEtc();				// 初始化etc配置 
 		initOsgi();				// 初始化osgi
-		runOsgi();				// 运行osgi
 	}
 	
 	/*
@@ -158,13 +163,15 @@ public class CIBus {
 		System.setProperty(Constants.BUS_HOME , bus_home);
 		etc_dir = bus_home + File.separator + "etc";
 		System.setProperty(Constants.ETC_DIR, etc_dir);
-		bundle_dir = bus_home +File.separator + "bundle";
-		System.setProperty(Constants.BUNDLE_DIR, bundle_dir);
+		system_dir = bus_home +File.separator + "system";
+		System.setProperty(Constants.SYSTEM_DIR, system_dir);
+		plugin_dir = bus_home +File.separator + "plugin";
+		System.setProperty(Constants.PLUGIN_DIR, plugin_dir);
 		lib_dir = bus_home +File.separator + "lib";
 		System.setProperty(Constants.LIB_DIR, lib_dir);
 		lib_ext_dir = lib_dir + File.separator + "ext";
-		System.setProperty(Constants.LOG_CNF, etc_dir + File.separator + "log.cnf"); 
-		etc_bus_cnf = etc_dir + File.separator + "bus.cnf";
+		System.setProperty(Constants.LOG_CNF, etc_dir + File.separator + "log.cfg"); 
+		etc_bus_cfg = etc_dir + File.separator + "bus.cfg";
 		cache_dir = bus_home + File.separator + ".cache";
 		System.setProperty(Constants.CACHE_DIR, cache_dir);
 	}
@@ -173,8 +180,8 @@ public class CIBus {
 	 * 初始化etc下的配置
 	 */
 	private void initEtc() throws CIBusException {
-		CnfReader reader = CnfReader.getCnf();
-		reader.loadCnf(etc_bus_cnf);
+		CfgReader reader = CfgReader.getCfg();
+		reader.loadCnf(etc_bus_cfg);
 	}
 	
 	/*
@@ -213,45 +220,113 @@ public class CIBus {
 	}
 	
 	/*
+	 * 关闭钩子
+	 * jvm退出时，清除
+	 */
+	private void shutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread("Shutdwon Hook") {
+            public void run() {
+                try {
+                    if (framework != null) {
+	                    	framework.stop();
+	                    	framework.waitForStop(0);
+                    }
+                } catch (Exception e)  {
+                    System.err.println("Error stopping framework: " + e);
+                }
+            }
+        });
+	}
+	
+	/*
 	 * 初始化osgi felix
 	 * 初始化felix的参数
 	 */
 	private void initOsgi() {
-		try {
-			osgiProps.put("org.osgi.framework.system.packages",
-	            "org.osgi.framework; version=1.4.0,"
-	            + "org.osgi.service.packageadmin; version=1.2.0,"
-	            + "org.osgi.service.startlevel; version=1.1.0,"
-	            + "org.osgi.util.tracker; version=1.3.3,"
-	            + "org.osgi.service.url; version=1.0.0");
-			File tmp = File.createTempFile(cache_dir, ".tmp");
-			tmp.delete();
-			tmp.mkdirs();
-			String tmp_path = tmp.getPath();
-	        osgiProps.put("felix.cache.profiledir", tmp_path);
-	        osgiProps.put("felix.cache.dir", tmp_path);
-	        osgiProps.put("org.osgi.framework.storage", tmp_path);
-		} catch (IOException e) {
-			
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		}
+		osgiProps = new HashMap<String, String>();
+        osgiProps.put("felix.cache.profiledir", cache_dir);
+        osgiProps.put("felix.cache.dir", cache_dir);
+        osgiProps.put("org.osgi.framework.storage", cache_dir);
 	}
 	
 	/*
 	 * 运行osgi felix
 	 */
-	private void runOsgi() throws CIBusException {
+	private void run() throws CIBusException {
 		if (null != factory) {
-			framkework =  factory.newFramework(osgiProps);
+			framework =  factory.newFramework(osgiProps);
 			try {
-				framkework.init();
-				framkework.start();
-			} catch (BundleException e) {
+				framework.init();
+				FrameworkEvent event;
+				framework.start();
+				runSystem();			// 启动system bundle
+				do {
+					event = framework.waitForStop(0);
+				} while (event.getType() == FrameworkEvent.STOPPED_UPDATE); 
+				System.exit(0);
+			} catch (Exception e) {
 				throw new CIBusException("", e);
 			}
 		}
+	}
+	
+	/*
+	 * 运行系统osgi包
+	 */
+	private void runSystem() {
+		if (null != framework) {
+			BundleContext context = framework.getBundleContext();
+			StartLevel startLevel = (StartLevel) context.getService(
+	                context.getServiceReference(org.osgi.service.startlevel.StartLevel.class.getName()));
+			 int level = startLevel.getInitialBundleStartLevel();
+			 File[] systemFiles = new File(system_dir).listFiles();
+			 if (null != systemFiles) {
+				 List<File> systemJarList = new ArrayList<File>();
+				 for (File systemFile : systemFiles) {
+					 if (systemFile.getName().endsWith(".jar"))
+						 systemJarList.add(systemFile);
+				 }
+				 // 启动
+				 for (File systemJar : systemJarList) {
+					 new BundleStarter(context, systemJar, startLevel, level).start();
+//					 startBunlde(systemJar, startLevel, level);
+				 }
+			 }
+		}
+	}
+	
+	private void startBunlde(File bundleFile, StartLevel startLevel, int level) {
+		 try {
+			 Bundle bundle = framework.getBundleContext().installBundle(bundleFile.toURI().toString());
+			 startLevel.setBundleStartLevel(bundle, level);
+			 bundle.start();
+		} catch (BundleException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// osgi bundle 启动线程
+	private class BundleStarter extends Thread {
+		private BundleContext context;
+		private File bundleFile;
+		private StartLevel startLevel;
+		private int level;
+		public BundleStarter(BundleContext context, File bundleFile, StartLevel startLevel, int level) {
+			this.context = context;
+			this.bundleFile = bundleFile;
+			this.startLevel = startLevel;
+			this.level = level;
+		}
+		
+		public void run() {
+			 try {
+				 Bundle bundle = context.installBundle(bundleFile.toURI().toString());
+				 startLevel.setBundleStartLevel(bundle, level);
+				 bundle.start();
+			} catch (BundleException e) {
+				e.printStackTrace();
+			}
+		 }
 	}
 }
 
