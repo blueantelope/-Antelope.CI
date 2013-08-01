@@ -10,14 +10,18 @@ package com.antelope.ci.bus;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.felix.framework.FrameworkFactory;
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.launch.Framework;
 
 import com.antelope.ci.bus.common.Constants;
 import com.antelope.ci.bus.common.FileUtil;
@@ -57,6 +61,8 @@ public class CIBus {
 	
 	private static ClassLoader systemLoader;				// 系统classLoader
 	private static FrameworkFactory factory;					// osgi factory
+	private static Framework framkework;					// osgi framework
+	private static Map<String, String> osgiProps;			// osgi参数 
 	
 	private static final Logger log = Logger.getLogger(CIBus.class);
 	private static String bus_home;								// 根目录
@@ -64,6 +70,7 @@ public class CIBus {
 	private static String bundle_dir;								// osgi包目录
 	private static String lib_dir;									// 系统jar目录
 	private static String lib_ext_dir;								// 系统扩展jar目录
+	private static String cache_dir;								// 运行时缓存目录
 	private static String etc_bus_cnf;								// bus.cnf路径
 	
 	/**
@@ -140,6 +147,8 @@ public class CIBus {
 	private void init() throws CIBusException {
 		initPath();				// 目录
 		initEtc();					// 初始化etc配置 
+		initOsgi();				// 初始化osgi
+		runOsgi();				// 运行osgi
 	}
 	
 	/*
@@ -156,6 +165,8 @@ public class CIBus {
 		lib_ext_dir = lib_dir + File.separator + "ext";
 		System.setProperty(Constants.LOG_CNF, etc_dir + File.separator + "log.cnf"); 
 		etc_bus_cnf = etc_dir + File.separator + "bus.cnf";
+		cache_dir = bus_home + File.separator + ".cache";
+		System.setProperty(Constants.CACHE_DIR, cache_dir);
 	}
 	
 	/*
@@ -197,6 +208,48 @@ public class CIBus {
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new CIBusException("");
+			}
+		}
+	}
+	
+	/*
+	 * 初始化osgi felix
+	 * 初始化felix的参数
+	 */
+	private void initOsgi() {
+		try {
+			osgiProps.put("org.osgi.framework.system.packages",
+	            "org.osgi.framework; version=1.4.0,"
+	            + "org.osgi.service.packageadmin; version=1.2.0,"
+	            + "org.osgi.service.startlevel; version=1.1.0,"
+	            + "org.osgi.util.tracker; version=1.3.3,"
+	            + "org.osgi.service.url; version=1.0.0");
+			File tmp = File.createTempFile(cache_dir, ".tmp");
+			tmp.delete();
+			tmp.mkdirs();
+			String tmp_path = tmp.getPath();
+	        osgiProps.put("felix.cache.profiledir", tmp_path);
+	        osgiProps.put("felix.cache.dir", tmp_path);
+	        osgiProps.put("org.osgi.framework.storage", tmp_path);
+		} catch (IOException e) {
+			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+	}
+	
+	/*
+	 * 运行osgi felix
+	 */
+	private void runOsgi() throws CIBusException {
+		if (null != factory) {
+			framkework =  factory.newFramework(osgiProps);
+			try {
+				framkework.init();
+				framkework.start();
+			} catch (BundleException e) {
+				throw new CIBusException("", e);
 			}
 		}
 	}

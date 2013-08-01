@@ -27,7 +27,11 @@ public class Constants {
 	public static final String LIB_DIR						= "lib.dir";
 	/* 系统扩展jar目录 */
 	public static final String LIB_EXT_DIR					= "lib.ext.dir";
+	/* 运行时缓存目录 */
+	public static final String CACHE_DIR					= "cache.dir";
 	/* 日志配置文件 */
 	public static final String LOG_CNF						="log.cnf";
+	
+	
 }
 
