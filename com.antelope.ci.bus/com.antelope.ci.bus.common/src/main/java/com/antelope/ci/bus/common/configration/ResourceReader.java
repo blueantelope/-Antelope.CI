@@ -64,22 +64,6 @@ public class ResourceReader extends BasicConfigrationReader {
 		}
 	}
 	
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#removeResource(java.lang.String)
-	 */
-	public void removeResource(String resource) throws CIBusException {
-		for (String key : resourceMap.keySet()) {
-			if (key.equals(resource)) {
-				resourceMap.remove(key);
-				ResourceBundle bundle = (ResourceBundle) resourceMap.get(key);
-				for (String bk : bundle.keySet()) 
-					props.remove(bk);
-			}
-		}
-	}
-	
 	/*
 	 * 验证给出的语言字符串是否为正确的
 	 */

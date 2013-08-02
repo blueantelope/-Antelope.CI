@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -67,7 +68,16 @@ public abstract class BasicConfigrationReader {
 	 * @return void
 	 * @throws CIBusException
 	 */
-	public abstract void removeResource(String resource) throws CIBusException;
+	public void removeResource(String resource) throws CIBusException {
+		for (String key : resourceMap.keySet()) {
+			if (key.equals(resource)) {
+				resourceMap.remove(key);
+				ResourceBundle bundle = (ResourceBundle) resourceMap.get(key);
+				for (String bk : bundle.keySet()) 
+					props.remove(bk);
+			}
+		}
+	}
 	
 	/**
 	 * 取得所有配置项

@@ -29,6 +29,8 @@ import org.osgi.service.startlevel.StartLevel;
 
 import com.antelope.ci.bus.common.Constants;
 import com.antelope.ci.bus.common.FileUtil;
+import com.antelope.ci.bus.common.JarBusProperty;
+import com.antelope.ci.bus.common.JarLoadMethod;
 import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -72,6 +74,7 @@ public class CIBus {
 	private static String bus_home;									// 根目录
 	private static String etc_dir;										// 配置目录
 	private static String system_dir;								// osgi系统包目录
+	private static String system_ext_dir;							// osgi系统扩展包目录
 	private static String lib_dir;										// 系统jar目录
 	private static String lib_ext_dir;									// 系统扩展jar目录
 	private static String cache_dir;									// 运行时缓存目录
@@ -165,6 +168,8 @@ public class CIBus {
 		System.setProperty(Constants.ETC_DIR, etc_dir);
 		system_dir = bus_home +File.separator + "system";
 		System.setProperty(Constants.SYSTEM_DIR, system_dir);
+		system_ext_dir = system_dir +File.separator + "ext";
+		System.setProperty(Constants.SYSTEM_EXT_DIR, system_ext_dir);
 		plugin_dir = bus_home +File.separator + "plugin";
 		System.setProperty(Constants.PLUGIN_DIR, plugin_dir);
 		lib_dir = bus_home +File.separator + "lib";
@@ -278,20 +283,39 @@ public class CIBus {
 			BundleContext context = framework.getBundleContext();
 			StartLevel startLevel = (StartLevel) context.getService(
 	                context.getServiceReference(org.osgi.service.startlevel.StartLevel.class.getName()));
-			 int level = startLevel.getInitialBundleStartLevel();
-			 File[] systemFiles = new File(system_dir).listFiles();
-			 if (null != systemFiles) {
-				 List<File> systemJarList = new ArrayList<File>();
-				 for (File systemFile : systemFiles) {
-					 if (systemFile.getName().endsWith(".jar"))
-						 systemJarList.add(systemFile);
-				 }
-				 // 启动
-				 for (File systemJar : systemJarList) {
-					 new BundleStarter(context, systemJar, startLevel, level).start();
-//					 startBunlde(systemJar, startLevel, level);
-				 }
-			 }
+			int level = startLevel.getInitialBundleStartLevel();
+			List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
+			// 读取系统bundle包
+			File[] systemFiles = new File(system_dir).listFiles();
+			if (null != systemFiles) {
+				List<File> systemJarList = new ArrayList<File>();
+				for (File systemFile : systemFiles) {
+					if (systemFile.getName().endsWith(".jar")) {
+						BundleLoader loader = new BundleLoader(context, systemFile, startLevel, level, JarLoadMethod.START);
+						loaderList.add(loader);
+					}
+				}
+				
+			}
+			// 读取系统扩展bundle包
+			File[] systemExtFiles = new File(system_ext_dir).listFiles();
+			if (null != systemExtFiles) {
+				for (File systemExtFile : systemExtFiles) {
+					if (systemExtFile.getName().endsWith(".jar")) {
+						try {
+							JarBusProperty busProperty = ResourceUtil.readJarBus(systemExtFile);
+							BundleLoader loader = new BundleLoader(context, systemExtFile, startLevel, busProperty.getStartLevel(), busProperty.getLoad());
+							loaderList.add(loader);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			// 加载bundle包
+			for (BundleLoader loader : loaderList) {
+				new BundleLoaderThread(loader).start();
+			}
 		}
 	}
 	
@@ -303,30 +327,6 @@ public class CIBus {
 		} catch (BundleException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	// osgi bundle 启动线程
-	private class BundleStarter extends Thread {
-		private BundleContext context;
-		private File bundleFile;
-		private StartLevel startLevel;
-		private int level;
-		public BundleStarter(BundleContext context, File bundleFile, StartLevel startLevel, int level) {
-			this.context = context;
-			this.bundleFile = bundleFile;
-			this.startLevel = startLevel;
-			this.level = level;
-		}
-		
-		public void run() {
-			 try {
-				 Bundle bundle = context.installBundle(bundleFile.toURI().toString());
-				 startLevel.setBundleStartLevel(bundle, level);
-				 bundle.start();
-			} catch (BundleException e) {
-				e.printStackTrace();
-			}
-		 }
 	}
 }
 

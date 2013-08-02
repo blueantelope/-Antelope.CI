@@ -16,7 +16,7 @@ package com.antelope.ci.bus.common;
  * @version  0.1
  * @Date	 2013-8-2		下午6:20:01 
  */
-public class JarBusProperties {
+public class JarBusProperty {
 	private JarLoadMethod load;
 	private int startLevel;
 	

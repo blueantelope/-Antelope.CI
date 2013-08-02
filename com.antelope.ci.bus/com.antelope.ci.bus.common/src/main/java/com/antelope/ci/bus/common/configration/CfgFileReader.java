@@ -66,25 +66,5 @@ public class CfgFileReader extends BasicConfigrationReader {
 			}
 		}
 	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#removeResource(java.lang.String)
-	 */
-	@Override
-	public void removeResource(String resource) throws CIBusException {
-		for (String key : resourceMap.keySet()) {
-			if (key.equals(resource)) {
-				resourceMap.remove(key);
-				Properties prop = (Properties) resourceMap.get(key);
-				for (Object bk : prop.keySet()) 
-					props.remove(bk);
-			}
-		}
-	}
-
-	
-
 }
 

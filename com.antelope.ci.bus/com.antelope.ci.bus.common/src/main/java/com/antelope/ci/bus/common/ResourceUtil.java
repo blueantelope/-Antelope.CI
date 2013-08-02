@@ -9,14 +9,11 @@
 package com.antelope.ci.bus.common;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
+import com.antelope.ci.bus.common.configration.JarResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -102,23 +99,39 @@ public class ResourceUtil {
     } 
     
     /**
-     * 读取jar中bus.properties中的配置
+     * 读取jar中配置文件
+     * jar文件路径
      * @param  @param path
      * @param  @return
      * @return Properties
+     * @throws CIBusException
+     */
+    public static JarBusProperty readJarBus(String path) throws CIBusException {
+    		return readJarBus(new JarResourceReader(path));
+    }
+    
+    /**
+     * 读取jar中配置文件
+     * jar文件实体
+     * @param  @param jarFile
+     * @param  @return
+     * @param  @throws CIBusException
+     * @return JarBusProperty
      * @throws
      */
-    public static Properties readJarBus(String path) {
-    	Properties busProps = new Properties();
-    	try {
-			JarFile jarFile = new JarFile(new File(path));
-			JarEntry entry = jarFile.getJarEntry(BUS_PROPS);
-			busProps.load(jarFile.getInputStream(entry));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			return busProps;
-		}
+    public static JarBusProperty readJarBus(File jarFile) throws CIBusException {
+		return readJarBus(new JarResourceReader(jarFile));
+    }
+    
+    /*
+     * 由jar资源reader读取资源文件
+     */
+    private static JarBusProperty readJarBus(JarResourceReader reader) throws CIBusException {
+    		reader.addResource(BUS_PROPS);
+		JarBusProperty busProperty = new JarBusProperty();
+		busProperty.setLoad(reader.getString(Constants.JAR_LOAD));
+		busProperty.setStartLevel(reader.getInt(Constants.JAR_START_LEVEL));
+		return busProperty;
     }
 }
 
