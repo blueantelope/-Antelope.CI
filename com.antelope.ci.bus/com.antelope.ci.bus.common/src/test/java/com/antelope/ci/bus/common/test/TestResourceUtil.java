@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.common.test;
 
 import java.net.URL;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -36,6 +37,15 @@ public class TestResourceUtil extends TestCase {
 	public void testGetJarParent() throws CIBusException {
 		URL path = ResourceUtil.getJarParent();
 		System.out.println("====testGetJarParent==== : " + path);
+	}
+	
+	@Test
+	public void testReadJarBus() throws CIBusException {
+		String jarPath = "D:\\data\\git\\@Antelope.CI\\com.antelope.ci.bus\\com.antelope.ci.bus.logger\\target\\com.antelope.ci.bus.logger-0.1.0.jar";
+		Properties props = ResourceUtil.readJarBus(jarPath);
+		for (Object key : props.keySet()) {
+			System.out.println("key = " + key + ", value = " + props.getProperty((String) key));
+		}
 	}
 	
 	public static void main(String[] args) {

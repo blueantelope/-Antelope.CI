@@ -9,9 +9,13 @@
 package com.antelope.ci.bus.common;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -24,6 +28,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-7-31		下午12:39:34 
  */
 public class ResourceUtil {
+	private static final String BUS_PROPS = "META-INF/bus.properties";
 	
 	/**
 	 * 取得jar所在的上级目录
@@ -95,5 +100,25 @@ public class ResourceUtil {
         }
         return file;
     } 
+    
+    /**
+     * 读取jar中bus.properties中的配置
+     * @param  @param path
+     * @param  @return
+     * @return Properties
+     * @throws
+     */
+    public static Properties readJarBus(String path) {
+    	Properties busProps = new Properties();
+    	try {
+			JarFile jarFile = new JarFile(new File(path));
+			JarEntry entry = jarFile.getJarEntry(BUS_PROPS);
+			busProps.load(jarFile.getInputStream(entry));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			return busProps;
+		}
+    }
 }
 
