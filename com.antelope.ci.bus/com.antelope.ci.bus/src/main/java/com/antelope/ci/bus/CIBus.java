@@ -262,10 +262,10 @@ public class CIBus {
 			framework =  factory.newFramework(osgiProps);
 			try {
 				framework.init();
-				FrameworkEvent event;
-				framework.start();
 				runSystem();			// 启动system bundle
+				FrameworkEvent event;
 				do {
+					framework.start();
 					event = framework.waitForStop(0);
 				} while (event.getType() == FrameworkEvent.STOPPED_UPDATE); 
 				System.exit(0);
@@ -314,16 +314,28 @@ public class CIBus {
 			}
 			// 加载bundle包
 			for (BundleLoader loader : loaderList) {
-				new BundleLoaderThread(loader).start();
+				loadBunlde(loader);
 			}
 		}
 	}
 	
-	private void startBunlde(File bundleFile, StartLevel startLevel, int level) {
+	/*
+	 * 顺序加载bundle
+	 */
+	private void loadBunlde(BundleLoader loader) {
 		 try {
-			 Bundle bundle = framework.getBundleContext().installBundle(bundleFile.toURI().toString());
-			 startLevel.setBundleStartLevel(bundle, level);
-			 bundle.start();
+			 switch (loader.method) {
+			 	case INSTALL:
+			 		loader.context.installBundle(loader.jarFile.toURI().toString());
+			 		break;
+			 	case START:
+			 		Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
+			 		loader.startLevel.setBundleStartLevel(bundle, loader.level);
+			 		bundle.start();
+			 		break;
+			 	default:
+			 		break;
+			 }
 		} catch (BundleException e) {
 			e.printStackTrace();
 		}

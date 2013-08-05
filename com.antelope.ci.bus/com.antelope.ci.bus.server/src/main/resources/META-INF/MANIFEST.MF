@@ -2,6 +2,6 @@ Manifest-Version: 1.0
 Bundle-Version: 0.1.0
 Bundle-Name: Logger Test
 Bundle-ManifestVersion: 2
-Import-Package: org.apache.log4j,org.osgi.framework
+Import-Package: org.osgi.framework
 Bundle-SymbolicName: com.antelope.ci.bus.server
 Bundle-Activator: com.antelope.ci.bus.server.Server
