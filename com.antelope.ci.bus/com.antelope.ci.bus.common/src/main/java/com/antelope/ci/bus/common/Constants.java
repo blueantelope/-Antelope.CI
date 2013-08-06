@@ -22,7 +22,7 @@ public class Constants {
 	/* etc目录 */
 	public static final String ETC_DIR 							= "antelope.ci.bus.etc.dir";
 	/* osgi system启动包目录 */
-	public static final String SYSTEM_DIR					= "antelope.ci.bus.system.dir";
+	public static final String SYSTEM_DIR						= "antelope.ci.bus.system.dir";
 	/* osgi system启动扩展包目录 */
 	public static final String SYSTEM_EXT_DIR				= "antelope.ci.bus.system.ext.dir";
 	/* 系统jar目录 */
@@ -40,6 +40,6 @@ public class Constants {
 	 * bus ci jar中定义的bus.properties配置项 
 	 */
 	public static final String JAR_LOAD						= "load";
-	public static final String JAR_START_LEVEL			= "start.level";
+	public static final String JAR_START_LEVEL				= "start.level";
 }
 

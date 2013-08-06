@@ -10,6 +10,7 @@ package com.antelope.ci.bus;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -17,12 +18,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
 
 import org.apache.felix.framework.FrameworkFactory;
 import org.apache.log4j.Logger;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.launch.Framework;
 import org.osgi.service.startlevel.StartLevel;
@@ -55,23 +56,75 @@ public class CIBus {
 		bus.start();						// 启动
 	}
 	
+	// 运行模式
+	public enum RUN_MODE {
+		DEV("dev", "开发模式"),							// 开发中使用的运行模式，不会用到缓存
+		APP("app", "应用模式");							// 实际的应用模式，拥有全部功能
+		
+		private String name;			// 表示名称
+		private String value;			// 显示名称
+		private RUN_MODE(String name, String value) {
+			this.name = name;
+			this.value = value;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public String getValue() {
+			return value;
+		}
+		
+		/**
+		 * 返回value
+		 * (non-Javadoc)
+		 * @see java.lang.Enum#toString()
+		 */
+		@Override
+		public String toString() {
+			return value;
+		}
+		
+		/**
+		 * 由给定的表示名称转换为运行模式
+		 * @param  @param name
+		 * @param  @return
+		 * @return RUN_MODE
+		 * @throws
+		 */
+		public static RUN_MODE toMode(String name) {
+			if (name != null && !"".equals(name)) {
+				for (RUN_MODE mode : RUN_MODE.values()) {
+					if (name.trim().equalsIgnoreCase(mode.getName())) {
+						return mode;
+					}
+				}
+			}
+			
+			return null;
+		}
+	}
 	
 	/* 帮助信息 */
 	private static final String HELP = "Usage: [OPTION] [VALUE]\n" +
-									"\t-e, --etc\tetc direction path\n";
+									"\t-e, --etc\tetc direction path\n" +
+									"\t-m, --mode\run mode(dev||app)\n";
 	/* 非法选项信息 */
 	private static final String FATAL = "invalid options\n" +
 									"\tTry '--help' for more information\n";
 	/* 根目录不存在 */
 	private static final String HOME_ERROR = "home directory is not exist or not a direcotry";
 	
-	private static ClassLoader systemLoader;					// 系统classLoader
+	private static ClassLoader classloader;					// 系统classLoader
 	private static FrameworkFactory factory;					// osgi factory
-	private static Framework framework;							// osgi framework
-	private static Map<String, String> osgiProps;			// osgi参数 
+	private static Framework framework;						// osgi framework
+	private static Map<String, String> parameters;		// 参数， 主要是针对osgi 
+	private static List<URL> clsUrlList;							// classloader url
 	
 	private static final Logger log = Logger.getLogger(CIBus.class);
 	private static String bus_home;									// 根目录
+	private static RUN_MODE run_mode;							// 运行模式
 	private static String etc_dir;										// 配置目录
 	private static String system_dir;								// osgi系统包目录
 	private static String system_ext_dir;							// osgi系统扩展包目录
@@ -103,6 +156,13 @@ public class CIBus {
 					if ("-h".equalsIgnoreCase(key) || 
 							"-home".equalsIgnoreCase(key)) {	// etc目录配置
 						bus_home = value;
+					} else if ("-m".equalsIgnoreCase(key) || 
+							"-mode".equalsIgnoreCase(key)) {	// etc目录配置
+						run_mode = RUN_MODE.toMode(value);
+						if (run_mode == null) {
+							System.err.print(FATAL);
+							System.exit(-1);		
+						}
 					} else {									// 非法选项
 						System.err.print(FATAL);
 						System.exit(-1);		
@@ -138,8 +198,8 @@ public class CIBus {
 	 */
 	public void start() throws CIBusException {
 		init();			// 初始化
-		createSystemClassLoader();
-		if (null == systemLoader) {
+		createClassLoader();
+		if (null == classloader) {
 			throw new CIBusException("");
 		}
 		loadFrameworkFactory();
@@ -147,7 +207,7 @@ public class CIBus {
 			throw new CIBusException("");
 		}
 		shutdownHook();			// 关闭钩子
-		run();						// 运行osgi
+		run();								// 运行osgi
 	}
 	
 	/*
@@ -155,8 +215,17 @@ public class CIBus {
 	 */
 	private void init() throws CIBusException {
 		initPath();				// 目录
-		initEtc();				// 初始化etc配置 
-		initOsgi();				// 初始化osgi
+		initEtc();					// 初始化etc配置 
+		initParameters();		// 初始化osgi
+		// 初始化运行模式
+		switch (run_mode) {
+			case APP:
+				initAppMode();
+				break;
+			case DEV:
+				initDevMode();
+				break;
+		}
 	}
 	
 	/*
@@ -182,6 +251,34 @@ public class CIBus {
 	}
 	
 	/*
+	 * 初始化开发模式
+	 */
+	private void initDevMode() {
+		new File(cache_dir).deleteOnExit();
+	}
+	
+	/*
+	 * 初始化应用模式
+	 */
+	private void initAppMode() {
+		
+	}
+	
+	/*
+	 * 清除开发模式
+	 */
+	private void destroyDevMode() {
+		new File(cache_dir).deleteOnExit();
+	}
+	
+	/*
+	 * 清除应用模式
+	 */
+	private void destroyAppMode() {
+		
+	}
+	
+	/*
 	 * 初始化etc下的配置
 	 */
 	private void initEtc() throws CIBusException {
@@ -192,20 +289,20 @@ public class CIBus {
 	/*
 	 * 建立系统loader，做为其它osgi包的共用loader，加载进的jar对其它bundle可见
 	 */
-	private void createSystemClassLoader() {
-		List<URL> urlList = new ArrayList<URL>();
-		urlList.addAll(FileUtil.getAllJar(lib_dir));
-		urlList.addAll(FileUtil.getAllJar(lib_ext_dir));
-		systemLoader = new URLClassLoader(urlList.toArray(new URL[urlList.size()]), CIBus.class.getClassLoader());
+	private void createClassLoader() {
+		clsUrlList = new ArrayList<URL>();
+		clsUrlList.addAll(FileUtil.getAllJar(lib_dir));
+		clsUrlList.addAll(FileUtil.getAllJar(lib_ext_dir));
+		classloader = new URLClassLoader(clsUrlList.toArray(new URL[clsUrlList.size()]), CIBus.class.getClassLoader());
 	}
 	
 	/*
 	 * 加载osgi framework factory
 	 */
 	private void loadFrameworkFactory() throws CIBusException {
-		if (null != systemLoader) {
+		if (null != classloader) {
 			try {
-				URL url = systemLoader.getResource( "META-INF/services/org.osgi.framework.launch.FrameworkFactory");
+				URL url = classloader.getResource( "META-INF/services/org.osgi.framework.launch.FrameworkFactory");
 				if (null != url) {
 					 BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 					 String line = null;
@@ -236,6 +333,15 @@ public class CIBus {
 	                    	framework.stop();
 	                    	framework.waitForStop(0);
                     }
+                    // 清除模式，运行模式遗留的资源
+            		switch (run_mode) {
+            			case APP:
+            				destroyAppMode();
+            				break;
+            			case DEV:
+            				destroyDevMode();
+            				break;
+            		}
                 } catch (Exception e)  {
                     System.err.println("Error stopping framework: " + e);
                 }
@@ -247,11 +353,42 @@ public class CIBus {
 	 * 初始化osgi felix
 	 * 初始化felix的参数
 	 */
-	private void initOsgi() {
-		osgiProps = new HashMap<String, String>();
-        osgiProps.put("felix.cache.profiledir", cache_dir);
-        osgiProps.put("felix.cache.dir", cache_dir);
-        osgiProps.put("org.osgi.framework.storage", cache_dir);
+	private void initParameters() {
+		parameters = new HashMap<String, String>();
+        parameters.put("felix.cache.profiledir", cache_dir);
+        parameters.put("felix.cache.dir", cache_dir);
+        parameters.put("org.osgi.framework.storage", cache_dir);
+//        addSystemPackages();
+	}
+	
+	/*
+	 * 得到所有系统加载包，对所有其它bundle可调用的lib jar
+	 */
+	private void addSystemPackages() {
+		if (parameters != null) {
+			List<URL> ext_url_list = FileUtil.getAllJar(lib_ext_dir);
+	     	StringBuffer spBuf = new StringBuffer();
+	     	for (URL ext_url : ext_url_list) {
+	      	JarInputStream jis = null;
+	      	try {
+	      		jis = new JarInputStream(ext_url.openStream());
+	      		Manifest mf = jis.getManifest();
+	      		String v = mf.getMainAttributes().getValue("Export-Package");
+	      		spBuf.append(v).append(",");
+	      	} catch (Exception e) {
+	      		e.printStackTrace();
+	      	} finally {
+	      		if (jis != null) {
+	      			try {
+						jis.close();
+					} catch (IOException e) { }
+	      		}
+	      	}
+	      }
+	      String packages = spBuf.toString();
+	      if (packages.length() > 0) 
+	      	parameters.put("org.osgi.framework.system.packages", packages.substring(0, packages.length()-1));
+		}
 	}
 	
 	/*
@@ -259,7 +396,7 @@ public class CIBus {
 	 */
 	private void run() throws CIBusException {
 		if (null != factory) {
-			framework =  factory.newFramework(osgiProps);
+			framework =  factory.newFramework(parameters);
 			try {
 				framework.init();
 				runSystem();			// 启动system bundle
@@ -304,7 +441,14 @@ public class CIBus {
 					if (systemExtFile.getName().endsWith(".jar")) {
 						try {
 							JarBusProperty busProperty = ResourceUtil.readJarBus(systemExtFile);
-							BundleLoader loader = new BundleLoader(context, systemExtFile, startLevel, busProperty.getStartLevel(), busProperty.getLoad());
+							BundleLoader loader = new BundleLoader(
+									context, 
+									systemExtFile, 
+									startLevel, 
+									busProperty.getStartLevel(), 
+									busProperty.getLoad(),
+									clsUrlList
+									);
 							loaderList.add(loader);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -314,30 +458,8 @@ public class CIBus {
 			}
 			// 加载bundle包
 			for (BundleLoader loader : loaderList) {
-				loadBunlde(loader);
+				new BundleLoaderThread(loader).start();
 			}
-		}
-	}
-	
-	/*
-	 * 顺序加载bundle
-	 */
-	private void loadBunlde(BundleLoader loader) {
-		 try {
-			 switch (loader.method) {
-			 	case INSTALL:
-			 		loader.context.installBundle(loader.jarFile.toURI().toString());
-			 		break;
-			 	case START:
-			 		Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
-			 		loader.startLevel.setBundleStartLevel(bundle, loader.level);
-			 		bundle.start();
-			 		break;
-			 	default:
-			 		break;
-			 }
-		} catch (BundleException e) {
-			e.printStackTrace();
 		}
 	}
 }

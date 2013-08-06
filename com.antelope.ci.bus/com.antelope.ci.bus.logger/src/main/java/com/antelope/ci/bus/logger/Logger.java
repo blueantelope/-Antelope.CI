@@ -34,7 +34,9 @@ public class Logger implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Start Logger for @Antelope CI Bus");
 		String log_cnf = System.getProperty(Constants.LOG_CNF);
+		System.out.println(log_cnf);
 		if (FileUtil.existFile(log_cnf)) {
+			System.out.println("use define log");
 			PropertyConfigurator.configure(log_cnf);
 		} else {
 			PropertyConfigurator.configure(Logger.class.getResource("/log4j.properties"));

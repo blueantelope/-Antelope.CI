@@ -9,6 +9,8 @@
 package com.antelope.ci.bus;
 
 import java.io.File;
+import java.net.URL;
+import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.startlevel.StartLevel;
@@ -29,6 +31,7 @@ class BundleLoader {
 	StartLevel startLevel;
 	int level;
 	JarLoadMethod method;
+	List<URL> clsUrlList = null;
 	
 	BundleLoader(BundleContext context, File jarFile, StartLevel startLevel, int level, JarLoadMethod method) {
 		this.context = context;
@@ -36,6 +39,15 @@ class BundleLoader {
 		this.startLevel = startLevel;
 		this.level = level;
 		this.method = method;
+	}
+	
+	BundleLoader(BundleContext context, File jarFile, StartLevel startLevel, int level, JarLoadMethod method, List<URL> clsUrlList) {
+		this.context = context;
+		this.jarFile = jarFile;
+		this.startLevel = startLevel;
+		this.level = level;
+		this.method = method;
+		this.clsUrlList = clsUrlList;
 	}
 }
 

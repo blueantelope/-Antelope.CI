@@ -127,7 +127,7 @@ public class ResourceUtil {
      * 由jar资源reader读取资源文件
      */
     private static JarBusProperty readJarBus(JarResourceReader reader) throws CIBusException {
-    		reader.addResource(BUS_PROPS);
+    	reader.addResource(BUS_PROPS);
 		JarBusProperty busProperty = new JarBusProperty();
 		busProperty.setLoad(reader.getString(Constants.JAR_LOAD));
 		busProperty.setStartLevel(reader.getInt(Constants.JAR_START_LEVEL));
