@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="bus.log.service" immediate="true">
+	<implementation class="com.antelope.ci.bus.logger.service.BusLogServiceImpl" />
+	<property name="service.description" value="service of bus log" />
+	<property name="service.vendor" value="blueantelope" />
+	<service>
+		<provide interface="com.antelope.ci.bus.logger.service.BusLogService" />
+	</service>
+</component>

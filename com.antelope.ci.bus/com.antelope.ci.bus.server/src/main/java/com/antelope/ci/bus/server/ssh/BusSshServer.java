@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server;
+package com.antelope.ci.bus.server.ssh;
 
 import java.io.IOException;
 
@@ -26,15 +26,21 @@ import org.apache.sshd.server.shell.ProcessShellFactory;
  * @Date	 2013-8-7		上午11:23:03 
  */
 public class BusSshServer {
-	private SshServer sshd;
+	private final static String KYE_NAME = "bus_key.ser";
+	private SshServer sshServer;
+	private int port;					// server提供的端口
+	
+	public void setPort(int port) {
+		this.port = port;
+	}
 	
 	public void start() throws IOException {
-		SshServer sshd = SshServer.setUpDefaultServer();
-		sshd.setPort(9022);
-		sshd.setKeyPairProvider(new SimpleGeneratorHostKeyProvider("key.ser"));
-		sshd.setShellFactory(new ProcessShellFactory());
-		sshd.setCommandFactory(new ScpCommandFactory());
-		sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
+		sshServer = SshServer.setUpDefaultServer();
+		sshServer.setPort(port);
+		sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(KYE_NAME));
+		sshServer.setShellFactory(new ProcessShellFactory());
+		sshServer.setCommandFactory(new ScpCommandFactory());
+		sshServer.setPasswordAuthenticator(new PasswordAuthenticator() {
 			@Override
 			public boolean authenticate(String username, String password,
 					ServerSession session) {
@@ -43,14 +49,14 @@ public class BusSshServer {
 			
 		});
 		
-		sshd.start();
+		sshServer.start();
 		System.out.println("ssh server startup");
 	}
 	
 	public void stop() {
-		if (sshd != null) {
+		if (sshServer != null) {
 			try {
-				sshd.stop(false);
+				sshServer.stop(false);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

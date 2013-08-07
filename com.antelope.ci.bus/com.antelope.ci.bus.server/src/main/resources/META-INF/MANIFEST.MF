@@ -4,7 +4,8 @@ Bundle-Name: CI Bus Server
 Bundle-ManifestVersion: 2
 Import-Package: org.apache.log4j;version="1.2.16",
   org.osgi.framework,
-  com.antelope.ci.bus.common;version="0.1.0"
+  com.antelope.ci.bus.common;version="0.1.0",
+  com.antelope.ci.bus.logger.service,
   org.apache.sshd, org.apache.sshd.common, org.apache.sshd.server,
   org.apache.sshd.server.command, org.apache.sshd.common.keyprovider,
   javax.crypto, javax.crypto.spec, org.xml.sax, org.xml.sax.helpers, org.xml.sax.ext,

@@ -8,14 +8,17 @@
 
 package com.antelope.ci.bus.logger;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 
-import com.antelope.ci.bus.common.Constants;
-import com.antelope.ci.bus.common.FileUtil;
+import com.antelope.ci.bus.logger.service.BusLogService;
+import com.antelope.ci.bus.logger.service.BusLogServiceImpl;
 
 
 /**
@@ -26,8 +29,10 @@ import com.antelope.ci.bus.common.FileUtil;
  * @version  0.1
  * @Date	 2013-7-31		上午10:56:57 
  */
-public class BusLogger implements BundleActivator {
-	private static boolean isStart = false;					// 日志系统是否启动
+public class BusLogger implements BundleActivator, ServiceListener {
+	private BundleContext m_context;
+	private BusLogService logService;				// 日志对外服务
+	
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -35,17 +40,9 @@ public class BusLogger implements BundleActivator {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		System.out.println("Start Logger for @Antelope CI Bus");
-		String log_cnf = System.getProperty(Constants.LOG_CNF);
-		if (FileUtil.existFile(log_cnf)) {
-			System.out.println("use define log");
-			PropertyConfigurator.configure(log_cnf);
-		} else {
-			PropertyConfigurator.configure(BusLogger.class.getResource("/log4j.properties"));
-		}
-		Logger log = Logger.getLogger(BusLogger.class);
-		log.info("Welcome to Logger World!");
-		isStart = true;
+		m_context = context;
+		addService();
+		context.addServiceListener(this);
 	}
 
 	/**
@@ -55,9 +52,48 @@ public class BusLogger implements BundleActivator {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		context.removeServiceListener(this);
+		clearService();
+	}
+	
+	/*
+	 * 增加对外service
+	 */
+	private void addService() {
+		if (logService == null) {
+			String clazz = BusLogService.class.getName();
+			logService = new BusLogServiceImpl();
+			Dictionary<String, ?> properties = new Hashtable();
+			m_context.registerService(clazz, logService, properties);
+		}
+	}
+	
+	/*
+	 * 清除对外service
+	 */
+	private void clearService() {
 		LogManager.resetConfiguration();			// 关闭log4j日志服务
 	}
 	
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.ServiceListener#serviceChanged(org.osgi.framework.ServiceEvent)
+	 */
+	@Override
+	public void serviceChanged(ServiceEvent event)  {
+        String[] objectClass = (String[]) event.getServiceReference().getProperty("objectClass");
+        if (event.getType() == ServiceEvent.REGISTERED)  {
+            System.out.println("Bus Logger : Service of type " + objectClass[0] + " registered.");
+            addService();
+        }  else if (event.getType() == ServiceEvent.UNREGISTERING) {
+            System.out.println("Bus Logger : Service of type " + objectClass[0] + " unregistered.");
+            clearService();
+        } else if (event.getType() == ServiceEvent.MODIFIED)  {
+            System.out.println("Bus Logger: Service of type " + objectClass[0] + " modified.");
+            clearService();
+            addService();
+        }
+    }
 }
 
