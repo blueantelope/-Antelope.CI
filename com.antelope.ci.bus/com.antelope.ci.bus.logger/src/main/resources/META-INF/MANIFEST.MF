@@ -6,4 +6,4 @@ Import-Package: org.apache.log4j;version="1.2.16",
   org.osgi.framework,
   com.antelope.ci.bus.common;version="0.1.0"
 Bundle-SymbolicName: com.antelope.ci.bus.logger
-Bundle-Activator: com.antelope.ci.bus.logger.Logger
+Bundle-Activator: com.antelope.ci.bus.logger.BusLogger

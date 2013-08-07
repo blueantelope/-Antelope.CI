@@ -20,8 +20,10 @@ import org.osgi.framework.BundleContext;
  * @version  0.1
  * @Date	 2013-7-30		下午11:23:33 
  */
-public class Server implements BundleActivator {
-	private static final Logger log = Logger.getLogger(Server.class);			// log4j
+public class BusServer implements BundleActivator {
+	private static final Logger log = Logger.getLogger(BusServer.class);			// log4j
+	
+	private BusSshServer sshServer;
 	
 	/**
 	 * 
@@ -31,7 +33,8 @@ public class Server implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		log.info("Bus Server Start...");
-		
+		sshServer = new BusSshServer();
+		sshServer.start();
 	}
 
 	/**
@@ -41,9 +44,7 @@ public class Server implements BundleActivator {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		
-		// TODO Auto-generated method stub
-		
+		sshServer.stop();
 	}
 
 }

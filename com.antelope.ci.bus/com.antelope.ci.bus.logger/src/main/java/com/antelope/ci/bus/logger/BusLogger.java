@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.logger;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -24,7 +26,8 @@ import com.antelope.ci.bus.common.FileUtil;
  * @version  0.1
  * @Date	 2013-7-31		上午10:56:57 
  */
-public class Logger implements BundleActivator {
+public class BusLogger implements BundleActivator {
+	private static boolean isStart = false;					// 日志系统是否启动
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -34,23 +37,27 @@ public class Logger implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Start Logger for @Antelope CI Bus");
 		String log_cnf = System.getProperty(Constants.LOG_CNF);
-		System.out.println(log_cnf);
 		if (FileUtil.existFile(log_cnf)) {
 			System.out.println("use define log");
 			PropertyConfigurator.configure(log_cnf);
 		} else {
-			PropertyConfigurator.configure(Logger.class.getResource("/log4j.properties"));
+			PropertyConfigurator.configure(BusLogger.class.getResource("/log4j.properties"));
 		}
-		org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Logger.class);
+		Logger log = Logger.getLogger(BusLogger.class);
 		log.info("Welcome to Logger World!");
+		isStart = true;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		
-		// TODO Auto-generated method stub
-		
+		LogManager.resetConfiguration();			// 关闭log4j日志服务
 	}
+	
 
 }
 
