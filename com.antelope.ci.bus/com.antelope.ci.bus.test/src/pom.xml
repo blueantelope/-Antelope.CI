@@ -12,10 +12,10 @@
 			<artifactId>main</artifactId>
 			<version>4.2.1</version>
 			<scope>system</scope>
-			<!--  
-			<systemPath>d:/data/git/Antelope CI/com.antelope.ci.bus/com.antelope.ci.bus.test/bin/felix.jar</systemPath>
-			-->
+			<systemPath>d:/data/git/@Antelope.CI/com.antelope.ci.bus/com.antelope.ci.bus.test/bin/felix.jar</systemPath>
+			<!--
 			<systemPath>/data/software/eclipse/workspace/@Antelope.CI/com.antelope.ci.bus/com.antelope.ci.bus.test/bin/felix.jar</systemPath>
+			-->
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

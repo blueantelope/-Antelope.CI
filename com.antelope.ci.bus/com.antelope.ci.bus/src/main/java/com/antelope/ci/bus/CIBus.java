@@ -401,11 +401,11 @@ public class CIBus {
 				framework.init();
 				runSystem();			// 启动system bundle
 				FrameworkEvent event;
-				do {
-					framework.start();
-					event = framework.waitForStop(0);
-				} while (event.getType() == FrameworkEvent.STOPPED_UPDATE); 
-				System.exit(0);
+				framework.start();
+//				do {
+//					event = framework.waitForStop(0);
+//				} while (event.getType() == FrameworkEvent.STOPPED_UPDATE); 
+//				System.exit(0);
 			} catch (Exception e) {
 				throw new CIBusException("", e);
 			}

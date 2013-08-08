@@ -16,7 +16,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
-
 import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.logger.service.BusLogServiceImpl;
 
@@ -41,8 +40,8 @@ public class BusLogger implements BundleActivator, ServiceListener {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_context = context;
-		addService();
-		context.addServiceListener(this);
+//		addService();
+//		context.addServiceListener(this);
 	}
 
 	/**
@@ -52,8 +51,8 @@ public class BusLogger implements BundleActivator, ServiceListener {
 	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		context.removeServiceListener(this);
-		clearService();
+//		context.removeServiceListener(this);
+//		clearService();
 	}
 	
 	/*
@@ -83,16 +82,12 @@ public class BusLogger implements BundleActivator, ServiceListener {
 	@Override
 	public void serviceChanged(ServiceEvent event)  {
         String[] objectClass = (String[]) event.getServiceReference().getProperty("objectClass");
-        if (event.getType() == ServiceEvent.REGISTERED)  {
+        if (event.getType() == ServiceEvent.REGISTERED) {
             System.out.println("Bus Logger : Service of type " + objectClass[0] + " registered.");
-            addService();
         }  else if (event.getType() == ServiceEvent.UNREGISTERING) {
             System.out.println("Bus Logger : Service of type " + objectClass[0] + " unregistered.");
-            clearService();
-        } else if (event.getType() == ServiceEvent.MODIFIED)  {
+        } else if (event.getType() == ServiceEvent.MODIFIED) {
             System.out.println("Bus Logger: Service of type " + objectClass[0] + " modified.");
-            clearService();
-            addService();
         }
     }
 }
