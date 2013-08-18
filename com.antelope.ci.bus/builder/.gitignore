@@ -1,4 +1,6 @@
-cibus
-src
+app
+source
+target
 *.class
 *.java
+*.jar

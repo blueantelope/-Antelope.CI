@@ -8,9 +8,6 @@
 
 package com.antelope.ci.bus.logger.service;
 
-import org.apache.felix.ipojo.annotations.Component;
-import org.apache.felix.ipojo.annotations.Instantiate;
-import org.apache.felix.ipojo.annotations.Provides;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -25,12 +22,8 @@ import com.antelope.ci.bus.common.FileUtil;
  * @version  0.1
  * @Date	 2013-8-7		下午4:39:44 
  */
-@Component
-@Instantiate
-@Provides(specifications={BusLogService.class}, strategy="SERVICE")
 public class BusLogServiceImpl implements BusLogService {
 	private static Logger log4j;
-	private static boolean isStart = false;					// 日志系统是否启动
 	
 	/**
 	 * 初始化log4j
@@ -53,10 +46,8 @@ public class BusLogServiceImpl implements BusLogService {
 	 */
 	@Override
 	public Logger getLog4j(Class clazz) {
-		if (isStart)
-			return Logger.getLogger(clazz);
+		return Logger.getLogger(clazz);
 		
-		return null;
 	}
 }
 
