@@ -5,22 +5,50 @@
 	<target name="build" depends="init">
 		
 	</target>
+	
+	<target name="compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="depends-unix">
+		<exec executable="mvn">
+			<arg line="-f ${mvn.bus.depends}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="depends-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${mvn.bus.depends}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
 
 	<target name="init" depends="clean">
-		<mkdir dir="${src.root}" />
-		<mkdir dir="${app.root}" />
-		<mkdir dir="${app.bin}" />
-		<mkdir dir="${app.etc}" />
-		<mkdir dir="${app.lib}" />
-		<mkdir dir="${app.lib.ext}" />
-		<mkdir dir="${app.plugin}" />
-		<mkdir dir="${app.system}" />
-		<mkdir dir="${app.system.ext}" />
+		<mkdir dir="${app.bus.root}" />
+		<mkdir dir="${app.bus.bin}" />
+		<mkdir dir="${app.bus.etc}" />
+		<mkdir dir="${app.bus.system}" />
+		<mkdir dir="${app.bus.system.ext}" />
+		<mkdir dir="${app.bus.lib}" />
+		<mkdir dir="${app.bus.lib.ext}" />
+		<mkdir dir="${app.bus.plugin}" />
+		<mkdir dir="${src.bus.root}" />
 	</target>
 
 	<target name="clean">
-		<delete dir="${src.root}" />
-		<delete dir="${app.root}" />
+		<delete dir="${app.bus.root}" />
+		<delete dir="${src.bus.root}" />
+		<delete dir="${target.root}" />
 	</target>
 
 </project>

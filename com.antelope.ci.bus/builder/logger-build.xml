@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant build for logger" basedir="." default="build">
+<project name="ant build for logger" basedir="." default="build-unix">
 	<property file="build.properties" />
 
-	<target name="build" depends="init, depends, compile, common.compile, bus.compile">
+	<target name="build-unix" depends="init, depends-unix, compile-unix, common.compile-unix, bus.compile-unix, make">
+	</target>
 	
+	<target name="build-win" depends="init, depends-win, compile-win, common.compile-win, bus.compile-win, make">
+	</target>
+	
+	<target name="make">
+		<copy file="${prj.common.jar}" todir="${app.logger.lib}" />
+		<copy file="${prj.bus.jar}" todir="${app.logger.lib}" />
+		<copy file="${prj.logger.jar}" todir="${app.logger.system.ext}" />
 		<copy todir="${app.logger.lib}">
 			<fileset dir="${target.depends}">
 				<include name="org.apache.felix.framework-*.jar" />
@@ -22,36 +30,72 @@
 			<fileset dir="${prj.bus.etc}" />
 		</copy>
 		
-		<copy file="${script.start}" todir="${app.logger.bin}" />
+		<copy todir="${app.logger.bin}">
+			<fileset dir="${script.root}" />
+		</copy>
 	</target>
 
 
-	<target name="common.compile">
+	<target name="common.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.common.pom}" />
 			<arg line="install" />
 		</exec>
-		<copy file="${prj.common.jar}" todir="${app.logger.lib}" />
+	</target>
+	
+	<target name="common.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="install" />
+		</exec>
 	</target>
 
-	<target name="bus.compile">
+	<target name="bus.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.bus.pom}" />
 			<arg line="install" />
 		</exec>
-		<copy file="${prj.bus.jar}" todir="${app.logger.lib}" />
+	</target>
+	
+	<target name="bus.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.bus.pom}" />
+			<arg line="install" />
+		</exec>
 	</target>
 
-	<target name="compile">
+	<target name="compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.logger.pom}" />
 			<arg line="install" />
 		</exec>
-		<copy file="${prj.logger.jar}" todir="${app.logger.system.ext}" />
+	</target>
+	
+	<target name="compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install" />
+		</exec>
 	</target>
 
-	<target name="depends">
+	<target name="depends-unix">
 		<exec executable="mvn">
+			<arg line="-f ${mvn.logger.depends}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="depends-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
 			<arg line="-f ${mvn.logger.depends}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />

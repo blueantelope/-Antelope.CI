@@ -19,6 +19,6 @@ import org.apache.log4j.Logger;
  * @Date	 2013-8-8		下午4:09:09 
  */
 public interface TestLogService {
-	public Logger getLot4j(Class clazz);
+	public Logger getLog4j(Class clazz);
 }
 

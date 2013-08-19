@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 public class TestLogServiceImpl implements TestLogService {
 
 	@Override
-	public Logger getLot4j(Class clazz) {
+	public Logger getLog4j(Class clazz) {
 		return Logger.getLogger(clazz);
 	}
 
