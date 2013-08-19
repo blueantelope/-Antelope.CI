@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	build script of ant
+	blueantelope blueantelope@gmail.com
+	2013-08-19 
+==================================================
+
+
+==================================================
+-->
+<project name="all build ant script" basedir="." default="build">
+	<property file="build.properties" />
+
+	<target name="build" depends="init">
+		
+	</target>
+	
+
+	<target name="init" depends="clean">
+		<mkdir dir="${app.root}" />
+		<mkdir dir="${src.root}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${app.root}" />
+		<delete dir="${src.root}" />
+		<delete dir="${target.root}" />
+	</target>
+
+</project>

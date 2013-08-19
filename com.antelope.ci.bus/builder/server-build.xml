@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant build for server" basedir="." default="build-unix">
+	<property file="build.properties" />
+
+	<target name="build-unix" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="server.depends-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-unix" />
+		<antcall target="make" /> 
+	</target>
+	
+	<target name="build-win" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="server.depends-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win" />
+		<antcall target="make" />
+	</target>
+	
+	<target name="make">
+		<copy file="${prj.common.jar}" todir="${app.server.lib}" />
+		<copy file="${prj.bus.jar}" todir="${app.server.lib}" />
+		<copy file="${prj.logger.jar}" todir="${app.server.system.ext}" />
+		<copy file="${prj.server.jar}" todir="${app.server.system.ext}" />
+		<copy todir="${app.server.lib}">
+			<fileset dir="${prj.server.depends}">
+				<include name="org.apache.felix.framework-*.jar" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${app.logger.system}">
+			<fileset dir="${target.depends}">
+				<include name="org.apache.felix.bundlerepository--*.jar" />
+				<include name="org.apache.felix.gogo*.jar" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${app.server.system}">
+			<fileset dir="${prj.server.depends}">
+				<include name="*.jar" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${app.server.etc}">
+			<fileset dir="${prj.bus.etc}" />
+		</copy>
+		
+		<copy todir="${app.server.bin}">
+			<fileset dir="${script.root}" />
+		</copy>
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="${app.server.root}" />
+		<mkdir dir="${app.server.bin}" />
+		<mkdir dir="${app.server.etc}" />
+		<mkdir dir="${app.server.system}" />
+		<mkdir dir="${app.server.system.ext}" />
+		<mkdir dir="${app.server.lib}" />
+		<mkdir dir="${app.server.lib.ext}" />
+		<mkdir dir="${app.server.plugin}" />
+		<mkdir dir="${src.server.root}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${app.server.root}" />
+		<delete dir="${src.server.root}" />
+	</target>
+</project>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	invoke maven script of ant
+	blueantelope blueantelope@gmail.com
+	2013-08-19 
+==================================================
+
+
+==================================================
+-->
+<project name="maven script" basedir=".">
+	<property file="build.properties" />
+	
+	<target name="common.compile-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="common.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="bus.compile-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.bus.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="bus.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.bus.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="server.compile-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="server.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="server.depends-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="server.depends-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="logger.compile-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="logger.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="logger.depends-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="logger.depends-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="depends-unix">
+		<exec executable="mvn">
+			<arg line="-f ${depends.pom}" />
+			<arg line="dependency:copy-dependencies" />
+		</exec>
+	</target>
+	
+	<target name="depends-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${depends.pom}" />
+			<arg line="dependency:copy-dependencies" />
+		</exec>
+	</target>
+</project>
