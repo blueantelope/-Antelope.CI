@@ -21,7 +21,7 @@
 	</target>
 	
 	<target name="make">
-		<copy file="${prj.common.jar}" todir="${app.logger.lib}" />
+		<copy file="${prj.common.jar}" todir="${app.logger.lib.ext}" />
 		<copy file="${prj.bus.jar}" todir="${app.logger.lib}" />
 		<copy file="${prj.logger.jar}" todir="${app.logger.system.ext}" />
 		<copy todir="${app.logger.lib}">

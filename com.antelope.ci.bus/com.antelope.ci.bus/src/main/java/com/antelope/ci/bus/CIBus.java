@@ -254,7 +254,7 @@ public class CIBus {
 	 * 初始化开发模式
 	 */
 	private void initDevMode() {
-		new File(cache_dir).deleteOnExit();
+		FileUtil.delFolder(cache_dir);
 	}
 	
 	/*
@@ -268,7 +268,7 @@ public class CIBus {
 	 * 清除开发模式
 	 */
 	private void destroyDevMode() {
-		new File(cache_dir).deleteOnExit();
+		FileUtil.delFolder(cache_dir);
 	}
 	
 	/*
@@ -399,9 +399,10 @@ public class CIBus {
 			framework =  factory.newFramework(parameters);
 			try {
 				framework.init();
-				runSystem();			// 启动system bundle
 				FrameworkEvent event;
+				runSystem();			// 启动system bundle
 				framework.start();
+				runSystemExt();		// 启动system扩展bundle
 //				do {
 //					event = framework.waitForStop(0);
 //				} while (event.getType() == FrameworkEvent.STOPPED_UPDATE); 
@@ -416,44 +417,61 @@ public class CIBus {
 	 * 运行系统osgi包
 	 */
 	private void runSystem() {
+		runBundle(system_dir, 1);
+	}
+	
+	/*
+	 * 运行系统扩展osgi包
+	 */
+	private void runSystemExt() {
+		runBundle(system_ext_dir, 2);
+	}
+	
+	/*
+	 * 运行osgi bundle
+	 * 分为系统包和系统扩展包
+	 * 系统扩展包可指定classloader
+	 */
+	private void runBundle(String dir, int type) {
 		if (null != framework) {
 			BundleContext context = framework.getBundleContext();
 			StartLevel startLevel = (StartLevel) context.getService(
 	                context.getServiceReference(org.osgi.service.startlevel.StartLevel.class.getName()));
 			int level = startLevel.getInitialBundleStartLevel();
 			List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
-			// 读取系统bundle包
-			File[] systemFiles = new File(system_dir).listFiles();
-			if (null != systemFiles) {
-				List<File> systemJarList = new ArrayList<File>();
-				for (File systemFile : systemFiles) {
-					if (systemFile.getName().endsWith(".jar")) {
-						BundleLoader loader = new BundleLoader(context, systemFile, startLevel, level, JarLoadMethod.START);
-						loaderList.add(loader);
-					}
-				}
-				
-			}
 			// 读取系统扩展bundle包
-			File[] systemExtFiles = new File(system_ext_dir).listFiles();
-			if (null != systemExtFiles) {
-				for (File systemExtFile : systemExtFiles) {
-					if (systemExtFile.getName().endsWith(".jar")) {
-						try {
-							JarBusProperty busProperty = ResourceUtil.readJarBus(systemExtFile);
-							BundleLoader loader = new BundleLoader(
-									context, 
-									systemExtFile, 
-									startLevel, 
-									busProperty.getStartLevel(), 
-									busProperty.getLoad(),
-									clsUrlList
-									);
-							loaderList.add(loader);
-						} catch (Exception e) {
-							e.printStackTrace();
+			File[] files = new File(dir).listFiles();
+			if (files != null) {
+				switch (type) {
+					case 1:					// 系统包
+						List<File> systemJarList = new ArrayList<File>();
+						for (File systemFile : files) {
+							if (systemFile.getName().endsWith(".jar")) {
+								BundleLoader loader = new BundleLoader(context, systemFile, startLevel, level, JarLoadMethod.START);
+								loaderList.add(loader);
+							}
 						}
-					}
+						break;
+					case 2:					// 系统扩展包
+						for (File systemExtFile : files) {
+							if (systemExtFile.getName().endsWith(".jar")) {
+								try {
+									JarBusProperty busProperty = ResourceUtil.readJarBus(systemExtFile);
+									BundleLoader loader = new BundleLoader(
+											context, 
+											systemExtFile, 
+											startLevel, 
+											busProperty.getStartLevel(), 
+											busProperty.getLoad(),
+											FileUtil.getAllJar(lib_ext_dir)
+									);
+									loaderList.add(loader);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						break;
 				}
 			}
 			// 加载bundle包
