@@ -37,7 +37,7 @@
 			</fileset>
 		</copy>
 		
-		<copy todir="${app.logger.system}">
+		<copy todir="${app.logger.lib.ext}">
 			<fileset dir="${prj.logger.depends}">
 				<include name="log4j*.jar" />
 			</fileset>

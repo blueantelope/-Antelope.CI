@@ -28,15 +28,15 @@ import com.antelope.ci.bus.server.ssh.BusSshServer;
  */
 public class BusServer implements BundleActivator, ServiceListener {
 	private BundleContext m_context;
-	private static BusLogService logService;
-	private ServiceReference log_ref;
+	private static ServiceReference log_ref;
 	private static Logger log4j;			// log4j
 	private BusSshServer sshServer;
-	private static final String logService_clsname = "com.antelope.ci.bus.logger.service.BusLogService";
+	private static final String LOGSERVICE_CLSNAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	
-	public static BusLogService getLogService() {
-		return logService;
+	public static Logger getLog4j() {
+		return log4j;
 	}
+	
 	
 	/**
 	 * 
@@ -45,8 +45,8 @@ public class BusServer implements BundleActivator, ServiceListener {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		log4j  = LogService.getLogger(BusServer.class);
-		log4j.info("启动server");
+		m_context = context;
+		context.addServiceListener(this);
 		sshServer = new BusSshServer();
 		sshServer.start();
 	}
@@ -59,24 +59,22 @@ public class BusServer implements BundleActivator, ServiceListener {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		sshServer.stop();
+		uninstallLogService();
 	}
 	
-	private void initLogService() {
-		log_ref = m_context.getServiceReference("com.antelope.ci.bus.logger.service.BusLogService");
-		System.out.println("日志系统：" + log_ref);
-        if  (log_ref != null) {
-        	logService = m_context.getService(log_ref);
-        	log4j = logService.getLog4j(BusServer.class);
-        }
+	private void installLogService() {
+		log_ref = m_context.getServiceReference(LOGSERVICE_CLSNAME);
+		BusLogService logService = (BusLogService) log_ref;
+		log4j = logService.getLog4j(BusServer.class);
+		log4j.info("得到Bus Log Service");
 	}
 	
-	public void removeLogService() {
+	private void uninstallLogService() {
 		if (log_ref != null)
 			m_context.ungetService(log_ref);
-		log_ref = null;
-		logService =  null;
 		log4j = null;
 	}
+	
 	
 	/**
 	 * 
@@ -86,12 +84,20 @@ public class BusServer implements BundleActivator, ServiceListener {
 	@Override
 	public void serviceChanged(ServiceEvent event)  {
         String[] objectClass = (String[]) event.getServiceReference().getProperty("objectClass");
+        String service_clsname = objectClass[0];
         if (event.getType() == ServiceEvent.REGISTERED) {
-        	System.out.println("Bus Server : Service of type " + objectClass[0] + " registered.");
+        	if (service_clsname.equals(LOGSERVICE_CLSNAME)) {
+        		installLogService();
+        	}
         }  else if (event.getType() == ServiceEvent.UNREGISTERING) {
-            System.out.println("Bus Server : Service of type " + objectClass[0] + " unregistered.");
+        	if (service_clsname.equals(LOGSERVICE_CLSNAME)) {
+        		uninstallLogService();
+        	}
         } else if (event.getType() == ServiceEvent.MODIFIED) {
-            System.out.println("Bus Server: Service of type " + objectClass[0] + " modified.");
+        	if (service_clsname.equals(LOGSERVICE_CLSNAME)) {
+        		uninstallLogService();
+        		installLogService();
+        	}
         }
     }
 

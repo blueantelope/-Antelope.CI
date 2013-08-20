@@ -31,14 +31,14 @@
 			</fileset>
 		</copy>
 		
-		<copy todir="${app.logger.system}">
+		<copy todir="${app.server.system}">
 			<fileset dir="${target.depends}">
 				<include name="org.apache.felix.bundlerepository--*.jar" />
 				<include name="org.apache.felix.gogo*.jar" />
 			</fileset>
 		</copy>
 		
-		<copy todir="${app.server.system}">
+		<copy todir="${app.server.lib.ext}">
 			<fileset dir="${prj.server.depends}">
 				<include name="*.jar" />
 			</fileset>

@@ -40,7 +40,7 @@ public class BusLogger implements BundleActivator, ServiceListener {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_context = context;
-//		addService();
+		addService();
 //		context.addServiceListener(this);
 	}
 
