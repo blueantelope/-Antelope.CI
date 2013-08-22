@@ -80,6 +80,7 @@ public class BundleLoaderThread extends Thread {
 				List<URL> bundleClsUrl = new ArrayList<URL>();
 				bundleClsUrl.addAll(loader.clsUrlList);
 				bundleClsUrl.add(loader.jarFile.toURI().toURL());
+//				Util.loadJarToBundle(bundle, bundleClsUrl);
 				URLClassLoader bundleClassLoader = new URLClassLoader(bundleClsUrl.toArray(new URL[bundleClsUrl.size()]));
 				BundleActivator activator = (BundleActivator) bundleClassLoader.loadClass(className).newInstance();
 				loader.startLevel.setBundleStartLevel(bundle, loader.level);
