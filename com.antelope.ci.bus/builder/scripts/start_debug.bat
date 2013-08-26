@@ -4,7 +4,8 @@ cd..
 set APP_HOME=%CD%
 cd %APP_HOME%/bin 
 set RUN_NAME="com.antelope.ci.bus"
-set JAVA_OPTS="-Dfile.encoding=utf-8 -D$RUN_NAME -server"
+set JAVA_OPTS="-Dfile.encoding=utf-8 -D$RUN_NAME -server -ea"
+;set JAVA_OPTS="-Dfile.encoding=utf-8 -D$RUN_NAME -server -ea -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8765"
 
 set CLSPATH=.
 FOR %%c IN (%APP_HOME%\lib\*.jar) do (

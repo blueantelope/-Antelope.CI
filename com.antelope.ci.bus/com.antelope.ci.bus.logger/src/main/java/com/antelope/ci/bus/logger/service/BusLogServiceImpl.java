@@ -11,7 +11,7 @@ package com.antelope.ci.bus.logger.service;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import com.antelope.ci.bus.common.Constants;
+import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 
 
@@ -29,7 +29,7 @@ public class BusLogServiceImpl implements BusLogService {
 	 * 初始化log4j
 	 */
 	public BusLogServiceImpl() {
-		String log_cnf = System.getProperty(Constants.LOG_CNF);
+		String log_cnf = System.getProperty(BusConstants.LOG_CNF);
 		if (FileUtil.existFile(log_cnf)) {
 			PropertyConfigurator.configure(log_cnf);
 		} else {

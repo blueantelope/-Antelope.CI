@@ -63,6 +63,12 @@ public class MapToDictionary extends Dictionary
 
     public Object put(Object key, Object value)
     {
+    	// modify by blueantelope at 2013-08-26, support define parameters for ci bus
+    	if (key.toString().startsWith("bus.")) {
+    		m_map.put(key,  value);
+    		return value;
+    	}
+    	
         throw new UnsupportedOperationException();
     }
 

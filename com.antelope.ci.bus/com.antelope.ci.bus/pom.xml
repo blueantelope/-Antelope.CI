@@ -7,9 +7,14 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.framework</artifactId>
-			<version>4.2.1</version>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.common</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.framework</artifactId>
+			<version>0.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

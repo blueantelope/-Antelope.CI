@@ -16,7 +16,7 @@ package com.antelope.ci.bus.common;
  * @version  0.1
  * @Date	 2013-7-31		下午12:24:31 
  */
-public class Constants {
+public class BusConstants {
 	/* ci bus的根目录 */
 	public static final String BUS_HOME						= "antelope.ci.bus.home";
 	/* etc目录 */
@@ -41,5 +41,8 @@ public class Constants {
 	 */
 	public static final String JAR_LOAD						= "load";
 	public static final String JAR_START_LEVEL				= "start.level";
+	
+	/* CI BUS扩展jar集合，适用于bundle的Bundle-ClassPath参数 */
+	public static final String BUS_EXT_LIBS					= "bus.ext.libs";
 }
 

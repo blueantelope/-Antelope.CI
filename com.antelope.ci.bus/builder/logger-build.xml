@@ -4,29 +4,36 @@
 
 	<target name="build-unix" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="depends-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.depends-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends-unix" />
 		<antcall target="make" /> 
 	</target>
 	
 	<target name="build-win" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.depends-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
 		<antcall target="make" />
 	</target>
 	
 	<target name="make">
-		<copy file="${prj.common.jar}" todir="${app.logger.lib.ext}" />
-		<copy file="${prj.bus.jar}" todir="${app.logger.lib}" />
-		<copy file="${prj.logger.jar}" todir="${app.logger.system.ext}" />
 		<copy todir="${app.logger.lib}">
-			<fileset dir="${prj.logger.depends}">
-				<include name="org.apache.felix.framework-*.jar" />
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.framework-0.1.0.jar" />
+				<include name="com.antelope.ci.bus-0.1.0.jar" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${app.logger.lib.ext}">
+			<fileset dir="${target.depends}">
+				<include name="log4j*.jar" />
+				<include name="com.antelope.ci.bus.common-0.1.0.jar" />
 			</fileset>
 		</copy>
 		
@@ -37,11 +44,7 @@
 			</fileset>
 		</copy>
 		
-		<copy todir="${app.logger.lib.ext}">
-			<fileset dir="${prj.logger.depends}">
-				<include name="log4j*.jar" />
-			</fileset>
-		</copy>
+		<copy file="${prj.logger.jar}" todir="${app.logger.system.ext}" />
 		
 		<copy todir="${app.logger.etc}">
 			<fileset dir="${prj.bus.etc}" />

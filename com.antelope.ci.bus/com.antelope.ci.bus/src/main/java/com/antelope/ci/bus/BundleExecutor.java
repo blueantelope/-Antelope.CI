@@ -1,10 +1,10 @@
-// com.antelope.ci.bus.BundleStarterThread.java
+// com.antelope.ci.bus.BundleStarter.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
  * ------------------------------------------------------------------------
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
- */
+*/
 
 package com.antelope.ci.bus;
 
@@ -20,28 +20,31 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleException;
 
+import com.antelope.ci.bus.common.BusConstants;
+
+
 /**
  * TODO 描述
- * 
- * @author blueantelope
- * @version 0.1
- * @Date 2013-8-2 下午9:44:28
+ *
+ * @author   blueantelope
+ * @version  0.1
+ * @Date	 2013-8-26		下午2:07:03 
  */
-public class BundleLoaderThread extends Thread {
+class BundleExecutor {
 	private BundleLoader loader;
 
-	public BundleLoaderThread(BundleLoader loader) {
+	public BundleExecutor(BundleLoader loader) {
 		this.loader = loader;
 	}
 
 	/**
-	 * 
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Thread#run()
+	 * 执行bundle操作
+	 * 包括install和start
+	 * @param  
+	 * @return void
+	 * @throws
 	 */
-	@Override
-	public void run() {
+	public void execute() {
 		try {
 			switch (loader.method) {
 				case INSTALL:
@@ -49,11 +52,11 @@ public class BundleLoaderThread extends Thread {
 					break;
 				case START:
 					try {
-						if (loader.clsUrlList == null) {
-							startBundle();
-						} else {
-							StartByClassLoader();
+						Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
+						if (loader.clsUrlList != null) {
+							attachBundleClassUrl(bundle);
 						}
+						startBundle(bundle);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -67,8 +70,24 @@ public class BundleLoaderThread extends Thread {
 	}
 	
 	/*
+	 * 将lib_ext目录下的jar包附加到扩展bundle中
+	 * bundle启动时，自动将这些jar的路径加载进classpath
+	 */
+	private void attachBundleClassUrl(Bundle bundle) {
+		String ext_libs = "";
+		for (URL clsUrl : loader.clsUrlList) {
+			ext_libs += clsUrl+ ",";
+		}
+		if (!"".equals(ext_libs)) {
+			ext_libs = ext_libs.substring(0, ext_libs.length()-1);
+		}
+		bundle.getHeaders().put(BusConstants.BUS_EXT_LIBS, ext_libs);
+	}
+	
+	/*
 	 * 使用指定的classLoader来运行
 	 */
+	@Deprecated
 	private void StartByClassLoader() {
 		JarFile jar = null;
 		try {
@@ -85,8 +104,6 @@ public class BundleLoaderThread extends Thread {
 				BundleActivator activator = (BundleActivator) bundleClassLoader.loadClass(className).newInstance();
 				loader.startLevel.setBundleStartLevel(bundle, loader.level);
 				activator.start(loader.context);
-			} else {
-				startBundle();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -100,11 +117,10 @@ public class BundleLoaderThread extends Thread {
 	}
 	
 	/*
-	 * 启动运行bundle
+	 * 启动bundle
 	 */
-	private void startBundle() {
+	private void startBundle(Bundle bundle) {
 		try {
-			Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
 			loader.startLevel.setBundleStartLevel(bundle, loader.level);
 			bundle.start();
 		} catch (BundleException e) {
@@ -112,3 +128,4 @@ public class BundleLoaderThread extends Thread {
 		}
 	}
 }
+

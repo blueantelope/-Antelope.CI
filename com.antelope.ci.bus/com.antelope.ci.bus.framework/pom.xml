@@ -1,18 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.antelope.ci.bus.framework</groupId>
+	<groupId>com.antelope.ci.bus</groupId>
 	<artifactId>com.antelope.ci.bus.framework</artifactId>
 	<version>0.1.0</version>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
+	<name>Apache Felix Framework of com.antelope.ci.bus</name>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.common</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+	
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
 		</dependency>
 	</dependencies>
+	
+	<properties>
+    	<dollar>$</dollar>
+  	</properties>
 
 	<build>
 		<directory>target</directory>
@@ -27,7 +38,7 @@
 				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
-		<testResources>
+		<testResources>	
 			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>
@@ -48,37 +59,48 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.5</version>
+				<extensions>true</extensions>
 				<configuration>
-					<archive>
-						<manifestFile>
-							src/main/resources/META-INF/MANIFEST.MF
-						</manifestFile>
-						<manifestEntries>
-							<Implementation-Vendor>blueantelope</Implementation-Vendor>
-							<Specification-Vendor>blueantelope@gmail.com</Specification-Vendor>
-							<url>${project.url}</url>
-							<Built-Version>${project.version}</Built-Version>
-							<Built-Time>${maven.build.timestamp}</Built-Time>
-						</manifestEntries>
-					</archive>
+					<instructions>
+						<Bundle-SymbolicName>org.apache.felix.framework</Bundle-SymbolicName>
+						<Bundle-Name>Apache Felix Framework</Bundle-Name>
+						<Bundle-Description>OSGi R4 framework implementation.</Bundle-Description>
+						<Bundle-Vendor>The Apache Software Foundation</Bundle-Vendor>
+						<Bundle-Version>4.2.1</Bundle-Version>
+						<Export-Package>org.osgi.framework.*;-split-package:=merge-first,org.osgi.resource,org.osgi.service.*,org.osgi.util.tracker</Export-Package>
+						<Private-Package>org.apache.felix.framework.*</Private-Package>
+						<Import-Package>!*</Import-Package>
+					</instructions>
 				</configuration>
 			</plugin>
-
+			<!--
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
+				<groupId>org.apache.rat</groupId>
+				<artifactId>apache-rat-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>attach-sources</id>
+						<phase>verify</phase>
 						<goals>
-							<goal>jar</goal>
+							<goal>check</goal>
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<includes>
+						<include>src/**</include>
+					</includes>
+					<excludes>
+						<exclude>src/main/appended-resources/**</exclude>
+						<exclude>src/**/packageinfo</exclude>
+						<exclude>src/main/resources/META-INF/services/org.osgi.framework.launch.FrameworkFactory</exclude>
+						<exclude>src/main/resources/org/apache/felix/framework/Felix.properties</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
-
+			-->
 		</plugins>
 	</build>
 </project>

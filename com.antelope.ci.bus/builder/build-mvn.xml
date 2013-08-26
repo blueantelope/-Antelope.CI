@@ -11,6 +11,22 @@
 <project name="maven script" basedir=".">
 	<property file="build.properties" />
 	
+	<target name="framework.compile-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.framework.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="framework.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.framework.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
 	<target name="common.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.common.pom}" />

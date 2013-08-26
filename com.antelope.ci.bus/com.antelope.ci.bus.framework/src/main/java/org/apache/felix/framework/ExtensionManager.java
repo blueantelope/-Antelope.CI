@@ -19,8 +19,8 @@
 package org.apache.felix.framework;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -36,12 +36,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+import org.apache.felix.framework.cache.Content;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.framework.util.ImmutableList;
 import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.framework.util.Util;
 import org.apache.felix.framework.util.manifestparser.ManifestParser;
-import org.apache.felix.framework.cache.Content;
 import org.apache.felix.framework.util.manifestparser.R4Library;
 import org.apache.felix.framework.wiring.BundleCapabilityImpl;
 import org.apache.felix.framework.wiring.BundleWireImpl;
@@ -57,6 +58,8 @@ import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
+
+import com.antelope.ci.bus.common.DebugUtil;
 
 /**
  * The ExtensionManager class is used in several ways.
@@ -218,6 +221,7 @@ class ExtensionManager extends URLStreamHandler implements Content
         m_headerMap.put(FelixConstants.PROVIDE_CAPABILITY, syscaps);
         try
         {
+        	DebugUtil.assert_out("m_headerMap = " + m_headerMap);
             ManifestParser mp = new ManifestParser(
                 m_logger, m_configMap, m_systemBundleRevision, m_headerMap);
             List<BundleCapability> caps = aliasSymbolicName(mp.getCapabilities());
@@ -717,6 +721,7 @@ class ExtensionManager extends URLStreamHandler implements Content
         ExtensionManagerRevision(Felix felix)
         {
             super(felix, "0");
+            DebugUtil.assert_out("felix.version = " + (String)m_configMap.get(FelixConstants.FELIX_VERSION_PROPERTY));
             m_version = new Version((String)
                 m_configMap.get(FelixConstants.FELIX_VERSION_PROPERTY));
         }

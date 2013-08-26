@@ -28,7 +28,9 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.felix.framework.cache.Content;
+import org.apache.felix.framework.cache.URLContent;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.framework.util.SecureAction;
 import org.apache.felix.framework.util.Util;
@@ -45,6 +47,9 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Resource;
+
+import com.antelope.ci.bus.common.BusConstants;
+import com.antelope.ci.bus.common.DebugUtil;
 
 public class BundleRevisionImpl implements BundleRevision, Resource
 {
@@ -401,6 +406,16 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         // Find class path meta-data.
         String classPath = (String) ((BundleRevisionImpl) revision)
             .getHeaders().get(FelixConstants.BUNDLE_CLASSPATH);
+        // define by ci bus, modify by @blueantelope at 2013-08-26
+        String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
+        if (ext_libs != null) {
+        	if (classPath == null) {
+        		classPath =  ".," + ext_libs;
+        	} else {
+        		classPath += "," + ext_libs;
+        	}
+        	DebugUtil.assert_out("after bundle classapath = " + classPath);
+        }
         // Parse the class path into strings.
         List<String> classPathStrings = ManifestParser.parseDelimitedString(
             classPath, FelixConstants.CLASS_PATH_SEPARATOR);
@@ -418,6 +433,10 @@ public class BundleRevisionImpl implements BundleRevision, Resource
             classPathStrings.set(i, (classPathStrings.get(i).startsWith("/"))
                 ? classPathStrings.get(i).substring(1)
                 : classPathStrings.get(i));
+            
+            if (classPathStrings.get(i).startsWith("file:")) {
+            	localContentList.add(new URLContent(classPathStrings.get(i)));
+            }
 
             // Check for the bundle itself on the class path.
             if (classPathStrings.get(i).equals(FelixConstants.CLASS_PATH_DOT))

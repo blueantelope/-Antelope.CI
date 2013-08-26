@@ -129,8 +129,8 @@ public class ResourceUtil {
     private static JarBusProperty readJarBus(JarResourceReader reader) throws CIBusException {
     	reader.addResource(BUS_PROPS);
 		JarBusProperty busProperty = new JarBusProperty();
-		busProperty.setLoad(reader.getString(Constants.JAR_LOAD));
-		busProperty.setStartLevel(reader.getInt(Constants.JAR_START_LEVEL));
+		busProperty.setLoad(reader.getString(BusConstants.JAR_LOAD));
+		busProperty.setStartLevel(reader.getInt(BusConstants.JAR_START_LEVEL));
 		return busProperty;
     }
 }

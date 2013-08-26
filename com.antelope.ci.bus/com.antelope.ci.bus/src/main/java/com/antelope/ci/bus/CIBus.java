@@ -28,7 +28,7 @@ import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.launch.Framework;
 import org.osgi.service.startlevel.StartLevel;
 
-import com.antelope.ci.bus.common.Constants;
+import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.JarBusProperty;
 import com.antelope.ci.bus.common.JarLoadMethod;
@@ -232,22 +232,22 @@ public class CIBus {
 	 * 初始化目录
 	 */
 	private void initPath() {
-		System.setProperty(Constants.BUS_HOME , bus_home);
+		System.setProperty(BusConstants.BUS_HOME , bus_home);
 		etc_dir = bus_home + File.separator + "etc";
-		System.setProperty(Constants.ETC_DIR, etc_dir);
+		System.setProperty(BusConstants.ETC_DIR, etc_dir);
 		system_dir = bus_home +File.separator + "system";
-		System.setProperty(Constants.SYSTEM_DIR, system_dir);
+		System.setProperty(BusConstants.SYSTEM_DIR, system_dir);
 		system_ext_dir = system_dir +File.separator + "ext";
-		System.setProperty(Constants.SYSTEM_EXT_DIR, system_ext_dir);
+		System.setProperty(BusConstants.SYSTEM_EXT_DIR, system_ext_dir);
 		plugin_dir = bus_home +File.separator + "plugin";
-		System.setProperty(Constants.PLUGIN_DIR, plugin_dir);
+		System.setProperty(BusConstants.PLUGIN_DIR, plugin_dir);
 		lib_dir = bus_home +File.separator + "lib";
-		System.setProperty(Constants.LIB_DIR, lib_dir);
+		System.setProperty(BusConstants.LIB_DIR, lib_dir);
 		lib_ext_dir = lib_dir + File.separator + "ext";
-		System.setProperty(Constants.LOG_CNF, etc_dir + File.separator + "log.cfg"); 
+		System.setProperty(BusConstants.LOG_CNF, etc_dir + File.separator + "log.cfg"); 
 		etc_bus_cfg = etc_dir + File.separator + "bus.cfg";
 		cache_dir = bus_home + File.separator + ".cache";
-		System.setProperty(Constants.CACHE_DIR, cache_dir);
+		System.setProperty(BusConstants.CACHE_DIR, cache_dir);
 	}
 	
 	/*
@@ -476,7 +476,7 @@ public class CIBus {
 			}
 			// 加载bundle包
 			for (BundleLoader loader : loaderList) {
-				new BundleLoaderThread(loader).start();
+				new BundleExecutor(loader).execute();
 			}
 		}
 	}

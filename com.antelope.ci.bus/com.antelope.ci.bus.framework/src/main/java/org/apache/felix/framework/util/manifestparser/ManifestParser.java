@@ -35,6 +35,8 @@ import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
 
+import com.antelope.ci.bus.common.DebugUtil;
+
 public class ManifestParser
 {
     private final Logger m_logger;
@@ -724,6 +726,7 @@ public class ManifestParser
             for (String pkgName : clause.m_paths)
             {
                 // Verify that java.* packages are not exported.
+            	DebugUtil.assert_out("pkgName = " + pkgName);
                 if (pkgName.startsWith("java."))
                 {
                     throw new BundleException(
@@ -773,6 +776,7 @@ public class ManifestParser
                 // Convert version attribute to type Version.
                 clause.m_attrs.remove(Constants.PACKAGE_SPECIFICATION_VERSION);
                 v = (v == null) ? sv : v;
+                DebugUtil.assert_out("Bundle-Version = " + v);
                 clause.m_attrs.put(
                     Constants.VERSION_ATTRIBUTE,
                     Version.parseVersion(v.toString()));
