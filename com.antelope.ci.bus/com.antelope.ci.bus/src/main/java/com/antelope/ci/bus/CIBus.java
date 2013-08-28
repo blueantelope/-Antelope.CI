@@ -421,10 +421,11 @@ public class CIBus {
 	}
 	
 	/*
-	 * 运行系统扩展osgi包
+	 * 运行系统扩展bundle包
 	 */
 	private void runSystemExt() {
-		runBundle(system_ext_dir, 2);
+		runBundle(system_ext_dir, 2);			// 不带lib库
+		runBundle(system_ext_dir, 3);			// 带lib库支持
 	}
 	
 	/*
@@ -452,7 +453,7 @@ public class CIBus {
 							}
 						}
 						break;
-					case 2:					// 系统扩展包
+					case 2:					// 系统扩展包下无依赖库bundle
 						for (File systemExtFile : files) {
 							if (systemExtFile.getName().endsWith(".jar")) {
 								try {
@@ -472,6 +473,40 @@ public class CIBus {
 							}
 						}
 						break;
+					case 3:				// 系统扩展包下有依赖库，在系统扩展下以目录存在
+						for (File systemExtDir : files) {
+							List<URL> urlList = FileUtil.getAllJar(lib_ext_dir);
+							try {
+								JarBusProperty busProperty = null;
+								File extBundleFile = null;
+								if (systemExtDir.isDirectory()) {
+									for (File extBundle : systemExtDir.listFiles()) {
+										if (extBundle.isFile() && extBundle.getName().endsWith(".jar")) {
+											extBundleFile = extBundle;
+											busProperty = ResourceUtil.readJarBus(extBundle);
+											continue;
+										}
+										if (extBundle.isDirectory() && "lib".equalsIgnoreCase(extBundle.getName())) {
+											urlList.addAll(FileUtil.getAllJar(extBundle.getPath()));
+											continue;
+										}
+									}
+									if (extBundleFile != null && busProperty != null) {
+										BundleLoader loader = new BundleLoader(
+												context, 
+												extBundleFile, 
+												startLevel, 
+												busProperty.getStartLevel(), 
+												busProperty.getLoad(),
+												urlList
+										);
+										loaderList.add(loader);
+									}
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
 				}
 			}
 			// 加载bundle包

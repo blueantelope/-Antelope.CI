@@ -28,9 +28,9 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.framework</artifactId>
-			<version>4.2.1</version>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.server</artifactId>
+			<version>0.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -51,6 +51,16 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.gogo.shell</artifactId>
 			<version>0.10.0</version>
+		</dependency>
+				<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-core</artifactId>
+			<version>0.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-pam</artifactId>
+			<version>0.8.0</version>
 		</dependency>
 	</dependencies>
 </project>

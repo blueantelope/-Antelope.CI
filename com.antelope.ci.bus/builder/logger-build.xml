@@ -3,7 +3,6 @@
 	<property file="build.properties" />
 
 	<target name="build-unix" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="depends-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix" />
@@ -13,7 +12,6 @@
 	</target>
 	
 	<target name="build-win" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
@@ -39,12 +37,17 @@
 		
 		<copy todir="${app.logger.system}">
 			<fileset dir="${target.depends}">
-				<include name="org.apache.felix.bundlerepository--*.jar" />
+				<include name="org.apache.felix.bundlerepository*.jar" />
 				<include name="org.apache.felix.gogo*.jar" />
 			</fileset>
 		</copy>
 		
-		<copy file="${prj.logger.jar}" todir="${app.logger.system.ext}" />
+		<copy todir="${app.logger.system.ext}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.logger*.jar" />
+			</fileset>
+		</copy>
+				
 		
 		<copy todir="${app.logger.etc}">
 			<fileset dir="${prj.bus.etc}" />
@@ -61,6 +64,8 @@
 		<mkdir dir="${app.logger.etc}" />
 		<mkdir dir="${app.logger.system}" />
 		<mkdir dir="${app.logger.system.ext}" />
+		<mkdir dir="${app.logger.bundle}" />
+		<mkdir dir="${app.logger.bundle.lib}" />
 		<mkdir dir="${app.logger.lib}" />
 		<mkdir dir="${app.logger.lib.ext}" />
 		<mkdir dir="${app.logger.plugin}" />

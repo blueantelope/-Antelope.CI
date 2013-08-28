@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Version: 0.1.0
-Bundle-Name: CI Bus Server
+Bundle-Name: Antelope CI Bus Server
 Bundle-ManifestVersion: 2
-Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service
+Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, javax.crypto
 Bundle-SymbolicName: com.antelope.ci.bus.server
 Bundle-Activator: com.antelope.ci.bus.server.BusServer
