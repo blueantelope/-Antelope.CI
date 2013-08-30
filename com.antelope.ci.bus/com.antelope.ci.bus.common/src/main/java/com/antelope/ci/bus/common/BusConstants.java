@@ -44,5 +44,7 @@ public class BusConstants {
 	
 	/* CI BUS扩展jar集合，适用于bundle的Bundle-ClassPath参数 */
 	public static final String BUS_EXT_LIBS					= "bus.ext.libs";
+	/* CI BUS bundle自定义属性 */
+	public static final String BUS_BUNDLE_PROPS			= "bus.bundle.props";
 }
 

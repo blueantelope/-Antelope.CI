@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.felix.framework.BundleWiringImpl.BundleClassLoader;
 import org.osgi.framework.Bundle;
 
 

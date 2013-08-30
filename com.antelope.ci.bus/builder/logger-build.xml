@@ -64,8 +64,6 @@
 		<mkdir dir="${app.logger.etc}" />
 		<mkdir dir="${app.logger.system}" />
 		<mkdir dir="${app.logger.system.ext}" />
-		<mkdir dir="${app.logger.bundle}" />
-		<mkdir dir="${app.logger.bundle.lib}" />
 		<mkdir dir="${app.logger.lib}" />
 		<mkdir dir="${app.logger.lib.ext}" />
 		<mkdir dir="${app.logger.plugin}" />
