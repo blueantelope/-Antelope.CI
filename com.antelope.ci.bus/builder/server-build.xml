@@ -34,6 +34,7 @@
 			<fileset dir="${target.depends}">
 				<include name="log4j*.jar" />
 				<include name="com.antelope.ci.bus.common-0.1.0.jar" />
+				<include name="com.antelope.ci.bus.osgi-0.1.0.jar" />
 			</fileset>
 		</copy>
 

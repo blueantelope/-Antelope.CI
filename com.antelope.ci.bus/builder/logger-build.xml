@@ -5,6 +5,7 @@
 	<target name="build-unix" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends-unix" />
@@ -14,6 +15,7 @@
 	<target name="build-win" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
@@ -31,7 +33,9 @@
 		<copy todir="${app.logger.lib.ext}">
 			<fileset dir="${target.depends}">
 				<include name="log4j*.jar" />
+				<include name="slf4j*.jar" />
 				<include name="com.antelope.ci.bus.common-0.1.0.jar" />
+				<include name="com.antelope.ci.bus.osgi-0.1.0.jar" />
 			</fileset>
 		</copy>
 		
@@ -47,7 +51,6 @@
 				<include name="com.antelope.ci.bus.logger*.jar" />
 			</fileset>
 		</copy>
-				
 		
 		<copy todir="${app.logger.etc}">
 			<fileset dir="${prj.bus.etc}" />

@@ -85,38 +85,6 @@ class BundleExecutor {
 	}
 	
 	/*
-	 * 使用指定的classLoader来运行
-	 */
-	@Deprecated
-	private void StartByClassLoader() {
-		JarFile jar = null;
-		try {
-			jar = new JarFile(loader.jarFile);
-			Manifest mf = jar.getManifest();
-			String className = mf.getMainAttributes().getValue("Bundle-Activator");
-			if (className != null) {
-				Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
-				List<URL> bundleClsUrl = new ArrayList<URL>();
-				bundleClsUrl.addAll(loader.clsUrlList);
-				bundleClsUrl.add(loader.jarFile.toURI().toURL());
-//				Util.loadJarToBundle(bundle, bundleClsUrl);
-				URLClassLoader bundleClassLoader = new URLClassLoader(bundleClsUrl.toArray(new URL[bundleClsUrl.size()]));
-				BundleActivator activator = (BundleActivator) bundleClassLoader.loadClass(className).newInstance();
-				loader.startLevel.setBundleStartLevel(bundle, loader.level);
-				activator.start(loader.context);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (jar != null) {
-				try {
-					jar.close();
-				} catch (IOException e) { }
-			}
-		}
-	}
-	
-	/*
 	 * 启动bundle
 	 */
 	private void startBundle(Bundle bundle) {

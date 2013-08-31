@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.framework.CommonBusActivator;
 import com.antelope.ci.bus.logger.service.BusLogService;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
 
 /**
@@ -48,7 +48,7 @@ public class BusServerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.framework.CommonBusActivator#run()
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#run()
 	 */
 	@Override
 	protected void run() throws CIBusException {
@@ -64,7 +64,7 @@ public class BusServerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.framework.CommonBusActivator#destroy()
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#destroy()
 	 */
 	@Override
 	protected void destroy() throws CIBusException {
@@ -78,7 +78,7 @@ public class BusServerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.framework.CommonBusActivator#handleLoadService()
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleLoadService()
 	 */
 	@Override
 	protected void handleLoadService() {
@@ -93,7 +93,7 @@ public class BusServerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.framework.CommonBusActivator#handleUnloadService()
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleUnloadService()
 	 */
 	@Override
 	protected void handleUnloadService() {
@@ -101,5 +101,28 @@ public class BusServerActivator extends CommonBusActivator {
 		log4j = null;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#addServices()
+	 */
+	@Override
+	protected void addServices() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#removeServices()
+	 */
+	@Override
+	protected void removeServices() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }
 

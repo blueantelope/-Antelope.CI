@@ -43,6 +43,22 @@
 		</exec>
 	</target>
 
+	<target name="osgi.compile-unix">
+		<exec executable="mvn">
+			<arg line="-f ${prj.osgi.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="osgi.compile-win">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.osgi.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
 	<target name="bus.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.bus.pom}" />
