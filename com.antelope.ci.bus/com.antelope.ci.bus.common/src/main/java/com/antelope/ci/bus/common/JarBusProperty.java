@@ -32,6 +32,7 @@ public class JarBusProperty {
 	private String services;								// 需要加载的osgi serivce列表
 	private String system_lib_props;				// 需要加入classLoader路径中的系统参数，形如System.getProperty("java.home")
 	private String load_jars;							// 需要自定义加载进classLoader中的jar路径, url方式
+	private String load_classes;						// 加载进classLoad中的class,如果最后以*结尾，代表此包下的所有类
 	
 	// getter and setter
 	public JarLoadMethod getLoad() {
@@ -76,6 +77,13 @@ public class JarBusProperty {
 	public void setLoad_jars(String load_jars) {
 		this.load_jars = load_jars;
 	}
+	public String getLoad_classes() {
+		return load_classes;
+	}
+	public void setLoad_classes(String load_classes) {
+		this.load_classes = load_classes;
+	}
+	
 	
 	/**
 	 * 解析系统lib定义参数
@@ -117,6 +125,38 @@ public class JarBusProperty {
 	}
 	
 	/**
+	 * 解析加载的类及package
+	 * 返回类的url列表
+	 * @param  @return
+	 * @return List<URL>
+	 * @throws
+	 */
+	public List<URL> parseLoadClasses() {
+		List<URL> urlList = new ArrayList<URL>();
+		if (load_classes != null) {
+			for (String load_class : load_classes.split(",")) {
+				load_class = load_class.trim();
+				if (load_class.length() >0) {
+					if (load_class.endsWith("*")) {			// package
+						urlList.addAll(ResourceUtil.getClassUrlInPackage(load_class.substring(0, load_class.length()-2)));
+					} else {			// class
+						try {
+							Class c = Class.forName(load_class);
+							urlList.add(c.getResource(""));
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+					
+			}
+		}
+		
+		return urlList;
+	}
+	
+	
+	/**
 	 * 取得加载此jar的依赖库环境
 	 * @param  @return
 	 * @return List<URL>
@@ -126,6 +166,7 @@ public class JarBusProperty {
 		List<URL> urlList = new ArrayList<URL>();
 		urlList.addAll(sysLibPropToUrl());
 		urlList.addAll(mergeLoadJars());
+		urlList.addAll(parseLoadClasses());
 		return urlList;
 	}
 	
@@ -181,6 +222,7 @@ public class JarBusProperty {
 		busProperty.setStartLevel(reader.getInt(BusConstants.JAR_START_LEVEL));
 		busProperty.setSystem_lib_props(reader.getString(BusConstants.JAR_SYSTEM_PROP));
 		busProperty.setLoad_jars(reader.getString(BusConstants.JAR_LOADER_LIST));
+		busProperty.setLoad_classes(reader.getString(BusConstants.JAR_LOADER_CLASSES));
 		busProperty.setServices(reader.getString(BusConstants.JAR_SERVICES));
 		
 		return busProperty;

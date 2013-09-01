@@ -43,6 +43,7 @@ public class BusConstants {
 	public static final String JAR_START_LEVEL			= "start.level";
 	public static final String JAR_SYSTEM_PROP			= "lib.system.property";
 	public static final String JAR_LOADER_LIST			= "loader.jars";
+	public static final String JAR_LOADER_CLASSES		= "loader.classes";
 	public static final String JAR_SERVICES					= "bus.load.services";
 	
 	/* CI BUS扩展jar集合，适用于bundle的Bundle-ClassPath参数 */
