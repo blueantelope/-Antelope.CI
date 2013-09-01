@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.logger.service;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -30,6 +31,7 @@ public class BusLogServiceImpl implements BusLogService {
 	 */
 	public BusLogServiceImpl() {
 		String log_cnf = System.getProperty(BusConstants.LOG_CNF);
+		LogManager.resetConfiguration();			// 重置log4j日志服务
 		if (FileUtil.existFile(log_cnf)) {
 			PropertyConfigurator.configure(log_cnf);
 		} else {

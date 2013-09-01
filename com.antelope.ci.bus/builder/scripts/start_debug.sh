@@ -18,4 +18,4 @@ for i in $PARENT/lib/ext/*.jar ; do
 done
 export CLASSPATH
 
-java com.antelope.ci.bus.CIBus -h $PARENT -m app
+java com.antelope.ci.bus.CIBus -h $PARENT -m dev

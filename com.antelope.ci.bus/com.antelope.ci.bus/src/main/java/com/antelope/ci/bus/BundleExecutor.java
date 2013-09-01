@@ -8,19 +8,13 @@
 
 package com.antelope.ci.bus;
 
-import java.io.IOException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleException;
 
 import com.antelope.ci.bus.common.BusConstants;
+import com.antelope.ci.bus.common.JarLoadMethod;
 
 
 /**
@@ -46,23 +40,14 @@ class BundleExecutor {
 	 */
 	public void execute() {
 		try {
-			switch (loader.method) {
-				case INSTALL:
-					loader.context.installBundle(loader.jarFile.toURI().toString());
-					break;
-				case START:
-					try {
-						Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
-						if (loader.clsUrlList != null) {
-							attachBundleClassUrl(bundle);
-						}
-						startBundle(bundle);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					break;
-				default:
-					break;
+			if (loader.method == JarLoadMethod.INSTALL || loader.method == JarLoadMethod.START) {
+				Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
+				if (loader.clsUrlList != null) {
+					attachBundleClassUrl(bundle);
+				}
+				if (loader.method == JarLoadMethod.START) {
+					startBundle(bundle);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

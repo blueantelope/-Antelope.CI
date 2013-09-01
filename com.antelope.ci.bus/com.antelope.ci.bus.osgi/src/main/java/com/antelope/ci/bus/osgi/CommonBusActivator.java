@@ -138,12 +138,12 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	public void serviceChanged(ServiceEvent event)  {
 		try {
 	        if (event.getType() == ServiceEvent.REGISTERED) {
-	        	loadService();
+	        		loadService();
 	        }  else if (event.getType() == ServiceEvent.UNREGISTERING) {
-	        	unloadService();
+	        		unloadService();
 	        } else if (event.getType() == ServiceEvent.MODIFIED) {
-	    		unloadService();
-	    		loadService();
+		    		unloadService();
+		    		loadService();
 	        }
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.framework;
 
+import java.util.Properties;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -21,15 +23,15 @@ import org.junit.Test;
  * @Date	 2013-8-29		下午1:54:40 
  */
 public class TestClassPath extends TestCase {
-	
+	@Test
 	public void testJreExt() {
-//		Properties props = System.getProperties();
-//		for (Object k : props.keySet()) {
-//			String key = k.toString();
-//			if (key.contains("java")) {
-//				System.out.println(key + "->" + props.getProperty(key));
-//			}
-//		}
+		Properties props = System.getProperties();
+		for (Object k : props.keySet()) {
+			String key = k.toString();
+			if (key.contains("java")) {
+				System.out.println(key + "->" + props.getProperty(key));
+			}
+		}
 	}
 
 	

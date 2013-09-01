@@ -13,6 +13,7 @@ import java.util.Hashtable;
 
 import org.apache.log4j.LogManager;
 
+import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.logger.service.BusLogServiceImpl;
@@ -78,14 +79,18 @@ public class BusLoggerActivator extends CommonBusActivator {
 		
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#addServices()
+	 */
 	@Override
 	protected void addServices() throws CIBusException {
-		if (logService == null) {
-			String clazz = BusLogService.class.getName();
-			logService = new BusLogServiceImpl();
-			Dictionary<String, ?> properties = new Hashtable();
-			m_context.registerService(clazz, logService, properties);
-		}
+		String clazz = BusLogService.class.getName();
+		logService = new BusLogServiceImpl();
+		Dictionary<String, ?> properties = new Hashtable();
+		m_context.registerService(clazz, logService, properties);
+		DebugUtil.assert_out("注册log4j服务");
 	}
 	
 	/**
@@ -95,7 +100,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected  void removeServices() throws CIBusException {
-		LogManager.resetConfiguration();			// 关闭log4j日志服务
+		LogManager.shutdown();			// 关闭log4j日志服务
 	}
 }
 

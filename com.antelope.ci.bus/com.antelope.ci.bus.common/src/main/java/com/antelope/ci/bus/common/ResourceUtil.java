@@ -13,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.antelope.ci.bus.common.configration.JarResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -25,8 +24,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-7-31		下午12:39:34 
  */
 public class ResourceUtil {
-	private static final String BUS_PROPS = "META-INF/bus.properties";
-	
 	/**
 	 * 取得jar所在的上级目录
 	 * @param  @return
@@ -97,41 +94,5 @@ public class ResourceUtil {
         }
         return file;
     } 
-    
-    /**
-     * 读取jar中配置文件
-     * jar文件路径
-     * @param  @param path
-     * @param  @return
-     * @return Properties
-     * @throws CIBusException
-     */
-    public static JarBusProperty readJarBus(String path) throws CIBusException {
-    		return readJarBus(new JarResourceReader(path));
-    }
-    
-    /**
-     * 读取jar中配置文件
-     * jar文件实体
-     * @param  @param jarFile
-     * @param  @return
-     * @param  @throws CIBusException
-     * @return JarBusProperty
-     * @throws
-     */
-    public static JarBusProperty readJarBus(File jarFile) throws CIBusException {
-		return readJarBus(new JarResourceReader(jarFile));
-    }
-    
-    /*
-     * 由jar资源reader读取资源文件
-     */
-    private static JarBusProperty readJarBus(JarResourceReader reader) throws CIBusException {
-    	reader.addResource(BUS_PROPS);
-		JarBusProperty busProperty = new JarBusProperty();
-		busProperty.setLoad(reader.getString(BusConstants.JAR_LOAD));
-		busProperty.setStartLevel(reader.getInt(BusConstants.JAR_START_LEVEL));
-		return busProperty;
-    }
 }
 

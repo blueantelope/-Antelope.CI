@@ -22,7 +22,6 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.felix.framework.FrameworkFactory;
-import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.launch.Framework;
@@ -52,7 +51,7 @@ public class CIBus {
 	 */
 	public static void main(String[] args) throws CIBusException {
 		CIBus bus = new CIBus();
-		bus.opts(args);				// 参数处理
+		bus.opts(args);					// 参数处理
 		bus.start();						// 启动
 	}
 	
@@ -116,13 +115,12 @@ public class CIBus {
 	/* 根目录不存在 */
 	private static final String HOME_ERROR = "home directory is not exist or not a direcotry";
 	
-	private static ClassLoader classloader;					// 系统classLoader
+	private static ClassLoader classloader;						// 系统classLoader
 	private static FrameworkFactory factory;					// osgi factory
-	private static Framework framework;						// osgi framework
-	private static Map<String, String> parameters;		// 参数， 主要是针对osgi 
+	private static Framework framework;							// osgi framework
+	private static Map<String, String> parameters;			// 参数， 主要是针对osgi 
 	private static List<URL> clsUrlList;							// classloader url
 	
-	private static final Logger log = Logger.getLogger(CIBus.class);
 	private static String bus_home;									// 根目录
 	private static RUN_MODE run_mode;							// 运行模式
 	private static String etc_dir;										// 配置目录
@@ -207,7 +205,7 @@ public class CIBus {
 			throw new CIBusException("");
 		}
 		shutdownHook();			// 关闭钩子
-		run();								// 运行osgi
+		run();							// 运行osgi
 	}
 	
 	/*
@@ -442,6 +440,7 @@ public class CIBus {
 			List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
 			// 读取系统扩展bundle包
 			File[] files = new File(dir).listFiles();
+			List<URL> urlList;
 			if (files != null) {
 				switch (type) {
 					case 1:					// 系统包
@@ -457,14 +456,16 @@ public class CIBus {
 						for (File systemExtFile : files) {
 							if (systemExtFile.getName().endsWith(".jar")) {
 								try {
-									JarBusProperty busProperty = ResourceUtil.readJarBus(systemExtFile);
+									JarBusProperty busProperty = JarBusProperty.readJarBus(systemExtFile);
+									urlList = FileUtil.getAllJar(lib_ext_dir);
+									urlList.addAll(busProperty.getEnvUrl());
 									BundleLoader loader = new BundleLoader(
 											context, 
 											systemExtFile, 
 											startLevel, 
 											busProperty.getStartLevel(), 
 											busProperty.getLoad(),
-											FileUtil.getAllJar(lib_ext_dir)
+											urlList
 									);
 									loaderList.add(loader);
 								} catch (Exception e) {
@@ -475,7 +476,7 @@ public class CIBus {
 						break;
 					case 3:				// 系统扩展包下有依赖库，在系统扩展下以目录存在
 						for (File systemExtDir : files) {
-							List<URL> urlList = FileUtil.getAllJar(lib_ext_dir);
+							urlList = FileUtil.getAllJar(lib_ext_dir);
 							try {
 								JarBusProperty busProperty = null;
 								File extBundleFile = null;
@@ -483,7 +484,7 @@ public class CIBus {
 									for (File extBundle : systemExtDir.listFiles()) {
 										if (extBundle.isFile() && extBundle.getName().endsWith(".jar")) {
 											extBundleFile = extBundle;
-											busProperty = ResourceUtil.readJarBus(extBundle);
+											busProperty = JarBusProperty.readJarBus(extBundle);
 											continue;
 										}
 										if (extBundle.isDirectory() && "lib".equalsIgnoreCase(extBundle.getName())) {
@@ -492,6 +493,7 @@ public class CIBus {
 										}
 									}
 									if (extBundleFile != null && busProperty != null) {
+										urlList.addAll(busProperty.getEnvUrl());
 										BundleLoader loader = new BundleLoader(
 												context, 
 												extBundleFile, 

@@ -4,3 +4,4 @@ Bundle-Name: CI Bus Osgi
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.osgi
 Export-Package: com.antelope.ci.bus.osgi
+Import-Package: org.osgi.framework

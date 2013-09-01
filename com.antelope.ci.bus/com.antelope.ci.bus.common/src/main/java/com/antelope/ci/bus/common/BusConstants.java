@@ -40,7 +40,10 @@ public class BusConstants {
 	 * bus ci jar中定义的bus.properties配置项 
 	 */
 	public static final String JAR_LOAD						= "load";
-	public static final String JAR_START_LEVEL				= "start.level";
+	public static final String JAR_START_LEVEL			= "start.level";
+	public static final String JAR_SYSTEM_PROP			= "lib.system.property";
+	public static final String JAR_LOADER_LIST			= "loader.jars";
+	public static final String JAR_SERVICES					= "bus.load.services";
 	
 	/* CI BUS扩展jar集合，适用于bundle的Bundle-ClassPath参数 */
 	public static final String BUS_EXT_LIBS					= "bus.ext.libs";
