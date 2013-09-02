@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.felix.framework.cache.Content;
+import org.apache.felix.framework.cache.JarURLContent;
 import org.apache.felix.framework.cache.URLContent;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.framework.util.SecureAction;
@@ -430,13 +431,23 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         {
             // Remove any leading slash, since all bundle class path
             // entries are relative to the root of the bundle.
+        	 	try {
+         		String cs = classPathStrings.get(i);
+         		URL u = new URL(cs);
+         		if (cs.endsWith(".jar")) {
+         			localContentList.add(new JarURLContent(u));
+         		} else {
+             	 	DebugUtil.assert_out("url content内容 = " + u);
+             	 	localContentList.add(new URLContent(u));
+         		}
+         		continue;
+	         } catch (MalformedURLException e) {
+	         	
+	         }
+        	
             classPathStrings.set(i, (classPathStrings.get(i).startsWith("/"))
                 ? classPathStrings.get(i).substring(1)
                 : classPathStrings.get(i));
-            
-            if (classPathStrings.get(i).startsWith("file:")) {
-            	localContentList.add(new URLContent(classPathStrings.get(i)));
-            }
 
             // Check for the bundle itself on the class path.
             if (classPathStrings.get(i).equals(FelixConstants.CLASS_PATH_DOT))

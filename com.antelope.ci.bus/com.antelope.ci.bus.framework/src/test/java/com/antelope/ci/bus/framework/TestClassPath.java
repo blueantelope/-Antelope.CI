@@ -42,15 +42,15 @@ public class TestClassPath extends TestCase {
 
 	@Test
 	public void testPackage() throws Exception {
-		Package[] pack = Package.getPackages();
-
-		// print all packages, one by one
-		for (int i = 0; i < pack.length; i++) {
-			System.out.println("" + pack[i]);
-		}
+//		Package[] pack = Package.getPackages();
+//
+//		// print all packages, one by one
+//		for (int i = 0; i < pack.length; i++) {
+//			System.out.println("" + pack[i]);
+//		}
 
 		Class c = Class.forName("javax.crypto.Cipher");
-		URL u = c.getResource("");
+		URL u =  c.getResource("");
 		System.out.println(u);
 //		Package p = c.getPackage();
 //		URL url = p.getClass().getProtectionDomain().getCodeSource()

@@ -141,9 +141,8 @@ public class JarBusProperty {
 						urlList.addAll(ResourceUtil.getClassUrlInPackage(load_class.substring(0, load_class.length()-2)));
 					} else {			// class
 						try {
-							Class c = Class.forName(load_class);
-							urlList.add(c.getResource(""));
-						} catch (ClassNotFoundException e) {
+							urlList.add(ResourceUtil.classNameToUrl(load_class));
+						} catch (CIBusException e) {
 							e.printStackTrace();
 						}
 					}

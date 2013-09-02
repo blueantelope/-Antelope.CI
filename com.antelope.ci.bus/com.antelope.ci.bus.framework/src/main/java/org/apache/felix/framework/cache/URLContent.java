@@ -13,89 +13,78 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-
-import org.apache.felix.framework.Logger;
-
-import com.antelope.ci.bus.common.DebugUtil;
 
 
 /**
- * URL content
+ * url content
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-8-26		下午4:14:02 
+ * @Date	 2013-9-2		下午11:01:01 
  */
 public class URLContent implements Content {
 	private static final int BUFSIZE = 4096;
-	private String url_str;
 	private URL url;
-	private JarFile jarFile;
 	
-	public URLContent(String url_str) throws Exception {
-		this.url = new URL(url_str);
-		jarFile = new JarFile(this.url.getFile());
+	public URLContent(URL url) {
+		this.url = url;
 	}
 
 	@Override
 	public void close() {
-		try {
-			jarFile.close();
-		} catch (IOException e) {
-		}
+		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public boolean hasEntry(String name) {
+		
+		// TODO Auto-generated method stub
 		return false;
-	}	
+		
+	}
 
 	@Override
 	public Enumeration<String> getEntries() {
+		
+		// TODO Auto-generated method stub
 		return null;
+		
 	}
 
 	@Override
 	public byte[] getEntryAsBytes(String name) {
-		DebugUtil.assert_out("find class = " + name);
-        InputStream is = null;
-        ByteArrayOutputStream baos = null;
-        try {
-            ZipEntry ze = jarFile.getEntry(name);
-            DebugUtil.assert_out("ZipEntry = " + ze);
-            if (ze == null) {
-                return null;
-            }
-            is = jarFile.getInputStream(ze);
-            if (is == null) {
-                return null;
-            }
-            baos = new ByteArrayOutputStream(BUFSIZE);
-            byte[] buf = new byte[BUFSIZE];
-            int n = 0;
-            while ((n = is.read(buf, 0, buf.length)) >= 0) {
-                baos.write(buf, 0, n);
-            }
-            return baos.toByteArray();
-
-        }
-        catch (Exception ex)  {
-            return null;
-        }
-        finally {
-            try  {
-                if (baos != null) baos.close();
-            }
-            catch (Exception ex) {
-            }
-            try {
-                if (is != null) is.close();
-            }
-            catch (Exception ex) {
-            }
-        }
+		InputStream in = null;
+		ByteArrayOutputStream bos = null;
+		try {
+			bos = new ByteArrayOutputStream();
+			byte[] buffer = new byte[BUFSIZE];
+			in = url.openStream();
+			while (in.read(buffer) != -1) {
+				bos.write(buffer);
+				bos.flush();
+			}
+			in.close();
+			bos.close();
+			return bos.toByteArray();
+		} catch (Exception e) {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e1) {
+				}
+			}
+			if (bos != null) {
+				try {
+					bos.close();
+				} catch (IOException e1) {
+				}
+			}
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -124,7 +113,10 @@ public class URLContent implements Content {
 
 	@Override
 	public URL getEntryAsURL(String name) {
-		return url;
+		
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 
 }

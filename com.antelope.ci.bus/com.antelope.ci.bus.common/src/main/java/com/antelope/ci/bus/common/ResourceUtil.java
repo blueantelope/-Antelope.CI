@@ -99,7 +99,37 @@ public class ResourceUtil {
             file = file.getParentFile();
         }
         return file;
-    } 
+    }
+    
+    /**
+     * class名称转换为所在URL表示
+     * @param  @param className
+     * @param  @return
+     * @param  @throws CIBusException
+     * @return URL
+     * @throws
+     */
+    public static URL classNameToUrl(String className) throws CIBusException {
+    		try {
+	    		Class c = Class.forName(className);
+			URL u = c.getResource("");
+			return new URL(u.toString() + getLastClassName(c));
+    		} catch (Exception e) {
+    			throw new CIBusException("", e);
+    		}
+    }
+    
+    /**
+     * 取得className最后的名称，带class后缀
+     * @param  @param className
+     * @param  @return
+     * @return String
+     * @throws
+     */
+    private static String getLastClassName(Class c) {
+    		String[] cp = c.getName().split("\\.");
+		return cp[cp.length-1] + ".class";
+    }
     
     /**
      * 取得package下的所有类，并以类的url列表返回
@@ -112,9 +142,8 @@ public class ResourceUtil {
     		List<URL> urlList = new ArrayList<URL>();
     		for (String className : getClassName(packageName)) {
     			try {
-	    			Class c = Class.forName(className);
-	    			urlList.add(c.getResource(""));
-    			} catch (ClassNotFoundException e) {
+	    			urlList.add(classNameToUrl(className));
+    			} catch (Exception e) {
     				e.printStackTrace();
     			}
     		}
@@ -131,7 +160,7 @@ public class ResourceUtil {
      */
     public static List<String> getClassName(String packageName) {  
         return getClassName(packageName, true);  
-    }  
+    }
     
     /**
      * 获取某包下所有类 

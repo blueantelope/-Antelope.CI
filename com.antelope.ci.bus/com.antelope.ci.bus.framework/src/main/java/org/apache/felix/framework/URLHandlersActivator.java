@@ -19,8 +19,6 @@
 package org.apache.felix.framework;
 
 import java.net.ContentHandler;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +27,6 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.url.URLStreamHandlerService;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * <p>
