@@ -61,13 +61,15 @@ public class URLContent implements Content {
 			bos = new ByteArrayOutputStream();
 			byte[] buffer = new byte[BUFSIZE];
 			in = url.openStream();
-			while (in.read(buffer) != -1) {
-				bos.write(buffer);
+			int len = -1;
+			while ((len=in.read(buffer)) != -1) {
+				bos.write(buffer, 0, len);
 				bos.flush();
 			}
 			in.close();
+			byte[] bs = bos.toByteArray();
 			bos.close();
-			return bos.toByteArray();
+			return bs;
 		} catch (Exception e) {
 			if (in != null) {
 				try {
