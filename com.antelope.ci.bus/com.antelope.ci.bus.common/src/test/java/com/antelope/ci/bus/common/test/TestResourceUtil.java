@@ -41,7 +41,7 @@ public class TestResourceUtil extends TestCase {
 	
 	@Test
 	public void testGetClassName() {
-		List<String> nameList = ResourceUtil.getClassName("junit.framework.TestCase");
+		List<String> nameList = ResourceUtil.getClassName("sun.security.util");
 		for (String name : nameList) {
 			System.out.println(name);
 		}
