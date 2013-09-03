@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.framework;
+package com.antelope.ci.bus.framework.test;
 
 import java.net.URL;
 

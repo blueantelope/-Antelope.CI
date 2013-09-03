@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 
+import com.antelope.ci.bus.common.DebugUtil;
+
 
 /**
  * url content
@@ -28,6 +30,7 @@ public class URLContent implements Content {
 	
 	public URLContent(URL url) {
 		this.url = url;
+		
 	}
 
 	@Override
@@ -55,35 +58,36 @@ public class URLContent implements Content {
 
 	@Override
 	public byte[] getEntryAsBytes(String name) {
-		InputStream in = null;
-		ByteArrayOutputStream bos = null;
-		try {
-			bos = new ByteArrayOutputStream();
-			byte[] buffer = new byte[BUFSIZE];
-			in = url.openStream();
-			int len = -1;
-			while ((len=in.read(buffer)) != -1) {
-				bos.write(buffer, 0, len);
-				bos.flush();
-			}
-			in.close();
-			byte[] bs = bos.toByteArray();
-			bos.close();
-			return bs;
-		} catch (Exception e) {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e1) {
+		if (url.toString().endsWith((name))) {
+			DebugUtil.assert_out("find class url = " + url);
+			InputStream in = null;
+			ByteArrayOutputStream bos = null;
+			try {
+				bos = new ByteArrayOutputStream();
+				byte[] buffer = new byte[BUFSIZE];
+				in = url.openStream();
+				int len = -1;
+				while ((len=in.read(buffer)) != -1) {
+					bos.write(buffer, 0, len);
+					bos.flush();
+				}
+				return bos.toByteArray();
+			} catch (Exception e) {
+				return null;
+			} finally {
+				if (in != null) {
+					try {
+						in.close();
+					} catch (IOException e) {
+					}
+				}
+				if (bos != null) {
+					try {
+						bos.close();
+					} catch (IOException e) {
+					}
 				}
 			}
-			if (bos != null) {
-				try {
-					bos.close();
-				} catch (IOException e1) {
-				}
-			}
-			e.printStackTrace();
 		}
 		
 		return null;

@@ -56,12 +56,10 @@ public class JarURLContent implements Content {
 
 	@Override
 	public byte[] getEntryAsBytes(String name) {
-		DebugUtil.assert_out("find class = " + name);
         InputStream is = null;
         ByteArrayOutputStream baos = null;
         try {
             ZipEntry ze = jarFile.getEntry(name);
-            DebugUtil.assert_out("ZipEntry = " + ze);
             if (ze == null) {
                 return null;
             }
@@ -69,6 +67,8 @@ public class JarURLContent implements Content {
             if (is == null) {
                 return null;
             }
+            DebugUtil.assert_out("ZipEntry = " + ze);
+            DebugUtil.assert_out("find class = " + name);
             baos = new ByteArrayOutputStream(BUFSIZE);
             byte[] buf = new byte[BUFSIZE];
             int n = 0;
@@ -76,21 +76,16 @@ public class JarURLContent implements Content {
                 baos.write(buf, 0, n);
             }
             return baos.toByteArray();
-
-        }
-        catch (Exception ex)  {
+        } catch (Exception ex)  {
             return null;
-        }
-        finally {
-            try  {
+        } finally {
+            try {
                 if (baos != null) baos.close();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
             }
             try {
                 if (is != null) is.close();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
             }
         }
 	}

@@ -40,15 +40,23 @@ public class TestResourceUtil extends TestCase {
 	}
 	
 	@Test
-	public void testReadJarBus() throws CIBusException {
-//		String jarPath = "D:\\data\\git\\@Antelope.CI\\com.antelope.ci.bus\\com.antelope.ci.bus.logger\\target\\com.antelope.ci.bus.logger-0.1.0.jar";
-//		JarBusProperty busProperty = ResourceUtil.readJarBus(jarPath);
-	}
-	
 	public void testGetClassName() {
-		List<String> nameList = ResourceUtil.getClassName("javax.crypto");
+		List<String> nameList = ResourceUtil.getClassName("junit.framework.TestCase");
 		for (String name : nameList) {
 			System.out.println(name);
+		}
+	}
+	
+	@Test
+	public void testClassNameToUrl() {
+		try {
+			URL url = ResourceUtil.classNameToUrl("java.util.List");
+			System.out.println(url);
+		} catch (CIBusException e) {
+			
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
 		}
 	}
 	

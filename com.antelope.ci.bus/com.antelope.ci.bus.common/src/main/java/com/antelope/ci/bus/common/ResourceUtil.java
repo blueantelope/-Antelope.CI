@@ -112,7 +112,7 @@ public class ResourceUtil {
     public static URL classNameToUrl(String className) throws CIBusException {
     		try {
 	    		Class c = Class.forName(className);
-			URL u = c.getResource("");
+	    		URL u = c.getProtectionDomain().getCodeSource().getLocation();
 			return new URL(u.toString() + getLastClassName(c));
     		} catch (Exception e) {
     			throw new CIBusException("", e);
@@ -121,7 +121,7 @@ public class ResourceUtil {
     
     /**
      * 取得className最后的名称，带class后缀
-     * @param  @param className
+     * @param  @param c
      * @param  @return
      * @return String
      * @throws
