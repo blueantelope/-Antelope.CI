@@ -17,14 +17,15 @@ import java.util.Properties;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.logger.service.BusLogService;
 
 
 /**
@@ -35,6 +36,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-8-29		下午3:17:02 
  */
 public abstract class CommonBusActivator implements BundleActivator, ServiceListener {
+	private static final String LOGSERVICE_CLSNAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	private static final String PACKET_SUFFIX = "com.antelope.ci.bus";
 	private static final String PACKET_SERVICE = "service";
 	private static final String PROPS_FILE = "bus";
@@ -43,7 +45,10 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	protected BundleContext m_context;
 	protected static Map<String, ServiceReference> serviceMap = new HashMap<String, ServiceReference>();
 	protected static Properties properties;				// bundle的属性
-	private List<String> loadServices = new ArrayList<String>();				// 需要加载的service列表
+	protected List<String> loadServices = new ArrayList<String>();				// 需要加载的service列表
+	protected BusLogService logService = null;
+	protected static ServiceReference log_ref = null;
+	
 	
 	public CommonBusActivator() {
 		
@@ -125,7 +130,7 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		removeServices();
-		unloadService();				// 卸载service
+		stopAllService();				// 停止所有service
 		destroy();						// 自定义其它停止操作
 	}
 	
@@ -137,13 +142,14 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	@Override
 	public void serviceChanged(ServiceEvent event)  {
 		try {
+			ServiceReference ref = event.getServiceReference();
 	        if (event.getType() == ServiceEvent.REGISTERED) {
-	        		loadService();
+	        		loadService(ref);
 	        }  else if (event.getType() == ServiceEvent.UNREGISTERING) {
-	        		unloadService();
+	        		unloadService(ref);
 	        } else if (event.getType() == ServiceEvent.MODIFIED) {
-		    		unloadService();
-		    		loadService();
+		    		unloadService(ref);
+		    		loadService(ref);
 	        }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,15 +159,54 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	/*
 	 * 加载osgi注册的service
 	 */
-	private void loadService() throws CIBusException, InvalidSyntaxException {
-		String clazz = null;
-		String filter = null;
-		for (ServiceReference ref : m_context.getServiceReferences(clazz, filter)) {
-			String cls_name = ref.getClass().getName();
-			if (isLoad(cls_name))
-				serviceMap.put(cls_name, ref);
+	private void loadService(ServiceReference ref) throws CIBusException {
+		String cls_name = ref.getClass().getName();
+		if (LOGSERVICE_CLSNAME.equals(cls_name)) {
+			loadLogService();
+		} else if (isLoad(cls_name)) {
+			serviceMap.put(cls_name, ref);
 		}
 		handleLoadService();
+	}
+	
+	/*
+	 * 卸载osgi注册的service
+	 */
+	private void unloadService(ServiceReference ref) throws CIBusException {
+		String cls_name = ref.getClass().getName();
+		if (LOGSERVICE_CLSNAME.equals(cls_name)) {
+			if (!unloadLogService(ref))
+				m_context.ungetService(ref);
+		} else if (isLoad(cls_name)) {
+			m_context.ungetService(ref);
+			serviceMap.remove(cls_name);
+		}
+		handleUnloadService(ref);
+	}
+	
+	/*
+	 * 加载日志service
+	 */
+	private void loadLogService() {
+		if (logService == null && !this.getClass().getName().contains("com.antelope.ci.bus.log")) {
+			DebugUtil.assert_out("加载日志service");
+			log_ref = serviceMap.get(LOGSERVICE_CLSNAME);
+			if (log_ref != null)
+				logService = (BusLogService) log_ref;
+		}
+	}
+	
+	/*
+	 * 卸载日志service
+	 */
+	private boolean unloadLogService(ServiceReference ref) {
+		if (log_ref != null && LOGSERVICE_CLSNAME.equals(ref.getClass().getName()) && logService != null) {
+			m_context.ungetService(log_ref);
+			log_ref = null;
+			logService = null;
+			return true;
+		}
+		return false;
 	}
 	
 	/*
@@ -180,13 +225,16 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	}
 	
 	/*
-	 * 卸载注册的service
+	 * 停止注册的service
 	 */
-	private void unloadService() throws CIBusException {
+	private void stopAllService() throws CIBusException {
 		for (ServiceReference ref : serviceMap.values()) {
+			if (unloadLogService(ref))		// 卸载日志service
+				continue;
 			m_context.ungetService(ref);
 		}
-		handleUnloadService();
+		handleStopAllService();
+		serviceMap = null;
 	}
 	
 	/**
@@ -219,15 +267,29 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	 * @return void
 	 * @throws
 	 */
-	protected abstract void handleUnloadService() throws CIBusException;
+	protected abstract void handleUnloadService(ServiceReference ref) throws CIBusException;
 	
-	/*
+	/**
+	 * 处理停止所有serivice后的操作
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
+	 */
+	protected abstract void handleStopAllService() throws CIBusException;
+	
+	/**
 	 * 增加osgi service
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
 	 */
 	protected abstract void addServices() throws CIBusException;
 	
-	/*
+	/**
 	 * 清除osgi service
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
 	 */
 	protected abstract void removeServices() throws CIBusException;
 }

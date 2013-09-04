@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.antelope.ci.bus.common.BusConstants;
+import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.FileUtil;
 
 
@@ -33,6 +34,7 @@ public class BusLogServiceImpl implements BusLogService {
 		String log_cnf = System.getProperty(BusConstants.LOG_CNF);
 		LogManager.resetConfiguration();			// 重置log4j日志服务
 		if (FileUtil.existFile(log_cnf)) {
+			DebugUtil.assert_out("logger 日志配置：" + log_cnf);
 			PropertyConfigurator.configure(log_cnf);
 		} else {
 			PropertyConfigurator.configure(BusLogServiceImpl.class.getResource("/log4j.properties"));
