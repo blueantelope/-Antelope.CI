@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.server.SshServer.java
+// com.antelope.ci.bus.server.BusServer.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -6,8 +6,9 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.ssh;
+package com.antelope.ci.bus.server;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.sshd.SshServer;
@@ -17,16 +18,19 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.shell.ProcessShellFactory;
 
+import com.antelope.ci.bus.common.BusConstants;
+import com.antelope.ci.bus.common.FileUtil;
+
 
 /**
- * ssh server服务器
- *
+ * 持续集成的server
+ * 使用ssh建立server
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-8-7		上午11:23:03 
+ * @Date	 2013-9-5		下午10:19:24 
  */
-public class BusSshServer {
-	private final static String KYE_NAME = "bus_key.ser";
+public class BusServer {
+	private final static String KEY_NAME = "bus_key.ser";
 	private SshServer sshServer;
 	private int port;					// server提供的端口
 	
@@ -37,7 +41,14 @@ public class BusSshServer {
 	public void start() throws IOException {
 		sshServer = SshServer.setUpDefaultServer();
 		sshServer.setPort(port);
-		sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(KYE_NAME));
+		String key_path = KEY_NAME;
+		if (System.getProperty(BusConstants.CACHE_DIR) != null) {
+			String cache_dir = System.getProperty(BusConstants.CACHE_DIR);
+			if (FileUtil.existDir(cache_dir)) {
+				key_path = cache_dir + File.separator + KEY_NAME;
+			}
+		}
+		sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(key_path));
 		sshServer.setShellFactory(new ProcessShellFactory());
 		sshServer.setCommandFactory(new ScpCommandFactory());
 		sshServer.setPasswordAuthenticator(new PasswordAuthenticator() {

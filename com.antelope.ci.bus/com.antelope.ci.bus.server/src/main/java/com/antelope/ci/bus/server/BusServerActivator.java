@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
-import com.antelope.ci.bus.server.ssh.BusSshServer;
 
 /**
  * 持续bus总线服务
@@ -26,8 +26,10 @@ import com.antelope.ci.bus.server.ssh.BusSshServer;
  * @Date	 2013-7-30		下午11:23:33 
  */
 public class BusServerActivator extends CommonBusActivator {
+	private static final String SERVER_PORT_KEY				= "bus.server.port";
+	private static final int DEFAULT_ERVER_PORT 			= 9426;
 	private static Logger log4j;			// log4j
-	private BusSshServer sshServer;
+	private BusServer server;
 
 	
 	/**
@@ -38,9 +40,10 @@ public class BusServerActivator extends CommonBusActivator {
 	@Override
 	protected void run() throws CIBusException {
 		try {
-			sshServer = new BusSshServer();
-			sshServer.setPort(9426);
-			sshServer.start();
+			server = new BusServer();
+			int port = getIntProp(SERVER_PORT_KEY, DEFAULT_ERVER_PORT);
+			server.setPort(port);
+			server.start();
 		} catch (IOException e) {
 			throw new CIBusException("", e);
 		}
@@ -54,8 +57,8 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void destroy() throws CIBusException {
-		if (sshServer != null) {
-			sshServer.stop();
+		if (server != null) {
+			server.stop();
 		}
 	}
 
@@ -67,7 +70,7 @@ public class BusServerActivator extends CommonBusActivator {
 	@Override
 	protected void handleLoadService() throws CIBusException {
 		if (logService != null) {
-			log4j = logService.getLog4j(BusServerActivator.class);
+			log4j = ((BusLogService) logService).getLog4j(BusServerActivator.class);
 			log4j.info("得到Bus Log Service");
 		}
 	}

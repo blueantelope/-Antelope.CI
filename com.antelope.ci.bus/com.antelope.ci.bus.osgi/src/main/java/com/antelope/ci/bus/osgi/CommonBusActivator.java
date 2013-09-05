@@ -22,10 +22,10 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.DebugUtil;
+import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.logger.service.BusLogService;
 
 
 /**
@@ -46,8 +46,8 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	protected static Map<String, ServiceReference> serviceMap = new HashMap<String, ServiceReference>();
 	protected static Properties properties;				// bundle的属性
 	protected List<String> loadServices = new ArrayList<String>();				// 需要加载的service列表
-	protected BusLogService logService = null;
 	protected static ServiceReference log_ref = null;
+	protected static Object logService = null;
 	
 	
 	public CommonBusActivator() {
@@ -188,11 +188,11 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	 * 加载日志service
 	 */
 	private void loadLogService() {
-		if (logService == null && !this.getClass().getName().contains("com.antelope.ci.bus.log")) {
+		if (log_ref == null && !this.getClass().getName().contains("com.antelope.ci.bus.log")) {
 			DebugUtil.assert_out("加载日志service");
 			log_ref = serviceMap.get(LOGSERVICE_CLSNAME);
 			if (log_ref != null)
-				logService = (BusLogService) log_ref;
+				logService = log_ref;
 		}
 	}
 	
@@ -235,6 +235,27 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 		}
 		handleStopAllService();
 		serviceMap = null;
+	}
+	
+	/*
+	 * 取得配置文件中的整形数参数
+	 */
+	protected int getIntProp(String key, int default_prop) {
+		return PropertiesUtil.getInt(properties, key, default_prop);
+	}
+	
+	/*
+	 * 取得配置文件中的字符串参数
+	 */
+	protected String getStringProp(String key, String default_prop) {
+		return PropertiesUtil.getString(properties, key, default_prop);
+	}
+	
+	/*
+	 * 取得配置文件中的布尔型参数
+	 */
+	protected boolean getBooleanProp(String key, boolean default_prop) {
+		return PropertiesUtil.getBoolean(properties, key, default_prop);
 	}
 	
 	/**
