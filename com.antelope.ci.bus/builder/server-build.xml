@@ -5,6 +5,7 @@
 	<target name="build-unix" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-unix" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-unix" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-unix" />
@@ -15,12 +16,14 @@
 	<target name="build-win" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
 		<antcall target="make" />
 	</target>
+
 	
 	<target name="make">
 		<copy todir="${app.server.lib}">

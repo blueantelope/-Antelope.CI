@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.common.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.net.URL;
 
 import junit.framework.TestCase;

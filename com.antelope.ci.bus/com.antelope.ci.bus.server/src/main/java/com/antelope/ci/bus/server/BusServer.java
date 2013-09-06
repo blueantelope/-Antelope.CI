@@ -41,13 +41,7 @@ public class BusServer {
 	public void start() throws IOException {
 		sshServer = SshServer.setUpDefaultServer();
 		sshServer.setPort(port);
-		String key_path = KEY_NAME;
-		if (System.getProperty(BusConstants.CACHE_DIR) != null) {
-			String cache_dir = System.getProperty(BusConstants.CACHE_DIR);
-			if (FileUtil.existDir(cache_dir)) {
-				key_path = cache_dir + File.separator + KEY_NAME;
-			}
-		}
+		String key_path = getKeyPath();
 		sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(key_path));
 		sshServer.setShellFactory(new ProcessShellFactory());
 		sshServer.setCommandFactory(new ScpCommandFactory());
@@ -73,5 +67,27 @@ public class BusServer {
 			}
 		}
 	}
+	
+	/*
+	 * 得到密钥所在路径
+	 * 先使用ci bus的缓存目录
+	 * 如果不存在，使用系统的缓存目录
+	 * 如果都不存在，放在与类同一级目录下
+	 */
+	private String getKeyPath() {
+		String key_path = KEY_NAME;
+		if (System.getProperty(BusConstants.CACHE_DIR) != null) {
+			String cache_dir = System.getProperty(BusConstants.CACHE_DIR);
+			if (FileUtil.existDir(cache_dir)) {
+				key_path = cache_dir + File.separator + KEY_NAME;
+			} else {
+				cache_dir = System.getProperty("java.io.tmpdir");
+				if (FileUtil.existDir(cache_dir)) {
+					key_path = cache_dir + File.separator + KEY_NAME;
+				}
+			}
+		}
+		
+		return key_path;
+	}
 }
-

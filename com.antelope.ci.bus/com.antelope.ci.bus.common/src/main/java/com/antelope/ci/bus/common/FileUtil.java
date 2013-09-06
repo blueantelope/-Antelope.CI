@@ -129,6 +129,37 @@ public class FileUtil {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 递得取得目录下包含子目录的目录列表
+	 * @param  @param rootDir
+	 * @param  @param subDir
+	 * @param  @return
+	 * @return List<File>
+	 * @throws
+	 */
+	public static List<File> getSubFolderList(String rootDir, String subDir) {
+		List<File> subList = new ArrayList<File>();
+		File d = new File(rootDir + File.separator + subDir);
+		if (d.exists() && d.isDirectory()) {
+			recurInsertFolder(subList, d);
+		}
+		
+		return subList;
+	}
+	
+	/*
+	 * 递归插入目录下的所有子目录到文件列表中
+	 */
+	private static void recurInsertFolder(List<File> fileList, File root) {
+		fileList.add(root);
+		for (File f : root.listFiles()) {
+			if (f.isDirectory()) {
+				fileList.add(f);
+				recurInsertFolder(fileList, f);
+			}
+		}
+	}
 
 }
 

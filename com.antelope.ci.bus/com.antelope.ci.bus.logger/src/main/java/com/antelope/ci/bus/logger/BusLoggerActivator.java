@@ -78,7 +78,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void addServices() throws CIBusException {
-		if (log_ref == null) {
+		if (logService == null) {
 			String clazz = BusLogService.class.getName();
 			logService = new BusLogServiceImpl();
 			Dictionary<String, ?> properties = new Hashtable();
