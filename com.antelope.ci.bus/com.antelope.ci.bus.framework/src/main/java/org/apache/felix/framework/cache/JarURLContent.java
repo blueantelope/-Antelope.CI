@@ -11,12 +11,11 @@ package org.apache.felix.framework.cache;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
-
-import com.antelope.ci.bus.common.DebugUtil;
 
 
 /**
@@ -67,8 +66,6 @@ public class JarURLContent implements Content {
             if (is == null) {
                 return null;
             }
-            DebugUtil.assert_out("ZipEntry = " + ze);
-            DebugUtil.assert_out("find class = " + name);
             baos = new ByteArrayOutputStream(BUFSIZE);
             byte[] buf = new byte[BUFSIZE];
             int n = 0;
@@ -92,10 +89,11 @@ public class JarURLContent implements Content {
 
 	@Override
 	public InputStream getEntryAsStream(String name) throws IOException {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
+		ZipEntry ze = jarFile.getEntry(name);
+        if (ze == null) {
+            return null;
+        }
+        return jarFile.getInputStream(ze);
 	}
 
 	@Override
@@ -116,7 +114,11 @@ public class JarURLContent implements Content {
 
 	@Override
 	public URL getEntryAsURL(String name) {
-		return url;
+		try{
+            return new URL(url.toString() + "!/" + name);
+        } catch (MalformedURLException e) {
+            return null;
+        }
 	}
 
 }

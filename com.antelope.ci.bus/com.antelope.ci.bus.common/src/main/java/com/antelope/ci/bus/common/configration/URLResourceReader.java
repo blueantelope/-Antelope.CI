@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.common.configration.CnfFileReader.java
+// com.antelope.ci.bus.common.configration.MultiPropertiesReader.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -8,25 +8,20 @@
 
 package com.antelope.ci.bus.common.configration;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * 配置文件读取
- *
+ * url方式属性配置文件读取
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-8-1		下午12:02:50 
+ * @Date	 2013-9-8		下午3:06:39 
  */
-public class CfgFileReader extends BasicConfigrationReader {
-	public CfgFileReader() {
-		super();
-	}
-
+public class URLResourceReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -35,15 +30,16 @@ public class CfgFileReader extends BasicConfigrationReader {
 	@Override
 	public void addResource(String resource) throws CIBusException {
 		removeResource(resource);
-		Properties conf = new Properties();
 		try {
-			conf.load(new FileInputStream(resource));
+			URL url = new URL(resource);
+			resourceMap.put(resource, url);
+			InputStream input = url.openConnection().getInputStream();
+			Properties res_props= new Properties();
+			res_props.load(input);
+			props.putAll(res_props);
 		} catch (Exception e) {
 			throw new CIBusException("", e);
-		} 
-		resourceMap.put(resource, conf);
-		for (Object key : conf.keySet()) 
-			props.put(key, conf.get(key));
+		}
 	}
 
 	/**
@@ -54,17 +50,20 @@ public class CfgFileReader extends BasicConfigrationReader {
 	@Override
 	public void addResource(String resource, int start) throws CIBusException {
 		removeResource(resource);
-		Properties conf = new Properties();
 		try {
-			conf.load(new FileInputStream(resource));
+			URL url = new URL(resource);
+			resourceMap.put(resource, url);
+			InputStream input = url.openConnection().getInputStream();
+			Properties res_props= new Properties();
+			res_props.load(input);
+			for (Object k : res_props.keySet()) {
+				String key = (String) k;
+				if (isAdd(key, start)) {
+					props.put(key, res_props.getProperty(key));
+				}
+			}
 		} catch (Exception e) {
 			throw new CIBusException("", e);
-		} 
-		resourceMap.put(resource, conf);
-		for (Object key : conf.keySet()) {
-			if (isAdd(key.toString(), start)) {
-				props.put(key, conf.get(key));
-			}
 		}
 	}
 
@@ -75,7 +74,7 @@ public class CfgFileReader extends BasicConfigrationReader {
 	 */
 	@Override
 	public void addInputStream(InputStream in) throws CIBusException {
-
+		
 	}
 
 	/**
@@ -85,7 +84,8 @@ public class CfgFileReader extends BasicConfigrationReader {
 	 */
 	@Override
 	public void addInputStream(InputStream in, int start) throws CIBusException {
-
+		
 	}
+
 }
 

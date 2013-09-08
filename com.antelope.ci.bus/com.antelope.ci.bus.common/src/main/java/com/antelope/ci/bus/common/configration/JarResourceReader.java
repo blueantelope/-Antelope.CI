@@ -10,6 +10,7 @@ package com.antelope.ci.bus.common.configration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -74,7 +75,25 @@ public class JarResourceReader extends BasicConfigrationReader {
 	@Override
 	public void addResource(String resource, int start) throws CIBusException {
 		
-		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addInputStream(java.io.InputStream)
+	 */
+	@Override
+	public void addInputStream(InputStream in) throws CIBusException {
+		
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addInputStream(java.io.InputStream, int)
+	 */
+	@Override
+	public void addInputStream(InputStream in, int start) throws CIBusException {
 		
 	}
 

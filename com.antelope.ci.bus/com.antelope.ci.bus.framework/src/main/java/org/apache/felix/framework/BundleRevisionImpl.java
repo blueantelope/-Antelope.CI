@@ -410,12 +410,12 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         // define by ci bus, modify by @blueantelope at 2013-08-26
         String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
         if (ext_libs != null) {
-        	if (classPath == null) {
-        		classPath =  ".," + ext_libs;
-        	} else {
-        		classPath += "," + ext_libs;
-        	}
-        	DebugUtil.assert_out("after bundle classapath = " + classPath);
+	        	if (classPath == null) {
+	        		classPath =  ".," + ext_libs;
+	        	} else {
+	        		classPath += "," + ext_libs;
+	        	}
+//	       	DebugUtil.assert_out("after bundle classapath = " + classPath);
         }
         // Parse the class path into strings.
         List<String> classPathStrings = ManifestParser.parseDelimitedString(
@@ -437,7 +437,7 @@ public class BundleRevisionImpl implements BundleRevision, Resource
          		if (cs.endsWith(".jar")) {
          			localContentList.add(new JarURLContent(u));
          		} else {
-             	 	DebugUtil.assert_out("url content内容 = " + u);
+//             	 	DebugUtil.assert_out("url content内容 = " + u);
              	 	localContentList.add(new URLContent(u));
          		}
          		continue;

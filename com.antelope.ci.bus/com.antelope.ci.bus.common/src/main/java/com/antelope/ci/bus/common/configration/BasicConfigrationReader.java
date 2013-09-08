@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.common.configration;
 
+import java.io.InputStream;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
@@ -61,6 +62,27 @@ public abstract class BasicConfigrationReader {
 	 * @throws CIBusException
 	 */
 	public abstract void addResource(String resource, int start) throws CIBusException;
+	
+	/**
+	 * 由输入流加载配置
+	 * @param  @param in
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
+	 */
+	public abstract void addInputStream(InputStream in) throws CIBusException;
+	
+	/**
+	 * 由输入流加载配置
+	 * 并且记录中的属性需要满足如果key为int型，
+	 * 必须为大于start的值
+	 * @param  @param in
+	 * @param  @param start
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
+	 */
+	public abstract void addInputStream(InputStream in, int start) throws CIBusException;
 	
 	/**
 	 * 从资源表中删除资源

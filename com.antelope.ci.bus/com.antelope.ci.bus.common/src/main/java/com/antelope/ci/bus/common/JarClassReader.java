@@ -120,9 +120,6 @@ public class JarClassReader {
 		String cpa = packageName.replace("/", ".");
 		DebugUtil.assert_out(jarFile.getName());
 		for (String pa : packageMap.keySet()) {
-			if (jarFile.getName().endsWith("rt.jar")) {
-				DebugUtil.assert_out("rt.jar package = " + pa);
-			}
 			if (pa.startsWith(cpa))
 				pList.add(pa);
 		}

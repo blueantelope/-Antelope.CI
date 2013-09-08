@@ -16,6 +16,7 @@ import org.osgi.framework.ServiceReference;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.BusServerConfig.KT;
 
 /**
  * 持续bus总线服务
@@ -26,8 +27,6 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @Date	 2013-7-30		下午11:23:33 
  */
 public class BusServerActivator extends CommonBusActivator {
-	private static final String SERVER_PORT_KEY				= "bus.server.port";
-	private static final int DEFAULT_ERVER_PORT 			= 9426;
 	private static Logger log4j;			// log4j
 	private BusServer server;
 
@@ -41,8 +40,10 @@ public class BusServerActivator extends CommonBusActivator {
 	protected void run() throws CIBusException {
 		try {
 			server = new BusServer();
-			int port = getIntProp(SERVER_PORT_KEY, DEFAULT_ERVER_PORT);
-			server.setPort(port);
+			BusServerConfig config = BusServerConfig.fromProps(properties);
+			if (config.getKt() == KT.DYNAMIC)
+				config.setKey_url(getResource(config.getKey_name()));
+			server.setConfig(config);
 			server.start();
 		} catch (IOException e) {
 			throw new CIBusException("", e);

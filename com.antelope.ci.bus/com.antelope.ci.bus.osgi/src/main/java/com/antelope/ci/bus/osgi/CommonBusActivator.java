@@ -24,7 +24,7 @@ import org.osgi.framework.ServiceReference;
 import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
-import com.antelope.ci.bus.common.configration.ResourceReader;
+import com.antelope.ci.bus.common.configration.URLResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -39,19 +39,20 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	private static final String LOGSERVICE_CLSNAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	private static final String PACKET_SUFFIX = "com.antelope.ci.bus";
 	private static final String PACKET_SERVICE = "service";
-	private static final String PROPS_FILE = "bus";
+	private static final String PROPS_FILE = "/META-INF/bus.properties";
 	private static final String BUS_LOAD_SERVICES = "bus.load.services";
 	private static final String DIVISION = ",";
 	protected BundleContext m_context;
 	protected static Map<String, ServiceReference> serviceMap = new HashMap<String, ServiceReference>();
-	protected static Properties properties;				// bundle的属性
+	protected static Properties properties;													// bundle的属性
 	protected List<String> loadServices = new ArrayList<String>();				// 需要加载的service列表
 	protected static ServiceReference log_ref = null;
 	protected static Object logService = null;
 	
 	
 	public CommonBusActivator() {
-		
+		super();
+		properties = new Properties();
 	}
 	
 	public CommonBusActivator(Properties props) {
@@ -68,6 +69,13 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	
 	public static ServiceReference getService(String clazz) {
 		return serviceMap.get(clazz);
+	}
+	
+	protected URL getResource(String name) {
+		if (m_context != null)
+			return m_context.getBundle().getResource("/" + name);
+		
+		return null;
 	}
 	
 	/**
@@ -100,9 +108,10 @@ public abstract class CommonBusActivator implements BundleActivator, ServiceList
 	private void loadProps() throws CIBusException {
 		URL props_url = m_context.getBundle().getResource(PROPS_FILE);
 		if (props_url != null) {
-			BasicConfigrationReader reader = new ResourceReader();
-			reader.addResource(props_url.getFile());
-			properties = reader.getProps();
+			DebugUtil.assert_out("bus.properties url为" + props_url);
+			BasicConfigrationReader reader = new URLResourceReader();
+			reader.addResource(props_url.toString());
+			properties.putAll(reader.getProps());
 		}
 	}
 	

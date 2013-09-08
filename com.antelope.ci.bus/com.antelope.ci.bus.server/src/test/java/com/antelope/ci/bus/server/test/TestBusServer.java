@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.server.BusServer;
+import com.antelope.ci.bus.server.BusServerConfig;
 
 
 /**
@@ -35,7 +36,8 @@ public class TestBusServer extends TestCase {
 	public void testServer() throws IOException {
 		System.setProperty(BusConstants.CACHE_DIR, "/data/temp");
 		BusServer server = new BusServer();
-		server.setPort(9426);
+		BusServerConfig config = new BusServerConfig();
+		server.setConfig(config);
 		server.start();
 	}
 

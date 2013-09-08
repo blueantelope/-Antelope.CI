@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.common.configration;
 
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -76,6 +77,26 @@ public class ResourceReader extends BasicConfigrationReader {
 			}
 		}
 		throw new CIBusException("");
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addInputStream(java.io.InputStream)
+	 */
+	@Override
+	public void addInputStream(InputStream in) throws CIBusException {
+		
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addInputStream(java.io.InputStream, int)
+	 */
+	@Override
+	public void addInputStream(InputStream in, int start) throws CIBusException {
+		
 	}
 }
 

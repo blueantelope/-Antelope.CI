@@ -36,7 +36,6 @@
 		<copy todir="${app.server.lib.ext}">
 			<fileset dir="${target.depends}">
 				<include name="log4j*.jar" />
-				<include name="slf4j*.jar" />
 				<include name="com.antelope.ci.bus.common-0.1.0.jar" />
 				<include name="com.antelope.ci.bus.osgi-0.1.0.jar" />
 			</fileset>
@@ -66,6 +65,8 @@
 				<include name="jpam*.jar" />
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
+				<include name="slf4j*.jar" />
+				<include name="bcprov-jdk15*.jar" />
 			</fileset>
 		</copy>
 		

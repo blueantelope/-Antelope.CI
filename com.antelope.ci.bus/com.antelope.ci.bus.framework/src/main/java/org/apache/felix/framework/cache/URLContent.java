@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 
-import com.antelope.ci.bus.common.DebugUtil;
-
 
 /**
  * url content
@@ -59,7 +57,6 @@ public class URLContent implements Content {
 	@Override
 	public byte[] getEntryAsBytes(String name) {
 		if (url.toString().endsWith((name))) {
-			DebugUtil.assert_out("find class url = " + url);
 			InputStream in = null;
 			ByteArrayOutputStream bos = null;
 			try {
@@ -95,10 +92,17 @@ public class URLContent implements Content {
 
 	@Override
 	public InputStream getEntryAsStream(String name) throws IOException {
+		if (url.toString().endsWith((name))) {
+			InputStream in = null;
+			try {
+				in = url.openStream();
+				return in;
+			} catch (Exception e) {
+				return null;
+			}
+		}
 		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
 
 	@Override
@@ -119,10 +123,7 @@ public class URLContent implements Content {
 
 	@Override
 	public URL getEntryAsURL(String name) {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
+		return url;
 	}
 
 }
