@@ -12,6 +12,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.antelope.ci.bus.common.configration.JarResourceReader;
@@ -33,6 +34,7 @@ public class JarBusProperty {
 	private String system_lib_props;				// 需要加入classLoader路径中的系统参数，形如System.getProperty("java.home")
 	private String load_jars;							// 需要自定义加载进classLoader中的jar路径, url方式
 	private String load_classes;						// 加载进classLoad中的class,如果最后以*结尾，代表此包下的所有类
+	private boolean load_jvm;							// 是否加载jvm的环境
 	
 	// getter and setter
 	public JarLoadMethod getLoad() {
@@ -83,7 +85,12 @@ public class JarBusProperty {
 	public void setLoad_classes(String load_classes) {
 		this.load_classes = load_classes;
 	}
-	
+	public boolean isLoad_jvm() {
+		return load_jvm;
+	}
+	public void setLoad_jvm(boolean load_jvm) {
+		this.load_jvm = load_jvm;
+	}
 	
 	/**
 	 * 解析系统lib定义参数
@@ -154,6 +161,21 @@ public class JarBusProperty {
 		return urlList;
 	}
 	
+	/*
+	 * 是否加载jvm环境
+	 * 如果是，将所有的jvm启动依赖加载进来
+	 */
+	private List<URL> loadJvm() {
+		List<URL> urlList = new ArrayList<URL>();
+		if (load_jvm) {
+			sun.misc.URLClassPath ucp = sun.misc.Launcher.getBootstrapClassPath();
+			URL[] urls = ucp.getURLs();
+			urlList.addAll(Arrays.asList(urls));
+		}
+		
+		return urlList;
+	}
+	
 	
 	/**
 	 * 取得加载此jar的依赖库环境
@@ -166,6 +188,7 @@ public class JarBusProperty {
 		urlList.addAll(sysLibPropToUrl());
 		urlList.addAll(mergeLoadJars());
 		urlList.addAll(parseLoadClasses());
+		urlList.addAll(loadJvm());
 		return urlList;
 	}
 	
@@ -222,7 +245,10 @@ public class JarBusProperty {
 		busProperty.setSystem_lib_props(reader.getString(BusConstants.JAR_SYSTEM_PROP));
 		busProperty.setLoad_jars(reader.getString(BusConstants.JAR_LOADER_LIST));
 		busProperty.setLoad_classes(reader.getString(BusConstants.JAR_LOADER_CLASSES));
+		busProperty.setLoad_jvm(reader.getBoolean(BusConstants.JAR_LOADER_JVM, false));
 		busProperty.setServices(reader.getString(BusConstants.JAR_SERVICES));
+		busProperty.setServices(reader.getString(BusConstants.JAR_SERVICES));
+		
 		
 		return busProperty;
     }

@@ -50,7 +50,7 @@ public class BusServerConfig {
 	}
 	
 	private int port = 9426;
-	private KT kt = KT.STATIC;
+	private KT kt = KT.DYNAMIC;
 	private String key_name = "com.antelope.ci.bus.key";
 	private URL key_url = null;
 	private String welcome_banner = "SSH-2.0-CIBUS";

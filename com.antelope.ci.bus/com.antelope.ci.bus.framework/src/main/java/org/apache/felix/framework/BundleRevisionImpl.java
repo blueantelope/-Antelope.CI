@@ -407,16 +407,6 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         // Find class path meta-data.
         String classPath = (String) ((BundleRevisionImpl) revision)
             .getHeaders().get(FelixConstants.BUNDLE_CLASSPATH);
-        // define by ci bus, modify by @blueantelope at 2013-08-26
-        String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
-        if (ext_libs != null) {
-	        	if (classPath == null) {
-	        		classPath =  ".," + ext_libs;
-	        	} else {
-	        		classPath += "," + ext_libs;
-	        	}
-//	       	DebugUtil.assert_out("after bundle classapath = " + classPath);
-        }
         // Parse the class path into strings.
         List<String> classPathStrings = ManifestParser.parseDelimitedString(
             classPath, FelixConstants.CLASS_PATH_SEPARATOR);
@@ -431,20 +421,6 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         {
             // Remove any leading slash, since all bundle class path
             // entries are relative to the root of the bundle.
-        	 	try {
-         		String cs = classPathStrings.get(i);
-         		URL u = new URL(cs);
-         		if (cs.endsWith(".jar")) {
-         			localContentList.add(new JarURLContent(u));
-         		} else {
-//             	 	DebugUtil.assert_out("url content内容 = " + u);
-             	 	localContentList.add(new URLContent(u));
-         		}
-         		continue;
-	         } catch (MalformedURLException e) {
-	         	
-	         }
-        	
             classPathStrings.set(i, (classPathStrings.get(i).startsWith("/"))
                 ? classPathStrings.get(i).substring(1)
                 : classPathStrings.get(i));
@@ -495,6 +471,29 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         if (localContentList.isEmpty())
         {
             localContentList.add(content);
+        }
+        
+        // define by ci bus, modify by @blueantelope at 2013-08-26
+        String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
+        if (ext_libs != null) {
+        		List<String> extClassPathStrings = ManifestParser.parseDelimitedString(
+        				ext_libs, FelixConstants.CLASS_PATH_SEPARATOR);
+        		if (extClassPathStrings == null) {
+        			extClassPathStrings = new ArrayList<String>(0);
+        	    }
+        	    for (int i = 0; i < extClassPathStrings.size(); i++) {
+	        	 	try {
+	         		String cs = extClassPathStrings.get(i);
+	         		URL u = new URL(cs);
+	         		if (cs.endsWith(".jar")) {
+	         			localContentList.add(new JarURLContent(u));
+	         		} else if (cs.endsWith(".class")){
+	             	 	localContentList.add(new URLContent(u));
+	         		}
+		         } catch (Exception e) {
+		        	 	
+		         }
+        		}
         }
 
         // Now add the local contents to the global content list and return it.
