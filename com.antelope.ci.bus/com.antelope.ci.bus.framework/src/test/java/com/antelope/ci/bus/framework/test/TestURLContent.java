@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package org.apache.felix.framework.cache.test;
+package com.antelope.ci.bus.framework.test;
 
 import java.io.File;
 import java.net.MalformedURLException;

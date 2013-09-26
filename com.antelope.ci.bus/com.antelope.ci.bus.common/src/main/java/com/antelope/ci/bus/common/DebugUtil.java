@@ -25,10 +25,28 @@ public class DebugUtil {
 	 * @throws
 	 */
 	public static void assert_out(String s) {
+		if (isAssert())
+			System.out.println(s);
+	}
+	
+	/**
+	 * assert错误输出
+	 * @param  @param s
+	 * @return void
+	 * @throws
+	 */
+	public static void assert_err(String s) {
+		if (isAssert())
+			System.err.println(s);
+	}
+	
+	/*
+	 * assert是否打开, -ea参数
+	 */
+	private static boolean isAssert() {
 		boolean opened = false;
 		assert opened = true;
-		if (opened)
-			System.out.println(s);
+		return opened;
 	}
 }
 

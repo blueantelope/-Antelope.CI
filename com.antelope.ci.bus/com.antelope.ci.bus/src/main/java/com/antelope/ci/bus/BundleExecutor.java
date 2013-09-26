@@ -12,9 +12,12 @@ import java.net.URL;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 
 import com.antelope.ci.bus.common.BusConstants;
+import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.JarLoadMethod;
+import com.antelope.ci.bus.common.StringUtil;
 
 
 /**
@@ -59,14 +62,9 @@ class BundleExecutor {
 	 * bundle启动时，自动将这些jar的路径加载进classpath
 	 */
 	private void attachBundleClassUrl(Bundle bundle) {
-		String ext_libs = "";
-		for (URL clsUrl : loader.clsUrlList) {
-			ext_libs += clsUrl+ ",";
-		}
-		if (!"".equals(ext_libs)) {
-			ext_libs = ext_libs.substring(0, ext_libs.length()-1);
-		}
-		bundle.getHeaders().put(BusConstants.BUS_EXT_LIBS, ext_libs);
+		String ext_libs = StringUtil.convertUrlList(loader.clsUrlList, ",");
+		bundle.getHeaders().put(Constants.BUNDLE_CLASSPATH, ext_libs);
+//		bundle.getHeaders().put(BusConstants.BUS_EXT_LIBS, ext_libs);
 	}
 	
 	/*

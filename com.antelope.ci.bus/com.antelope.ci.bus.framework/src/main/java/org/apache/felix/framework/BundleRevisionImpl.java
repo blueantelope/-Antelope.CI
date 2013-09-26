@@ -410,6 +410,12 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         // Parse the class path into strings.
         List<String> classPathStrings = ManifestParser.parseDelimitedString(
             classPath, FelixConstants.CLASS_PATH_SEPARATOR);
+        
+        String bundle_classPath = m_bundle.getHeaders().get(FelixConstants.BUNDLE_CLASSPATH);
+        DebugUtil.assert_out(FelixConstants.BUNDLE_CLASSPATH + " : " + bundle_classPath);
+        List<String> bundleClassPathStrings = ManifestParser.parseDelimitedString(
+        		bundle_classPath, FelixConstants.CLASS_PATH_SEPARATOR);
+        classPathStrings.addAll(bundleClassPathStrings);
 
         if (classPathStrings == null)
         {
@@ -496,6 +502,24 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         		}
         }
 
+        
+        // define by ci bus, modify by @blueantelope at 2013-08-26
+        String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
+        List<String> extLibStrings = ManifestParser.parseDelimitedString(
+        		ext_libs, FelixConstants.CLASS_PATH_SEPARATOR);
+        for (String extLib : extLibStrings) {
+    	 	try {
+	     		URL u = new URL(extLib);
+	     		if (extLib.endsWith(".jar")) {
+	     			localContentList.add(new JarURLContent(u));
+	     		} else {
+	         	 	localContentList.add(new URLContent(u));
+	     		}
+    	 	} catch (MalformedURLException e) {
+    	 		DebugUtil.assert_err(e.toString());
+    	 	}
+        }
+        
         // Now add the local contents to the global content list and return it.
         contentList.addAll(localContentList);
         return contentList;
