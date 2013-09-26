@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import org.apache.felix.framework.cache.Content;
 import org.apache.felix.framework.cache.JarContent;
 import org.apache.felix.framework.capabilityset.SimpleFilter;
@@ -71,6 +72,8 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Wire;
+
+import com.antelope.ci.bus.common.DebugUtil;
 
 public class BundleWiringImpl implements BundleWiring
 {
@@ -1529,11 +1532,13 @@ public class BundleWiringImpl implements BundleWiring
         {
             if (isClass)
             {
+            	DebugUtil.assert_err("class can not been loaded : = " + name);
                 throw new ClassNotFoundException(
                     name + " not found by " + this.getBundle());
             }
             else
             {
+            	DebugUtil.assert_err("resouce can not been loaded : = " + name);
                 throw new ResourceNotFoundException(
                     name + " not found by " + this.getBundle());
             }

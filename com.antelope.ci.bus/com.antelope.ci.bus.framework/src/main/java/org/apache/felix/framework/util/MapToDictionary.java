@@ -18,7 +18,12 @@
  */
 package org.apache.felix.framework.util;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Map;
+
+import org.osgi.framework.Constants;
 
 
 /**
@@ -27,6 +32,10 @@ import java.util.*;
 **/
 public class MapToDictionary extends Dictionary
 {
+	private static final String[] Trust_Keys = new String[]{
+		Constants.BUNDLE_CLASSPATH
+	};
+	
     /**
      * Map source.
     **/
@@ -67,6 +76,13 @@ public class MapToDictionary extends Dictionary
     	if (key.toString().startsWith("bus.")) {
     		m_map.put(key,  value);
     		return value;
+    	}
+    	
+    	for (String trust_Key : Trust_Keys) {
+    		if (key.toString().equals(trust_Key)) {
+    			m_map.put(key,  value);
+        		return value;
+    		}
     	}
     	
         throw new UnsupportedOperationException();

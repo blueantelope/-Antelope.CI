@@ -18,6 +18,13 @@
 		</exec>
 	</target>
 	
+	<target name="framework.compile-unix.notest">
+		<exec executable="mvn">
+			<arg line="-f ${prj.framework.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	
 	<target name="framework.compile-win">
 		<exec executable="cmd">
 			<arg line="/c" />
@@ -27,10 +34,26 @@
 		</exec>
 	</target>
 	
+	<target name="framework.compile-win.notest">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.framework.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	
 	<target name="common.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.common.pom}" />
 			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="common.compile-unix.notest">
+		<exec executable="mvn">
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -42,11 +65,27 @@
 			<arg line="install" />
 		</exec>
 	</target>
+	
+	<target name="common.compile-win.notest">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
 
 	<target name="osgi.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.osgi.pom}" />
 			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="osgi.compile-unix.notest">
+		<exec executable="mvn">
+			<arg line="-f ${prj.osgi.pom}" />
+			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -59,10 +98,26 @@
 		</exec>
 	</target>
 	
+	<target name="osgi.compile-win.notest">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.osgi.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	
 	<target name="bus.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.bus.pom}" />
 			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="bus.compile-unix.notest">
+		<exec executable="mvn">
+			<arg line="-f ${prj.bus.pom}" />
+			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -75,10 +130,26 @@
 		</exec>
 	</target>
 	
+	<target name="bus.compile-win.notest">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.bus.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	
 	<target name="server.compile-unix">
 		<exec executable="mvn">
 			<arg line="-f ${prj.server.pom}" />
 			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="server.compile-unix.notest">
+		<exec executable="mvn">
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -88,6 +159,15 @@
 			<arg line="mvn" />
 			<arg line="-f ${prj.server.pom}" />
 			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="server.compile-win.notest">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 
@@ -116,12 +196,28 @@
 		</exec>
 	</target>
 	
+	<target name="logger.compile-unix.notest">
+		<exec executable="mvn">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	
 	<target name="logger.compile-win">
 		<exec executable="cmd">
 			<arg line="/c" />
 			<arg line="mvn" />
 			<arg line="-f ${prj.logger.pom}" />
 			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="logger.compile-win.notest">
+		<exec executable="cmd">
+			<arg line="/c" />
+			<arg line="mvn" />
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 

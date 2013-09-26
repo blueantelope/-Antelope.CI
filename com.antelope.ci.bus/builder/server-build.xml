@@ -13,6 +13,17 @@
 		<antcall target="make" /> 
 	</target>
 	
+	<target name="build-unix-notest" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-unix.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-unix.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-unix.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-unix.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends-unix" />
+		<antcall target="make" /> 
+	</target>
+	
 	<target name="build-win" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win" />
@@ -20,6 +31,17 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-win" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
+		<antcall target="make" />
+	</target>
+	
+	<target name="build-win-notest" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-win.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-win.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
 		<antcall target="make" />
 	</target>

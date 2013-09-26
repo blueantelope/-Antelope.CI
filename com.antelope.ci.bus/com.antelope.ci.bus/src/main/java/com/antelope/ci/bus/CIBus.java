@@ -23,6 +23,7 @@ import java.util.jar.Manifest;
 
 import org.apache.felix.framework.FrameworkFactory;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.launch.Framework;
 import org.osgi.service.startlevel.StartLevel;
@@ -32,6 +33,7 @@ import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.JarBusProperty;
 import com.antelope.ci.bus.common.JarLoadMethod;
 import com.antelope.ci.bus.common.ResourceUtil;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -356,6 +358,7 @@ public class CIBus {
         parameters.put("felix.cache.profiledir", cache_dir);
         parameters.put("felix.cache.dir", cache_dir);
         parameters.put("org.osgi.framework.storage", cache_dir);
+        genBundleClassPath();
 //        addSystemPackages();
 	}
 	
@@ -516,6 +519,13 @@ public class CIBus {
 				new BundleExecutor(loader).execute();
 			}
 		}
+	}
+	
+	/*
+	 * 产生Bundle-ClassPath参数
+	 */
+	private void genBundleClassPath() {
+		parameters.put(Constants.BUNDLE_CLASSPATH, StringUtil.convertUrlList(FileUtil.getAllJar(lib_ext_dir), ","));
 	}
 }
 
