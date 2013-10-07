@@ -98,6 +98,10 @@ public class TestUtils extends TestCase {
 	}
 
 	public static File createBundle() throws IOException {
+		return createBundle(TestBundleActivator.class);
+	}
+	
+	public static File createBundle(Class clazz) throws IOException {
 		String manifest = "Bundle-SymbolicName: boot.test\n"
 	            + "Bundle-Version: 1.1.0\n"
 	            + "Bundle-ManifestVersion: 2\n"
@@ -105,19 +109,15 @@ public class TestUtils extends TestCase {
 		File f = File.createTempFile("felix-bundle", ".jar");
 		f.deleteOnExit();
 
-		Manifest mf = new Manifest(new ByteArrayInputStream(
-				manifest.getBytes("utf-8")));
+		Manifest mf = new Manifest(new ByteArrayInputStream(manifest.getBytes("utf-8")));
 		mf.getMainAttributes().putValue("Manifest-Version", "1.0");
-		mf.getMainAttributes().putValue(Constants.BUNDLE_ACTIVATOR,
-				TestBundleActivator.class.getName());
+		mf.getMainAttributes().putValue(Constants.BUNDLE_ACTIVATOR, clazz.getName());
 		JarOutputStream os = new JarOutputStream(new FileOutputStream(f), mf);
 
-		String path = TestBundleActivator.class.getName().replace('.', '/')
-				+ ".class";
+		String path = clazz.getName().replace('.', '/') + ".class";
 		os.putNextEntry(new ZipEntry(path));
 
-		InputStream is = TestBundleActivator.class.getClassLoader()
-				.getResourceAsStream(path);
+		InputStream is = clazz.getClassLoader().getResourceAsStream(path);
 		byte[] b = new byte[is.available()];
 		is.read(b);
 		is.close();
