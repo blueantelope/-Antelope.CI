@@ -64,7 +64,7 @@ class BundleExecutor {
 	private void attachBundleClassUrl(Bundle bundle) {
 		String ext_libs = StringUtil.convertUrlList(loader.clsUrlList, ",");
 //		bundle.getHeaders().put(Constants.BUNDLE_CLASSPATH, ext_libs);
-		bundle.getHeaders().put(BusConstants.BUS_EXT_LIBS, ext_libs);
+//		bundle.getHeaders().put(BusConstants.BUS_EXT_LIBS, ext_libs);
 	}
 	
 	/*

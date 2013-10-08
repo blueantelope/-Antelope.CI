@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.List;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -106,6 +108,10 @@ public class TestUtils extends TestCase {
 	            + "Bundle-Version: 1.1.0\n"
 	            + "Bundle-ManifestVersion: 2\n"
 	            + "Import-Package: org.osgi.framework\n";
+		return createBundle(manifest, clazz);
+	}
+	
+	public static File createBundle(String manifest, Class clazz) throws IOException {
 		File f = File.createTempFile("felix-bundle", ".jar");
 		f.deleteOnExit();
 
@@ -116,6 +122,31 @@ public class TestUtils extends TestCase {
 
 		String path = clazz.getName().replace('.', '/') + ".class";
 		os.putNextEntry(new ZipEntry(path));
+
+		InputStream is = clazz.getClassLoader().getResourceAsStream(path);
+		byte[] b = new byte[is.available()];
+		is.read(b);
+		is.close();
+		os.write(b);
+
+		os.close();
+		return f;
+	}
+	
+	public static File createBundle(String manifest, Class clazz, List<URL> urlList) throws IOException {
+		File f = File.createTempFile("felix-bundle", ".jar");
+		f.deleteOnExit();
+
+		Manifest mf = new Manifest(new ByteArrayInputStream(manifest.getBytes("utf-8")));
+		mf.getMainAttributes().putValue("Manifest-Version", "1.0");
+		mf.getMainAttributes().putValue(Constants.BUNDLE_ACTIVATOR, clazz.getName());
+		JarOutputStream os = new JarOutputStream(new FileOutputStream(f), mf);
+
+		String path = clazz.getName().replace('.', '/') + ".class";
+		os.putNextEntry(new ZipEntry(path));
+		for (URL url : urlList) {
+			os.putNextEntry(new ZipEntry(url.getFile()));
+		}
 
 		InputStream is = clazz.getClassLoader().getResourceAsStream(path);
 		byte[] b = new byte[is.available()];

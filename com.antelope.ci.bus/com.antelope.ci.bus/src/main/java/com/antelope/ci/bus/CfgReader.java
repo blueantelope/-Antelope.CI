@@ -35,10 +35,20 @@ public class CfgReader {
 	}
 	
 	/*
-	 * 加载bus.cnf
+	 * 加载配置文件
 	 */
 	void loadCnf(String path) throws CIBusException {
 		reader.addResource(path);
+	}
+	
+	/**
+	 * 取得配置中的参数读取类
+	 * @param  @return
+	 * @return BasicConfigrationReader
+	 * @throws
+	 */
+	public BasicConfigrationReader getConfigration() {
+		return reader;
 	}
 }
 

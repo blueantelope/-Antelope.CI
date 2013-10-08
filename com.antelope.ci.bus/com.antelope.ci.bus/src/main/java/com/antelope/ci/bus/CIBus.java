@@ -34,6 +34,7 @@ import com.antelope.ci.bus.common.JarBusProperty;
 import com.antelope.ci.bus.common.JarLoadMethod;
 import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -126,13 +127,20 @@ public class CIBus {
 	private static String bus_home;									// 根目录
 	private static RUN_MODE run_mode;							// 运行模式
 	private static String etc_dir;										// 配置目录
-	private static String system_dir;								// osgi系统包目录
+	private static String system_dir;									// osgi系统包目录
 	private static String system_ext_dir;							// osgi系统扩展包目录
 	private static String lib_dir;										// 系统jar目录
 	private static String lib_ext_dir;									// 系统扩展jar目录
 	private static String cache_dir;									// 运行时缓存目录
 	private static String plugin_dir;									// osgi plugin目录
-	private static String etc_bus_cfg;								// bus.cfg路径
+	private static String etc_bus_cfg;									// bus.cfg路径
+	private static String etc_custom_cfg;							// custom.cfg路径
+	private static String etc_environment_cfg;					// environment.cfg路径
+	private static BasicConfigrationReader configration;	// ect下配置文件参数集合
+	
+	// 参数属性名
+	private static String BOOT_ENVIRONMENT 					= "bus.boot.environment";
+	private static String BOOT_ENVIRONMENT_DEFAULT		= "jre-1.6";
 	
 	/**
 	 * 输入参数处理
@@ -246,6 +254,8 @@ public class CIBus {
 		lib_ext_dir = lib_dir + File.separator + "ext";
 		System.setProperty(BusConstants.LOG_CNF, etc_dir + File.separator + "log.cfg"); 
 		etc_bus_cfg = etc_dir + File.separator + "bus.cfg";
+		etc_custom_cfg = etc_dir + File.separator + "custom.cfg";
+		etc_environment_cfg = etc_dir + File.separator + "environment.cfg";
 		cache_dir = bus_home + File.separator + ".cache";
 		System.setProperty(BusConstants.CACHE_DIR, cache_dir);
 	}
@@ -254,7 +264,8 @@ public class CIBus {
 	 * 初始化开发模式
 	 */
 	private void initDevMode() {
-		FileUtil.delFolder(cache_dir);
+		// 配置storage目录为onFirstInit，当程序一运行即清空cache storage
+		parameters.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 	}
 	
 	/*
@@ -284,6 +295,9 @@ public class CIBus {
 	private void initEtc() throws CIBusException {
 		CfgReader reader = CfgReader.getCfg();
 		reader.loadCnf(etc_bus_cfg);
+		reader.loadCnf(etc_custom_cfg);
+		reader.loadCnf(etc_environment_cfg);
+		configration = reader.getConfigration();
 	}
 	
 	/*
@@ -357,8 +371,26 @@ public class CIBus {
 		parameters = new HashMap<String, String>();
         parameters.put("felix.cache.profiledir", cache_dir);
         parameters.put("felix.cache.dir", cache_dir);
-        parameters.put("org.osgi.framework.storage", cache_dir);
-        genBundleClassPath();
+        parameters.put(Constants.FRAMEWORK_STORAGE	, cache_dir);
+        // boot delegation of osgi 
+        String bootdelegation = "";
+        String boot_envs = configration.getString(BOOT_ENVIRONMENT, BOOT_ENVIRONMENT_DEFAULT);
+        if (boot_envs.equals(BOOT_ENVIRONMENT_DEFAULT)) {
+        	bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
+        } else {
+	    	for (String boot_env : boot_envs.split(",")) {
+	    		if (configration.getString(boot_env) != null) {
+	    			bootdelegation += configration.getString(boot_env) + ",";
+	    		}
+	    	}
+	    	if (bootdelegation.endsWith(","))
+	    		bootdelegation = bootdelegation.substring(0, bootdelegation.length()-1);
+        }
+    	if (bootdelegation.length() > 0) {
+        	parameters.put(Constants.FRAMEWORK_BOOTDELEGATION, bootdelegation);
+        	parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT, Constants.FRAMEWORK_BUNDLE_PARENT_APP);
+    	}
+//        genBundleClassPath();
 //        addSystemPackages();
 	}
 	
