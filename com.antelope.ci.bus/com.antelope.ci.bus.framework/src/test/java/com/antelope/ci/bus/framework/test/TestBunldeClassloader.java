@@ -30,6 +30,9 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 
+import com.antelope.ci.bus.common.FileUtil;
+import com.antelope.ci.bus.framework.test.TestUtils.JarEntryContent;
+
 
 
 /**
@@ -40,11 +43,10 @@ import org.osgi.framework.launch.Framework;
  * @Date	 2013-10-7		下午11:31:25 
  */
 public class TestBunldeClassloader extends TestBase {
-	private static URL log4j_url;
-	
 	@Before
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 	}
 
 	@Test
@@ -57,12 +59,14 @@ public class TestBunldeClassloader extends TestBase {
 						+ "org.osgi.util.tracker; version=1.3.3,"
 						+ "org.osgi.service.url; version=1.0.0,"
 						+ "jre-1.6");
-		params.put("org.osgi.framework.bootdelegation", " javax.xml.parsers, org.apache.log4j");
+		params.put("org.osgi.framework.bootdelegation", " javax.xml.parsers, org.apache.log4j, org.apache.log4j.*");
 		params.put(Constants.FRAMEWORK_BUNDLE_PARENT, "app");
-		File cacheDir = File.createTempFile("felix-cache", ".dir");
-		cacheDir.delete();
-		cacheDir.mkdirs();
-		String cache = cacheDir.getPath();
+		String cache = TestCreateBundleCache.class.getResource("/").getFile() + ".cache";
+		File cache_file = new File(cache);
+		if (cache_file.exists())
+			FileUtil.delFolder(cache_file.toString());
+		cache_file.mkdir();
+		
 		params.put("felix.cache.profiledir", cache);
 		params.put("felix.cache.dir", cache);
 		params.put(Constants.FRAMEWORK_STORAGE, cache);
@@ -71,8 +75,14 @@ public class TestBunldeClassloader extends TestBase {
 	            + "Bundle-Version: 1.1.0\n"
 	            + "Bundle-ManifestVersion: 2\n"
 	            + "Import-Package: org.osgi.framework\n";
-		log4j_url = TestBunldeClassloader.class.getResource("log4j.properties");
-		File bundleFile = TestUtils.createBundle(manifest, TestClassloaderActivator.class);
+		
+		List<JarEntryContent> contentList = new ArrayList<JarEntryContent>();
+		JarEntryContent content = new JarEntryContent(
+				TestBunldeClassloader.class.getResource("log4j.properties"), 
+				TestBunldeClassloader.class.getPackage().getName().replace('.', '/') + "/log4j.properties"
+				);
+		contentList.add(content);
+		File bundleFile = TestUtils.createBundle(manifest, TestClassloaderActivator.class, contentList);
 
 		Framework f = new Felix(params);
 		f.init();
@@ -87,6 +97,7 @@ public class TestBunldeClassloader extends TestBase {
 		@Override
 		public void start(BundleContext context) throws Exception {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			URL log4j_url = TestClassloaderActivator.class.getResource("log4j.properties");
 			PropertyConfigurator.configure(log4j_url);
 			Logger log = Logger.getLogger(TestClassloaderActivator.class);
 			log.info("log4j started");

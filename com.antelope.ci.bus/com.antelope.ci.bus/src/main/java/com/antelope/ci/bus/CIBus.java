@@ -376,20 +376,20 @@ public class CIBus {
         String bootdelegation = "";
         String boot_envs = configration.getString(BOOT_ENVIRONMENT, BOOT_ENVIRONMENT_DEFAULT);
         if (boot_envs.equals(BOOT_ENVIRONMENT_DEFAULT)) {
-        	bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
+        		bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
         } else {
-	    	for (String boot_env : boot_envs.split(",")) {
-	    		if (configration.getString(boot_env) != null) {
-	    			bootdelegation += configration.getString(boot_env) + ",";
-	    		}
-	    	}
-	    	if (bootdelegation.endsWith(","))
-	    		bootdelegation = bootdelegation.substring(0, bootdelegation.length()-1);
+        		for (String boot_env : boot_envs.split(",")) {
+		    		if (configration.getString(boot_env) != null) {
+		    			bootdelegation += configration.getString(boot_env) + ", ";
+		    		}
+        		}
+		    	if (bootdelegation.endsWith(", "))
+		    		bootdelegation = bootdelegation.substring(0, bootdelegation.length()-2);
         }
-    	if (bootdelegation.length() > 0) {
-        	parameters.put(Constants.FRAMEWORK_BOOTDELEGATION, bootdelegation);
-        	parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT, Constants.FRAMEWORK_BUNDLE_PARENT_APP);
-    	}
+	    	if (bootdelegation.length() > 0) {
+	        	parameters.put(Constants.FRAMEWORK_BOOTDELEGATION, bootdelegation);
+	        	parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT, Constants.FRAMEWORK_BUNDLE_PARENT_APP);
+	    	}
 //        genBundleClassPath();
 //        addSystemPackages();
 	}

@@ -9,10 +9,13 @@
 package com.antelope.ci.bus.framework.test;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -133,7 +136,7 @@ public class TestUtils extends TestCase {
 		return f;
 	}
 	
-	public static File createBundle(String manifest, Class clazz, List<URL> urlList) throws IOException {
+	public static File createBundle(String manifest, Class clazz, List<JarEntryContent> contentList) throws IOException {
 		File f = File.createTempFile("felix-bundle", ".jar");
 		f.deleteOnExit();
 
@@ -144,18 +147,35 @@ public class TestUtils extends TestCase {
 
 		String path = clazz.getName().replace('.', '/') + ".class";
 		os.putNextEntry(new ZipEntry(path));
-		for (URL url : urlList) {
-			os.putNextEntry(new ZipEntry(url.getFile()));
-		}
-
 		InputStream is = clazz.getClassLoader().getResourceAsStream(path);
 		byte[] b = new byte[is.available()];
 		is.read(b);
 		is.close();
 		os.write(b);
+		os.closeEntry();
+		
+		for (JarEntryContent content : contentList) {
+			os.putNextEntry(new ZipEntry(content.path));
+			InputStream url_is = content.url.openStream();
+			byte[] bs = new byte[url_is.available()];
+			url_is.read(bs);
+			url_is.close();
+			os.write(bs);
+			os.closeEntry();
+		}
 
 		os.close();
 		return f;
+	}
+	
+	public static class JarEntryContent {
+		public URL url;
+		public String path;
+		public JarEntryContent(URL url, String path) {
+			super();
+			this.url = url;
+			this.path = path;
+		}
 	}
 	
 	public static void modifyField(Object instance, String name, Object value) throws Exception {
@@ -181,6 +201,15 @@ public class TestUtils extends TestCase {
 		modifyField(t, "i", 2);
 		i = (Integer) getField(t, "i");
 		System.out.println("after i = " + i);
+	}
+	
+	public Object deepClone(Object o) throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(o);
+		oos.flush();
+		ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+		return ois.readObject();
 	}
 
 	public static void main(String[] args) {
