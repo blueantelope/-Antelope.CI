@@ -42,7 +42,7 @@ import com.antelope.ci.bus.framework.test.TestUtils.JarEntryContent;
  * @version  0.1
  * @Date	 2013-10-7		下午11:31:25 
  */
-public class TestBunldeClassloader extends TestBase {
+public class TestBundleBootDelegation extends TestBase {
 	@Before
 	@Override
 	protected void setUp() throws Exception {
@@ -78,11 +78,11 @@ public class TestBunldeClassloader extends TestBase {
 		
 		List<JarEntryContent> contentList = new ArrayList<JarEntryContent>();
 		JarEntryContent content = new JarEntryContent(
-				TestBunldeClassloader.class.getResource("log4j.properties"), 
-				TestBunldeClassloader.class.getPackage().getName().replace('.', '/') + "/log4j.properties"
+				TestBundleBootDelegation.class.getResource("log4j.properties"), 
+				TestBundleBootDelegation.class.getPackage().getName().replace('.', '/') + "/log4j.properties"
 				);
 		contentList.add(content);
-		File bundleFile = TestUtils.createBundle(manifest, TestClassloaderActivator.class, contentList);
+		File bundleFile = TestUtils.createBundle(manifest, TestBundleBootDelegationActivator.class, contentList);
 
 		Framework f = new Felix(params);
 		f.init();
@@ -92,14 +92,14 @@ public class TestBunldeClassloader extends TestBase {
 		bundle.start();
 	}
 	
-	public static class TestClassloaderActivator implements BundleActivator {
+	public static class TestBundleBootDelegationActivator implements BundleActivator {
 
 		@Override
 		public void start(BundleContext context) throws Exception {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			URL log4j_url = TestClassloaderActivator.class.getResource("log4j.properties");
+			URL log4j_url = TestBundleBootDelegationActivator.class.getResource("log4j.properties");
 			PropertyConfigurator.configure(log4j_url);
-			Logger log = Logger.getLogger(TestClassloaderActivator.class);
+			Logger log = Logger.getLogger(TestBundleBootDelegationActivator.class);
 			log.info("log4j started");
 			System.out.println("start test activator");
 		}
@@ -114,7 +114,7 @@ public class TestBunldeClassloader extends TestBase {
 	}
 	
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestBunldeClassloader.class);
+		junit.textui.TestRunner.run(TestBundleBootDelegation.class);
 	}
 }
 
