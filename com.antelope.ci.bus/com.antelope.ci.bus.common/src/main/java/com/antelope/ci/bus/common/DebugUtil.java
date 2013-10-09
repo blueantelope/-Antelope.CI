@@ -40,6 +40,17 @@ public class DebugUtil {
 			System.err.println(s);
 	}
 	
+	/**
+	 * 输出异常
+	 * @param  @param s
+	 * @return void
+	 * @throws
+	 */
+	public static void assert_exception(Exception e) {
+		if (isAssert())
+			e.printStackTrace(System.err);
+	}
+	
 	/*
 	 * assert是否打开, -ea参数
 	 */

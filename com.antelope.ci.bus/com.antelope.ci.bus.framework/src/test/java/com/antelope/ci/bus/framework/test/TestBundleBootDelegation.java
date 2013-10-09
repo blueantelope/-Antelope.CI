@@ -46,7 +46,7 @@ public class TestBundleBootDelegation extends TestBase {
 	@Before
 	@Override
 	protected void setUp() throws Exception {
-		super.setUp();
+		// nothing to do
 	}
 
 	@Test

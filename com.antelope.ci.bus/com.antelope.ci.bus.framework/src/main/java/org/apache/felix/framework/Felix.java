@@ -99,6 +99,7 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.packageadmin.ExportedPackage;
 
+import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.DebugUtil;
 
 public class Felix extends BundleImpl implements Framework
@@ -2066,6 +2067,21 @@ public class Felix extends BundleImpl implements Framework
                     return;
                 case Bundle.INSTALLED:
                     resolveBundleRevision(bundle.adapt(BundleRevision.class));
+                    // TODO 解析bus.perperties中的url
+                    if (bundle.getHeaders().get(BusConstants.BUS_BUNDLE_URLS) != null) {
+                    	List<URL> bundle_url_list = new ArrayList<URL>();
+                    	String bundle_urls = (String) bundle.getHeaders().get(BusConstants.BUS_BUNDLE_URLS);
+                    	for (String bundle_url : bundle_urls.split(",")) {
+                    		try {
+								bundle_url_list.add(new URL(bundle_url));
+							} catch (MalformedURLException e) {
+								DebugUtil.assert_exception(e);
+							}
+                    	}
+                    	if (!bundle_url_list.isEmpty()) {
+                    		
+                    	}
+                    }
                     // No break.
                 case Bundle.RESOLVED:
                     // Set the bundle's context.

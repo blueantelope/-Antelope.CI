@@ -8,21 +8,18 @@
 
 package com.antelope.ci.bus;
 
-import java.net.URL;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Constants;
 
 import com.antelope.ci.bus.common.BusConstants;
-import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.JarLoadMethod;
 import com.antelope.ci.bus.common.StringUtil;
 
 
 /**
- * TODO 描述
- *
+ * bundle运行器
+ * 根据设置运行各个bundle
+ * 包括运行的方式，级别，加载的url
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-8-26		下午2:07:03 
@@ -46,7 +43,7 @@ class BundleExecutor {
 			if (loader.method == JarLoadMethod.INSTALL || loader.method == JarLoadMethod.START) {
 				Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
 				if (loader.clsUrlList != null) {
-					attachBundleClassUrl(bundle);
+					attachBundleUrl(bundle);
 				}
 				if (loader.method == JarLoadMethod.START) {
 					startBundle(bundle);
@@ -59,12 +56,12 @@ class BundleExecutor {
 	
 	/*
 	 * 将lib_ext目录下的jar包附加到扩展bundle中
-	 * bundle启动时，自动将这些jar的路径加载进classpath
+	 * bundle启动时，将新建新的classloader将这此
+	 * url加载进来
 	 */
-	private void attachBundleClassUrl(Bundle bundle) {
-		String ext_libs = StringUtil.convertUrlList(loader.clsUrlList, ",");
-//		bundle.getHeaders().put(Constants.BUNDLE_CLASSPATH, ext_libs);
-//		bundle.getHeaders().put(BusConstants.BUS_EXT_LIBS, ext_libs);
+	private void attachBundleUrl(Bundle bundle) {
+		String bundle_urls = StringUtil.convertUrlList(loader.clsUrlList, ",");
+		bundle.getHeaders().put(BusConstants.BUS_BUNDLE_URLS, bundle_urls);
 	}
 	
 	/*

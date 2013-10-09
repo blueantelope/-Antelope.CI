@@ -480,23 +480,23 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         }
         
         // define by ci bus, modify by @blueantelope at 2013-08-26
-        String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
-        if (ext_libs != null) {
-        		List<String> extClassPathStrings = ManifestParser.parseDelimitedString(
-        				ext_libs, FelixConstants.CLASS_PATH_SEPARATOR);
-        		 for (String extClassPath : extClassPathStrings) {
-	        	 	try {
-	         		URL u = new URL(extClassPath);
-	         		if (extClassPath.endsWith(".jar")) {
-	         			localContentList.add(new JarURLContent(u));
-	         		} else if (extClassPath.endsWith(".class")){
-	             	 	localContentList.add(new URLContent(u));
-	         		}
-		         } catch (Exception e) {
-		        	 	DebugUtil.assert_err(e.toString());
-		         }
-        		}
-        }
+//        String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
+//        if (ext_libs != null) {
+//    		List<String> extClassPathStrings = ManifestParser.parseDelimitedString(
+//    				ext_libs, FelixConstants.CLASS_PATH_SEPARATOR);
+//    		 for (String extClassPath : extClassPathStrings) {
+//        	 	try {
+//	         		URL u = new URL(extClassPath);
+//	         		if (extClassPath.endsWith(".jar")) {
+//	         			localContentList.add(new JarURLContent(u));
+//	         		} else if (extClassPath.endsWith(".class")){
+//	             	 	localContentList.add(new URLContent(u));
+//	         		}
+//        	 	} catch (Exception e) {
+//	        	 	DebugUtil.assert_err(e.toString());
+//        	 	}
+//    		}
+//        }
         
         // Now add the local contents to the global content list and return it.
         contentList.addAll(localContentList);

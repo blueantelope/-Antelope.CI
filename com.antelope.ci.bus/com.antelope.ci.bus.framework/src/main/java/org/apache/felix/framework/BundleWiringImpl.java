@@ -1463,6 +1463,7 @@ public class BundleWiringImpl implements BundleWiring
                         result = (isClass)
                             ? (Object) bdcl.loadClass(name)
                             : (Object) bdcl.getResource(name);
+                       
                         // If this is a java.* package, then always terminate the
                         // search; otherwise, continue to look locally if not found.
                         if (pkgName.startsWith("java.") || (result != null))
@@ -1507,6 +1508,11 @@ public class BundleWiringImpl implements BundleWiring
                     {
                         result = (Object) m_revision.getResourceLocal(name);
                     }
+                    
+                    // TODO: 加入本地的classLoader
+                    if (result == null) {
+                    	
+                    }
 
                     // If still not found, then try the revision's dynamic imports.
                     if (result == null)
@@ -1538,7 +1544,7 @@ public class BundleWiringImpl implements BundleWiring
             }
             else
             {
-            	DebugUtil.assert_err("resouce can not been loaded : = " + name);
+            	DebugUtil.assert_err("resource can not been loaded : = " + name);
                 throw new ResourceNotFoundException(
                     name + " not found by " + this.getBundle());
             }
