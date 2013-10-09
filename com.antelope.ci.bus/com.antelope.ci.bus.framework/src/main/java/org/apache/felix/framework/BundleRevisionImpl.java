@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.felix.framework.cache.Content;
-import org.apache.felix.framework.cache.JarURLContent;
-import org.apache.felix.framework.cache.URLContent;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.framework.util.SecureAction;
 import org.apache.felix.framework.util.Util;
@@ -49,7 +47,6 @@ import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Resource;
 
-import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.DebugUtil;
 
 public class BundleRevisionImpl implements BundleRevision, Resource
@@ -478,25 +475,6 @@ public class BundleRevisionImpl implements BundleRevision, Resource
         {
             localContentList.add(content);
         }
-        
-        // define by ci bus, modify by @blueantelope at 2013-08-26
-//        String ext_libs =  m_bundle.getHeaders().get(BusConstants.BUS_EXT_LIBS);
-//        if (ext_libs != null) {
-//    		List<String> extClassPathStrings = ManifestParser.parseDelimitedString(
-//    				ext_libs, FelixConstants.CLASS_PATH_SEPARATOR);
-//    		 for (String extClassPath : extClassPathStrings) {
-//        	 	try {
-//	         		URL u = new URL(extClassPath);
-//	         		if (extClassPath.endsWith(".jar")) {
-//	         			localContentList.add(new JarURLContent(u));
-//	         		} else if (extClassPath.endsWith(".class")){
-//	             	 	localContentList.add(new URLContent(u));
-//	         		}
-//        	 	} catch (Exception e) {
-//	        	 	DebugUtil.assert_err(e.toString());
-//        	 	}
-//    		}
-//        }
         
         // Now add the local contents to the global content list and return it.
         contentList.addAll(localContentList);

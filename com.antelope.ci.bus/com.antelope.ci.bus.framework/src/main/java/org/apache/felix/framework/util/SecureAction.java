@@ -251,7 +251,6 @@ public class SecureAction
         }
         else
         {
-        	System.out.println(spec);
             return new URL(context, spec, handler);
         }
     }

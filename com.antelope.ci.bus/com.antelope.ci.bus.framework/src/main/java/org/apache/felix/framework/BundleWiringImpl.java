@@ -73,7 +73,9 @@ import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Wire;
 
+import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.DebugUtil;
+import com.antelope.ci.bus.framework.BusClassLoader;
 
 public class BundleWiringImpl implements BundleWiring
 {
@@ -104,6 +106,8 @@ public class BundleWiringImpl implements BundleWiring
     private volatile List<BundleRequirement> m_wovenReqs = null;
 
     private BundleClassLoader m_classLoader;
+    
+    private BusClassLoader bus_classLoader;
 
     // Bundle-specific class loader for boot delegation.
     private final ClassLoader m_bootClassLoader;
@@ -699,6 +703,32 @@ public class BundleWiringImpl implements BundleWiring
             }
         }
         return m_classLoader;
+    }
+    
+    /*
+     * 取得加载bus.properties中定义url的类加载器
+     */
+    private synchronized BusClassLoader getClassLoaderOfBus() {
+    		if (bus_classLoader == null) {
+    			Bundle bundle = m_revision.getBundle();
+    			// TODO 解析bus.perperties中的url
+			if (bundle.getHeaders().get(BusConstants.BUS_BUNDLE_URLS) != null) {
+				List<URL> bundle_url_list = new ArrayList<URL>();
+				String bundle_urls = (String) bundle.getHeaders().get(BusConstants.BUS_BUNDLE_URLS);
+				for (String bundle_url : bundle_urls.split(",")) {
+					try {
+						bundle_url_list.add(new URL(bundle_url));
+					} catch (MalformedURLException e) {
+						DebugUtil.assert_exception(e);
+					}
+				}
+				if (!bundle_url_list.isEmpty()) {
+					bus_classLoader = new BusClassLoader(bundle_url_list.toArray(new URL[bundle_url_list.size()]));
+				}
+			}
+    		}
+    		
+    		return bus_classLoader;
     }
 
     public List<URL> findEntries(String path, String filePattern, int options)
@@ -1511,7 +1541,10 @@ public class BundleWiringImpl implements BundleWiring
                     
                     // TODO: 加入本地的classLoader
                     if (result == null) {
-                    	
+                    		BusClassLoader clob = getClassLoaderOfBus();
+                    		if (clob != null) {
+                    			result = clob.findClassOrResource(name, isClass);
+                    		}
                     }
 
                     // If still not found, then try the revision's dynamic imports.
