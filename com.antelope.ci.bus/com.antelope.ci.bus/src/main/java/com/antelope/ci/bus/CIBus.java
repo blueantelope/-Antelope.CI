@@ -4,7 +4,7 @@
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
  * ------------------------------------------------------------------------
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
-*/
+ */
 
 package com.antelope.ci.bus;
 
@@ -37,61 +37,63 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
-
 /**
  * CI BUS的程序入口
- *
- * @author   blueantelope
- * @version  0.1
- * @Date	 2013-7-31		上午10:12:15 
+ * 
+ * @author blueantelope
+ * @version 0.1
+ * @Date 2013-7-31 上午10:12:15
  */
 public class CIBus {
 	/**
 	 * 入口
-	 * @param  @param args
+	 * 
+	 * @param @param args
 	 * @return void
-	 * @throws CIBusException 
+	 * @throws CIBusException
 	 */
 	public static void main(String[] args) throws CIBusException {
 		CIBus bus = new CIBus();
-		bus.opts(args);					// 参数处理
-		bus.start();						// 启动
+		bus.opts(args); // 参数处理
+		bus.start(); // 启动
 	}
-	
+
 	// 运行模式
 	public enum RUN_MODE {
-		DEV("dev", "开发模式"),							// 开发中使用的运行模式，不会用到缓存
-		APP("app", "应用模式");							// 实际的应用模式，拥有全部功能
-		
-		private String name;			// 表示名称
-		private String value;			// 显示名称
+		DEV("dev", "开发模式"), // 开发中使用的运行模式，不会用到缓存
+		APP("app", "应用模式"); // 实际的应用模式，拥有全部功能
+
+		private String name; // 表示名称
+		private String value; // 显示名称
+
 		private RUN_MODE(String name, String value) {
 			this.name = name;
 			this.value = value;
 		}
-		
+
 		public String getName() {
 			return name;
 		}
-		
+
 		public String getValue() {
 			return value;
 		}
-		
+
 		/**
-		 * 返回value
-		 * (non-Javadoc)
+		 * 返回value (non-Javadoc)
+		 * 
 		 * @see java.lang.Enum#toString()
 		 */
 		@Override
 		public String toString() {
 			return value;
 		}
-		
+
 		/**
 		 * 由给定的表示名称转换为运行模式
-		 * @param  @param name
-		 * @param  @return
+		 * 
+		 * @param @param name
+		 * @param @return
 		 * @return RUN_MODE
 		 * @throws
 		 */
@@ -103,84 +105,85 @@ public class CIBus {
 					}
 				}
 			}
-			
+
 			return null;
 		}
 	}
-	
+
 	/* 帮助信息 */
-	private static final String HELP = "Usage: [OPTION] [VALUE]\n" +
-									"\t-e, --etc\tetc direction path\n" +
-									"\t-m, --mode\run mode(dev||app)\n";
+	private static final String HELP = "Usage: [OPTION] [VALUE]\n"
+			+ "\t-e, --etc\tetc direction path\n"
+			+ "\t-m, --mode\run mode(dev||app)\n";
 	/* 非法选项信息 */
-	private static final String FATAL = "invalid options\n" +
-									"\tTry '--help' for more information\n";
+	private static final String FATAL = "invalid options\n"
+			+ "\tTry '--help' for more information\n";
 	/* 根目录不存在 */
 	private static final String HOME_ERROR = "home directory is not exist or not a direcotry";
-	
-	private static ClassLoader classloader;						// 系统classLoader
-	private static FrameworkFactory factory;					// osgi factory
-	private static Framework framework;							// osgi framework
-	private static Map<String, String> parameters;			// 参数， 主要是针对osgi 
-	private static List<URL> clsUrlList;							// classloader url
-	
-	private static String bus_home;									// 根目录
-	private static RUN_MODE run_mode;							// 运行模式
-	private static String etc_dir;										// 配置目录
-	private static String log_dir;										// 日志目录
-	private static String system_dir;									// osgi系统包目录
-	private static String system_ext_dir;							// osgi系统扩展包目录
-	private static String lib_dir;										// 系统jar目录
-	private static String lib_ext_dir;									// 系统扩展jar目录
-	private static String cache_dir;									// 运行时缓存目录
-	private static String plugin_dir;									// osgi plugin目录
-	private static String etc_bus_cfg;									// bus.cfg路径
-	private static String etc_custom_cfg;							// custom.cfg路径
-	private static String etc_environment_cfg;					// environment.cfg路径
-	private static BasicConfigrationReader configration;	// ect下配置文件参数集合
-	
+
+	private static ClassLoader classloader; // 系统classLoader
+	private static FrameworkFactory factory; // osgi factory
+	private static Framework framework; // osgi framework
+	private static Map<String, String> parameters; // 参数， 主要是针对osgi
+	private static List<URL> clsUrlList; // classloader url
+
+	private static String bus_home; // 根目录
+	private static RUN_MODE run_mode; // 运行模式
+	private static String etc_dir; // 配置目录
+	private static String log_dir; // 日志目录
+	private static String system_dir; // osgi系统包目录
+	private static String system_ext_dir; // osgi系统扩展包目录
+	private static String lib_dir; // 系统jar目录
+	private static String lib_ext_dir; // 系统扩展jar目录
+	private static String cache_dir; // 运行时缓存目录
+	private static String plugin_dir; // osgi plugin目录
+	private static String etc_bus_cfg; // bus.cfg路径
+	private static String etc_custom_cfg; // custom.cfg路径
+	private static String etc_environment_cfg; // environment.cfg路径
+	private static BasicConfigrationReader configration; // ect下配置文件参数集合
+
 	// 参数属性名
-	private static String BOOT_ENVIRONMENT 					= "bus.boot.environment";
-	private static String BOOT_ENVIRONMENT_DEFAULT		= "jre-1.6";
-	
+	private static String BOOT_ENVIRONMENT = "bus.boot.environment";
+	private static String BOOT_ENVIRONMENT_DEFAULT = "jre-1.6";
+
 	/**
 	 * 输入参数处理
-	 * @param  @param args
+	 * 
+	 * @param @param args
 	 * @return void
 	 * @throws
 	 */
 	public void opts(String[] args) {
 		int argLen = args.length;
 		if (argLen > 0) {
-			if ("--help".equalsIgnoreCase(args[0])) {	// 帮助
+			if ("--help".equalsIgnoreCase(args[0])) { // 帮助
 				System.out.print(HELP);
 				System.exit(0);
 			}
 			// 选项处理
-			if (argLen % 2 == 0) {			
+			if (argLen % 2 == 0) {
 				int n = 0;
 				while (argLen > n) {
 					String key = args[n];
-					String value = args[n+1];
-					if ("-h".equalsIgnoreCase(key) || 
-							"-home".equalsIgnoreCase(key)) {	// etc目录配置
+					String value = args[n + 1];
+					if ("-h".equalsIgnoreCase(key)
+							|| "-home".equalsIgnoreCase(key)) { // etc目录配置
 						bus_home = value;
-					} else if ("-m".equalsIgnoreCase(key) || 
-							"-mode".equalsIgnoreCase(key)) {	// etc目录配置
+					} else if ("-m".equalsIgnoreCase(key)
+							|| "-mode".equalsIgnoreCase(key)) { // etc目录配置
 						run_mode = RUN_MODE.toMode(value);
 						if (run_mode == null) {
 							System.err.print(FATAL);
-							System.exit(-1);		
+							System.exit(-1);
 						}
-					} else {									// 非法选项
+					} else { // 非法选项
 						System.err.print(FATAL);
-						System.exit(-1);		
+						System.exit(-1);
 					}
 					n += 2;
 				}
 			}
 		}
-		
+
 		// 根目录是否设置，如果未设置就将上级目录做为根目录
 		// 如果设置了根目录，判断此设置是否正确
 		if (bus_home == null || "".equals(bus_home)) {
@@ -197,16 +200,16 @@ public class CIBus {
 			}
 		}
 	}
-	
-	
+
 	/**
 	 * 启动
-	 * @param  
+	 * 
+	 * @param
 	 * @return void
-	 * @throws CIBusException 
+	 * @throws CIBusException
 	 */
 	public void start() throws CIBusException {
-		init();			// 初始化
+		init(); // 初始化
 		createClassLoader();
 		if (null == classloader) {
 			throw new CIBusException("");
@@ -215,83 +218,85 @@ public class CIBus {
 		if (null == factory) {
 			throw new CIBusException("");
 		}
-		shutdownHook();			// 关闭钩子
-		run();							// 运行osgi
+		shutdownHook(); // 关闭钩子
+		run(); // 运行osgi
 	}
-	
+
 	/*
-	 *  各种初始化汇总
+	 * 各种初始化汇总
 	 */
 	private void init() throws CIBusException {
-		initPath();				// 目录
-		initEtc();					// 初始化etc配置 
-		initParameters();		// 初始化osgi
+		initPath(); // 目录
+		initEtc(); // 初始化etc配置
+		initParameters(); // 初始化osgi
 		// 初始化运行模式
 		switch (run_mode) {
-			case APP:
-				initAppMode();
-				break;
-			case DEV:
-				initDevMode();
-				break;
+		case APP:
+			initAppMode();
+			break;
+		case DEV:
+			initDevMode();
+			break;
 		}
 	}
-	
+
 	/*
 	 * 初始化目录
 	 */
 	private void initPath() {
-		System.setProperty(BusConstants.BUS_HOME , bus_home);
+		System.setProperty(BusConstants.BUS_HOME, bus_home);
 		etc_dir = bus_home + File.separator + "etc";
 		System.setProperty(BusConstants.ETC_DIR, etc_dir);
 		log_dir = bus_home + File.separator + "log";
 		System.setProperty(BusConstants.LOG_DIR, log_dir);
-		system_dir = bus_home +File.separator + "system";
+		system_dir = bus_home + File.separator + "system";
 		System.setProperty(BusConstants.SYSTEM_DIR, system_dir);
-		system_ext_dir = system_dir +File.separator + "ext";
+		system_ext_dir = system_dir + File.separator + "ext";
 		System.setProperty(BusConstants.SYSTEM_EXT_DIR, system_ext_dir);
-		plugin_dir = bus_home +File.separator + "plugin";
+		plugin_dir = bus_home + File.separator + "plugin";
 		System.setProperty(BusConstants.PLUGIN_DIR, plugin_dir);
-		lib_dir = bus_home +File.separator + "lib";
+		lib_dir = bus_home + File.separator + "lib";
 		System.setProperty(BusConstants.LIB_DIR, lib_dir);
 		lib_ext_dir = lib_dir + File.separator + "ext";
-		System.setProperty(BusConstants.LOG_CNF, etc_dir + File.separator + "log.cfg"); 
+		System.setProperty(BusConstants.LOG_CNF, etc_dir + File.separator
+				+ "log.cfg");
 		etc_bus_cfg = etc_dir + File.separator + "bus.cfg";
 		etc_custom_cfg = etc_dir + File.separator + "custom.cfg";
 		etc_environment_cfg = etc_dir + File.separator + "environment.cfg";
 		cache_dir = bus_home + File.separator + ".cache";
 		System.setProperty(BusConstants.CACHE_DIR, cache_dir);
 	}
-	
+
 	/*
 	 * 初始化开发模式
 	 */
 	private void initDevMode() {
 		// 配置storage目录为onFirstInit，当程序一运行即清空cache storage
-		parameters.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
+		parameters.put(Constants.FRAMEWORK_STORAGE_CLEAN,
+				Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
 	}
-	
+
 	/*
 	 * 初始化应用模式
 	 */
 	private void initAppMode() {
-		
+
 	}
-	
+
 	/*
 	 * 清除开发模式
 	 */
 	private void destroyDevMode() {
 		FileUtil.delFolder(cache_dir);
 	}
-	
+
 	/*
 	 * 清除应用模式
 	 */
 	private void destroyAppMode() {
-		
+
 	}
-	
+
 	/*
 	 * 初始化etc下的配置
 	 */
@@ -302,7 +307,7 @@ public class CIBus {
 		reader.loadCnf(etc_environment_cfg);
 		configration = reader.getConfigration();
 	}
-	
+
 	/*
 	 * 建立系统loader，做为其它osgi包的共用loader，加载进的jar对其它bundle可见
 	 */
@@ -310,26 +315,30 @@ public class CIBus {
 		clsUrlList = new ArrayList<URL>();
 		clsUrlList.addAll(FileUtil.getAllJar(lib_dir));
 		clsUrlList.addAll(FileUtil.getAllJar(lib_ext_dir));
-		classloader = new URLClassLoader(clsUrlList.toArray(new URL[clsUrlList.size()]), CIBus.class.getClassLoader());
+		classloader = new URLClassLoader(clsUrlList.toArray(new URL[clsUrlList
+				.size()]), CIBus.class.getClassLoader());
 	}
-	
+
 	/*
 	 * 加载osgi framework factory
 	 */
 	private void loadFrameworkFactory() throws CIBusException {
 		if (null != classloader) {
 			try {
-				URL url = classloader.getResource( "META-INF/services/org.osgi.framework.launch.FrameworkFactory");
+				URL url = classloader
+						.getResource("META-INF/services/org.osgi.framework.launch.FrameworkFactory");
 				if (null != url) {
-					 BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-					 String line = null;
-					 while(null != (line=br.readLine())) {
-						 line = line.trim();
-						 if (!"".equals(line) && '#' != (line.charAt(0))) {
-							 factory = (FrameworkFactory) Class.forName(line).newInstance();
-							 break;
-						 }
-					 }
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(url.openStream()));
+					String line = null;
+					while (null != (line = br.readLine())) {
+						line = line.trim();
+						if (!"".equals(line) && '#' != (line.charAt(0))) {
+							factory = (FrameworkFactory) Class.forName(line)
+									.newInstance();
+							break;
+						}
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -337,143 +346,148 @@ public class CIBus {
 			}
 		}
 	}
-	
+
 	/*
-	 * 关闭钩子
-	 * jvm退出时，清除
+	 * 关闭钩子 jvm退出时，清除
 	 */
 	private void shutdownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread("Shutdwon Hook") {
-            public void run() {
-                try {
-                    if (framework != null) {
-	                    	framework.stop();
-	                    	framework.waitForStop(0);
-                    }
-                    // 清除模式，运行模式遗留的资源
-            		switch (run_mode) {
-            			case APP:
-            				destroyAppMode();
-            				break;
-            			case DEV:
-            				destroyDevMode();
-            				break;
-            		}
-                } catch (Exception e)  {
-                    System.err.println("Error stopping framework: " + e);
-                }
-            }
-        });
+			public void run() {
+				try {
+					if (framework != null) {
+						framework.stop();
+						framework.waitForStop(0);
+					}
+					// 清除模式，运行模式遗留的资源
+					switch (run_mode) {
+					case APP:
+						destroyAppMode();
+						break;
+					case DEV:
+						destroyDevMode();
+						break;
+					}
+				} catch (Exception e) {
+					System.err.println("Error stopping framework: " + e);
+				}
+			}
+		});
 	}
-	
+
 	/*
-	 * 初始化osgi felix
-	 * 初始化felix的参数
+	 * 初始化osgi felix 初始化felix的参数
 	 */
 	private void initParameters() {
 		parameters = new HashMap<String, String>();
-        parameters.put("felix.cache.profiledir", cache_dir);
-        parameters.put("felix.cache.dir", cache_dir);
-        parameters.put(Constants.FRAMEWORK_STORAGE	, cache_dir);
-        // boot delegation of osgi 
-        String bootdelegation = "";
-        String boot_envs = configration.getString(BOOT_ENVIRONMENT, BOOT_ENVIRONMENT_DEFAULT);
-        if (boot_envs.equals(BOOT_ENVIRONMENT_DEFAULT)) {
-    		bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
-        } else {
-    		for (String boot_env : boot_envs.split(",")) {
-	    		if (configration.getString(boot_env.trim()) != null) {
-	    			bootdelegation += configration.getString(boot_env.trim()) + ", ";
-	    		}
-    		}
-	    	if (bootdelegation.endsWith(", "))
-	    		bootdelegation = bootdelegation.substring(0, bootdelegation.length()-2);
-        }
-    	if (bootdelegation.length() > 0) {
-        	parameters.put(Constants.FRAMEWORK_BOOTDELEGATION, bootdelegation);
-        	parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT, Constants.FRAMEWORK_BUNDLE_PARENT_APP);
-    	}
-//        genBundleClassPath();
-//        addSystemPackages();
+		parameters.put("felix.cache.profiledir", cache_dir);
+		parameters.put("felix.cache.dir", cache_dir);
+		parameters.put(Constants.FRAMEWORK_STORAGE, cache_dir);
+		// boot delegation of osgi
+		String bootdelegation = "";
+		String boot_envs = configration.getString(BOOT_ENVIRONMENT,
+				BOOT_ENVIRONMENT_DEFAULT);
+		if (boot_envs.equals(BOOT_ENVIRONMENT_DEFAULT)) {
+			bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
+		} else {
+			for (String boot_env : boot_envs.split(",")) {
+				if (configration.getString(boot_env.trim()) != null) {
+					bootdelegation += configration.getString(boot_env.trim())
+							+ ", ";
+				}
+			}
+			if (bootdelegation.endsWith(", "))
+				bootdelegation = bootdelegation.substring(0,
+						bootdelegation.length() - 2);
+		}
+		if (bootdelegation.length() > 0) {
+			parameters.put(Constants.FRAMEWORK_BOOTDELEGATION, bootdelegation);
+			parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT,
+					Constants.FRAMEWORK_BUNDLE_PARENT_APP);
+		}
+		// genBundleClassPath();
+		// addSystemPackages();
 	}
-	
+
 	/*
 	 * 得到所有系统加载包，对所有其它bundle可调用的lib jar
 	 */
 	private void addSystemPackages() {
 		if (parameters != null) {
 			List<URL> ext_url_list = FileUtil.getAllJar(lib_ext_dir);
-	     	StringBuffer spBuf = new StringBuffer();
-	     	for (URL ext_url : ext_url_list) {
-	      	JarInputStream jis = null;
-	      	try {
-	      		jis = new JarInputStream(ext_url.openStream());
-	      		Manifest mf = jis.getManifest();
-	      		String v = mf.getMainAttributes().getValue("Export-Package");
-	      		spBuf.append(v).append(",");
-	      	} catch (Exception e) {
-	      		e.printStackTrace();
-	      	} finally {
-	      		if (jis != null) {
-	      			try {
-						jis.close();
-					} catch (IOException e) { }
-	      		}
-	      	}
-	      }
-	      String packages = spBuf.toString();
-	      if (packages.length() > 0) 
-	      	parameters.put("org.osgi.framework.system.packages", packages.substring(0, packages.length()-1));
+			StringBuffer spBuf = new StringBuffer();
+			for (URL ext_url : ext_url_list) {
+				JarInputStream jis = null;
+				try {
+					jis = new JarInputStream(ext_url.openStream());
+					Manifest mf = jis.getManifest();
+					String v = mf.getMainAttributes()
+							.getValue("Export-Package");
+					spBuf.append(v).append(",");
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					if (jis != null) {
+						try {
+							jis.close();
+						} catch (IOException e) {
+						}
+					}
+				}
+			}
+			String packages = spBuf.toString();
+			if (packages.length() > 0)
+				parameters.put("org.osgi.framework.system.packages",
+						packages.substring(0, packages.length() - 1));
 		}
 	}
-	
+
 	/*
 	 * 运行osgi felix
 	 */
 	private void run() throws CIBusException {
 		if (null != factory) {
-			framework =  factory.newFramework(parameters);
+			framework = factory.newFramework(parameters);
 			try {
 				framework.init();
 				FrameworkEvent event;
-				runSystem();			// 启动system bundle
+				runSystem(); // 启动system bundle
 				framework.start();
-				runSystemExt();		// 启动system扩展bundle
-//				do {
-//					event = framework.waitForStop(0);
-//				} while (event.getType() == FrameworkEvent.STOPPED_UPDATE); 
-//				System.exit(0);
+				runSystemExt(); // 启动system扩展bundle
+				// do {
+				// event = framework.waitForStop(0);
+				// } while (event.getType() == FrameworkEvent.STOPPED_UPDATE);
+				// System.exit(0);
 			} catch (Exception e) {
 				throw new CIBusException("", e);
 			}
 		}
 	}
-	
+
 	/*
 	 * 运行系统osgi包
 	 */
 	private void runSystem() {
 		runBundle(system_dir, 1);
 	}
-	
+
 	/*
 	 * 运行系统扩展bundle包
 	 */
 	private void runSystemExt() {
-		runBundle(system_ext_dir, 2);			// 不带lib库
-		runBundle(system_ext_dir, 3);			// 带lib库支持
+		runBundle(system_ext_dir, 2); // 不带lib库
+		runBundle(system_ext_dir, 3); // 带lib库支持
 	}
-	
+
 	/*
-	 * 运行osgi bundle
-	 * 分为系统包和系统扩展包
-	 * 系统扩展包可指定classloader
+	 * 运行osgi bundle 分为系统包和系统扩展包 系统扩展包可指定classloader
 	 */
 	private void runBundle(String dir, int type) {
 		if (null != framework) {
 			BundleContext context = framework.getBundleContext();
-			StartLevel startLevel = (StartLevel) context.getService(
-	                context.getServiceReference(org.osgi.service.startlevel.StartLevel.class.getName()));
+			StartLevel startLevel = (StartLevel) context
+					.getService(context
+							.getServiceReference(org.osgi.service.startlevel.StartLevel.class
+									.getName()));
 			int level = startLevel.getInitialBundleStartLevel();
 			List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
 			// 读取系统扩展bundle包
@@ -481,72 +495,75 @@ public class CIBus {
 			List<URL> urlList;
 			if (files != null) {
 				switch (type) {
-					case 1:					// 系统包
-						List<File> systemJarList = new ArrayList<File>();
-						for (File systemFile : files) {
-							if (systemFile.getName().endsWith(".jar")) {
-								BundleLoader loader = new BundleLoader(context, systemFile, startLevel, level, JarLoadMethod.START);
-								loaderList.add(loader);
-							}
+				case 1: // 系统包
+					List<File> systemJarList = new ArrayList<File>();
+					for (File systemFile : files) {
+						if (systemFile.getName().endsWith(".jar")) {
+							BundleLoader loader = new BundleLoader(context,
+									systemFile, startLevel, level,
+									JarLoadMethod.START);
+							loaderList.add(loader);
 						}
-						break;
-					case 2:					// 系统扩展包下无依赖库bundle
-						for (File systemExtFile : files) {
-							if (systemExtFile.getName().endsWith(".jar")) {
-								try {
-									JarBusProperty busProperty = JarBusProperty.readJarBus(systemExtFile);
-									urlList = FileUtil.getAllJar(lib_ext_dir);
-									urlList.addAll(busProperty.getLoaderUrlList());
-									BundleLoader loader = new BundleLoader(
-											context, 
-											systemExtFile, 
-											startLevel, 
-											busProperty.getStartLevel(), 
-											busProperty.getLoad(),
-											urlList
-									);
-									loaderList.add(loader);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						}
-						break;
-					case 3:				// 系统扩展包下有依赖库，在系统扩展下以目录存在
-						for (File systemExtDir : files) {
-							urlList = FileUtil.getAllJar(lib_ext_dir);
+					}
+					break;
+				case 2: // 系统扩展包下无依赖库bundle
+					for (File systemExtFile : files) {
+						if (systemExtFile.getName().endsWith(".jar")) {
 							try {
-								JarBusProperty busProperty = null;
-								File extBundleFile = null;
-								if (systemExtDir.isDirectory()) {
-									for (File extBundle : systemExtDir.listFiles()) {
-										if (extBundle.isFile() && extBundle.getName().endsWith(".jar")) {
-											extBundleFile = extBundle;
-											busProperty = JarBusProperty.readJarBus(extBundle);
-											continue;
-										}
-										if (extBundle.isDirectory() && "lib".equalsIgnoreCase(extBundle.getName())) {
-											urlList.addAll(FileUtil.getAllJar(extBundle.getPath()));
-											continue;
-										}
-									}
-									if (extBundleFile != null && busProperty != null) {
-										urlList.addAll(busProperty.getLoaderUrlList());
-										BundleLoader loader = new BundleLoader(
-												context, 
-												extBundleFile, 
-												startLevel, 
-												busProperty.getStartLevel(), 
-												busProperty.getLoad(),
-												urlList
-										);
-										loaderList.add(loader);
-									}
-								}
+								JarBusProperty busProperty = JarBusProperty
+										.readJarBus(systemExtFile);
+								urlList = FileUtil.getAllJar(lib_ext_dir);
+								urlList.addAll(busProperty.getLoaderUrlList());
+								BundleLoader loader = new BundleLoader(context,
+										systemExtFile, startLevel,
+										busProperty.getStartLevel(),
+										busProperty.getLoad(), urlList);
+								loaderList.add(loader);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
+					}
+					break;
+				case 3: // 系统扩展包下有依赖库，在系统扩展下以目录存在
+					for (File systemExtDir : files) {
+						urlList = FileUtil.getAllJar(lib_ext_dir);
+						try {
+							JarBusProperty busProperty = null;
+							File extBundleFile = null;
+							if (systemExtDir.isDirectory()) {
+								for (File extBundle : systemExtDir.listFiles()) {
+									if (extBundle.isFile()
+											&& extBundle.getName().endsWith(
+													".jar")) {
+										extBundleFile = extBundle;
+										busProperty = JarBusProperty
+												.readJarBus(extBundle);
+										continue;
+									}
+									if (extBundle.isDirectory()
+											&& "lib".equalsIgnoreCase(extBundle
+													.getName())) {
+										urlList.addAll(FileUtil
+												.getAllJar(extBundle.getPath()));
+										continue;
+									}
+								}
+								if (extBundleFile != null
+										&& busProperty != null) {
+									urlList.addAll(busProperty
+											.getLoaderUrlList());
+									BundleLoader loader = new BundleLoader(
+											context, extBundleFile, startLevel,
+											busProperty.getStartLevel(),
+											busProperty.getLoad(), urlList);
+									loaderList.add(loader);
+								}
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 			// 加载bundle包
@@ -555,12 +572,14 @@ public class CIBus {
 			}
 		}
 	}
-	
+
 	/*
 	 * 产生Bundle-ClassPath参数
 	 */
 	private void genBundleClassPath() {
-		parameters.put(Constants.BUNDLE_CLASSPATH, StringUtil.convertUrlList(FileUtil.getAllJar(lib_ext_dir), ","));
+		parameters
+				.put(Constants.BUNDLE_CLASSPATH,
+						StringUtil.convertUrlList(
+								FileUtil.getAllJar(lib_ext_dir), ","));
 	}
 }
-
