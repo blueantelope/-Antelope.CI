@@ -221,7 +221,6 @@ class ExtensionManager extends URLStreamHandler implements Content
         m_headerMap.put(FelixConstants.PROVIDE_CAPABILITY, syscaps);
         try
         {
-        	DebugUtil.assert_out("m_headerMap = " + m_headerMap);
             ManifestParser mp = new ManifestParser(
                 m_logger, m_configMap, m_systemBundleRevision, m_headerMap);
             List<BundleCapability> caps = aliasSymbolicName(mp.getCapabilities());

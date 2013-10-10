@@ -47,8 +47,6 @@ import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Resource;
 
-import com.antelope.ci.bus.common.DebugUtil;
-
 public class BundleRevisionImpl implements BundleRevision, Resource
 {
     public final static int EAGER_ACTIVATION = 0;
@@ -409,7 +407,6 @@ public class BundleRevisionImpl implements BundleRevision, Resource
             classPath, FelixConstants.CLASS_PATH_SEPARATOR);
         
         String bundle_classPath = m_bundle.getHeaders().get(FelixConstants.BUNDLE_CLASSPATH);
-        DebugUtil.assert_out(FelixConstants.BUNDLE_CLASSPATH + " : " + bundle_classPath);
         List<String> bundleClassPathStrings = ManifestParser.parseDelimitedString(
         		bundle_classPath, FelixConstants.CLASS_PATH_SEPARATOR);
         classPathStrings.addAll(bundleClassPathStrings);

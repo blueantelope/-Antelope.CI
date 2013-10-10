@@ -13,6 +13,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.osgi.framework.ServiceReference;
 
+import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
@@ -27,7 +28,7 @@ import com.antelope.ci.bus.server.BusServerConfig.KT;
  * @Date	 2013-7-30		下午11:23:33 
  */
 public class BusServerActivator extends CommonBusActivator {
-	private static Logger log4j;			// log4j
+	private static Logger log4j = null;			// log4j
 	private BusServer server;
 
 	
@@ -70,7 +71,8 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void handleLoadService() throws CIBusException {
-		if (logService != null) {
+		DebugUtil.assert_out("运行handleLoadService");
+		if (logService != null && log4j == null) {
 			log4j = ((BusLogService) logService).getLog4j(BusServerActivator.class);
 			log4j.info("得到Bus Log Service");
 		}

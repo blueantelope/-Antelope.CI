@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.logger.service;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -34,8 +37,16 @@ public class BusLogServiceImpl implements BusLogService {
 		String log_cnf = System.getProperty(BusConstants.LOG_CNF);
 		LogManager.resetConfiguration();			// 重置log4j日志服务
 		if (FileUtil.existFile(log_cnf)) {
-			DebugUtil.assert_out("logger 日志配置：" + log_cnf);
-			PropertyConfigurator.configure(log_cnf);
+			try {
+				Properties log_props = new Properties(); 
+				log_props.load(new FileInputStream(log_cnf));
+				log_props.setProperty("log_dir", System.getProperty(BusConstants.LOG_DIR));
+				DebugUtil.assert_out("logger 日志配置：" + log_cnf);
+				PropertyConfigurator.configure(log_props);
+			} catch (Exception e) {
+				DebugUtil.assert_exception(e);
+				PropertyConfigurator.configure(BusLogServiceImpl.class.getResource("/log4j.properties"));
+			}
 		} else {
 			PropertyConfigurator.configure(BusLogServiceImpl.class.getResource("/log4j.properties"));
 		}

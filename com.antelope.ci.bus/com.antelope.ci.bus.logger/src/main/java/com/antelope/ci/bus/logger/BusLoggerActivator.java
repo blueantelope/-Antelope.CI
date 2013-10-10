@@ -81,7 +81,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 		if (logService == null) {
 			String clazz = BusLogService.class.getName();
 			logService = new BusLogServiceImpl();
-			Dictionary<String, ?> properties = new Hashtable();
+			Dictionary<String, ?> properties = new Hashtable<String, Object>();
 			m_context.registerService(clazz, logService, properties);
 			DebugUtil.assert_out("注册log4j服务");
 		}

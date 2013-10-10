@@ -127,6 +127,7 @@ public class CIBus {
 	private static String bus_home;									// 根目录
 	private static RUN_MODE run_mode;							// 运行模式
 	private static String etc_dir;										// 配置目录
+	private static String log_dir;										// 日志目录
 	private static String system_dir;									// osgi系统包目录
 	private static String system_ext_dir;							// osgi系统扩展包目录
 	private static String lib_dir;										// 系统jar目录
@@ -243,6 +244,8 @@ public class CIBus {
 		System.setProperty(BusConstants.BUS_HOME , bus_home);
 		etc_dir = bus_home + File.separator + "etc";
 		System.setProperty(BusConstants.ETC_DIR, etc_dir);
+		log_dir = bus_home + File.separator + "log";
+		System.setProperty(BusConstants.LOG_DIR, log_dir);
 		system_dir = bus_home +File.separator + "system";
 		System.setProperty(BusConstants.SYSTEM_DIR, system_dir);
 		system_ext_dir = system_dir +File.separator + "ext";

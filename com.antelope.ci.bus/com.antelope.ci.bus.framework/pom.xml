@@ -69,7 +69,7 @@
 						<Bundle-Description>OSGi R4 framework implementation.</Bundle-Description>
 						<Bundle-Vendor>The Apache Software Foundation</Bundle-Vendor>
 						<Bundle-Version>4.2.1</Bundle-Version>
-						<Export-Package>org.osgi.framework.*;-split-package:=merge-first,org.osgi.resource,org.osgi.service.*,org.osgi.util.tracker</Export-Package>
+						<Export-Package>com.antelope.ci.bus.framework,org.osgi.framework.*;-split-package:=merge-first,org.osgi.resource,org.osgi.service.*,org.osgi.util.tracker</Export-Package>
 						<Private-Package>org.apache.felix.framework.*</Private-Package>
 						<Import-Package>!*</Import-Package>
 					</instructions>

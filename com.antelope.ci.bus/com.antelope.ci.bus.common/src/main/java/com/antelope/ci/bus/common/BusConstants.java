@@ -21,6 +21,8 @@ public class BusConstants {
 	public static final String BUS_HOME						= "antelope.ci.bus.home";
 	/* etc目录 */
 	public static final String ETC_DIR 							= "antelope.ci.bus.etc.dir";
+	/* log目录 */
+	public static final String LOG_DIR 							= "antelope.ci.bus.log.dir";
 	/* osgi system启动包目录 */
 	public static final String SYSTEM_DIR						= "antelope.ci.bus.system.dir";
 	/* osgi system启动扩展包目录 */

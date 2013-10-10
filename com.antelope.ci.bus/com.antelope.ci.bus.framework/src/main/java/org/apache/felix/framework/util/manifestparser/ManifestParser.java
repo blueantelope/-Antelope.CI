@@ -18,15 +18,22 @@
  */
 package org.apache.felix.framework.util.manifestparser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.felix.framework.BundleRevisionImpl;
+import java.util.Set;
 
+import org.apache.felix.framework.BundleRevisionImpl;
 import org.apache.felix.framework.Logger;
 import org.apache.felix.framework.capabilityset.SimpleFilter;
-import org.apache.felix.framework.wiring.BundleCapabilityImpl;
 import org.apache.felix.framework.util.FelixConstants;
 import org.apache.felix.framework.util.VersionRange;
+import org.apache.felix.framework.wiring.BundleCapabilityImpl;
 import org.apache.felix.framework.wiring.BundleRequirementImpl;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
@@ -34,8 +41,6 @@ import org.osgi.framework.Version;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
-
-import com.antelope.ci.bus.common.DebugUtil;
 
 public class ManifestParser
 {
@@ -726,7 +731,6 @@ public class ManifestParser
             for (String pkgName : clause.m_paths)
             {
                 // Verify that java.* packages are not exported.
-            	DebugUtil.assert_out("pkgName = " + pkgName);
                 if (pkgName.startsWith("java."))
                 {
                     throw new BundleException(
@@ -776,7 +780,6 @@ public class ManifestParser
                 // Convert version attribute to type Version.
                 clause.m_attrs.remove(Constants.PACKAGE_SPECIFICATION_VERSION);
                 v = (v == null) ? sv : v;
-                DebugUtil.assert_out("Bundle-Version = " + v);
                 clause.m_attrs.put(
                     Constants.VERSION_ATTRIBUTE,
                     Version.parseVersion(v.toString()));

@@ -29,7 +29,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URLStreamHandler;
 import java.security.AccessControlException;
 import java.security.Permission;
@@ -99,9 +98,6 @@ import org.osgi.framework.wiring.BundleRevisions;
 import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.packageadmin.ExportedPackage;
-
-import com.antelope.ci.bus.common.BusConstants;
-import com.antelope.ci.bus.common.DebugUtil;
 
 public class Felix extends BundleImpl implements Framework {
 	// The secure action used to do privileged calls
@@ -383,7 +379,6 @@ public class Felix extends BundleImpl implements Framework {
 
 		// Create the extension manager, which we will use as the
 		// revision for the system bundle.
-		DebugUtil.assert_out("m_configMap = " + m_configMap);
 		m_extensionManager = new ExtensionManager(m_logger, m_configMap, this);
 		try {
 			addRevision(m_extensionManager.getRevision());

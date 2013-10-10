@@ -31,7 +31,6 @@ public class PropertiesUtil {
 	public static int getInt(Properties props, String key, int def) {
 		int value = def;
 		if (props != null) {
-			DebugUtil.assert_out("props不为空");
 			try {
 				String v = props.getProperty(key, String.valueOf(def));
 				value = Integer.valueOf(v);
@@ -56,7 +55,6 @@ public class PropertiesUtil {
 	public static String getString(Properties props, String key, String def) {
 		String value = def;
 		if (props != null) {
-			DebugUtil.assert_out("props不为空");
 			value = props.getProperty(key, def);
 		}
 		
@@ -76,7 +74,6 @@ public class PropertiesUtil {
 	public static boolean getBoolean(Properties props, String key, boolean def) {
 		boolean value = def;
 		if (props != null) {
-			DebugUtil.assert_out("props不为空");
 			try {
 				String v = props.getProperty(key, String.valueOf(def));
 				value = Boolean.parseBoolean(v);
@@ -101,7 +98,6 @@ public class PropertiesUtil {
 	public static double getDouble(Properties props, String key, double def) {
 		double value = def;
 		if (props != null) {
-			DebugUtil.assert_out("props不为空");
 			try {
 				String v = props.getProperty(key, String.valueOf(def));
 				value = Double.valueOf(v);
