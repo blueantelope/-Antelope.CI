@@ -16,7 +16,6 @@ import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.logger.service.BusLogServiceImpl;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 
@@ -30,6 +29,17 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @Date	 2013-7-31		上午10:56:57 
  */
 public class BusLoggerActivator extends CommonBusActivator {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#customInit()
+	 */
+	@Override
+	protected void customInit() throws CIBusException {
+		super.logServiceProvider = true;			// logService的提供者
+	}
+	
+
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -50,9 +60,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 	}
 
 	@Override
-	protected void handleLoadService() throws CIBusException {
-		
-		// TODO Auto-generated method stub
+	protected void handleLoadService(String clsName, ServiceReference ref, Object service) throws CIBusException {
 		
 	}
 
@@ -79,10 +87,9 @@ public class BusLoggerActivator extends CommonBusActivator {
 	@Override
 	protected void addServices() throws CIBusException {
 		if (logService == null) {
-			String clazz = BusLogService.class.getName();
 			logService = new BusLogServiceImpl();
 			Dictionary<String, ?> properties = new Hashtable<String, Object>();
-			m_context.registerService(clazz, logService, properties);
+			m_context.registerService(LOGSERVICE_CLSNAME, logService, properties);
 			DebugUtil.assert_out("注册log4j服务");
 		}
 	}
@@ -96,6 +103,5 @@ public class BusLoggerActivator extends CommonBusActivator {
 	protected void removeServices() throws CIBusException {
 		LogManager.shutdown();			// 关闭log4j日志服务
 	}
-	
 }
 

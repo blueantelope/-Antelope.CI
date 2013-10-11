@@ -35,7 +35,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-8-29 下午3:17:02
  */
 public abstract class CommonBusActivator implements BundleActivator {
-	private static final String LOGSERVICE_CLSNAME = "com.antelope.ci.bus.logger.service.BusLogServiceImpl";
+	protected static final String LOGSERVICE_CLSNAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	private static final String PACKET_SUFFIX = "com.antelope.ci.bus";
 	private static final String PACKET_SERVICE = "service";
 	private static final String PROPS_FILE = "/META-INF/bus.properties";
@@ -48,6 +48,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 	protected static ServiceReference log_ref = null;
 	protected static Object logService = null;
 	private List<ServiceTracker> trackerList = new ArrayList<ServiceTracker>();
+	protected boolean logServiceProvider = false;
 
 	public CommonBusActivator() {
 		super();
@@ -103,6 +104,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 		loadProps();
 		initDefaultService();
 		initLoadServices();
+		customInit();
 	}
 
 	/*
@@ -161,7 +163,6 @@ public abstract class CommonBusActivator implements BundleActivator {
 			tracker.open();
 			trackerList.add(tracker);
 		}
-		handleLoadService();
 	}
 	
 	private class BusServiceTrackerCustomizer implements ServiceTrackerCustomizer {
@@ -202,14 +203,15 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 */
 	private Object loadService(ServiceReference ref, String clsName) throws CIBusException {
 		Object service = m_context.getService(ref);
-		DebugUtil.assert_out("service类：" + service.getClass().getName());
 		String cls_name = service.getClass().getName();
 		if (cls_name.equals(LOGSERVICE_CLSNAME)) {
-			loadLogService(ref, service);
+			if (!logServiceProvider)
+				loadLogService(ref, service);
 		} else {
 			serviceMap.put(cls_name, new ServiceInfo(service, ref));
 		}
-		DebugUtil.assert_out("本类：" + this.getClass().getName());
+		handleLoadService(clsName, ref, service);
+		DebugUtil.assert_out("service类：" + service.getClass().getName() +", 调用者：" + this.getClass().getName());
 		return service;
 	}
 
@@ -237,8 +239,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 		DebugUtil.assert_out("logService : " + logService);
 		if (serviceMap.get(LOGSERVICE_CLSNAME) == null) {
 			DebugUtil.assert_out("加载日志service");
-			serviceMap.put(LOGSERVICE_CLSNAME, new ServiceInfo(logService,
-					log_ref));
+			serviceMap.put(LOGSERVICE_CLSNAME, new ServiceInfo(logService, log_ref));
 		}
 	}
 
@@ -282,10 +283,17 @@ public abstract class CommonBusActivator implements BundleActivator {
 	protected boolean getBooleanProp(String key, boolean default_prop) {
 		return PropertiesUtil.getBoolean(properties, key, default_prop);
 	}
+	
+	/**
+	 * 各个activator自定义的初始化
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
+	 */
+	protected abstract void customInit() throws CIBusException;
 
 	/**
 	 * 运行bunlde进需要自定义的运行
-	 * 
 	 * @param
 	 * @return void
 	 * @throws
@@ -303,12 +311,14 @@ public abstract class CommonBusActivator implements BundleActivator {
 
 	/**
 	 * 处理加载service后的操作
-	 * 
-	 * @param
+	 * @param  @param clsName
+	 * @param  @param ref
+	 * @param  @param service
+	 * @param  @throws CIBusException
 	 * @return void
 	 * @throws
 	 */
-	protected abstract void handleLoadService() throws CIBusException;
+	protected abstract void handleLoadService(String clsName, ServiceReference ref, Object service) throws CIBusException;
 
 	/**
 	 * 处理卸载service后的操作

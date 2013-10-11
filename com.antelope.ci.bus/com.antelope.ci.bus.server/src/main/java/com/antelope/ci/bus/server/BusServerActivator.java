@@ -13,7 +13,6 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.osgi.framework.ServiceReference;
 
-import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
@@ -30,8 +29,17 @@ import com.antelope.ci.bus.server.BusServerConfig.KT;
 public class BusServerActivator extends CommonBusActivator {
 	private static Logger log4j = null;			// log4j
 	private BusServer server;
-
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#customInit()
+	 */
+	@Override
+	protected void customInit() throws CIBusException {
+		// nothing
+	}
+
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -67,14 +75,15 @@ public class BusServerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleLoadService()
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleLoadService(java.lang.String, org.osgi.framework.ServiceReference, java.lang.Object)
 	 */
 	@Override
-	protected void handleLoadService() throws CIBusException {
-		DebugUtil.assert_out("运行handleLoadService");
-		if (logService != null && log4j == null) {
-			log4j = ((BusLogService) logService).getLog4j(BusServerActivator.class);
-			log4j.info("得到Bus Log Service");
+	protected void handleLoadService(String clsName, ServiceReference ref, Object service) throws CIBusException {
+		if (clsName.equals(LOGSERVICE_CLSNAME)) {
+			if (logService != null && log4j == null) {
+				log4j = ((BusLogService) logService).getLog4j(BusServerActivator.class);
+				log4j.info("得到Bus Log Service");
+			}
 		}
 	}
 
