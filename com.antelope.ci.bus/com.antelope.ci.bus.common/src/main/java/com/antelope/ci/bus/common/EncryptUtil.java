@@ -134,7 +134,7 @@ public class EncryptUtil {
 	public final static String genDES(String seed, String source)
 			throws CIBusException {
 		try {
-			SecretKey key = genDESKey(seed);
+			SecretKey key = buildDESKey(seed);
 			Cipher cipher = Cipher.getInstance(ALGORITHM_DES);
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 			byte[] srcBs = cipher.doFinal(source.getBytes("UTF-8"));
@@ -148,7 +148,7 @@ public class EncryptUtil {
 	public static String decryptDES(String seed, String password)
 			throws CIBusException {
 		try {
-			SecretKey key = genDESKey(seed);
+			SecretKey key = buildDESKey(seed);
 			Cipher cipher = Cipher.getInstance(ALGORITHM_DES);
 			cipher.init(Cipher.DECRYPT_MODE, key);
 			byte[] decoder = Base64.decodeBase64(password.getBytes("UTF-8"));
@@ -161,7 +161,7 @@ public class EncryptUtil {
 	/*
 	 * 产生DES密码
 	 */
-	private final static SecretKey genDESKey(String seed) throws CIBusException {
+	private final static SecretKey buildDESKey(String seed) throws CIBusException {
 		try {
 			KeyGenerator keyGen = KeyGenerator.getInstance(ALGORITHM_DES);
 			keyGen.init(new SecureRandom(seed.getBytes()));
@@ -187,9 +187,9 @@ public class EncryptUtil {
 	// 3DES解密
 	public static String decrypt3DES(String seed, String password) throws CIBusException {
 		try {
-			SecretKey deskey = new SecretKeySpec(build3DesKey(seed), ALGORITHM_3DES);
+			SecretKey _3deskey = new SecretKeySpec(build3DesKey(seed), ALGORITHM_3DES);
 			Cipher cipher = Cipher.getInstance(ALGORITHM_3DES);
-			cipher.init(Cipher.DECRYPT_MODE, deskey); // 初始化为解密模式
+			cipher.init(Cipher.DECRYPT_MODE, _3deskey); // 初始化为解密模式
 			byte[] decoder = Base64.decodeBase64(password.getBytes("UTF-8"));
 			return new String(cipher.doFinal(decoder));
 		} catch (Exception e) {
