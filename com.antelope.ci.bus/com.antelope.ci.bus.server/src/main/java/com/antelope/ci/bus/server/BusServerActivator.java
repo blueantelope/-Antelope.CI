@@ -27,7 +27,6 @@ import com.antelope.ci.bus.server.BusServerConfig.KT;
  * @Date	 2013-7-30		下午11:23:33 
  */
 public class BusServerActivator extends CommonBusActivator {
-	private static Logger log4j = null;			// log4j
 	private BusServer server;
 	
 	/**
@@ -79,12 +78,7 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void handleLoadService(String clsName, ServiceReference ref, Object service) throws CIBusException {
-		if (clsName.equals(LOGSERVICE_CLSNAME)) {
-			if (logService != null && log4j == null) {
-				log4j = ((BusLogService) logService).getLog4j(BusServerActivator.class);
-				log4j.info("得到Bus Log Service");
-			}
-		}
+		
 	}
 
 	/**
