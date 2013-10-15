@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.auth;
+package com.antelope.ci.bus.server.service;
 
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.PublickeyAuthenticator;
@@ -18,6 +18,6 @@ import org.apache.sshd.server.PublickeyAuthenticator;
  * @version 0.1
  * @Date 2013-10-14 下午4:56:20
  */
-public interface AuthService extends PasswordAuthenticator, PublickeyAuthenticator{
+public interface AuthService extends PasswordAuthenticator, PublickeyAuthenticator, Service {
 	
 }

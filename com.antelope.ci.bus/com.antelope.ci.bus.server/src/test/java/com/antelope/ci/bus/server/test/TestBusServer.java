@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.BusConstants;
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerConfig;
 
@@ -27,16 +28,18 @@ import com.antelope.ci.bus.server.BusServerConfig;
  */
 public class TestBusServer extends TestCase {
 	/**
+	 * @throws CIBusException 
 	 * 启动服务器测试
 	 * @param  @throws IOException
 	 * @return void
 	 * @throws
 	 */
 	@Test
-	public void testServer() throws IOException {
+	public void testServer() throws IOException, CIBusException {
 		System.setProperty(BusConstants.CACHE_DIR, "/data/temp");
 		BusServer server = new BusServer();
 		BusServerConfig config = new BusServerConfig();
+		config.setPort(9427);
 		server.setConfig(config);
 		server.start();
 	}

@@ -14,12 +14,14 @@ import java.net.URL;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
-import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.apache.sshd.server.session.ServerSession;
 
 import com.antelope.ci.bus.common.BusConstants;
+import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.FileUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.service.impl.PasswordAuthServiceImpl;
+import com.antelope.ci.bus.server.service.impl.PublickeyAuthServiceImpl;
 import com.antelope.ci.bus.server.shell.BusShellFactory;
 
 
@@ -43,7 +45,7 @@ public class BusServer {
 			this.config = config;
 	}
 	
-	public void start() throws IOException {
+	public void start() throws IOException, CIBusException {
 		sshServer = SshServer.setUpDefaultServer();
 		sshServer.setPort(config.getPort());
 		String key_path;
@@ -60,14 +62,8 @@ public class BusServer {
 				break;
 		}
 		sshServer.setShellFactory(new BusShellFactory());
-		sshServer.setPasswordAuthenticator(new PasswordAuthenticator() {
-			@Override
-			public boolean authenticate(String username, String password,
-					ServerSession session) {
-				return true;
-			}
-			
-		});
+		sshServer.setPasswordAuthenticator(new PasswordAuthServiceImpl("blueantelope", "blueantelope", SYMMETRIC_ALGORITHM._ORIGIN));
+//		sshServer.setPublickeyAuthenticator(new PublickeyAuthServiceImpl());
 		
 		sshServer.start();
 		System.out.println("ssh server startup");

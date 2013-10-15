@@ -10,11 +10,9 @@ package com.antelope.ci.bus.server;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.logger.service.BusLogService;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.BusServerConfig.KT;
 

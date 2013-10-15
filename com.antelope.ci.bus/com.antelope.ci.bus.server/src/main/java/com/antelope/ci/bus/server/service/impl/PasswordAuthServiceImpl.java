@@ -6,52 +6,48 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.auth;
+package com.antelope.ci.bus.server.service.impl;
 
 import java.security.PublicKey;
+import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.apache.sshd.server.session.ServerSession;
 
-import com.antelope.ci.bus.common.EncryptUtil.CIPHER;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.BusServerActivator;
+import com.antelope.ci.bus.server.service.user.User;
 
 
 /**
- * TODO 描述
- *
+ * 密码登录方式验证
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-14		下午4:58:51 
  */
-public class PasswordAuthServiceImpl implements AuthService {
-	private static Logger log;
-	private String username;
-	private String password;
-	private CIPHER cipher;
+public class PasswordAuthServiceImpl extends AbstractAuthService {
 	
-	public PasswordAuthServiceImpl(String username, String password, CIPHER cipher) {
-		this.username = username;
-		this.password = password;
-		this.cipher = cipher;
-		try {
-			log = BusServerActivator.log4j(PasswordAuthServiceImpl.class);
-		} catch (CIBusException e) {
-			
-		}
+	public PasswordAuthServiceImpl(Map<String, User> userMap) throws CIBusException {
+		super(userMap);
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see org.apache.sshd.server.PasswordAuthenticator#authenticate(java.lang.String, java.lang.String, org.apache.sshd.server.session.ServerSession)
+	 */
 	@Override
 	public boolean authenticate(String username, String password, ServerSession session) {
-		if (username == null || password == null) {
-			log.info("用户名或密码为空!");
+		User user = null;
+		if ((user=getUser(username)) == null )
 			return false;
-		}
 		
-		return false;
+		return validtePassword(user, password);
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see org.apache.sshd.server.PublickeyAuthenticator#authenticate(java.lang.String, java.security.PublicKey, org.apache.sshd.server.session.ServerSession)
+	 */
 	@Override
 	public boolean authenticate(String username, PublicKey key, ServerSession session) {
 		return false;

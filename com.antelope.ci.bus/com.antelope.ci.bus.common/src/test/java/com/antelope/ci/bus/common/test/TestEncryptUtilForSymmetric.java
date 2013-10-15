@@ -21,22 +21,33 @@ import javax.crypto.SecretKey;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
+import com.antelope.ci.bus.common.Base64;
 import com.antelope.ci.bus.common.EncryptUtil;
+import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * test of EncryptUtil
- * 
  * @author blueantelope
  * @version 0.1
  * @Date 2013-10-14 下午9:11:28
  */
-public class TestEnctyptUtil extends TestCase {
+public class TestEncryptUtilForSymmetric extends TestCase {
 	private static final String TEST_SOURCE = "test.encrypt";
 	private static final String TEST_SEED = "test.seed";
+	
+	@Test
+	public void testDecryptAndEncrypt() throws CIBusException {
+		String md5_password = EncryptUtil.encrypt_symmetric(SYMMETRIC_ALGORITHM._MD5, TEST_SEED, TEST_SOURCE);
+		String des_password = EncryptUtil.encrypt_symmetric(SYMMETRIC_ALGORITHM._DES, TEST_SEED, TEST_SOURCE);
+		String des3_password = EncryptUtil.encrypt_symmetric(SYMMETRIC_ALGORITHM._3DES, TEST_SEED, TEST_SOURCE);
+		System.out.println("encrypt, md5 = " + md5_password + ", des = " + des_password + ", 3des = " + des3_password);
+		String des_src = EncryptUtil.decrypt_symmetric(SYMMETRIC_ALGORITHM._DES, TEST_SEED, des_password);
+		String des3_src = EncryptUtil.decrypt_symmetric(SYMMETRIC_ALGORITHM._3DES, TEST_SEED, des3_password);
+		System.out.println("decrypt, des = " + des_src + ", desc_src = " + des3_src);
+	}
 
 	@Test
 	public void testMd5() throws CIBusException {
@@ -46,10 +57,9 @@ public class TestEnctyptUtil extends TestCase {
 
 	@Test
 	public void testDes() throws CIBusException {
-//		String password = EncryptUtil.genDES(TEST_SEED, TEST_SOURCE);
-		String source = EncryptUtil.decryptDES(TEST_SEED, "UKrt6PSVyWhkJZfSWdUwsg==");
-		System.out.println("des test : source = " + source + ", password = "
-				+ "G7x8VmdYH8IJ33n/7adIOQ==");
+		String password = EncryptUtil.genDES(TEST_SEED, TEST_SOURCE);
+		String source = EncryptUtil.decryptDES(TEST_SEED, password);
+		System.out.println("des test : source = " + source + ", password = " + password);
 	}
 
 	@Test
@@ -61,7 +71,7 @@ public class TestEnctyptUtil extends TestCase {
 	}
 
 	@Test
-	public void testMyDes() {
+	public void testMyDes() throws CIBusException {
 		try {
 
 			SecretKey myDesKey = buildDesKey();
@@ -81,14 +91,14 @@ public class TestEnctyptUtil extends TestCase {
 
 			// Encrypt the text
 			byte[] textEncrypted = desCipher.doFinal(text);
-			String p = Base64.encodeBase64String(textEncrypted);
+			String p = new String(Base64.encode(textEncrypted));
 			System.out.println("Text Encryted : " + p);
 
 			// Initialize the same cipher for decryption
 			desCipher.init(Cipher.DECRYPT_MODE, myDesKey);
 
 			// Decrypt the text
-			byte[] textDecrypted = desCipher.doFinal(Base64.decodeBase64(p.getBytes()));
+			byte[] textDecrypted = desCipher.doFinal(Base64.decode(p.getBytes()));
 
 			System.out.println("Text Decryted : " + new String(textDecrypted));
 
@@ -113,6 +123,6 @@ public class TestEnctyptUtil extends TestCase {
 	}
 
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestEnctyptUtil.class);
+		junit.textui.TestRunner.run(TestEncryptUtilForSymmetric.class);
 	}
 }
