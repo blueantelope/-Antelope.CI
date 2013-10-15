@@ -11,10 +11,8 @@ package com.antelope.ci.bus.server.service.user;
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 
 
-
 /**
- * TODO 描述
- *
+ * 用户密码信息
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-15		上午10:48:51 
@@ -22,6 +20,7 @@ import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 public class UserPassword {
 	private SYMMETRIC_ALGORITHM algorithm; 
 	private String seed;
+	private String originPwd;
 	private String password;
 	
 	// getter and setter
@@ -42,6 +41,12 @@ public class UserPassword {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getOriginPwd() {
+		return originPwd;
+	}
+	public void setOriginPwd(String originPwd) {
+		this.originPwd = originPwd;
 	}
 }
 

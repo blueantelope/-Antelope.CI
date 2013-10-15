@@ -19,16 +19,17 @@ import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
  * @Date	 2013-10-15		上午10:49:22 
  */
 public class UserKey {
-	private ASYMMETRIC_ALGORITHM cipher;
+	private ASYMMETRIC_ALGORITHM algorithm;
 	private String privateKey;
 	private String publicKey;
+	private String passphase;
 	
 	// getter and setter
-	public ASYMMETRIC_ALGORITHM getCipher() {
-		return cipher;
+	public ASYMMETRIC_ALGORITHM getAlgorithm() {
+		return algorithm;
 	}
-	public void setCipher(ASYMMETRIC_ALGORITHM cipher) {
-		this.cipher = cipher;
+	public void setAlgorithm(ASYMMETRIC_ALGORITHM algorithm) {
+		this.algorithm = algorithm;
 	}
 	public String getPrivateKey() {
 		return privateKey;
@@ -41,6 +42,12 @@ public class UserKey {
 	}
 	public void setPublicKey(String publicKey) {
 		this.publicKey = publicKey;
+	}
+	public String getPassphase() {
+		return passphase;
+	}
+	public void setPassphase(String passphase) {
+		this.passphase = passphase;
 	}
 }
 
