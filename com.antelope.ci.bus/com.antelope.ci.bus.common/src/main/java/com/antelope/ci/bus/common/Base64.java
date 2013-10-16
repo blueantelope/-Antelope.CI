@@ -26,9 +26,7 @@ public class Base64 {
 		CharArrayWriter cw = new CharArrayWriter((4 * content.length) / 3);
 
 		int idx = 0;
-
 		int x = 0;
-
 		for (int i = 0; i < content.length; i++) {
 			if (idx == 0)
 				x = (content[i] & 0xff) << 16;

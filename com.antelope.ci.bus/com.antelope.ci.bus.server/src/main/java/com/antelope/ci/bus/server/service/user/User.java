@@ -20,15 +20,19 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  */
 public class User {
 	public enum AUTH_TYPE {
-		OPNE("open"),						// 无验证，开放式
-		DEFINE("define"),					// 自定义验证
-		PASSWORD("password"),		// 用户名密码方式
-		PUBLICKEY("publickey"),			// 密钥方式
-		PWDKEY("pwdkey");				// 用户名密码和密钥方式
+		OPNE(1>>0, "open"),						// 无验证，开放式
+		DEFINE(1>>1, "define"),					// 自定义验证
+		PASSWORD(1>>2, "password"),		// 用户名密码方式
+		PUBLICKEY(1>>3, "publickey");		// 密钥方式
 		
+		private int code;
 		private String name;
-		private AUTH_TYPE(String name) {
+		private AUTH_TYPE(int code, String name) {
+			this.code = code;
 			this.name = name;
+		}
+		public int getCode() {
+			return code;
 		}
 		public String getName() {
 			return name;
@@ -46,19 +50,19 @@ public class User {
 		}
 	}
 	
-	private AUTH_TYPE auth_type;
+	private int auth_type;
 	private String username;
 	private UserKey key;
 	private UserPassword password;
 	
 	public User() {
-		
+		auth_type = AUTH_TYPE.PASSWORD.code | AUTH_TYPE.PUBLICKEY.code;
 	}
 	
-	public AUTH_TYPE getAuth_type() {
+	public int getAuth_type() {
 		return auth_type;
 	}
-	public void setAuth_type(AUTH_TYPE auth_type) {
+	public void setAuth_type(int auth_type) {
 		this.auth_type = auth_type;
 	}
 	public String getUsername() {

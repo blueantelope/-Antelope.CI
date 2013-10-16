@@ -44,7 +44,7 @@ public abstract class AbstractAuthService implements AuthService {
 		try {
 			log = BusServerActivator.log4j(this.getClass());
 		} catch (CIBusException e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 	}
 	

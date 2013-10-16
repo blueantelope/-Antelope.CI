@@ -9,10 +9,14 @@
 package com.antelope.ci.bus.common;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -146,6 +150,32 @@ public class FileUtil {
 		}
 		
 		return subList;
+	}
+	
+	/**
+	 * 新建文件，包括新文件的内容
+	 * @param  @param filePathAndName
+	 * @param  @param fileContent
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
+	 */
+	public static void newFile(String filePathAndName, String fileContent) throws CIBusException {
+		try {
+			String filePath = filePathAndName;
+			filePath = filePath.toString();
+			File myFilePath = new File(filePath);
+			if (!myFilePath.exists()) {
+				myFilePath.createNewFile();
+			}
+			FileWriter resultFile = new FileWriter(myFilePath);
+			PrintWriter myFile = new PrintWriter(resultFile);
+			String strContent = fileContent;
+			myFile.println(strContent);
+			resultFile.close();
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
 	/*
