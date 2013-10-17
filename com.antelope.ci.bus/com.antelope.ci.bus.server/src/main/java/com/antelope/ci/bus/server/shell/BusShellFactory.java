@@ -8,14 +8,10 @@
 
 package com.antelope.ci.bus.server.shell;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.apache.sshd.common.Factory;
 import org.apache.sshd.server.Command;
-import org.apache.sshd.server.Environment;
-import org.apache.sshd.server.ExitCallback;
+
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  *
@@ -24,82 +20,42 @@ import org.apache.sshd.server.ExitCallback;
  * @Date	 2013-10-14		下午12:43:31 
  */
 public class BusShellFactory implements Factory<Command> {
+	private Class command_class = null;
+	
+	public BusShellFactory(String classname) throws CIBusException {
+		try {
+			Class clazz = Class.forName(classname);
+			setCommandClass(command_class);
+		} catch (ClassNotFoundException e) {
+			throw new CIBusException("",  e);
+		}
+	
+	}
+	
+	public BusShellFactory(Class command_class) throws CIBusException {
+		setCommandClass(command_class);
+	}
+	
+	private void setCommandClass(Class command_class) throws CIBusException {
+		if (!BusShellCommand.class.isAssignableFrom(command_class))
+			throw new CIBusException("", "Shell Command Define Error");
+		this.command_class = command_class;
+	}
+	
 	public Command create() {
-        return new BusPortalShellCommand();
+		Command command = null;
+		if (command_class != null) {
+			try {
+				command = (Command) command_class.newInstance();
+			} catch (Exception e) {
+				
+			} finally {
+				return command;
+			}
+		}
+		
+		return command;
     }
 	
-	static class BusPortalShellCommand implements Command, Runnable {
-		private InputStream in;
-		private OutputStream out;
-		private OutputStream err;
-		private ExitCallback callback;
-		private boolean running;
-		private Thread portal_thread;
-		private BusShell shell;
-
-		@Override
-		public void setInputStream(InputStream in) {
-			this.in = in;
-		}
-
-		@Override
-		public void setOutputStream(OutputStream out) {
-			this.out = out;
-		}
-
-		@Override
-		public void setErrorStream(OutputStream err) {
-			this.err = err;
-		}
-
-		@Override
-		public void setExitCallback(ExitCallback callback) {
-			this.callback = callback;
-		}
-
-		@Override
-		public void start(Environment env) throws IOException {
-			running = true;
-			portal_thread = new Thread(this, "bus.shell.portal");
-			portal_thread.start();
-		}
-
-		@Override
-		public void destroy() {
-			portal_thread.interrupt();
-		}
-
-		@Override
-		public void run() {
-			try {
-				BusShellSession session = new BusShellSession(in, out, err);
-				shell = new BusPortalShell(session);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return;
-			}
-			
-			try {
-				while (running) {
-					try {
-						shell.showMainFrame();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
-			} finally {
-				try {
-					shell.clear();
-				} catch (IOException ex) { /* ignore */ }
-				try {
-					in.close();
-				} catch (IOException ex) { /* ignore */ }
-				try {
-					out.close();
-				} catch (IOException ex) { /* ignore */ }
-				callback.onExit(0);
-			}
-		}
-	}
 }
 

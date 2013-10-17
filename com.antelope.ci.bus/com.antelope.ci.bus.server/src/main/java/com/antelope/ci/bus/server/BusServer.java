@@ -11,9 +11,6 @@ package com.antelope.ci.bus.server;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
@@ -24,7 +21,6 @@ import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.service.impl.PasswordAuthServiceImpl;
 import com.antelope.ci.bus.server.service.impl.PublickeyAuthServiceImpl;
-import com.antelope.ci.bus.server.service.user.User;
 import com.antelope.ci.bus.server.shell.BusShellFactory;
 
 
@@ -35,25 +31,14 @@ import com.antelope.ci.bus.server.shell.BusShellFactory;
  * @version  0.1
  * @Date	 2013-9-5		下午10:19:24 
  */
-public class BusServer {
+public abstract class BusServer {
 	private SshServer sshServer;
 	private BusServerConfig config;					// server配置项
-	private Map<String, User> userMap;
+	private BusServerCondition condition;
 	
-	public void initUserMap(List<User> userList) {
-		userMap = new HashMap<String, User>();
-		for (User user : userList) {
-			userMap.put(user.getUsername(), user);
-		}
-	}
-	
-	public void BusServer() {
-		config = new BusServerConfig();
-	}
-	
-	public void setConfig(BusServerConfig config) {
-		if (config != null)
-			this.config = config;
+	public void BusServer(BusServerCondition condition) {
+		this.config = readConfig();
+		this.condition = condition;
 	}
 	
 	public void start() throws IOException, CIBusException {
@@ -72,15 +57,20 @@ public class BusServer {
 				sshServer.setKeyPairProvider(new FileKeyPairProvider(new String[] {key_path}));
 				break;
 		}
-		sshServer.setShellFactory(new BusShellFactory());
-		sshServer.setPasswordAuthenticator(new PasswordAuthServiceImpl(userMap));
-		sshServer.setPublickeyAuthenticator(new PublickeyAuthServiceImpl(userMap));
+		BusShellFactory shellFactory;
+		if (condition.getCommand_class() != null) {
+			shellFactory = new BusShellFactory(condition.getCommand_class());
+		} else if (condition.getCommand_className() != null && condition.getCommand_className().length() > 0) {
+			shellFactory = new BusShellFactory(condition.getCommand_className());
+		} else {
+			throw new CIBusException("", "create shell factory error");
+		}
+		sshServer.setShellFactory(shellFactory);
+		sshServer.setPasswordAuthenticator(new PasswordAuthServiceImpl(condition.getUserMap()));
+		sshServer.setPublickeyAuthenticator(new PublickeyAuthServiceImpl(condition.getUserMap()));
 		
 		sshServer.start();
 	}
-	
-	
-	
 	
 	public void stop() {
 		if (sshServer != null) {
@@ -114,4 +104,7 @@ public class BusServer {
 		
 		return key_path;
 	}
+	
+	// 读取服务配置
+	protected abstract BusServerConfig readConfig();
 }

@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+
 /**
  * TODO 描述
  * 
@@ -23,26 +25,12 @@ public abstract class BusShell {
 	protected BusShellSession session;
 	protected TerminalIO io;
 	protected ConnectionData setting;
-	protected String errorMessage;
-
 	protected InputStream in;
 	protected OutputStream out;
 	protected OutputStream err;
 
-	protected BusShell() {
-	}
-	
 	public BusShell(BusShellSession session) throws IOException {
 		this.session = session;
-		in = session.getIn();
-		out = session.getOut();
-		err = session.getErr();
-
-		setting = new ConnectionData();
-		setting.setNegotiatedTerminalType("vt100");
-		io = new TerminalIO(in, out, setting);
-
-		init();
 	}
 
 	public ConnectionData getSetting() {
@@ -52,67 +40,55 @@ public abstract class BusShell {
 	public TerminalIO getIO() {
 		return io;
 	}
-
 	
-
-	private void init() throws IOException {
-		if (io.available() > 0) {
-			// todo: parse telent protocol
+	public void open() throws CIBusException {
+		environment();
+		show();
+	}
+	
+	public void close() throws CIBusException {
+		try {
+			io.eraseScreen();
+			io.homeCursor();
+		} catch (IOException e) {
+			throw new CIBusException("", e);
 		}
+		clear();
 	}
 
-	public void println(String text) throws IOException {
+	private void environment() throws CIBusException {
+		in = session.getIn();
+		out = session.getOut();
+		err = session.getErr();
+		setting = new ConnectionData();
+		setting.setNegotiatedTerminalType("vt100");
+		io = new TerminalIO(in, out, setting);
+		custom();
+	}
+
+	protected void println(String text) throws IOException {
 		io.println(text);
 	}
 
-	public void print(String text) throws IOException {
+	protected void print(String text) throws IOException {
 		io.write(text);
 	}
 
-	public void printf(String format, Object... values) throws IOException {
+	protected void printf(String format, Object... values) throws IOException {
 		String text = String.format(format, values);
 		print(text);
 	}
 
-	public void error(String text) throws IOException {
+	protected void error(String text) throws IOException {
 		io.error(text);
 	}
 
-	public void errorf(String format, Object... args) throws IOException {
+	protected void errorf(String format, Object... args) throws IOException {
 		error(String.format(format, args));
 	}
 
-	public void errorln(String text) throws IOException {
+	protected void errorln(String text) throws IOException {
 		io.errorln(text);
-	}
-
-	public void clear() throws IOException {
-		io.eraseScreen();
-		io.homeCursor();
-	}
-
-
-	/*
-	 * show help documents
-	 */
-	protected void help() throws IOException {
-		println("test for @Antelope CI BUS");
-		boolean quit = false;
-		while (!quit) {
-			int c = io.read(1);
-			switch (c) {
-			case 'q':
-			case 'Q': // quit help and reutrn portal
-				quit = true;
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-	public boolean changePassword() throws IOException {
-		return true;
 	}
 
 	protected void resetIo() throws IOException {
@@ -121,8 +97,8 @@ public abstract class BusShell {
 		io.setReverse(false);
 	}
 
-	public String readInput(boolean mark) throws IOException {
-		int in = io.read(1);
+	protected String readInput(boolean mark) throws IOException {
+		int in = io.read();
 		StringBuffer strBuf = new StringBuffer();
 		while (in != TerminalIO.ENTER) {
 			if (in == TerminalIO.DELETE || in == TerminalIO.BACKSPACE) {
@@ -139,8 +115,7 @@ public abstract class BusShell {
 
 				strBuf.append((char) in);
 			}
-			in = io.read(1);
-			// in = io.read ();
+			in = io.read();
 		}
 		io.write(TerminalIO.CRLF);
 		return strBuf.toString();
@@ -154,32 +129,15 @@ public abstract class BusShell {
 		return setting.getTerminalRows();
 	}
 
-	public void sendDelete() throws IOException {
+	protected void sendDelete() throws IOException {
 		io.write(new String(new byte[] { 27, '[', '1', 'D' }));// 光标左移一位
 		io.write(new String(new byte[] { 27, '[', 'K' }));// 删除光标到行尾部分的内容
 		io.flush();
 	}
 
-	private char confirmChangePassword() {
-		return 'c';
-	}
-
-	private static boolean isValidInput(String input) {
-		if (input == null)
-			return false;
-		input = input.trim();
-		return "yes".equalsIgnoreCase(input) || "y".equalsIgnoreCase(input)
-				|| "no".equalsIgnoreCase(input) || "n".equalsIgnoreCase(input);
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-
-	public abstract int login() throws IOException;
-
-	public abstract void showBanner() throws IOException;
-
-	public abstract void showMainFrame() throws IOException;
+	protected abstract void custom() throws CIBusException;
+	
+	protected abstract void show() throws CIBusException;
+	
+	protected abstract void clear() throws CIBusException;
 }

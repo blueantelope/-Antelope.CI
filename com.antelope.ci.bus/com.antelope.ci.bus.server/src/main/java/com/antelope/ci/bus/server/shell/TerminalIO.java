@@ -90,7 +90,7 @@ public class TerminalIO {
 	 *         </ul>
 	 */
 	public synchronized int read() throws IOException {
-		int i = m_io.read();
+		int i = m_io.readSsh();
 		// translate possible control sequences
 		i = m_Terminal.translateControlCharacter(i);
 
@@ -109,20 +109,8 @@ public class TerminalIO {
 		return i;
 	}// read
 
-	/**
-	 * 
-	 * @param protocol
-	 *            connect with protocol, 0,telnet 1,ssh
-	 * @return
-	 * @throws IOException
-	 */
-	public synchronized int read(int protocol) throws IOException {
-		int i = 0;
-		if (protocol == 0) {
-			i = m_io.read();
-		} else if (protocol == 1) {
-			i = m_io.readSsh();
-		}
+	public synchronized int readForTelnet() throws IOException {
+		int i = m_io.read();
 		// translate possible control sequences
 		i = m_Terminal.translateControlCharacter(i);
 

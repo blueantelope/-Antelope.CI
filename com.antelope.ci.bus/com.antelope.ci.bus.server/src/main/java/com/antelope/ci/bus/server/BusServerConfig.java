@@ -95,10 +95,10 @@ public class BusServerConfig {
 	private static final String SERVER_PORT						= "bus.server.port";
 	private static final int DEF_SERVER_PORT 					= 9426;
 	private static final String KEY_TYPE							= "bus.key.type";
-	private static final String DEF_KEY_TYPE						= "static";
+	private static final String DEF_KEY_TYPE					= "static";
 	private static final String KEY_NAME							= "bus.key.name";
 	private static final String DEF_KEY_NAME					= "com.antelope.bus.ci.key";
-	private static final String WELCOME_BANNER			= "bus.welcome.banner";
+	private static final String WELCOME_BANNER				= "bus.welcome.banner";
 	private static final String DEF_WELCOME_BANNER		= "SSH-2.0-CIBUS";
 	
 	

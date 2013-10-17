@@ -65,7 +65,7 @@ public class BusPortalShell extends BusShell {
 
 	private void showData() throws IOException {
 		dataLine = 5;
-		clear();
+		stop();
 
 		pageSize = getConsoleHeight() - ROWS;
 		pageColumn = getConsoleWidth();
