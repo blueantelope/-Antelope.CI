@@ -31,7 +31,6 @@ public abstract class BusShellCommand implements Command {
 	protected OutputStream out;
 	protected OutputStream err;
 	protected ExitCallback callback;
-	protected BusShell shell;
 	
 	public BusShellCommand() {
 		
@@ -59,24 +58,33 @@ public abstract class BusShellCommand implements Command {
 
 	@Override
 	public void start(Environment env) throws IOException {
-		try {
-			shell = initShell();
-			shell.open();
-		} catch (CIBusException e) {
-			destroy();
-		}
+		new Thread() {
+			public void run() {
+				BusShell shell = null;
+				try {
+					shell = initShell();
+					shell.open();
+				} catch (CIBusException e) {
+					if (shell != null) {
+						try {
+							shell.close();
+						} catch (CIBusException ce) {
+						
+						}
+					} 
+				}
+			}
+		}.start();
 	}
 
 	@Override
 	public void destroy() {
-		if (shell != null) {
-			try {
-				shell.close();
-			} catch (CIBusException e) {
-				new IOException(e);
-			}
-		} 
 		callback.onExit(0);
+	}
+	
+	protected BusShellSession createShellSession() {
+		BusShellSession shellSession = new BusShellSession(in, out, err);
+		return shellSession;
 	}
 	
 	protected abstract BusShell initShell() throws CIBusException;

@@ -24,6 +24,10 @@ public class BusShellSession {
 	private OutputStream out;
 	private OutputStream err;
 	
+	public BusShellSession() {
+		
+	}
+	
 	public BusShellSession(InputStream in, OutputStream out, OutputStream err) {
 		super();
 		this.in = in;

@@ -8,8 +8,12 @@
 
 package com.antelope.ci.bus.server;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.antelope.ci.bus.server.service.impl.AbstractAuthService;
 import com.antelope.ci.bus.server.service.user.User;
 
 
@@ -24,8 +28,14 @@ public class BusServerCondition {
 	private Map<String, User> userMap;
 	private Class command_class;
 	private String command_className;
+	private List<AbstractAuthService> authServiceList;
 	
+	public BusServerCondition() {
+		userMap = new HashMap<String, User>();
+		authServiceList = new ArrayList<AbstractAuthService>();
+	}
 	
+	// getter and setter
 	public Map<String, User> getUserMap() {
 		return userMap;
 	}
@@ -43,6 +53,20 @@ public class BusServerCondition {
 	}
 	public void setCommand_className(String command_className) {
 		this.command_className = command_className;
+	}
+	public List<AbstractAuthService> getAuthServiceList() {
+		return authServiceList;
+	}
+	public void setAuthServiceList(List<AbstractAuthService> authServiceList) {
+		this.authServiceList = authServiceList;
+	}
+	
+	public void addUser(User user) {
+		userMap.put(user.getUsername(), user);
+	}
+	
+	public void addAuthService(AbstractAuthService authService) {
+		authServiceList.add(authService);
 	}
 }
 

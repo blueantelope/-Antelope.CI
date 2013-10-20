@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: CI Bus VCS Git
+Bundle-ManifestVersion: 2
+Export-Package: com.antelope.ci.bus.logger.service
+Import-Package: org.osgi.framework
+Bundle-SymbolicName: com.antelope.ci.bus.vcs.git
+

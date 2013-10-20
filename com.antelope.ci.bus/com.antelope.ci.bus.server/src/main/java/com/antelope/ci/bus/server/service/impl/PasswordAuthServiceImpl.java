@@ -15,6 +15,7 @@ import org.apache.sshd.server.session.ServerSession;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.service.user.User;
+import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
 
 
 /**
@@ -51,6 +52,11 @@ public class PasswordAuthServiceImpl extends AbstractAuthService {
 	@Override
 	public boolean authenticate(String username, PublicKey key, ServerSession session) {
 		return false;
+	}
+
+	@Override
+	public AUTH_TYPE getAuthType() {
+		return AUTH_TYPE.PASSWORD;
 	}
 
 }

@@ -22,6 +22,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServerActivator;
 import com.antelope.ci.bus.server.service.AuthService;
 import com.antelope.ci.bus.server.service.user.User;
+import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.service.user.UserKey;
 import com.antelope.ci.bus.server.service.user.UserPassword;
 
@@ -75,7 +76,7 @@ public abstract class AbstractAuthService implements AuthService {
 		try {
 			String password_src = EncryptUtil.decrypt_symmetric(u_password.getAlgorithm(), u_password.getSeed(), password);
 			if (u_password.getPassword().equals(password_src)) {
-				log.debug("password login succesful");
+//				log.debug("password login succesful");
 				return true;
 			}
 		} catch (CIBusException e) {
@@ -116,5 +117,8 @@ public abstract class AbstractAuthService implements AuthService {
 		Dictionary<String, ?> properties = new Hashtable<String, Object>();
 		m_context.registerService(SERVICE_NAME, this, properties);
 	}
+	
+	// get auth_type for this service
+	public abstract AUTH_TYPE getAuthType();
 }
 

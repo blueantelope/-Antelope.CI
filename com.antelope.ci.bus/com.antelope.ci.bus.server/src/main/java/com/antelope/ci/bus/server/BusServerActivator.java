@@ -8,13 +8,10 @@
 
 package com.antelope.ci.bus.server;
 
-import java.io.IOException;
-
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
-import com.antelope.ci.bus.server.BusServerConfig.KT;
 
 /**
  * 持续bus总线服务

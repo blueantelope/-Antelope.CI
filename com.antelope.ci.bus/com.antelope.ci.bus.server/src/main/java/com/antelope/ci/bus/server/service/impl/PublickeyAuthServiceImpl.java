@@ -15,6 +15,7 @@ import org.apache.sshd.server.session.ServerSession;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.service.user.User;
+import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
 
 
 /**
@@ -52,6 +53,11 @@ public class PublickeyAuthServiceImpl extends AbstractAuthService {
 			return false;
 		
 		return validtePublickey(user, key);
+	}
+
+	@Override
+	public AUTH_TYPE getAuthType() {
+		return AUTH_TYPE.PUBLICKEY;
 	}
 
 }

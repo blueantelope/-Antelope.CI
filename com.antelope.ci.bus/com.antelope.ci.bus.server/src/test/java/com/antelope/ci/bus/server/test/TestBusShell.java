@@ -6,12 +6,15 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.shell;
+package com.antelope.ci.bus.server.test;
 
 import java.io.IOException;
 import java.util.List;
 
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusShellSession;
 
 /**
  * TODO 描述
@@ -20,7 +23,7 @@ import com.antelope.ci.bus.common.StringUtil;
  * @version 0.1
  * @Date 2013-10-14 下午3:02:14
  */
-public class BusPortalShell extends BusShell {
+public class TestBusShell extends BusShell {
 	private static final int ROWS = 6;
 	private long timestamp;
 	boolean stop = false;
@@ -36,49 +39,38 @@ public class BusPortalShell extends BusShell {
 	private int selectedLine = -1;
 
 	private final static int[] COLUMN_SIZE = new int[] { // 列宽度数组(所有列之和为80)
-	27, // 设备名称
+			27, // 设备名称
 			21, // 设备IP
 			27 // 设备型号
 	};
 
-	public BusPortalShell(BusShellSession session) throws IOException {
+	public TestBusShell(BusShellSession session) {
 		super(session);
 	}
 
-	@Override
-	public int login() throws IOException {
-		return 1;
-	}
-
-	@Override
-	public void showBanner() throws IOException {
+	private void showBanner() throws IOException {
 		io.println("Portal for @Antelope CI BUS");
 	}
 
-	@Override
-	public void showMainFrame() throws IOException {
-		timestamp = System.currentTimeMillis();
-		schedule = true;
-		showData();
-		mainLoop();
-	}
-
-	private void showData() throws IOException {
-		dataLine = 5;
-		stop();
-
-		pageSize = getConsoleHeight() - ROWS;
-		pageColumn = getConsoleWidth();
-
-		// show header
-		showHeader();
-		// show body
-		showBody();
-		// show footer
-		showFooter();
-
-		io.setCursor(dataLine, 1);
-		selectedLine = -1;
+	private void showData() throws CIBusException {
+		try {
+			dataLine = 5;
+	
+			pageSize = getConsoleHeight() - ROWS;
+			pageColumn = getConsoleWidth();
+	
+			// show header
+			showHeader();
+			// show body
+			showBody();
+			// show footer
+			showFooter();
+	
+			io.setCursor(dataLine, 1);
+			selectedLine = -1;
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 
 	private void showHeader() throws IOException {
@@ -123,23 +115,32 @@ public class BusPortalShell extends BusShell {
 		io.write(footer);
 	}
 
-	private void mainLoop() throws IOException {
+	private void mainLoop() throws CIBusException  {
 		stop = false;
 		while (!stop) {
-			int ch = io.read(1);
+			int ch = -1;
+			try {
+				ch = io.read();
+			} catch (IOException e) {
+				throw new CIBusException("", e);
+			}
 
 			timestamp = System.currentTimeMillis();
 			switch (ch) {
-			case 'f':
-			case 'F': // refresh portal window
-				showData();
-				break;
-			case 'q':
-			case 'Q': // 退出
-				exit();
-				break;
-			default:
-				break;
+				case 'f':
+				case 'F': // refresh portal window
+					showData();
+					break;
+				case 'q':
+				case 'Q': // 退出
+					try {
+						exit();
+					} catch (IOException e) {
+						
+					}
+					break;
+				default:
+					break;
 			}
 		}
 
@@ -154,4 +155,28 @@ public class BusPortalShell extends BusShell {
 		io.flush();
 		stop = true;
 	}
+
+	@Override
+	protected void custom() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void show() throws CIBusException {
+		timestamp = System.currentTimeMillis();
+		schedule = true;
+		showData();
+		mainLoop();
+	}
+
+	@Override
+	protected void shutdown() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

@@ -19,8 +19,7 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.service.impl.PasswordAuthServiceImpl;
-import com.antelope.ci.bus.server.service.impl.PublickeyAuthServiceImpl;
+import com.antelope.ci.bus.server.service.impl.AbstractAuthService;
 import com.antelope.ci.bus.server.shell.BusShellFactory;
 
 
@@ -32,13 +31,17 @@ import com.antelope.ci.bus.server.shell.BusShellFactory;
  * @Date	 2013-9-5		下午10:19:24 
  */
 public abstract class BusServer {
-	private SshServer sshServer;
-	private BusServerConfig config;					// server配置项
-	private BusServerCondition condition;
+	protected SshServer sshServer;
+	protected BusServerConfig config;					// server配置项
+	protected BusServerCondition condition;
 	
-	public void BusServer(BusServerCondition condition) {
-		this.config = readConfig();
-		this.condition = condition;
+	public BusServer() throws CIBusException {
+		init();
+	}
+	
+	private void init() throws CIBusException {
+		config = readConfig();
+		condition = attatchCondition();
 	}
 	
 	public void start() throws IOException, CIBusException {
@@ -66,9 +69,16 @@ public abstract class BusServer {
 			throw new CIBusException("", "create shell factory error");
 		}
 		sshServer.setShellFactory(shellFactory);
-		sshServer.setPasswordAuthenticator(new PasswordAuthServiceImpl(condition.getUserMap()));
-		sshServer.setPublickeyAuthenticator(new PublickeyAuthServiceImpl(condition.getUserMap()));
-		
+		for (AbstractAuthService authService : condition.getAuthServiceList()) {
+			switch (authService.getAuthType()) {
+				case PASSWORD:
+					sshServer.setPasswordAuthenticator(authService);
+					break;
+				case PUBLICKEY:
+					sshServer.setPublickeyAuthenticator(authService);
+					break;
+			}
+		}
 		sshServer.start();
 	}
 	
@@ -105,6 +115,13 @@ public abstract class BusServer {
 		return key_path;
 	}
 	
-	// 读取服务配置
-	protected abstract BusServerConfig readConfig();
+	/*
+	 * 读取服务配置
+	 */
+	protected abstract BusServerConfig readConfig() throws CIBusException;
+	
+	/*
+	 * 加入条件变量
+	 */
+	protected abstract BusServerCondition attatchCondition() throws CIBusException;
 }

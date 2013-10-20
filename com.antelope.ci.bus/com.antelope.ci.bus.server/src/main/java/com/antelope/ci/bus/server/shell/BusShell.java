@@ -29,7 +29,7 @@ public abstract class BusShell {
 	protected OutputStream out;
 	protected OutputStream err;
 
-	public BusShell(BusShellSession session) throws IOException {
+	public BusShell(BusShellSession session) {
 		this.session = session;
 	}
 
@@ -43,17 +43,13 @@ public abstract class BusShell {
 	
 	public void open() throws CIBusException {
 		environment();
+		clear();
 		show();
 	}
 	
 	public void close() throws CIBusException {
-		try {
-			io.eraseScreen();
-			io.homeCursor();
-		} catch (IOException e) {
-			throw new CIBusException("", e);
-		}
 		clear();
+		shutdown();
 	}
 
 	private void environment() throws CIBusException {
@@ -134,10 +130,19 @@ public abstract class BusShell {
 		io.write(new String(new byte[] { 27, '[', 'K' }));// 删除光标到行尾部分的内容
 		io.flush();
 	}
+	
+    protected void clear () throws CIBusException {
+    		try {
+    			io.eraseScreen ();
+    			io.homeCursor ();
+    		} catch (IOException e) {
+    			throw new CIBusException("", e);
+    		}
+    }
 
 	protected abstract void custom() throws CIBusException;
 	
 	protected abstract void show() throws CIBusException;
 	
-	protected abstract void clear() throws CIBusException;
+	protected abstract void shutdown() throws CIBusException;
 }
