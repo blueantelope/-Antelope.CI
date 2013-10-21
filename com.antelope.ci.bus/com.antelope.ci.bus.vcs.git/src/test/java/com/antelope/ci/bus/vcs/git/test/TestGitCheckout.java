@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.vcs.git.test;
 
+import org.junit.Test;
+
 
 /**
  * TODO 描述
@@ -21,6 +23,15 @@ public class TestGitCheckout extends TestBaseGit {
 	@Override
 	protected void init() throws Exception {
 		
+	}
+	
+	@Test
+	public void test() {
+		
+	}
+	
+	public static void main(String[] args) {
+		junit.textui.TestRunner.run(TestGitCheckout.class);
 	}
 
 }
