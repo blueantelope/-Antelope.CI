@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.vcs;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddTagModel;
@@ -48,48 +49,48 @@ import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
  */
 public interface BusVcsService {
 
-	public BusVcsResult login(BusVcsModel model);
+	public BusVcsResult login(BusVcsModel model) throws CIBusException ;
 
-	public BusVcsResult add(BusVcsAddModel model);
+	public BusVcsResult add(BusVcsAddModel model) throws CIBusException ;
 	
-	public BusVcsResult commit(BusVcsCommitModel model);
+	public BusVcsResult commit(BusVcsCommitModel model) throws CIBusException;
 	
-	public BusVcsResult update(BusVcsUpdateModel model);
+	public BusVcsResult update(BusVcsUpdateModel model) throws CIBusException;
 	
-	public BusVcsResult checkout(BusVcsCheckoutModel model);
+	public BusVcsResult checkout(BusVcsCheckoutModel model) throws CIBusException;
 	
-	public BusVcsResult export(BusVcsExportModel model);
+	public BusVcsResult export(BusVcsExportModel model) throws CIBusException;
 	
-	public BusVcsResult rm(BusVcsRmModel model);
+	public BusVcsResult rm(BusVcsRmModel model) throws CIBusException;
 	
-	public BusVcsResult mv(BusVcsMvModel model);
+	public BusVcsResult mv(BusVcsMvModel model) throws CIBusException;
 	
-	public BusVcsListResult list(BusVcsListModel model);
+	public BusVcsListResult list(BusVcsListModel model) throws CIBusException;
 	
-	public BusVcsResult reset(BusVcsResetModel model);
+	public BusVcsResult reset(BusVcsResetModel model) throws CIBusException;
 	
-	public BusVcsDiffResult diff(BusVcsDiffModel model);
+	public BusVcsDiffResult diff(BusVcsDiffModel model) throws CIBusException;
 	
-	public BusVcsLogResult log(BusVcsLogModel model);
+	public BusVcsLogResult log(BusVcsLogModel model) throws CIBusException;
 	
-	public BusVcsStatusResult status(BusVcsStatusModel model);
+	public BusVcsStatusResult status(BusVcsStatusModel model) throws CIBusException;
 	
-	public BusVcsShowResult show(BusVcsShowModel model);
+	public BusVcsShowResult show(BusVcsShowModel model) throws CIBusException;
 	
-	public BusVcsCatResult cat(BusVcsCatModel model);
+	public BusVcsCatResult cat(BusVcsCatModel model) throws CIBusException;
 	
-	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model);
+	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model) throws CIBusException;
 	
-	public BusVcsResult fetch(BusVcsFetchModel model);
+	public BusVcsResult fetch(BusVcsFetchModel model) throws CIBusException;
 	
-	public BusVcsResult pull(BusVcsPullModel model);
+	public BusVcsResult pull(BusVcsPullModel model) throws CIBusException;
 	
-	public BusVcsResult push(BusVcsPushModel model);
+	public BusVcsResult push(BusVcsPushModel model) throws CIBusException;
 	
-	public BusVcsResult addBranch(BusVcsAddBranchModel model);
+	public BusVcsResult addBranch(BusVcsAddBranchModel model) throws CIBusException;
 	
-	public BusVcsResult merge(BusVcsMergeModel model);
+	public BusVcsResult merge(BusVcsMergeModel model) throws CIBusException;
 	
-	public BusVcsResult addTag(BusVcsAddTagModel model);
+	public BusVcsResult addTag(BusVcsAddTagModel model) throws CIBusException;
 }
 

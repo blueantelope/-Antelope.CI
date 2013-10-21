@@ -8,6 +8,14 @@
 
 package com.antelope.ci.bus.vcs.git;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
+
+import com.antelope.ci.bus.common.FileNode;
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.vcs.BusVcsService;
 import com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddModel;
@@ -37,6 +45,7 @@ import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 import com.antelope.ci.bus.vcs.result.BusVcsLogResult;
 import com.antelope.ci.bus.vcs.result.BusVcsRemoteShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsResult;
+import com.antelope.ci.bus.vcs.result.BusVcsResult.VCS_RESULT;
 import com.antelope.ci.bus.vcs.result.BusVcsShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
 
@@ -49,182 +58,227 @@ import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
  * @Date	 2013-10-19		下午4:14:12 
  */
 public class BusGitVcsServiceImpl implements BusVcsService {
+	
+	public BusGitVcsServiceImpl() {
+		
+	}
+
 
 	@Override
-	public BusVcsResult login(BusVcsModel model) {
+	public BusVcsResult login(BusVcsModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult add(BusVcsAddModel model) {
+	public BusVcsResult add(BusVcsAddModel model) throws CIBusException {
+		BusVcsResult result = new BusVcsResult();
+		Git git = createGit(model.getRepository());
+		for (FileNode node : model.getAddList()) {
+			try {
+				git.add().addFilepattern(node.getPath()).call();
+			} catch (Exception e) {
+				result.addProblem(new BusVcsResult(VCS_RESULT.EXCEPTION, e.getMessage()));
+			}
+		}
+		return result;
+	}
+
+
+	@Override
+	public BusVcsResult commit(BusVcsCommitModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult commit(BusVcsCommitModel model) {
+	public BusVcsResult update(BusVcsUpdateModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult update(BusVcsUpdateModel model) {
+	public BusVcsResult checkout(BusVcsCheckoutModel model)
+			throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult checkout(BusVcsCheckoutModel model) {
+	public BusVcsResult export(BusVcsExportModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult export(BusVcsExportModel model) {
+	public BusVcsResult rm(BusVcsRmModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult rm(BusVcsRmModel model) {
+	public BusVcsResult mv(BusVcsMvModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult mv(BusVcsMvModel model) {
+	public BusVcsListResult list(BusVcsListModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsListResult list(BusVcsListModel model) {
+	public BusVcsResult reset(BusVcsResetModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult reset(BusVcsResetModel model) {
+	public BusVcsDiffResult diff(BusVcsDiffModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsDiffResult diff(BusVcsDiffModel model) {
+	public BusVcsLogResult log(BusVcsLogModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsLogResult log(BusVcsLogModel model) {
+	public BusVcsStatusResult status(BusVcsStatusModel model)
+			throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsStatusResult status(BusVcsStatusModel model) {
+	public BusVcsShowResult show(BusVcsShowModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsShowResult show(BusVcsShowModel model) {
+	public BusVcsCatResult cat(BusVcsCatModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsCatResult cat(BusVcsCatModel model) {
+	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model)
+			throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model) {
+	public BusVcsResult fetch(BusVcsFetchModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult fetch(BusVcsFetchModel model) {
+	public BusVcsResult pull(BusVcsPullModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult pull(BusVcsPullModel model) {
+	public BusVcsResult push(BusVcsPushModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult push(BusVcsPushModel model) {
+	public BusVcsResult addBranch(BusVcsAddBranchModel model)
+			throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult addBranch(BusVcsAddBranchModel model) {
+	public BusVcsResult merge(BusVcsMergeModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 
+
 	@Override
-	public BusVcsResult merge(BusVcsMergeModel model) {
+	public BusVcsResult addTag(BusVcsAddTagModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
-
-	@Override
-	public BusVcsResult addTag(BusVcsAddTagModel model) {
-		
-		// TODO Auto-generated method stub
-		return null;
+	
+	private Git createGit(File repos) throws CIBusException {
+		try {
+			FileRepository db = new FileRepository(repos);
+			return new Git(db);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 		
 	}
-
 }
 

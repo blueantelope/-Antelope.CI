@@ -8,6 +8,12 @@
 
 package com.antelope.ci.bus.vcs.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.antelope.ci.bus.common.FILE_TYPE;
+import com.antelope.ci.bus.common.FileNode;
+
 
 /**
  * TODO 描述
@@ -17,6 +23,26 @@ package com.antelope.ci.bus.vcs.model;
  * @Date	 2013-10-20		下午6:10:56 
  */
 public class BusVcsAddModel extends BusVcsModel {
+	protected List<FileNode> addList;
 
+	public BusVcsAddModel() {
+		addList = new ArrayList<FileNode>();
+	}
+	
+	public void addDirectory(String subPath) {
+		addList.add(new FileNode(subPath, FILE_TYPE.DIRECTOTRY));
+	}
+	
+	public void addFile(String subPath) {
+		addList.add(new FileNode(subPath, FILE_TYPE.FILE));
+	}
+
+	public List<FileNode> getAddList() {
+		return addList;
+	}
+
+	public void setAddList(List<FileNode> addList) {
+		this.addList = addList;
+	}
 }
 

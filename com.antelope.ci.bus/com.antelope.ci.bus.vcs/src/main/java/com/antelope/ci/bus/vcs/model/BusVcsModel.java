@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.vcs.model;
 
+import java.io.File;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -80,6 +82,8 @@ public class BusVcsModel {
 	protected String username;
 	protected String password;
 	protected String email;
+	protected String reposPath;
+//	protected FileRepository repos;
 	
 	// getter and setter
 	public VCS_TYPE getType() {
@@ -117,6 +121,21 @@ public class BusVcsModel {
 	}
 	public void setProtocol(VCS_PROTOCOL protocol) {
 		this.protocol = protocol;
+	}
+	public String getReposPath() {
+		return reposPath;
+	}
+	public void setReposPath(String reposPath) {
+		this.reposPath = reposPath;
+	}
+	public File getRepository() throws CIBusException {
+		if (reposPath != null && reposPath.length() > 0) {
+			File repos_file = new File(reposPath);
+			if (repos_file.exists() && repos_file.isDirectory())
+				return repos_file;
+			throw new CIBusException("", "repository not exist or not a directory");
+		}
+		throw new CIBusException("", "reposity path is null");
 	}
 }
 

@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.vcs.result;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -51,6 +54,18 @@ public class BusVcsResult {
 	
 	private VCS_RESULT result;
 	private String message;
+	private List<BusVcsResult> problemList;
+	
+	public BusVcsResult() {
+		this.result = VCS_RESULT.SUCCESS;
+		this.message = "success";
+		problemList = new ArrayList<BusVcsResult>();
+	}
+	
+	public BusVcsResult(VCS_RESULT result, String message) {
+		this.result = result;
+		this.message = message;
+	}
 	
 	// getter and setter
 	public VCS_RESULT getResult() {
@@ -64,6 +79,15 @@ public class BusVcsResult {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	public List<BusVcsResult> getProblemList() {
+		return problemList;
+	}
+	public void setProblemList(List<BusVcsResult> problemList) {
+		this.problemList = problemList;
+	}
+	public void addProblem(BusVcsResult problem) {
+		problemList.add(problem);
 	}
 }
 
