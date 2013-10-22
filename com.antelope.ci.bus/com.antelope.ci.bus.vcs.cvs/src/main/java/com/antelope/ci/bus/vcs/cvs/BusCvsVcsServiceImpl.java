@@ -52,7 +52,7 @@ import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
 public class BusCvsVcsServiceImpl implements BusVcsService {
 
 	@Override
-	public BusVcsResult login(BusVcsModel model) throws CIBusException {
+	public BusVcsResult connect(BusVcsModel model) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		return null;

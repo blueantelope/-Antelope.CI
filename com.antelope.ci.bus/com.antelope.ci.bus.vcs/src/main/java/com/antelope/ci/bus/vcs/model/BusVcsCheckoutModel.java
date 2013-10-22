@@ -17,6 +17,20 @@ package com.antelope.ci.bus.vcs.model;
  * @Date	 2013-10-20		下午6:06:27 
  */
 public class BusVcsCheckoutModel extends BusVcsModel {
-
+	protected boolean isCreate;
+	protected String name;
+	
+	public boolean isCreate() {
+		return isCreate;
+	}
+	public void setCreate(boolean isCreate) {
+		this.isCreate = isCreate;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 }
 

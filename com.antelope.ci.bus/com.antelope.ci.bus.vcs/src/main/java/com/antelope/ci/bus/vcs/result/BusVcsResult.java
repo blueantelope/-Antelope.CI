@@ -89,5 +89,13 @@ public class BusVcsResult {
 	public void addProblem(BusVcsResult problem) {
 		problemList.add(problem);
 	}
+	public void setException(String message) {
+		this.result = VCS_RESULT.EXCEPTION;
+		this.message = message;
+	}
+	public void setException(Exception e) {
+		this.result = VCS_RESULT.EXCEPTION;
+		this.message = e.getMessage();
+	}
 }
 

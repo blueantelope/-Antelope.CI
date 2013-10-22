@@ -83,7 +83,6 @@ public class BusVcsModel {
 	protected String password;
 	protected String email;
 	protected String reposPath;
-//	protected FileRepository repos;
 	
 	// getter and setter
 	public VCS_TYPE getType() {
@@ -136,6 +135,22 @@ public class BusVcsModel {
 			throw new CIBusException("", "repository not exist or not a directory");
 		}
 		throw new CIBusException("", "reposity path is null");
+	}
+	public void setInfo(BusVcsModel model) {
+		if (model.type != null)
+			this.type = model.type;
+		if (model.protocol != null)
+			this.protocol = model.protocol;
+		if (model.url != null && model.url.length() > 0)
+			this.url = model.url;
+		if (model.username != null && model.username.length() > 0)
+			this.username = model.username;
+		if (model.password != null && model.password.length() > 0)
+			this.password = model.password;
+		if (model.email != null && model.email.length() > 0)
+			this.email = model.email;
+		if (model.reposPath != null && model.reposPath.length() > 0)
+			this.reposPath = model.reposPath;
 	}
 }
 

@@ -11,8 +11,13 @@ package com.antelope.ci.bus.vcs.git;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.transport.Transport;
+import org.eclipse.jgit.transport.URIish;
 
 import com.antelope.ci.bus.common.FileNode;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -45,92 +50,169 @@ import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 import com.antelope.ci.bus.vcs.result.BusVcsLogResult;
 import com.antelope.ci.bus.vcs.result.BusVcsRemoteShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsResult;
-import com.antelope.ci.bus.vcs.result.BusVcsResult.VCS_RESULT;
 import com.antelope.ci.bus.vcs.result.BusVcsShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
 
 
 /**
- * TODO 描述
- *
+ * git操作service
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-19		下午4:14:12 
  */
 public class BusGitVcsServiceImpl implements BusVcsService {
+	private BusVcsModel model;
 	
 	public BusGitVcsServiceImpl() {
-		
+	}
+	
+	public BusGitVcsServiceImpl(BusVcsModel model) {
+		this.model = model;
 	}
 
-
+	/**
+	 * 使用push来验证连通性
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#connect(com.antelope.ci.bus.vcs.model.BusVcsModel)
+	 */
 	@Override
-	public BusVcsResult login(BusVcsModel model) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
+	public BusVcsResult connect(BusVcsModel model) throws CIBusException {
+		mergeModel(model);
+		BusVcsResult result = new BusVcsResult();
+		Transport transport = null;
+		try {
+			URIish uri = new URIish(model.getUrl());
+			uri = uri.setUser(model.getUsername());
+			uri = uri.setPass(model.getPassword());
+			transport = Transport.open(uri);
+			transport.setTimeout(5);
+			transport.openPush();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		} finally {
+			if (transport != null)
+				transport.close();
+			return result;
+		}
 	}
 
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#add(com.antelope.ci.bus.vcs.model.BusVcsAddModel)
+	 */
 	@Override
 	public BusVcsResult add(BusVcsAddModel model) throws CIBusException {
+		mergeModel(model);
 		BusVcsResult result = new BusVcsResult();
 		Git git = createGit(model.getRepository());
+		AddCommand command = git.add();
 		for (FileNode node : model.getAddList()) {
-			try {
-				git.add().addFilepattern(node.getPath()).call();
-			} catch (Exception e) {
-				result.addProblem(new BusVcsResult(VCS_RESULT.EXCEPTION, e.getMessage()));
-			}
+			command.addFilepattern(node.getPath());
+		}
+		try {
+			command.call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
 		}
 		return result;
 	}
 
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#commit(com.antelope.ci.bus.vcs.model.BusVcsCommitModel)
+	 */
 	@Override
 	public BusVcsResult commit(BusVcsCommitModel model) throws CIBusException {
+		mergeModel(model);
+		BusVcsResult result = new BusVcsResult();
+		Git git = createGit(model.getRepository());
+		try {
+			git.commit().setMessage("create file").call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		} 
 		
-		// TODO Auto-generated method stub
-		return null;
-		
+		return result;
 	}
 
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#update(com.antelope.ci.bus.vcs.model.BusVcsUpdateModel)
+	 */
 	@Override
 	public BusVcsResult update(BusVcsUpdateModel model) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
+		BusVcsResult result = new BusVcsResult();
+		result.setException(new CIBusException("", "unsupport update for git"));
+		return result;
 	}
 
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#checkout(com.antelope.ci.bus.vcs.model.BusVcsCheckoutModel)
+	 */
 	@Override
-	public BusVcsResult checkout(BusVcsCheckoutModel model)
-			throws CIBusException {
+	public BusVcsResult checkout(BusVcsCheckoutModel model) throws CIBusException {
+		mergeModel(model);
+		BusVcsResult result = new BusVcsResult();
+		Git git = createGit(model.getRepository());
+		try {
+			CheckoutCommand command = git.checkout();
+			if (model.isCreate())
+				command.setCreateBranch(true);
+			command.setName(model.getName());
+			command.call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		} 
 		
-		// TODO Auto-generated method stub
-		return null;
-		
+		return result;
 	}
 
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#export(com.antelope.ci.bus.vcs.model.BusVcsExportModel)
+	 */
 	@Override
 	public BusVcsResult export(BusVcsExportModel model) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
+		BusVcsResult result = new BusVcsResult();
+		result.setException(new CIBusException("", "unsupport export for git"));
+		return result;
 	}
 
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#rm(com.antelope.ci.bus.vcs.model.BusVcsRmModel)
+	 */
 	@Override
 	public BusVcsResult rm(BusVcsRmModel model) throws CIBusException {
+		mergeModel(model);
+		BusVcsResult result = new BusVcsResult();
+		Git git = createGit(model.getRepository());
+		try {
+			RmCommand command = git.rm();
+			if (model.isCached())
+				command.setCached(true);
+			for (FileNode node : model.getRmList()) {
+				command.addFilepattern(node.getPath());
+			}
+			command.call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		} 
 		
-		// TODO Auto-generated method stub
-		return null;
-		
+		return result;
 	}
 
 
@@ -279,6 +361,12 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 			throw new CIBusException("", e);
 		}
 		
+	}
+	
+	private void mergeModel(BusVcsModel pmodle) {
+		if (this.model != null) {
+			pmodle.setInfo(model);
+		}
 	}
 }
 

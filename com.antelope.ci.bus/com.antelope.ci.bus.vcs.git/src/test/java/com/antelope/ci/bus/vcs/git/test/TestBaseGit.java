@@ -18,6 +18,9 @@ import junit.framework.TestCase;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 
+import com.antelope.ci.bus.vcs.git.BusGitVcsServiceImpl;
+import com.antelope.ci.bus.vcs.model.BusVcsModel;
+
 
 /**
  * TODO 描述
@@ -35,6 +38,8 @@ public abstract class TestBaseGit extends TestCase {
 	protected Git remote_local_git;
 	protected File clone_file = new File(clone);
 	protected FileRepository file_repos;
+	protected BusVcsModel model;
+	protected BusGitVcsServiceImpl gitService;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -52,6 +57,12 @@ public abstract class TestBaseGit extends TestCase {
 		remote_local_git = new Git(file_repos);
 		if (!clone_file.exists())
 			clone_file.mkdir();
+		
+		model = new BusVcsModel();
+		model.setUrl("https://github.com/blueantelope/-Antelope.CI.git");
+		model.setUsername("blueantelope");
+		model.setPassword("54antelope123");
+		gitService = new BusGitVcsServiceImpl();
 		init();
 	}
 

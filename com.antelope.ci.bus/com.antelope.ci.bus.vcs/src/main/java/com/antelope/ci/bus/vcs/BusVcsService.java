@@ -49,7 +49,7 @@ import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
  */
 public interface BusVcsService {
 
-	public BusVcsResult login(BusVcsModel model) throws CIBusException ;
+	public BusVcsResult connect(BusVcsModel model) throws CIBusException ;
 
 	public BusVcsResult add(BusVcsAddModel model) throws CIBusException ;
 	
