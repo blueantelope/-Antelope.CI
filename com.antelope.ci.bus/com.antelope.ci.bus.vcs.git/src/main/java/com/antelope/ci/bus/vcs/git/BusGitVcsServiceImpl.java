@@ -10,12 +10,18 @@ package com.antelope.ci.bus.vcs.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.transport.URIish;
 
@@ -76,14 +82,12 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	 * @see com.antelope.ci.bus.vcs.BusVcsService#connect(com.antelope.ci.bus.vcs.model.BusVcsModel)
 	 */
 	@Override
-	public BusVcsResult connect(BusVcsModel model) throws CIBusException {
+	public BusVcsResult connect(BusVcsModel model) {
 		mergeModel(model);
 		BusVcsResult result = new BusVcsResult();
 		Transport transport = null;
 		try {
-			URIish uri = new URIish(model.getUrl());
-			uri = uri.setUser(model.getUsername());
-			uri = uri.setPass(model.getPassword());
+			URIish uri = createUri(model);
 			transport = Transport.open(uri);
 			transport.setTimeout(5);
 			transport.openPush();
@@ -96,6 +100,34 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 			return result;
 		}
 	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#clone(com.antelope.ci.bus.vcs.model.BusVcsModel)
+	 */
+	@Override
+	public BusVcsResult clone(BusVcsModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			File directory = new File(model.getReposPath());
+			if (directory.exists()) {
+				result.setError("not colne : folder exist");
+				return result;
+			}
+			directory.mkdirs();
+			CloneCommand command = Git.cloneRepository();
+			command.setBare(true);
+			command.setDirectory(directory);
+			command.setURI(model.getUrl());
+			command.call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
+		return result;
+	}
 
 	/**
 	 * 
@@ -103,15 +135,15 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	 * @see com.antelope.ci.bus.vcs.BusVcsService#add(com.antelope.ci.bus.vcs.model.BusVcsAddModel)
 	 */
 	@Override
-	public BusVcsResult add(BusVcsAddModel model) throws CIBusException {
-		mergeModel(model);
+	public BusVcsResult add(BusVcsAddModel model) {
 		BusVcsResult result = new BusVcsResult();
-		Git git = createGit(model.getRepository());
-		AddCommand command = git.add();
-		for (FileNode node : model.getAddList()) {
-			command.addFilepattern(node.getPath());
-		}
+		mergeModel(model);
 		try {
+			Git git = createGit(model.getRepository());
+			AddCommand command = git.add();
+			for (FileNode node : model.getAddList()) {
+				command.addFilepattern(node.getPath());
+			}
 			command.call();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,11 +158,11 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	 * @see com.antelope.ci.bus.vcs.BusVcsService#commit(com.antelope.ci.bus.vcs.model.BusVcsCommitModel)
 	 */
 	@Override
-	public BusVcsResult commit(BusVcsCommitModel model) throws CIBusException {
-		mergeModel(model);
+	public BusVcsResult commit(BusVcsCommitModel model) {
 		BusVcsResult result = new BusVcsResult();
-		Git git = createGit(model.getRepository());
+		mergeModel(model);
 		try {
+			Git git = createGit(model.getRepository());
 			git.commit().setMessage("create file").call();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -146,7 +178,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	 * @see com.antelope.ci.bus.vcs.BusVcsService#update(com.antelope.ci.bus.vcs.model.BusVcsUpdateModel)
 	 */
 	@Override
-	public BusVcsResult update(BusVcsUpdateModel model) throws CIBusException {
+	public BusVcsResult update(BusVcsUpdateModel model) {
 		BusVcsResult result = new BusVcsResult();
 		result.setException(new CIBusException("", "unsupport update for git"));
 		return result;
@@ -158,11 +190,11 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	 * @see com.antelope.ci.bus.vcs.BusVcsService#checkout(com.antelope.ci.bus.vcs.model.BusVcsCheckoutModel)
 	 */
 	@Override
-	public BusVcsResult checkout(BusVcsCheckoutModel model) throws CIBusException {
-		mergeModel(model);
+	public BusVcsResult checkout(BusVcsCheckoutModel model) {
 		BusVcsResult result = new BusVcsResult();
-		Git git = createGit(model.getRepository());
+		mergeModel(model);
 		try {
+			Git git = createGit(model.getRepository());
 			CheckoutCommand command = git.checkout();
 			if (model.isCreate())
 				command.setCreateBranch(true);
@@ -182,7 +214,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	 * @see com.antelope.ci.bus.vcs.BusVcsService#export(com.antelope.ci.bus.vcs.model.BusVcsExportModel)
 	 */
 	@Override
-	public BusVcsResult export(BusVcsExportModel model) throws CIBusException {
+	public BusVcsResult export(BusVcsExportModel model) {
 		BusVcsResult result = new BusVcsResult();
 		result.setException(new CIBusException("", "unsupport export for git"));
 		return result;
@@ -195,11 +227,11 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	 * @see com.antelope.ci.bus.vcs.BusVcsService#rm(com.antelope.ci.bus.vcs.model.BusVcsRmModel)
 	 */
 	@Override
-	public BusVcsResult rm(BusVcsRmModel model) throws CIBusException {
-		mergeModel(model);
+	public BusVcsResult rm(BusVcsRmModel model) {
 		BusVcsResult result = new BusVcsResult();
-		Git git = createGit(model.getRepository());
+		mergeModel(model);
 		try {
+			Git git = createGit(model.getRepository());
 			RmCommand command = git.rm();
 			if (model.isCached())
 				command.setCached(true);
@@ -215,9 +247,73 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#mv(com.antelope.ci.bus.vcs.model.BusVcsMvModel)
+	 */
+	@Override
+	public BusVcsResult mv(BusVcsMvModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			StoredConfig config = git.getRepository().getConfig();
+			if (model.isRebase())
+				config.setBoolean(ConfigConstants.CONFIG_BRANCH_SECTION,
+						model.getBranch() , ConfigConstants.CONFIG_KEY_REBASE, true);
+			config.setString(ConfigConstants.CONFIG_BRANCH_SECTION, model.getBranch(), 
+					model.getOldname(), model.getNewname());
+			config.save();
+			git.branchRename().setNewName(model.getBranch()).call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		} 
+		
+		return result;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#list(com.antelope.ci.bus.vcs.model.BusVcsListModel)
+	 */
+	@Override
+	public BusVcsListResult list(BusVcsListModel model) {
+		BusVcsListResult result = new BusVcsListResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			LsRemoteCommand lsRemoteCommand = git.lsRemote();
+			Collection<Ref> refs = lsRemoteCommand.call();
+			for (Ref ref : refs) {
+				FileNode node = new FileNode();
+				node.setPath(model.getUrl() + File.separator + ref.getName());
+				result.addNode(node);
+				makeNodeTree(node, ref);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		} 
+		
+		return result;
+	}
+
+	// recurse and make node tree
+	private void makeNodeTree(FileNode node, Ref ref) {
+		Ref leaf = ref.getLeaf();
+		if (leaf != null) {
+			FileNode subNode = new FileNode();
+			subNode.setPath(node.getPath() + File.separator + leaf.getName());
+			node.addChildNode(subNode);
+			makeNodeTree(subNode, leaf);
+		}
+	}
 
 	@Override
-	public BusVcsResult mv(BusVcsMvModel model) throws CIBusException {
+	public BusVcsResult reset(BusVcsResetModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -226,7 +322,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsListResult list(BusVcsListModel model) throws CIBusException {
+	public BusVcsDiffResult diff(BusVcsDiffModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -235,7 +331,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsResult reset(BusVcsResetModel model) throws CIBusException {
+	public BusVcsLogResult log(BusVcsLogModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -244,7 +340,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsDiffResult diff(BusVcsDiffModel model) throws CIBusException {
+	public BusVcsStatusResult status(BusVcsStatusModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -253,7 +349,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsLogResult log(BusVcsLogModel model) throws CIBusException {
+	public BusVcsShowResult show(BusVcsShowModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -262,8 +358,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsStatusResult status(BusVcsStatusModel model)
-			throws CIBusException {
+	public BusVcsCatResult cat(BusVcsCatModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -272,7 +367,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsShowResult show(BusVcsShowModel model) throws CIBusException {
+	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -281,7 +376,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsCatResult cat(BusVcsCatModel model) throws CIBusException {
+	public BusVcsResult fetch(BusVcsFetchModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -290,8 +385,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model)
-			throws CIBusException {
+	public BusVcsResult pull(BusVcsPullModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -300,7 +394,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsResult fetch(BusVcsFetchModel model) throws CIBusException {
+	public BusVcsResult push(BusVcsPushModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -309,7 +403,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsResult pull(BusVcsPullModel model) throws CIBusException {
+	public BusVcsResult addBranch(BusVcsAddBranchModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -318,7 +412,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsResult push(BusVcsPushModel model) throws CIBusException {
+	public BusVcsResult merge(BusVcsMergeModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -327,33 +421,14 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 
 
 	@Override
-	public BusVcsResult addBranch(BusVcsAddBranchModel model)
-			throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-
-
-	@Override
-	public BusVcsResult merge(BusVcsMergeModel model) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-
-
-	@Override
-	public BusVcsResult addTag(BusVcsAddTagModel model) throws CIBusException {
+	public BusVcsResult addTag(BusVcsAddTagModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
 	
-	private Git createGit(File repos) throws CIBusException {
+	private Git createGit(File repos) throws CIBusException{
 		try {
 			FileRepository db = new FileRepository(repos);
 			return new Git(db);
@@ -366,6 +441,19 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	private void mergeModel(BusVcsModel pmodle) {
 		if (this.model != null) {
 			pmodle.setInfo(model);
+		}
+	}
+	
+	private URIish createUri(BusVcsModel model) throws CIBusException {
+		try {
+			URIish uri = new URIish(model.getUrl());
+			uri = uri.setUser(model.getUsername());
+			uri = uri.setPass(model.getPassword());
+			
+			return uri;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new CIBusException("", e);
 		}
 	}
 }

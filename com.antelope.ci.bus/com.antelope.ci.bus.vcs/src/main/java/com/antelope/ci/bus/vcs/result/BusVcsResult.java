@@ -97,5 +97,9 @@ public class BusVcsResult {
 		this.result = VCS_RESULT.EXCEPTION;
 		this.message = e.getMessage();
 	}
+	public void setError(String message) {
+		this.result = VCS_RESULT.ERROR;
+		this.message = message;
+	}
 }
 

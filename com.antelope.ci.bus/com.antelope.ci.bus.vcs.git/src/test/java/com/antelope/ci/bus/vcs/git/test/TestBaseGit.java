@@ -34,6 +34,7 @@ public abstract class TestBaseGit extends TestCase {
 	protected static final String repos = root + File.separator + "repos";
 	protected static final String repos_git = repos + File.separator + ".git";
 	protected static final String clone = root +  File.separator + "clone";
+	protected static final String test_antelopeCI = root +  File.separator + "testAntelopeCI" + File.separator + ".git";
 	protected File root_file =  new File(root);
 	protected Git remote_local_git;
 	protected File clone_file = new File(clone);
@@ -59,9 +60,9 @@ public abstract class TestBaseGit extends TestCase {
 			clone_file.mkdir();
 		
 		model = new BusVcsModel();
-		model.setUrl("https://github.com/blueantelope/-Antelope.CI.git");
-		model.setUsername("blueantelope");
-		model.setPassword("54antelope123");
+		model.setUrl("https://github.com/testantelope/testAntelopeCI.git");
+		model.setUsername("testantelope");
+		model.setPassword("54antelope");
 		gitService = new BusGitVcsServiceImpl();
 		init();
 	}

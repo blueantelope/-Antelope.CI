@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.vcs.svn;
 
-import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.vcs.BusVcsService;
 import com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddModel;
@@ -52,7 +51,22 @@ import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
 public class BusSvnVcsServiceImpl implements BusVcsService {
 
 	@Override
-	public BusVcsResult connect(BusVcsModel model) throws CIBusException {
+	public BusVcsResult connect(BusVcsModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+	
+	@Override
+	public BusVcsResult clone(BusVcsModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BusVcsResult add(BusVcsAddModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -60,7 +74,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult add(BusVcsAddModel model) throws CIBusException {
+	public BusVcsResult commit(BusVcsCommitModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -68,7 +82,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult commit(BusVcsCommitModel model) throws CIBusException {
+	public BusVcsResult update(BusVcsUpdateModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -76,7 +90,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult update(BusVcsUpdateModel model) throws CIBusException {
+	public BusVcsResult checkout(BusVcsCheckoutModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -84,8 +98,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult checkout(BusVcsCheckoutModel model)
-			throws CIBusException {
+	public BusVcsResult export(BusVcsExportModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -93,7 +106,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult export(BusVcsExportModel model) throws CIBusException {
+	public BusVcsResult rm(BusVcsRmModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -101,7 +114,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult rm(BusVcsRmModel model) throws CIBusException {
+	public BusVcsResult mv(BusVcsMvModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -109,7 +122,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult mv(BusVcsMvModel model) throws CIBusException {
+	public BusVcsListResult list(BusVcsListModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -117,7 +130,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsListResult list(BusVcsListModel model) throws CIBusException {
+	public BusVcsResult reset(BusVcsResetModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -125,7 +138,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult reset(BusVcsResetModel model) throws CIBusException {
+	public BusVcsDiffResult diff(BusVcsDiffModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -133,7 +146,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsDiffResult diff(BusVcsDiffModel model) throws CIBusException {
+	public BusVcsLogResult log(BusVcsLogModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -141,7 +154,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsLogResult log(BusVcsLogModel model) throws CIBusException {
+	public BusVcsStatusResult status(BusVcsStatusModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -149,8 +162,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsStatusResult status(BusVcsStatusModel model)
-			throws CIBusException {
+	public BusVcsShowResult show(BusVcsShowModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -158,7 +170,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsShowResult show(BusVcsShowModel model) throws CIBusException {
+	public BusVcsCatResult cat(BusVcsCatModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -166,7 +178,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsCatResult cat(BusVcsCatModel model) throws CIBusException {
+	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -174,8 +186,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model)
-			throws CIBusException {
+	public BusVcsResult fetch(BusVcsFetchModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -183,7 +194,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult fetch(BusVcsFetchModel model) throws CIBusException {
+	public BusVcsResult pull(BusVcsPullModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -191,7 +202,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult pull(BusVcsPullModel model) throws CIBusException {
+	public BusVcsResult push(BusVcsPushModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -199,7 +210,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult push(BusVcsPushModel model) throws CIBusException {
+	public BusVcsResult addBranch(BusVcsAddBranchModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -207,8 +218,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult addBranch(BusVcsAddBranchModel model)
-			throws CIBusException {
+	public BusVcsResult merge(BusVcsMergeModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -216,15 +226,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsResult merge(BusVcsMergeModel model) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-
-	@Override
-	public BusVcsResult addTag(BusVcsAddTagModel model) throws CIBusException {
+	public BusVcsResult addTag(BusVcsAddTagModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;

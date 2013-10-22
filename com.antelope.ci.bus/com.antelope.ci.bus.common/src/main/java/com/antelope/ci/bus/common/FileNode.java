@@ -23,12 +23,14 @@ import java.util.List;
 public class FileNode {
 	protected String path;
 	protected FILE_TYPE type;
+	protected List<FileNode> childNodes;
 	
 	public FileNode() {
-		
+		childNodes = new ArrayList<FileNode>();
 	}
 	
 	public FileNode(String path, FILE_TYPE type) {
+		this();
 		this.path = path;
 		this.type = type;
 	}
@@ -45,6 +47,16 @@ public class FileNode {
 	public void setType(FILE_TYPE type) {
 		this.type = type;
 	}
+	public List<FileNode> getChildNodes() {
+		return childNodes;
+	}
+	public void setChildNodes(List<FileNode> childNodes) {
+		this.childNodes = childNodes;
+	}
+	public void addChildNode(FileNode childNode) {
+		childNodes.add(childNode);
+	}
+
 	public List<FileNode> getChildFileList() {
 		List<FileNode> nodeList = new ArrayList<FileNode>();
 		getChildFile(nodeList, this);
