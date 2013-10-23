@@ -35,6 +35,7 @@ public class TestServiceWithList extends TestBaseGit {
 	public void test() throws CIBusException {
 		BusVcsListModel listModel = new BusVcsListModel();
 		listModel.setInfo(super.model);
+		listModel.setReposPath(test_antelopeCI);
 		BusVcsResult result = gitService.list(listModel);
 		System.out.println(result.getResult());
 		System.out.println(result.getMessage());

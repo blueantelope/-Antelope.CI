@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -175,6 +176,55 @@ public class FileUtil {
 			resultFile.close();
 		} catch (Exception e) {
 			throw new CIBusException("", e);
+		}
+	}
+	
+	public static File genTempFolder(String name) throws CIBusException {
+		String tmp = System.getProperty("java.io.tmpdir");
+		File tmp_dir = new File(tmp);
+		String tm = String.valueOf(System.currentTimeMillis());
+		for (File fs : tmp_dir.listFiles()) {
+			if (fs.isDirectory()) {
+				if (fs.getName().equals(name)) {
+					return createFolder(fs.getPath(), tm);
+				}
+			}
+		}
+		tmp_dir = new File(tmp, name);
+		if (tmp_dir.mkdir()) {
+			return createFolder(tmp_dir.getPath(), tm);
+		}
+		throw new CIBusException("", "can not create folder");
+	}
+	
+	private static File createFolder(String parent, String tm) throws CIBusException {
+		File tmp_dir = new File(parent, tm);
+		if (tmp_dir.mkdir()) {
+			return tmp_dir;
+		}
+		throw new CIBusException("", "can not create folder");
+	}
+	
+	public static void delFolderWithDay(String name, String split, int days) {
+		String tmp = System.getProperty("java.io.tmpdir");
+		File tmp_dir = new File(tmp);
+		Date now = new Date();
+		for (File fs : tmp_dir.listFiles()) {
+			if (fs.isDirectory()) {
+				String dirname = fs.getName();
+				if (dirname.equals(name)) {
+					String[] ds = dirname.split("split");
+					if (ds.length > 1) {
+						try {
+							Date d = DateUtil.toDate(ds[1]);
+							if (DateUtil.differDay(now, d) >= days)
+								delFolder(fs.getPath());
+						} catch (CIBusException e) {
+							
+						}
+					}
+				}
+			}
 		}
 	}
 	

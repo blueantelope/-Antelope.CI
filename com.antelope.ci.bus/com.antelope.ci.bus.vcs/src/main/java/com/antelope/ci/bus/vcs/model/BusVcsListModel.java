@@ -17,6 +17,14 @@ package com.antelope.ci.bus.vcs.model;
  * @Date	 2013-10-20		下午6:25:57 
  */
 public class BusVcsListModel extends BusVcsModel {
+	protected String branch;
 
+	public String getBranch() {
+		return branch;
+	}
+
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
 }
 

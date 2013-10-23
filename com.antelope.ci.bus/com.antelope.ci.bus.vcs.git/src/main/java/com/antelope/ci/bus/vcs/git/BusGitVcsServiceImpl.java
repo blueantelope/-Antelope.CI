@@ -10,22 +10,30 @@ package com.antelope.ci.bus.vcs.git;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Date;
 
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ConfigConstants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.treewalk.TreeWalk;
 
+import com.antelope.ci.bus.common.DateUtil;
 import com.antelope.ci.bus.common.FileNode;
+import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.vcs.BusVcsService;
 import com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel;
@@ -116,12 +124,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 				result.setError("not colne : folder exist");
 				return result;
 			}
-			directory.mkdirs();
-			CloneCommand command = Git.cloneRepository();
-			command.setBare(true);
-			command.setDirectory(directory);
-			command.setURI(model.getUrl());
-			command.call();
+			clone(directory, model.getUrl());
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.setException(e);
@@ -284,15 +287,26 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 		BusVcsListResult result = new BusVcsListResult();
 		mergeModel(model);
 		try {
+			String branch = model.getBranch()==null?"refs/heads/master":model.getBranch();
+			String today = DateUtil.formatDay(new Date());
+			String name = "git_"+today;
+			String split = "_";
+			FileUtil.delFolderWithDay(name, split, 2);
+			File tempDir =FileUtil.genTempFolder(name);
+			model.setReposPath(tempDir.getPath());
 			Git git = createGit(model.getRepository());
-			LsRemoteCommand lsRemoteCommand = git.lsRemote();
-			Collection<Ref> refs = lsRemoteCommand.call();
-			for (Ref ref : refs) {
-				FileNode node = new FileNode();
-				node.setPath(model.getUrl() + File.separator + ref.getName());
-				result.addNode(node);
-				makeNodeTree(node, ref);
+			clone(tempDir, model.getUrl());
+			Repository repository = git.getRepository();  
+			RevWalk walk = new RevWalk(repository);  
+			Ref ref = repository.getRef(branch);  
+			ObjectId objId = ref.getObjectId();  
+	        RevCommit revCommit = walk.parseCommit(objId);  
+	        RevTree revTree = revCommit.getTree();
+	        TreeWalk tw = TreeWalk.forPath(repository, "/", revTree);  
+	        while (tw.next()) {
+				System.out.println(tw.getNameString());
 			}
+	        
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.setException(e);
@@ -308,7 +322,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 			FileNode subNode = new FileNode();
 			subNode.setPath(node.getPath() + File.separator + leaf.getName());
 			node.addChildNode(subNode);
-			makeNodeTree(subNode, leaf);
+//			makeNodeTree(subNode, leaf);
 		}
 	}
 
@@ -430,7 +444,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 	
 	private Git createGit(File repos) throws CIBusException{
 		try {
-			FileRepository db = new FileRepository(repos);
+			FileRepository db = new FileRepository(repos+File.separator+".git");
 			return new Git(db);
 		} catch (IOException e) {
 			throw new CIBusException("", e);
@@ -455,6 +469,14 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 			e.printStackTrace();
 			throw new CIBusException("", e);
 		}
+	}
+	
+	private void clone(File directory, String uri) throws Exception {
+		directory.mkdirs();
+		CloneCommand command = Git.cloneRepository();
+		command.setDirectory(directory);
+		command.setURI(uri);
+		command.call();
 	}
 }
 

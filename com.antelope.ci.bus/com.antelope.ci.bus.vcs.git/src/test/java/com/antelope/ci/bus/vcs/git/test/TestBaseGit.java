@@ -34,7 +34,7 @@ public abstract class TestBaseGit extends TestCase {
 	protected static final String repos = root + File.separator + "repos";
 	protected static final String repos_git = repos + File.separator + ".git";
 	protected static final String clone = root +  File.separator + "clone";
-	protected static final String test_antelopeCI = root +  File.separator + "testAntelopeCI" + File.separator + ".git";
+	protected static final String test_antelopeCI = root +  File.separator + "testAntelopeCI";
 	protected File root_file =  new File(root);
 	protected Git remote_local_git;
 	protected File clone_file = new File(clone);

@@ -8,10 +8,12 @@
 
 package com.antelope.ci.bus.vcs.git.test;
 
+import java.io.File;
+
 import org.junit.Test;
 
+import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.vcs.model.BusVcsListModel;
 import com.antelope.ci.bus.vcs.result.BusVcsResult;
 
 
@@ -33,6 +35,7 @@ public class TestServiceWithClone extends TestBaseGit {
 	
 	@Test
 	public void test() throws CIBusException {
+		FileUtil.delFolder(test_antelopeCI);
 		model.setReposPath(test_antelopeCI);
 		BusVcsResult result = gitService.clone(model);
 		System.out.println(result.getResult());
