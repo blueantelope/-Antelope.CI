@@ -31,6 +31,7 @@ import com.antelope.ci.bus.vcs.model.BusVcsRmModel;
 import com.antelope.ci.bus.vcs.model.BusVcsShowModel;
 import com.antelope.ci.bus.vcs.model.BusVcsStatusModel;
 import com.antelope.ci.bus.vcs.model.BusVcsUpdateModel;
+import com.antelope.ci.bus.vcs.model.BusVcsVersionResult;
 import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
 import com.antelope.ci.bus.vcs.result.BusVcsDiffResult;
 import com.antelope.ci.bus.vcs.result.BusVcsListResult;
@@ -124,6 +125,14 @@ public class BusCvsVcsServiceImpl implements BusVcsService {
 	@Override
 	public BusVcsListResult list(BusVcsListModel model) {
 		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+	
+	@Override
+	public BusVcsListResult listRemote(BusVcsListModel model) {
+
 		// TODO Auto-generated method stub
 		return null;
 		
@@ -227,6 +236,38 @@ public class BusCvsVcsServiceImpl implements BusVcsService {
 
 	@Override
 	public BusVcsResult addTag(BusVcsAddTagModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public BusVcsVersionResult getBranchList(BusVcsRmModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public BusVcsVersionResult getRemoteBranchList(BusVcsRmModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public BusVcsVersionResult getTagList(BusVcsRmModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public BusVcsVersionResult getRemoteTagList(BusVcsRmModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;

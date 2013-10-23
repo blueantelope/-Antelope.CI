@@ -17,6 +17,23 @@ package com.antelope.ci.bus.vcs.model;
  * @Date	 2013-10-20		下午6:27:27 
  */
 public class BusVcsResetModel extends BusVcsModel {
+	protected String branch;
+	protected int reset_type;
 
+	public String getBranch() {
+		return branch;
+	}
+
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
+
+	public int getReset_type() {
+		return reset_type;
+	}
+
+	public void setReset_type(int reset_type) {
+		this.reset_type = reset_type;
+	}
 }
 

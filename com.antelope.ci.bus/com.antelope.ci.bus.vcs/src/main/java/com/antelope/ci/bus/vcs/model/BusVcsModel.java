@@ -83,6 +83,7 @@ public class BusVcsModel {
 	protected String password;
 	protected String email;
 	protected String reposPath;
+	protected String proxy;
 	
 	// getter and setter
 	public VCS_TYPE getType() {
@@ -126,6 +127,12 @@ public class BusVcsModel {
 	}
 	public void setReposPath(String reposPath) {
 		this.reposPath = reposPath;
+	}
+	public String getProxy() {
+		return proxy;
+	}
+	public void setProxy(String proxy) {
+		this.proxy = proxy;
 	}
 	public File getRepository() throws CIBusException {
 		if (reposPath != null && reposPath.length() > 0) {

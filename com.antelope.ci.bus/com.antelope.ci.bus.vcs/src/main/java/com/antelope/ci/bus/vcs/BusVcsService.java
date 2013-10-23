@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.vcs;
 
-import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddTagModel;
@@ -31,6 +30,7 @@ import com.antelope.ci.bus.vcs.model.BusVcsRmModel;
 import com.antelope.ci.bus.vcs.model.BusVcsShowModel;
 import com.antelope.ci.bus.vcs.model.BusVcsStatusModel;
 import com.antelope.ci.bus.vcs.model.BusVcsUpdateModel;
+import com.antelope.ci.bus.vcs.model.BusVcsVersionResult;
 import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
 import com.antelope.ci.bus.vcs.result.BusVcsDiffResult;
 import com.antelope.ci.bus.vcs.result.BusVcsListResult;
@@ -69,6 +69,8 @@ public interface BusVcsService {
 	
 	public BusVcsListResult list(BusVcsListModel model);
 	
+	public BusVcsListResult listRemote(BusVcsListModel model);
+	
 	public BusVcsResult reset(BusVcsResetModel model);
 	
 	public BusVcsDiffResult diff(BusVcsDiffModel model);
@@ -94,5 +96,13 @@ public interface BusVcsService {
 	public BusVcsResult merge(BusVcsMergeModel model);
 	
 	public BusVcsResult addTag(BusVcsAddTagModel model);
+	
+	public BusVcsVersionResult getBranchList(BusVcsRmModel model);
+	
+	public BusVcsVersionResult getRemoteBranchList(BusVcsRmModel model);
+	
+	public BusVcsVersionResult getTagList(BusVcsRmModel model);
+	
+	public BusVcsVersionResult getRemoteTagList(BusVcsRmModel model);
 }
 

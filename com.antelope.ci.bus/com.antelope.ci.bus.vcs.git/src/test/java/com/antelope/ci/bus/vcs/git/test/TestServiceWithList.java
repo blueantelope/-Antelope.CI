@@ -10,9 +10,10 @@ package com.antelope.ci.bus.vcs.git.test;
 
 import org.junit.Test;
 
+import com.antelope.ci.bus.common.FileNode;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.vcs.model.BusVcsListModel;
-import com.antelope.ci.bus.vcs.result.BusVcsResult;
+import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 
 
 /**
@@ -36,9 +37,12 @@ public class TestServiceWithList extends TestBaseGit {
 		BusVcsListModel listModel = new BusVcsListModel();
 		listModel.setInfo(super.model);
 		listModel.setReposPath(test_antelopeCI);
-		BusVcsResult result = gitService.list(listModel);
-		System.out.println(result.getResult());
-		System.out.println(result.getMessage());
+		BusVcsListResult result = gitService.list(listModel);
+		for (FileNode node : result.getNodeList()) {
+			System.out.println(node.getPath());
+		}
+//		System.out.println(result.getResult());
+//		System.out.println(result.getMessage());
 	}
 
 	
