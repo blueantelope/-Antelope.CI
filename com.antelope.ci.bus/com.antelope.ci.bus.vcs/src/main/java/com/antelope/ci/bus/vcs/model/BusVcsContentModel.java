@@ -35,5 +35,5 @@ public class BusVcsContentModel extends BusVcsModel {
 	public void setPath(String path) {
 		this.path = path;
 	}
-s}
+}
 
