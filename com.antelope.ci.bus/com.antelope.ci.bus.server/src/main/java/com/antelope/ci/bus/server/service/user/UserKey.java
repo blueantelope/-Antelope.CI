@@ -10,8 +10,6 @@ package com.antelope.ci.bus.server.service.user;
 
 import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
 
-
-
 /**
  * 用户密钥信息
  * @author   blueantelope

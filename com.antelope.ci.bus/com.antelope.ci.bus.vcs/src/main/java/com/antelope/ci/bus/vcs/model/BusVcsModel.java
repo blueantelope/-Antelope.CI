@@ -110,6 +110,9 @@ public class BusVcsModel {
 	protected String reposPath;
 	protected String proxy;
 	protected AccessType accessType;
+	protected String privateKey;
+	protected String publicKey;
+	protected String passphase;
 	
 	public BusVcsModel() {
 		this.accessType = AccessType.LOCAL;
@@ -173,6 +176,24 @@ public class BusVcsModel {
 	public void setAccessType(String typeName) throws CIBusException {
 		this.accessType = AccessType.toType(typeName);
 	}
+	public String getPrivateKey() {
+		return privateKey;
+	}
+	public void setPrivateKey(String privateKey) {
+		this.privateKey = privateKey;
+	}
+	public String getPublicKey() {
+		return publicKey;
+	}
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
+	public String getPassphase() {
+		return passphase;
+	}
+	public void setPassphase(String passphase) {
+		this.passphase = passphase;
+	}
 
 	public File getRepository() throws CIBusException {
 		if (reposPath != null && reposPath.length() > 0) {
@@ -200,6 +221,12 @@ public class BusVcsModel {
 			this.reposPath = model.reposPath;
 		if (model.accessType != null)
 			this.accessType = model.accessType;
+		if (model.privateKey != null && model.privateKey.length() > 0)
+			this.privateKey = model.privateKey;
+		if (model.publicKey != null && model.publicKey.length() > 0)
+			this.publicKey = model.publicKey;
+		if (model.passphase != null && model.passphase.length() > 0)
+			this.passphase = model.passphase;
 	}
 }
 
