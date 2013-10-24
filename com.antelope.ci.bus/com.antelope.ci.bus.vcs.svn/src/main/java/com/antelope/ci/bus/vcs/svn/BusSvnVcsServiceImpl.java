@@ -15,6 +15,7 @@ import com.antelope.ci.bus.vcs.model.BusVcsAddTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCatModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCheckoutModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCommitModel;
+import com.antelope.ci.bus.vcs.model.BusVcsContentModel;
 import com.antelope.ci.bus.vcs.model.BusVcsDiffModel;
 import com.antelope.ci.bus.vcs.model.BusVcsExportModel;
 import com.antelope.ci.bus.vcs.model.BusVcsFetchModel;
@@ -33,6 +34,7 @@ import com.antelope.ci.bus.vcs.model.BusVcsStatusModel;
 import com.antelope.ci.bus.vcs.model.BusVcsUpdateModel;
 import com.antelope.ci.bus.vcs.model.BusVcsVersionResult;
 import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
+import com.antelope.ci.bus.vcs.result.BusVcsContentResult;
 import com.antelope.ci.bus.vcs.result.BusVcsDiffResult;
 import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 import com.antelope.ci.bus.vcs.result.BusVcsLogResult;
@@ -58,12 +60,13 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 		return null;
 		
 	}
-	
+
 	@Override
 	public BusVcsResult clone(BusVcsModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
+		
 	}
 
 	@Override
@@ -129,15 +132,7 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 		return null;
 		
 	}
-	
-	@Override
-	public BusVcsListResult listRemote(BusVcsListModel model) {
 
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-		
 	@Override
 	public BusVcsResult reset(BusVcsResetModel model) {
 		
@@ -251,14 +246,6 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsVersionResult getRemoteBranchList(BusVcsRmModel model) {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-
-	@Override
 	public BusVcsVersionResult getTagList(BusVcsRmModel model) {
 		
 		// TODO Auto-generated method stub
@@ -267,12 +254,11 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsVersionResult getRemoteTagList(BusVcsRmModel model) {
+	public BusVcsContentResult readContent(BusVcsContentModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
-
 }
 

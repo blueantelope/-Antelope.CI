@@ -13,6 +13,7 @@ import org.junit.Test;
 import com.antelope.ci.bus.common.FileNode;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.vcs.model.BusVcsListModel;
+import com.antelope.ci.bus.vcs.model.BusVcsModel.AccessType;
 import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 
 
@@ -33,18 +34,31 @@ public class TestServiceWithList extends TestBaseGit {
 	}
 	
 	@Test
-	public void test() throws CIBusException {
+	public void testForLocal() throws CIBusException {
 		BusVcsListModel listModel = new BusVcsListModel();
 		listModel.setInfo(super.model);
 		listModel.setReposPath(test_antelopeCI);
 		BusVcsListResult result = gitService.list(listModel);
+		System.out.println("=========Local Begin=========");
 		for (FileNode node : result.getNodeList()) {
 			System.out.println(node.getPath());
 		}
-//		System.out.println(result.getResult());
-//		System.out.println(result.getMessage());
+		System.out.println("=========Local End=========");
 	}
 
+	@Test
+	public void testForRemote() throws CIBusException {
+		BusVcsListModel listModel = new BusVcsListModel();
+		listModel.setInfo(super.model);
+		listModel.setReposPath(test_antelopeCI);
+		listModel.setAccessType(AccessType.REMOTE);
+		BusVcsListResult result = gitService.list(listModel);
+		System.out.println("=========Remote Begin=========");
+		for (FileNode node : result.getNodeList()) {
+			System.out.println(node.getPath());
+		}
+		System.out.println("=========Remote End=========");
+	}
 	
 	public static void main(String[] args) {
 		junit.textui.TestRunner.run(TestServiceWithList.class);

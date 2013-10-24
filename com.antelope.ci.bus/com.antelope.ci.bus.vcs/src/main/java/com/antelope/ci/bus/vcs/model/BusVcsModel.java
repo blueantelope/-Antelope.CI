@@ -76,6 +76,31 @@ public class BusVcsModel {
 		}
 	}
 	
+	public enum AccessType {
+		LOCAL("local"),
+		REMOTE("remote");
+		private String name;
+		private AccessType(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public String toString() {
+			return name;
+		}
+		public static AccessType toType(String name) throws CIBusException {
+			if (name != null && name.length() > 0) {
+				for (AccessType type : AccessType.values()) {
+					if (type.getName().equalsIgnoreCase(name.trim()))
+						return type;
+				}
+				throw new CIBusException("", "unknow VCS access type : " + name);
+			}
+			throw new CIBusException("", " VCS access type is null");
+		}
+	}
+	
 	protected VCS_TYPE type;
 	protected VCS_PROTOCOL protocol;
 	protected String url;
@@ -84,6 +109,11 @@ public class BusVcsModel {
 	protected String email;
 	protected String reposPath;
 	protected String proxy;
+	protected AccessType accessType;
+	
+	public BusVcsModel() {
+		this.accessType = AccessType.LOCAL;
+	}
 	
 	// getter and setter
 	public VCS_TYPE getType() {
@@ -134,6 +164,16 @@ public class BusVcsModel {
 	public void setProxy(String proxy) {
 		this.proxy = proxy;
 	}
+	public AccessType getAccessType() {
+		return accessType;
+	}
+	public void setAccessType(AccessType accessType) {
+		this.accessType = accessType;
+	}
+	public void setAccessType(String typeName) throws CIBusException {
+		this.accessType = AccessType.toType(typeName);
+	}
+
 	public File getRepository() throws CIBusException {
 		if (reposPath != null && reposPath.length() > 0) {
 			File repos_file = new File(reposPath);
@@ -158,6 +198,8 @@ public class BusVcsModel {
 			this.email = model.email;
 		if (model.reposPath != null && model.reposPath.length() > 0)
 			this.reposPath = model.reposPath;
+		if (model.accessType != null)
+			this.accessType = model.accessType;
 	}
 }
 
