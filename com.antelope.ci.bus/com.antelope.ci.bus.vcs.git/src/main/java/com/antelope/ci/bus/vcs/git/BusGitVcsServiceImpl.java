@@ -8,21 +8,28 @@
 
 package com.antelope.ci.bus.vcs.git;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.DiffCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.RmCommand;
+import org.eclipse.jgit.api.Status;
+import org.eclipse.jgit.api.StatusCommand;
+import org.eclipse.jgit.api.TagCommand;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
@@ -31,7 +38,10 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.treewalk.AbstractTreeIterator;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
 
 import com.antelope.ci.bus.common.DateUtil;
 import com.antelope.ci.bus.common.FILE_TYPE;
@@ -45,7 +55,6 @@ import com.antelope.ci.bus.vcs.model.BusVcsAddTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCatModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCheckoutModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCommitModel;
-import com.antelope.ci.bus.vcs.model.BusVcsContentModel;
 import com.antelope.ci.bus.vcs.model.BusVcsDiffModel;
 import com.antelope.ci.bus.vcs.model.BusVcsExportModel;
 import com.antelope.ci.bus.vcs.model.BusVcsFetchModel;
@@ -65,10 +74,10 @@ import com.antelope.ci.bus.vcs.model.BusVcsStatusModel;
 import com.antelope.ci.bus.vcs.model.BusVcsUpdateModel;
 import com.antelope.ci.bus.vcs.model.BusVcsVersionResult;
 import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
-import com.antelope.ci.bus.vcs.result.BusVcsContentResult;
 import com.antelope.ci.bus.vcs.result.BusVcsDiffResult;
 import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 import com.antelope.ci.bus.vcs.result.BusVcsLogResult;
+import com.antelope.ci.bus.vcs.result.BusVcsLogResult.BusVcsLogResultInfo;
 import com.antelope.ci.bus.vcs.result.BusVcsRemoteShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsResult;
 import com.antelope.ci.bus.vcs.result.BusVcsShowResult;
@@ -385,52 +394,197 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#diff(com.antelope.ci.bus.vcs.model.BusVcsDiffModel)
+	 */
 	@Override
 	public BusVcsDiffResult diff(BusVcsDiffModel model) {
+		BusVcsDiffResult result = new BusVcsDiffResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			if (model.getPathList().isEmpty()) {
+				result.setContent(diff(git, model, null));
+			} else {
+				StringBuffer sBuff = new StringBuffer();
+				for (String path : model.getPathList()) {
+					sBuff.append(diff(git, model, path));
+				}
+				result.setContent(sBuff.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
+	}
+	
+	private String diff(Git git, BusVcsDiffModel model, String path) throws CIBusException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			DiffCommand command = git.diff();
+			command.setOutputStream(out);
+			if (model.isCached())
+				command.setCached(true);
+			if (model.getOldTree() != null && model.getOldTree().length() > 0) {
+				command.setOldTree(getTreeIterator(git.getRepository(), model.getOldTree()));
+			}
+			if (model.getNewTree() != null && model.getNewTree().length() > 0) {
+				command.setNewTree(getTreeIterator(git.getRepository(), model.getNewTree()));
+			}
+			if (model.getSrcPrefix() != null && model.getSrcPrefix().length() > 0) {
+				command.setSourcePrefix(model.getSrcPrefix());
+			}
+			if (model.getDestPrefix() != null && model.getDestPrefix().length() > 0) {
+				command.setDestinationPrefix(model.getDestPrefix());
+			}
+			if (path != null) {
+				command.setPathFilter(PathFilter.create(path));
+			}
+			command.call();
+			String s = out.toString();
+			out.close();
+			return s;
+		} catch (Exception e) {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e1) {
+				}
+			}
+			throw new CIBusException("", e);
+		}
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#log(com.antelope.ci.bus.vcs.model.BusVcsLogModel)
+	 */
 	@Override
 	public BusVcsLogResult log(BusVcsLogModel model) {
+		BusVcsLogResult result = new BusVcsLogResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			
+			if (model.getTagName() != null && model.getTagName().length() > 0) {
+				TagCommand tagCmd = git.tag();
+				tagCmd.setName(model.getTagName());
+				tagCmd.call();
+			}
+			Iterator<RevCommit> logIter = git.log().all().call().iterator();
+			while (logIter.hasNext()) {
+				RevCommit rev = logIter.next();
+				PersonIdent ident = rev.getAuthorIdent();
+				String username = ident.getName();
+				String email = ident.getEmailAddress();
+				Date commit_time = new Date(rev.getCommitTime()*1000);
+				String name = rev.getName();
+				String message = rev.getFullMessage();
+				BusVcsLogResultInfo log = new BusVcsLogResultInfo(
+						username, email, commit_time, name, message
+						);
+				result.addLog(log);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#status(com.antelope.ci.bus.vcs.model.BusVcsStatusModel)
+	 */
 	@Override
 	public BusVcsStatusResult status(BusVcsStatusModel model) {
+		BusVcsStatusResult result = new BusVcsStatusResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			StatusCommand command = git.status();
+			Status status = command.call();
+			result.getAddList().addAll(status.getAdded());
+			result.getDeleteList().addAll(status.getRemoved());
+			result.getChangeList().addAll(status.getChanged());
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#show(com.antelope.ci.bus.vcs.model.BusVcsShowModel)
+	 */
 	@Override
 	public BusVcsShowResult show(BusVcsShowModel model) {
+		BusVcsShowResult result = new BusVcsShowResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#cat(com.antelope.ci.bus.vcs.model.BusVcsCatModel)
+	 */
 	@Override
 	public BusVcsCatResult cat(BusVcsCatModel model) {
+		BusVcsCatResult result = new BusVcsCatResult();
+		mergeModel(model);
+		try {
+			String branch = model.getBranch() == null ? "refs/heads/master"
+					: model.getBranch();
+			if (model.getAccessType() == AccessType.REMOTE) {
+				String today = DateUtil.formatDay(new Date());
+				String name = "git_" + today;
+				String split = "_";
+				FileUtil.delFolderWithDay(name, split, 2);
+				File tempDir = FileUtil.genTempFolder(name);
+				model.setReposPath(tempDir.getPath());
+				clone(tempDir, model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			Repository repository = git.getRepository();
+			RevWalk walk = new RevWalk(repository);
+			Ref ref = repository.getRef(branch);
+			ObjectId objId = ref.getObjectId();
+			RevCommit revCommit = walk.parseCommit(objId);
+			RevTree revTree = revCommit.getTree();
+			TreeWalk treeWalk = TreeWalk.forPath(repository,
+					model.getPath(), revTree);
+			if (treeWalk != null) {
+				ObjectId blobId = treeWalk.getObjectId(0);
+				ObjectLoader loader = repository.open(blobId);
+				byte[] bytes = loader.getBytes();
+				if (bytes != null)
+					result.setContent(new String(bytes));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
-	}
-
-	@Override
-	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model) {
-
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
 	@Override
@@ -518,6 +672,20 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 		command.setURI(uri);
 		command.call();
 	}
+	
+	private AbstractTreeIterator getTreeIterator(Repository repo, String name) throws IOException {
+		final ObjectId id = repo.resolve(name);
+		if (id == null)
+			throw new IllegalArgumentException(name);
+		final CanonicalTreeParser p = new CanonicalTreeParser();
+		final ObjectReader or = repo.newObjectReader();
+		try {
+			p.reset(or, new RevWalk(repo).parseTree(id));
+			return p;
+		} finally {
+			or.release();
+		}
+	}
 
 	@Override
 	public BusVcsVersionResult getBranchList(BusVcsRmModel model) {
@@ -533,52 +701,6 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 		// TODO Auto-generated method stub
 		return null;
 
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * 
-	 * @see com.antelope.ci.bus.vcs.BusVcsService#readContent(com.antelope.ci.bus.vcs.model.BusVcsContentModel)
-	 */
-	@Override
-	public BusVcsContentResult readContent(BusVcsContentModel model) {
-		BusVcsContentResult result = new BusVcsContentResult();
-		mergeModel(model);
-		try {
-			String branch = model.getBranch() == null ? "refs/heads/master"
-					: model.getBranch();
-			if (model.getAccessType() == AccessType.REMOTE) {
-				String today = DateUtil.formatDay(new Date());
-				String name = "git_" + today;
-				String split = "_";
-				FileUtil.delFolderWithDay(name, split, 2);
-				File tempDir = FileUtil.genTempFolder(name);
-				model.setReposPath(tempDir.getPath());
-				clone(tempDir, model.getUrl());
-			}
-			Git git = createGit(model.getRepository());
-			Repository repository = git.getRepository();
-			RevWalk walk = new RevWalk(repository);
-			Ref ref = repository.getRef(branch);
-			ObjectId objId = ref.getObjectId();
-			RevCommit revCommit = walk.parseCommit(objId);
-			RevTree revTree = revCommit.getTree();
-			TreeWalk treeWalk = TreeWalk.forPath(repository,
-					model.getPath(), revTree);
-			if (treeWalk != null) {
-				ObjectId blobId = treeWalk.getObjectId(0);
-				ObjectLoader loader = repository.open(blobId);
-				byte[] bytes = loader.getBytes();
-				if (bytes != null)
-					result.setContent(new String(bytes));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.setException(e);
-		}
-
-		return result;
 	}
 
 }

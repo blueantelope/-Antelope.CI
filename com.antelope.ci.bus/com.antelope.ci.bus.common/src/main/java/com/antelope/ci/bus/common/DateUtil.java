@@ -41,6 +41,10 @@ public class DateUtil {
 		return new SimpleDateFormat(defaultDatePattern).format(date);
 	}
 	
+	public static String formatTime(Date date) {
+		return new SimpleDateFormat(defaultTimePattern).format(date);
+	}
+	
 	public static int differDay(Date d1, Date d2) throws CIBusException {
 		String hourPattern = "yyyy-MM-dd";
 		long hours = 24L * 60L * 60L * 1000L;

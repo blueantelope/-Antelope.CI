@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.vcs.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * TODO 描述
@@ -16,7 +19,23 @@ package com.antelope.ci.bus.vcs.model;
  * @version  0.1
  * @Date	 2013-10-20		下午7:05:57 
  */
-public class BusVcsStatusModel {
+public class BusVcsStatusModel extends BusVcsModel {
+	protected List<String> pathList;
 
+	public BusVcsStatusModel() {
+		pathList = new ArrayList<String>();
+	}
+	
+	public List<String> getPathList() {
+		return pathList;
+	}
+
+	public void setPathList(List<String> pathList) {
+		this.pathList = pathList;
+	}
+	
+	public void addPath(String path) {
+		pathList.add(path);
+	}
 }
 

@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.vcs.model;
 
 
+
 /**
  * TODO 描述
  *
@@ -17,6 +18,14 @@ package com.antelope.ci.bus.vcs.model;
  * @Date	 2013-10-20		下午6:29:52 
  */
 public class BusVcsLogModel extends BusVcsModel {
-
+	protected String tagName;
+	
+	
+	public String getTagName() {
+		return tagName;
+	}
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
+	}
 }
 

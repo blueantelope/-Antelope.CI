@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.vcs.git.test.TestServiceWithReadContent.java
+// com.antelope.ci.bus.vcs.git.test.TestServiceWithReadCat.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -11,9 +11,9 @@ package com.antelope.ci.bus.vcs.git.test;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.vcs.model.BusVcsContentModel;
+import com.antelope.ci.bus.vcs.model.BusVcsCatModel;
 import com.antelope.ci.bus.vcs.model.BusVcsModel.AccessType;
-import com.antelope.ci.bus.vcs.result.BusVcsContentResult;
+import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
 
 
 /**
@@ -23,7 +23,7 @@ import com.antelope.ci.bus.vcs.result.BusVcsContentResult;
  * @version  0.1
  * @Date	 2013-10-24		下午12:50:06 
  */
-public class TestServiceWithReadContent extends TestBaseGit {
+public class TestServiceWithCat extends TestBaseGit {
 
 	@Override
 	protected void init() throws Exception {
@@ -35,11 +35,11 @@ public class TestServiceWithReadContent extends TestBaseGit {
 	@Test
 	public void testForLocal() throws CIBusException {
 		System.out.println("=========Local Begin=========");
-		BusVcsContentModel contentModel = new BusVcsContentModel();
-		contentModel.setInfo(super.model);
-		contentModel.setReposPath(test_antelopeCI);
-		contentModel.setPath("com.antelope.ci.bus.test/src/server/pom.xml");
-		BusVcsContentResult result = gitService.readContent(contentModel);
+		BusVcsCatModel CatModel = new BusVcsCatModel();
+		CatModel.setInfo(super.model);
+		CatModel.setReposPath(test_antelopeCI);
+		CatModel.setPath("com.antelope.ci.bus.test/src/server/pom.xml");
+		BusVcsCatResult result = gitService.cat(CatModel);
 		System.out.println(result.getContent());
 		System.out.println("=========Local End=========");
 	}
@@ -47,18 +47,18 @@ public class TestServiceWithReadContent extends TestBaseGit {
 	@Test
 	public void testForRemote() throws CIBusException {
 		System.out.println("=========Remote Begin=========");
-		BusVcsContentModel contentModel = new BusVcsContentModel();
-		contentModel.setInfo(super.model);
-		contentModel.setReposPath(test_antelopeCI);
-		contentModel.setPath("com.antelope.ci.bus.test/src/server/pom.xml");
-		contentModel.setAccessType(AccessType.REMOTE);
-		BusVcsContentResult result = gitService.readContent(contentModel);
+		BusVcsCatModel CatModel = new BusVcsCatModel();
+		CatModel.setInfo(super.model);
+		CatModel.setReposPath(test_antelopeCI);
+		CatModel.setPath("com.antelope.ci.bus.test/src/server/pom.xml");
+		CatModel.setAccessType(AccessType.REMOTE);
+		BusVcsCatResult result = gitService.cat(CatModel);
 		System.out.println(result.getContent());
 		System.out.println("=========Remote End=========");
 	}
 	
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestServiceWithReadContent.class);
+		junit.textui.TestRunner.run(TestServiceWithCat.class);
 	}
 }
 

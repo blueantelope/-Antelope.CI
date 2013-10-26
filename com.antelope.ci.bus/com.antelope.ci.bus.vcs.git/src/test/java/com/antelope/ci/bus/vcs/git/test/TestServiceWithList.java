@@ -25,19 +25,17 @@ import com.antelope.ci.bus.vcs.result.BusVcsListResult;
  * @Date	 2013-10-22		下午11:08:28 
  */
 public class TestServiceWithList extends TestBaseGit {
-
+	private BusVcsListModel listModel;
+	
 	@Override
 	protected void init() throws Exception {
-		
-		// TODO Auto-generated method stub
-		
+		listModel = new BusVcsListModel();
+		listModel.setInfo(super.model);
+		listModel.setReposPath(test_antelopeCI);
 	}
 	
 	@Test
 	public void testForLocal() throws CIBusException {
-		BusVcsListModel listModel = new BusVcsListModel();
-		listModel.setInfo(super.model);
-		listModel.setReposPath(test_antelopeCI);
 		BusVcsListResult result = gitService.list(listModel);
 		System.out.println("=========Local Begin=========");
 		for (FileNode node : result.getNodeList()) {

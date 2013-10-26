@@ -69,6 +69,7 @@ public abstract class TestBaseGit extends TestCase {
 		model.setUrl(url);
 		model.setUsername(username);
 		model.setPassword(password);
+		model.setReposPath(test_antelopeCI);
 		gitService = new BusGitVcsServiceImpl();
 		init();
 	}

@@ -15,7 +15,6 @@ import com.antelope.ci.bus.vcs.model.BusVcsAddTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCatModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCheckoutModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCommitModel;
-import com.antelope.ci.bus.vcs.model.BusVcsContentModel;
 import com.antelope.ci.bus.vcs.model.BusVcsDiffModel;
 import com.antelope.ci.bus.vcs.model.BusVcsExportModel;
 import com.antelope.ci.bus.vcs.model.BusVcsFetchModel;
@@ -26,7 +25,6 @@ import com.antelope.ci.bus.vcs.model.BusVcsModel;
 import com.antelope.ci.bus.vcs.model.BusVcsMvModel;
 import com.antelope.ci.bus.vcs.model.BusVcsPullModel;
 import com.antelope.ci.bus.vcs.model.BusVcsPushModel;
-import com.antelope.ci.bus.vcs.model.BusVcsRemoteShowModel;
 import com.antelope.ci.bus.vcs.model.BusVcsResetModel;
 import com.antelope.ci.bus.vcs.model.BusVcsRmModel;
 import com.antelope.ci.bus.vcs.model.BusVcsShowModel;
@@ -34,11 +32,9 @@ import com.antelope.ci.bus.vcs.model.BusVcsStatusModel;
 import com.antelope.ci.bus.vcs.model.BusVcsUpdateModel;
 import com.antelope.ci.bus.vcs.model.BusVcsVersionResult;
 import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
-import com.antelope.ci.bus.vcs.result.BusVcsContentResult;
 import com.antelope.ci.bus.vcs.result.BusVcsDiffResult;
 import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 import com.antelope.ci.bus.vcs.result.BusVcsLogResult;
-import com.antelope.ci.bus.vcs.result.BusVcsRemoteShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsResult;
 import com.antelope.ci.bus.vcs.result.BusVcsShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
@@ -182,14 +178,6 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsRemoteShowResult remote_show(BusVcsRemoteShowModel model) {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-
-	@Override
 	public BusVcsResult fetch(BusVcsFetchModel model) {
 		
 		// TODO Auto-generated method stub
@@ -247,14 +235,6 @@ public class BusSvnVcsServiceImpl implements BusVcsService {
 
 	@Override
 	public BusVcsVersionResult getTagList(BusVcsRmModel model) {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-
-	@Override
-	public BusVcsContentResult readContent(BusVcsContentModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;

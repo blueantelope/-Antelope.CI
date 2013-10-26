@@ -17,6 +17,14 @@ package com.antelope.ci.bus.vcs.result;
  * @Date	 2013-10-20		下午6:28:57 
  */
 public class BusVcsDiffResult extends BusVcsResult {
+	protected String content;
 
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 }
 

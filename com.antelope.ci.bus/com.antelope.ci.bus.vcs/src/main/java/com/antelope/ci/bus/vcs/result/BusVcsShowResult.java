@@ -16,7 +16,7 @@ package com.antelope.ci.bus.vcs.result;
  * @version  0.1
  * @Date	 2013-10-20		下午7:05:14 
  */
-public class BusVcsShowResult {
+public class BusVcsShowResult extends BusVcsResult {
 
 }
 
