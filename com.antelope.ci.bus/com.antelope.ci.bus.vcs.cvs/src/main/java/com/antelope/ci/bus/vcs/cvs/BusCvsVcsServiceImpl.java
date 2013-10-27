@@ -12,9 +12,12 @@ import com.antelope.ci.bus.vcs.BusVcsService;
 import com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddTagModel;
+import com.antelope.ci.bus.vcs.model.BusVcsBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCatModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCheckoutModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCommitModel;
+import com.antelope.ci.bus.vcs.model.BusVcsDeleteBranchModel;
+import com.antelope.ci.bus.vcs.model.BusVcsDeleteTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsDiffModel;
 import com.antelope.ci.bus.vcs.model.BusVcsExportModel;
 import com.antelope.ci.bus.vcs.model.BusVcsFetchModel;
@@ -25,10 +28,13 @@ import com.antelope.ci.bus.vcs.model.BusVcsModel;
 import com.antelope.ci.bus.vcs.model.BusVcsMvModel;
 import com.antelope.ci.bus.vcs.model.BusVcsPullModel;
 import com.antelope.ci.bus.vcs.model.BusVcsPushModel;
+import com.antelope.ci.bus.vcs.model.BusVcsRenameBranchModel;
+import com.antelope.ci.bus.vcs.model.BusVcsRenameTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsResetModel;
 import com.antelope.ci.bus.vcs.model.BusVcsRmModel;
 import com.antelope.ci.bus.vcs.model.BusVcsShowModel;
 import com.antelope.ci.bus.vcs.model.BusVcsStatusModel;
+import com.antelope.ci.bus.vcs.model.BusVcsTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsUpdateModel;
 import com.antelope.ci.bus.vcs.model.BusVcsVersionResult;
 import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
@@ -226,7 +232,7 @@ public class BusCvsVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsVersionResult getBranchList(BusVcsRmModel model) {
+	public BusVcsVersionResult getBranchList(BusVcsBranchModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -234,11 +240,44 @@ public class BusCvsVcsServiceImpl implements BusVcsService {
 	}
 
 	@Override
-	public BusVcsVersionResult getTagList(BusVcsRmModel model) {
+	public BusVcsVersionResult getTagList(BusVcsTagModel model) {
 		
 		// TODO Auto-generated method stub
 		return null;
 		
 	}
+
+	@Override
+	public BusVcsResult deleteBranch(BusVcsDeleteBranchModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public BusVcsResult deleteTag(BusVcsDeleteTagModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public BusVcsResult renameBranch(BusVcsRenameBranchModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public BusVcsResult renameTag(BusVcsRenameTagModel model) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
 }
 

@@ -13,12 +13,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.CreateBranchCommand;
+import org.eclipse.jgit.api.DeleteBranchCommand;
+import org.eclipse.jgit.api.DeleteTagCommand;
 import org.eclipse.jgit.api.DiffCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand.ListMode;
+import org.eclipse.jgit.api.MergeCommand;
+import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.RenameBranchCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.RmCommand;
 import org.eclipse.jgit.api.Status;
@@ -33,11 +41,16 @@ import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.RemoteConfig;
+import org.eclipse.jgit.transport.TagOpt;
 import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
@@ -52,9 +65,12 @@ import com.antelope.ci.bus.vcs.BusVcsService;
 import com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddModel;
 import com.antelope.ci.bus.vcs.model.BusVcsAddTagModel;
+import com.antelope.ci.bus.vcs.model.BusVcsBranchModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCatModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCheckoutModel;
 import com.antelope.ci.bus.vcs.model.BusVcsCommitModel;
+import com.antelope.ci.bus.vcs.model.BusVcsDeleteBranchModel;
+import com.antelope.ci.bus.vcs.model.BusVcsDeleteTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsDiffModel;
 import com.antelope.ci.bus.vcs.model.BusVcsExportModel;
 import com.antelope.ci.bus.vcs.model.BusVcsFetchModel;
@@ -66,11 +82,13 @@ import com.antelope.ci.bus.vcs.model.BusVcsModel.AccessType;
 import com.antelope.ci.bus.vcs.model.BusVcsMvModel;
 import com.antelope.ci.bus.vcs.model.BusVcsPullModel;
 import com.antelope.ci.bus.vcs.model.BusVcsPushModel;
-import com.antelope.ci.bus.vcs.model.BusVcsRemoteShowModel;
+import com.antelope.ci.bus.vcs.model.BusVcsRenameBranchModel;
+import com.antelope.ci.bus.vcs.model.BusVcsRenameTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsResetModel;
 import com.antelope.ci.bus.vcs.model.BusVcsRmModel;
 import com.antelope.ci.bus.vcs.model.BusVcsShowModel;
 import com.antelope.ci.bus.vcs.model.BusVcsStatusModel;
+import com.antelope.ci.bus.vcs.model.BusVcsTagModel;
 import com.antelope.ci.bus.vcs.model.BusVcsUpdateModel;
 import com.antelope.ci.bus.vcs.model.BusVcsVersionResult;
 import com.antelope.ci.bus.vcs.result.BusVcsCatResult;
@@ -78,7 +96,6 @@ import com.antelope.ci.bus.vcs.result.BusVcsDiffResult;
 import com.antelope.ci.bus.vcs.result.BusVcsListResult;
 import com.antelope.ci.bus.vcs.result.BusVcsLogResult;
 import com.antelope.ci.bus.vcs.result.BusVcsLogResult.BusVcsLogResultInfo;
-import com.antelope.ci.bus.vcs.result.BusVcsRemoteShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsResult;
 import com.antelope.ci.bus.vcs.result.BusVcsShowResult;
 import com.antelope.ci.bus.vcs.result.BusVcsStatusResult;
@@ -315,13 +332,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 			String branch = model.getBranch() == null ? "refs/heads/master"
 					: model.getBranch();
 			if (model.getAccessType() == AccessType.REMOTE) {
-				String today = DateUtil.formatDay(new Date());
-				String name = "git_" + today;
-				String split = "_";
-				FileUtil.delFolderWithDay(name, split, 2);
-				File tempDir = FileUtil.genTempFolder(name);
-				model.setReposPath(tempDir.getPath());
-				clone(tempDir, model.getUrl());
+				cloneTemp(model.getUrl());
 			}
 			Git git = createGit(model.getRepository());
 			Repository repository = git.getRepository();
@@ -555,13 +566,7 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 			String branch = model.getBranch() == null ? "refs/heads/master"
 					: model.getBranch();
 			if (model.getAccessType() == AccessType.REMOTE) {
-				String today = DateUtil.formatDay(new Date());
-				String name = "git_" + today;
-				String split = "_";
-				FileUtil.delFolderWithDay(name, split, 2);
-				File tempDir = FileUtil.genTempFolder(name);
-				model.setReposPath(tempDir.getPath());
-				clone(tempDir, model.getUrl());
+				cloneTemp(model.getUrl());
 			}
 			Git git = createGit(model.getRepository());
 			Repository repository = git.getRepository();
@@ -587,54 +592,320 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#fetch(com.antelope.ci.bus.vcs.model.BusVcsFetchModel)
+	 */
 	@Override
 	public BusVcsResult fetch(BusVcsFetchModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			createRemoteConfig(git.getRepository(), model);
+			RefSpec spec = new RefSpec(model.convertSpec());
+			git.fetch().setRemote("origin").setRefSpecs(spec).setTagOpt(TagOpt.AUTO_FOLLOW).call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#pull(com.antelope.ci.bus.vcs.model.BusVcsPullModel)
+	 */
 	@Override
 	public BusVcsResult pull(BusVcsPullModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			createRemoteConfig(git.getRepository(), model);
+			git.pull().call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#push(com.antelope.ci.bus.vcs.model.BusVcsPushModel)
+	 */
 	@Override
 	public BusVcsResult push(BusVcsPushModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#addBranch(com.antelope.ci.bus.vcs.model.BusVcsAddBranchModel)
+	 */
 	@Override
 	public BusVcsResult addBranch(BusVcsAddBranchModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			Git git = createGit(model.getRepository());
+			CreateBranchCommand command = git.branchCreate();
+			command.setName(model.getName());
+			command.setForce(true);
+			command.setStartPoint(model.getFromName());
+			command.setUpstreamMode(null);
+			command.call();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#merge(com.antelope.ci.bus.vcs.model.BusVcsMergeModel)
+	 */
 	@Override
 	public BusVcsResult merge(BusVcsMergeModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			MergeCommand command = git.merge();
+			Ref from_tag = git.getRepository().getRef(model.getFromName());
+			command.include(from_tag);
+			command.setStrategy(MergeStrategy.RESOLVE);
+			command.call();
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
-
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#addTag(com.antelope.ci.bus.vcs.model.BusVcsAddTagModel)
+	 */
 	@Override
 	public BusVcsResult addTag(BusVcsAddTagModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			TagCommand command = git.tag();
+			command.setName(model.getName());
+			command.call();
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
 
-		// TODO Auto-generated method stub
-		return null;
+		return result;
+	}
+	
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#getBranchList(com.antelope.ci.bus.vcs.model.BusVcsBranchModel)
+	 */
+	@Override
+	public BusVcsVersionResult getBranchList(BusVcsBranchModel model) {
+		BusVcsVersionResult result = new BusVcsVersionResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			List<Ref> refList = git.branchList().setListMode(ListMode.ALL).call();
+			for (Ref ref : refList) {
+				result.addVersion(ref.getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
+
+		return result;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#getTagList(com.antelope.ci.bus.vcs.model.BusVcsTagModel)
+	 */
+	@Override
+	public BusVcsVersionResult getTagList(BusVcsTagModel model) {
+		BusVcsVersionResult result = new BusVcsVersionResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			List<Ref> refList = git.tagList().call();
+			for (Ref ref : refList) {
+				result.addVersion(ref.getName());
+			}
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#deleteBranch(com.antelope.ci.bus.vcs.model.BusVcsDeleteBranchModel)
+	 */
+	@Override
+	public BusVcsResult deleteBranch(BusVcsDeleteBranchModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			DeleteBranchCommand command = git.branchDelete();
+			command.setBranchNames(model.getNameList().toArray(new String[model.getNameList().size()]));
+			command.call();
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#deleteTag(com.antelope.ci.bus.vcs.model.BusVcsDeleteTagModel)
+	 */
+	@Override
+	public BusVcsResult deleteTag(BusVcsDeleteTagModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			DeleteTagCommand command = git.tagDelete();
+			command.setTags(model.getNameList().toArray(new String[model.getNameList().size()]));
+			command.call();
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#renameBranch(com.antelope.ci.bus.vcs.model.BusVcsRenameBranchModel)
+	 */
+	@Override
+	public BusVcsResult renameBranch(BusVcsRenameBranchModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			RenameBranchCommand command = git.branchRename();
+			command.setOldName(model.getOldname());
+			command.setNewName(model.getNewname());
+			command.call();
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.vcs.BusVcsService#renameTag(com.antelope.ci.bus.vcs.model.BusVcsRenameTagModel)
+	 */
+	@Override
+	public BusVcsResult renameTag(BusVcsRenameTagModel model) {
+		BusVcsResult result = new BusVcsResult();
+		mergeModel(model);
+		try {
+			if (model.getAccessType() == AccessType.REMOTE) {
+				cloneTemp(model.getUrl());
+			}
+			Git git = createGit(model.getRepository());
+			TagCommand add_cmd = git.tag();
+			add_cmd.setName(model.getNewname());
+			add_cmd.call();
+			DeleteTagCommand del_cmd = git.tagDelete();
+			del_cmd.setTags(model.getNewname());
+			del_cmd.call();
+			push(git, model);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setException(e);
+		}
+
+		return result;
+	}
+
+	private void cloneTemp(String url) throws Exception {
+		String today = DateUtil.formatDay(new Date());
+		String name = "git_" + today;
+		String split = "_";
+		FileUtil.delFolderWithDay(name, split, 2);
+		File tempDir = FileUtil.genTempFolder(name);
+		model.setReposPath(tempDir.getPath());
+		clone(tempDir, url);
+	}
+	
 	private Git createGit(File repos) throws CIBusException {
 		try {
 			FileRepository db = new FileRepository(repos + File.separator
@@ -686,21 +957,31 @@ public class BusGitVcsServiceImpl implements BusVcsService {
 			or.release();
 		}
 	}
-
-	@Override
-	public BusVcsVersionResult getBranchList(BusVcsRmModel model) {
-
-		// TODO Auto-generated method stub
-		return null;
-
+	
+	private void createRemoteConfig(Repository repo, BusVcsModel model) throws Exception {
+		StoredConfig config = repo.getConfig();
+		RemoteConfig remoteConfig = new RemoteConfig(config, "origin");
+		URIish uri = new URIish(model.getUrl());
+		remoteConfig.addURI(uri);
+		remoteConfig.addPushURI(uri);
+		remoteConfig.update(config);
+		config.save();
 	}
-
-	@Override
-	public BusVcsVersionResult getTagList(BusVcsRmModel model) {
-
-		// TODO Auto-generated method stub
-		return null;
-
+	
+	private void push(Git git, BusVcsModel model) throws Exception {
+		createRemoteConfig(git.getRepository(), model);
+		RefSpec spec = new RefSpec(model.convertSpec());
+		PushCommand command = git.push();
+		command.setRefSpecs(spec);
+		switch (model.getAuthType()) {
+			case PASSWORD:
+				command.setCredentialsProvider(
+						new UsernamePasswordCredentialsProvider(model.getUsername(), model.getPassword()));
+				break;
+			case KEY:
+				
+				
+		}
+		command.call();
 	}
-
 }

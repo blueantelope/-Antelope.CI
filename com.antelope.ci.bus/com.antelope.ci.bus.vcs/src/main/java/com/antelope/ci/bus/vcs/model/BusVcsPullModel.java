@@ -16,7 +16,7 @@ package com.antelope.ci.bus.vcs.model;
  * @version  0.1
  * @Date	 2013-10-20		下午7:07:10 
  */
-public class BusVcsPullModel {
+public class BusVcsPullModel extends BusVcsModel {
 
 }
 

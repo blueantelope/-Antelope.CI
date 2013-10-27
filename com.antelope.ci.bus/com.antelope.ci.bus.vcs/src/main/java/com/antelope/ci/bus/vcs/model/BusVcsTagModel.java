@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.vcs.model.BusVcsFetchModel.java
+// com.antelope.ci.bus.vcs.model.BusVcsTagModel.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -9,15 +9,14 @@
 package com.antelope.ci.bus.vcs.model;
 
 
-
 /**
  * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-10-20		下午7:06:59 
+ * @Date	 2013-10-27		下午9:30:37 
  */
-public class BusVcsFetchModel extends BusVcsModel {
-	
+public class BusVcsTagModel extends BusVcsModel {
+
 }
 

@@ -9,6 +9,8 @@
 package com.antelope.ci.bus.vcs.model;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -101,6 +103,33 @@ public class BusVcsModel {
 		}
 	}
 	
+	public enum AUTH_TYPE {
+		PASSWORD("password"),
+		KEY("key"),
+		PASSKEY("passkey");
+		
+		private String name;
+		private AUTH_TYPE(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public String toString() {
+			return name;
+		}
+		public static AUTH_TYPE toType(String name) throws CIBusException {
+			if (name != null && name.length() > 0) {
+				for (AUTH_TYPE type : AUTH_TYPE.values()) {
+					if (type.getName().equalsIgnoreCase(name.trim()))
+						return type;
+				}
+				throw new CIBusException("", "unknow VCS auth type : " + name);
+			}
+			throw new CIBusException("", " VCS auth type is null");
+		}
+	}
+	
 	protected VCS_TYPE type;
 	protected VCS_PROTOCOL protocol;
 	protected String url;
@@ -113,9 +142,14 @@ public class BusVcsModel {
 	protected String privateKey;
 	protected String publicKey;
 	protected String passphase;
+	protected List<String> specList;
+	protected AUTH_TYPE authType;
 	
 	public BusVcsModel() {
 		this.accessType = AccessType.LOCAL;
+		specList = new ArrayList<String>();
+		specList.add("refs/heads/master");
+		specList.add("refs/remotes/origin/master");
 	}
 	
 	// getter and setter
@@ -194,6 +228,23 @@ public class BusVcsModel {
 	public void setPassphase(String passphase) {
 		this.passphase = passphase;
 	}
+	public List<String> getSpecList() {
+		return specList;
+	}
+	public void setSpecList(List<String> specList) {
+		this.specList = specList;
+		specList.add(0, "refs/heads/master");
+		specList.add(1, "refs/remotes/origin/master");
+	}
+	public void addSpec(String spec) {
+		specList.add(spec);
+	}
+	public AUTH_TYPE getAuthType() {
+		return authType;
+	}
+	public void setAuthType(AUTH_TYPE authType) {
+		this.authType = authType;
+	}
 
 	public File getRepository() throws CIBusException {
 		if (reposPath != null && reposPath.length() > 0) {
@@ -204,6 +255,15 @@ public class BusVcsModel {
 		}
 		throw new CIBusException("", "reposity path is null");
 	}
+	
+	public String convertSpec() {
+		StringBuffer buf = new StringBuffer();
+		for (String spec : specList) {
+			buf.append(spec).append(":");
+		}
+		return buf.toString().substring(0, buf.length()-1);
+	}
+	
 	public void setInfo(BusVcsModel model) {
 		if (model.type != null)
 			this.type = model.type;
@@ -227,6 +287,9 @@ public class BusVcsModel {
 			this.publicKey = model.publicKey;
 		if (model.passphase != null && model.passphase.length() > 0)
 			this.passphase = model.passphase;
+		this.specList = model.getSpecList();
+		if (model.authType != null)
+			this.authType = model.authType;
 	}
 }
 

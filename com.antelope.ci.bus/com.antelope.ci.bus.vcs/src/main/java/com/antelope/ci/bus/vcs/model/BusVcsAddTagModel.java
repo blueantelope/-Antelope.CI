@@ -16,7 +16,24 @@ package com.antelope.ci.bus.vcs.model;
  * @version  0.1
  * @Date	 2013-10-20		下午7:07:50 
  */
-public class BusVcsAddTagModel {
+public class BusVcsAddTagModel extends BusVcsModel {
+	protected String name;
+	protected String fromName;
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getFromName() {
+		return fromName;
+	}
+
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
+	}
 }
 

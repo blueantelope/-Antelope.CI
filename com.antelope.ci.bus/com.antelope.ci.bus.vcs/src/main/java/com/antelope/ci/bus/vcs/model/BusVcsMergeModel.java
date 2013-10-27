@@ -16,7 +16,15 @@ package com.antelope.ci.bus.vcs.model;
  * @version  0.1
  * @Date	 2013-10-20		下午7:07:41 
  */
-public class BusVcsMergeModel {
+public class BusVcsMergeModel extends BusVcsModel {
+	protected String fromName;
 
+	public String getFromName() {
+		return fromName;
+	}
+
+	public void setFromName(String fromName) {
+		this.fromName = fromName;
+	}
 }
 
