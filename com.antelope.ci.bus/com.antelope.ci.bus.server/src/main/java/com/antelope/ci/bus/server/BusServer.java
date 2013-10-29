@@ -44,7 +44,7 @@ public abstract class BusServer {
 		condition = attatchCondition();
 	}
 	
-	public void start() throws IOException, CIBusException {
+	public void start() throws CIBusException {
 		sshServer = SshServer.setUpDefaultServer();
 		sshServer.setPort(config.getPort());
 		String key_path;
@@ -79,7 +79,11 @@ public abstract class BusServer {
 					break;
 			}
 		}
-		sshServer.start();
+		try {
+			sshServer.start();
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
 	public void stop() {

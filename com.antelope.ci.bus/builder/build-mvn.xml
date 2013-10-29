@@ -254,4 +254,54 @@
 			<arg line="dependency:copy-dependencies" />
 		</exec>
 	</target>
+	
+	<target name="portal.compile-unix">
+			<exec executable="mvn">
+				<arg line="-f ${prj.portal.pom}" />
+				<arg line="install" />
+			</exec>
+		</target>
+		
+		<target name="portal.compile-unix.notest">
+			<exec executable="mvn">
+				<arg line="-f ${prj.portal.pom}" />
+				<arg line="install ${mvn.notest}" />
+			</exec>
+		</target>
+		
+		<target name="portal.compile-win">
+			<exec executable="cmd">
+				<arg line="/c" />
+				<arg line="mvn" />
+				<arg line="-f ${prj.portal.pom}" />
+				<arg line="install" />
+			</exec>
+		</target>
+		
+		<target name="portal.compile-win.notest">
+			<exec executable="cmd">
+				<arg line="/c" />
+				<arg line="mvn" />
+				<arg line="-f ${prj.portal.pom}" />
+				<arg line="install ${mvn.notest}" />
+			</exec>
+		</target>
+
+		<target name="portal.depends-unix">
+			<exec executable="mvn">
+				<arg line="-f ${prj.portal.pom}" />
+				<arg line="dependency:copy-dependencies" />
+				<arg value="-DexcludeGroupIds=junit" />
+			</exec>
+		</target>
+		
+		<target name="portal.depends-win">
+			<exec executable="cmd">
+				<arg line="/c" />
+				<arg line="mvn" />
+				<arg line="-f ${prj.portal.pom}" />
+				<arg line="dependency:copy-dependencies" />
+				<arg value="-DexcludeGroupIds=junit" />
+			</exec>
+		</target>
 </project>
