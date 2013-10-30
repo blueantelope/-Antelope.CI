@@ -1,52 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant build for server" basedir="." default="build-unix">
+<project name="ant build for server" basedir="." default="build">
 	<property file="build.properties" />
 
-	<target name="build-unix" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-unix" />
-		<ant antfile="${basedir}/build-mvn.xml" target="depends-unix" />
-		<antcall target="make" /> 
-	</target>
-	
-	<target name="build-unix-notest" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-unix.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-unix.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-unix.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-unix.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-unix.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-unix.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="depends-unix" />
-		<antcall target="make" /> 
-	</target>
-	
-	<target name="build-win" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win" />
-		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
-		<antcall target="make" />
-	</target>
-	
-	<target name="build-win-notest" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="common.compile-win.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile-win.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile-win.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile-win.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.compile-win.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile-win.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="depends-win" />
+	<target name="build" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
 		<antcall target="make" />
 	</target>
 
-	
+	<target name="build-notest" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
+		<antcall target="make" />
+	</target>
+
 	<target name="make">
 		<copy todir="${app.server.lib}">
 			<fileset dir="${target.depends}">
@@ -70,19 +47,19 @@
 				<include name="org.apache.felix.gogo*.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.server.system.ext}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.logger*.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.server.bundle}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.server*.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.server.bundle.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
@@ -90,11 +67,11 @@
 				<include name="bcprov-jdk15*.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.server.etc}">
 			<fileset dir="${prj.bus.etc}" />
 		</copy>
-		
+
 		<copy todir="${app.server.bin}">
 			<fileset dir="${script.root}" />
 		</copy>
@@ -105,6 +82,7 @@
 		<mkdir dir="${app.server.bin}" />
 		<mkdir dir="${app.server.etc}" />
 		<mkdir dir="${app.server.system}" />
+		<mkdir dir="${app.portal.system.lib}" />
 		<mkdir dir="${app.server.system.ext}" />
 		<mkdir dir="${app.server.bundle}" />
 		<mkdir dir="${app.server.bundle.lib}" />

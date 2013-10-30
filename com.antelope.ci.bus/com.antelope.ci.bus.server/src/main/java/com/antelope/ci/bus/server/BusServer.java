@@ -53,7 +53,7 @@ public abstract class BusServer {
 				key_path = getKeyPath(config.getKey_name());
 				sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(key_path));
 				break;
-			case STATIC:
+			case FIXED:
 			default:
 				URL key_url = config.getKey_url();
 				key_path = key_url==null?"":key_url.getFile();

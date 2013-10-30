@@ -41,16 +41,6 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void run() throws CIBusException {
-//		try {
-//			server = new BusServer();
-//			BusServerConfig config = BusServerConfig.fromProps(properties);
-//			if (config.getKt() == KT.DYNAMIC)
-//				config.setKey_url(getResource(config.getKey_name()));
-//			server.setConfig(config);
-//			server.start();
-//		} catch (IOException e) {
-//			throw new CIBusException("", e);
-//		}
 
 	}
 

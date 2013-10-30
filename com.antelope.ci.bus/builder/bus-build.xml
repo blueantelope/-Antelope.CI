@@ -3,30 +3,11 @@
 	<property file="build.properties" />
 
 	<target name="build" depends="init">
-		
-	</target>
-	
-	<target name="compile-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.logger.pom}" />
-			<arg line="install" />
-		</exec>
+
 	</target>
 
-	<target name="depends-unix">
-		<exec executable="mvn">
-			<arg line="-f ${mvn.bus.depends}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="depends-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
+	<target name="depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${mvn.bus.depends}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
@@ -38,11 +19,23 @@
 		<mkdir dir="${app.bus.bin}" />
 		<mkdir dir="${app.bus.etc}" />
 		<mkdir dir="${app.bus.system}" />
+		<mkdir dir="${app.portal.system.lib}" />
 		<mkdir dir="${app.bus.system.ext}" />
 		<mkdir dir="${app.bus.lib}" />
 		<mkdir dir="${app.bus.lib.ext}" />
 		<mkdir dir="${app.bus.plugin}" />
 		<mkdir dir="${src.bus.root}" />
+	</target>
+
+	<target name="mvn_env">
+		<condition property="mvn" value="mvn.bat">
+			<os family="dos" />
+		</condition>
+		<condition property="mvn" value="mvn">
+			<not>
+				<isset property="mvn" />
+			</not>
+		</condition>
 	</target>
 
 	<target name="clean">

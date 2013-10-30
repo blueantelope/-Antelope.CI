@@ -10,298 +10,226 @@
 -->
 <project name="maven script" basedir=".">
 	<property file="build.properties" />
-	
-	<target name="framework.compile-unix">
-		<exec executable="mvn">
+
+	<target name="framework.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.framework.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
-	<target name="framework.compile-unix.notest">
-		<exec executable="mvn">
-			<arg line="-f ${prj.framework.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	
-	<target name="framework.compile-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.framework.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	
-	<target name="framework.compile-win.notest">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
+
+	<target name="framework.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.framework.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-	
-	<target name="common.compile-unix">
-		<exec executable="mvn">
+
+	<target name="common.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
-	<target name="common.compile-unix.notest">
-		<exec executable="mvn">
-			<arg line="-f ${prj.common.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	
-	<target name="common.compile-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.common.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	
-	<target name="common.compile-win.notest">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
+
+	<target name="common.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 
-	<target name="osgi.compile-unix">
-		<exec executable="mvn">
+	<target name="osgi.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.osgi.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
-	<target name="osgi.compile-unix.notest">
-		<exec executable="mvn">
+
+	<target name="osgi.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.osgi.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-	
-	<target name="osgi.compile-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.osgi.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	
-	<target name="osgi.compile-win.notest">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.osgi.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	
-	<target name="bus.compile-unix">
-		<exec executable="mvn">
+
+	<target name="bus.compile">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.bus.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
-	<target name="bus.compile-unix.notest">
-		<exec executable="mvn">
+
+	<target name="bus.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.bus.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-	
-	<target name="bus.compile-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.bus.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	
-	<target name="bus.compile-win.notest">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.bus.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	
-	<target name="server.compile-unix">
-		<exec executable="mvn">
+
+	<target name="server.compile">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
-	<target name="server.compile-unix.notest">
-		<exec executable="mvn">
-			<arg line="-f ${prj.server.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	
-	<target name="server.compile-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.server.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	
-	<target name="server.compile-win.notest">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
+
+	<target name="server.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 
-	<target name="server.depends-unix">
-		<exec executable="mvn">
+	<target name="server.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>
 	</target>
-	
-	<target name="server.depends-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.server.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="logger.compile-unix">
-		<exec executable="mvn">
+
+	<target name="logger.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.logger.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
-	<target name="logger.compile-unix.notest">
-		<exec executable="mvn">
-			<arg line="-f ${prj.logger.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	
-	<target name="logger.compile-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.logger.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	
-	<target name="logger.compile-win.notest">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
+
+	<target name="logger.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.logger.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
 
-	<target name="logger.depends-unix">
-		<exec executable="mvn">
+	<target name="logger.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.logger.pom}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>
 	</target>
-	
-	<target name="logger.depends-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${prj.logger.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="depends-unix">
-		<exec executable="mvn">
+
+	<target name="depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${depends.pom}" />
 			<arg line="dependency:copy-dependencies" />
 		</exec>
 	</target>
-	
-	<target name="depends-win">
-		<exec executable="cmd">
-			<arg line="/c" />
-			<arg line="mvn" />
-			<arg line="-f ${depends.pom}" />
-			<arg line="dependency:copy-dependencies" />
+
+	<target name="portal.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.pom}" />
+			<arg line="install" />
 		</exec>
 	</target>
-	
-	<target name="portal.compile-unix">
-			<exec executable="mvn">
-				<arg line="-f ${prj.portal.pom}" />
-				<arg line="install" />
-			</exec>
-		</target>
-		
-		<target name="portal.compile-unix.notest">
-			<exec executable="mvn">
-				<arg line="-f ${prj.portal.pom}" />
-				<arg line="install ${mvn.notest}" />
-			</exec>
-		</target>
-		
-		<target name="portal.compile-win">
-			<exec executable="cmd">
-				<arg line="/c" />
-				<arg line="mvn" />
-				<arg line="-f ${prj.portal.pom}" />
-				<arg line="install" />
-			</exec>
-		</target>
-		
-		<target name="portal.compile-win.notest">
-			<exec executable="cmd">
-				<arg line="/c" />
-				<arg line="mvn" />
-				<arg line="-f ${prj.portal.pom}" />
-				<arg line="install ${mvn.notest}" />
-			</exec>
-		</target>
 
-		<target name="portal.depends-unix">
-			<exec executable="mvn">
-				<arg line="-f ${prj.portal.pom}" />
-				<arg line="dependency:copy-dependencies" />
-				<arg value="-DexcludeGroupIds=junit" />
-			</exec>
-		</target>
-		
-		<target name="portal.depends-win">
-			<exec executable="cmd">
-				<arg line="/c" />
-				<arg line="mvn" />
-				<arg line="-f ${prj.portal.pom}" />
-				<arg line="dependency:copy-dependencies" />
-				<arg value="-DexcludeGroupIds=junit" />
-			</exec>
-		</target>
+	<target name="portal.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="portal.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+
+	<target name="all" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="clean install" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.framework.pom}" />
+			<arg line="clean install" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.osgi.pom}" />
+			<arg line="clean install" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="clean install" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="clean install" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.pom}" />
+			<arg line="clean install" />
+		</exec>
+	</target>
+
+	<target name="all.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="clean install ${mvn.notest}" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.framework.pom}" />
+			<arg line="clean install ${mvn.notest}" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.osgi.pom}" />
+			<arg line="clean install ${mvn.notest}" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="clean install ${mvn.notest}" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="clean install ${mvn.notest}" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.pom}" />
+			<arg line="clean install ${mvn.notest}" />
+		</exec>
+	</target>
+
+
+	<target name="clean" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.common.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.framework.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.osgi.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.pom}" />
+			<arg line="clean" />
+		</exec>
+	</target>
+
+	<target name="mvn_env">
+		<condition property="mvn" value="mvn.bat">
+			<os family="dos" />
+		</condition>
+		<condition property="mvn" value="mvn">
+			<not>
+				<isset property="mvn" />
+			</not>
+		</condition>
+	</target>
 </project>

@@ -23,8 +23,8 @@ import com.antelope.ci.bus.common.PropertiesUtil;
 public class BusServerConfig {
 	/* ssh key类型 */
 	public enum KT { 
-		STATIC("static"),							// 静态方式，指定已存在的key
-		DYNAMIC("dynamic");					// 动态方式，自己生成key
+		FIXED("fixed"),							// 固定指定方式，指定已存在的key
+		DYNAMIC("dynamic");					// 动态生成方式，自己生成key
 		
 		private String name;
 		private KT(String name) {
@@ -45,7 +45,7 @@ public class BusServerConfig {
 					return type;
 			}
 			
-			return KT.STATIC;
+			return KT.FIXED;
 		}
 	}
 	
