@@ -24,7 +24,9 @@ public class BusConstants {
 	/* log目录 */
 	public static final String LOG_DIR 							= "antelope.ci.bus.log.dir";
 	/* osgi system启动包目录 */
-	public static final String SYSTEM_DIR						= "antelope.ci.bus.system.dir";
+	public static final String SYSTEM_DIR					= "antelope.ci.bus.system.dir";
+	/* osgi system启动共享lib目录 */
+	public static final String SYSTEM_LIB_DIR				= "antelope.ci.bus.system.lib.dir";
 	/* osgi system启动扩展包目录 */
 	public static final String SYSTEM_EXT_DIR				= "antelope.ci.bus.system.ext.dir";
 	/* 系统jar目录 */

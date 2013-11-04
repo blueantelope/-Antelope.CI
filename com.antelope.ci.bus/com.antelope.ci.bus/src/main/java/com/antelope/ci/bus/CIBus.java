@@ -131,6 +131,7 @@ public class CIBus {
 	private static String etc_dir; // 配置目录
 	private static String log_dir; // 日志目录
 	private static String system_dir; // osgi系统包目录
+	private static String system_lib_dir;	// osgi system library
 	private static String system_ext_dir; // osgi系统扩展包目录
 	private static String lib_dir; // 系统jar目录
 	private static String lib_ext_dir; // 系统扩展jar目录
@@ -139,6 +140,7 @@ public class CIBus {
 	private static String etc_bus_cfg; // bus.cfg路径
 	private static String etc_custom_cfg; // custom.cfg路径
 	private static String etc_environment_cfg; // environment.cfg路径
+	private static String etc_system_cfg;			 //system.cfg路径
 	private static BasicConfigrationReader configration; // ect下配置文件参数集合
 
 	// 参数属性名
@@ -251,6 +253,8 @@ public class CIBus {
 		System.setProperty(BusConstants.LOG_DIR, log_dir);
 		system_dir = bus_home + File.separator + "system";
 		System.setProperty(BusConstants.SYSTEM_DIR, system_dir);
+		system_lib_dir = bus_home + File.separator + "lib";
+		System.setProperty(BusConstants.SYSTEM_LIB_DIR, system_lib_dir);
 		system_ext_dir = system_dir + File.separator + "ext";
 		System.setProperty(BusConstants.SYSTEM_EXT_DIR, system_ext_dir);
 		plugin_dir = bus_home + File.separator + "plugin";
@@ -263,6 +267,7 @@ public class CIBus {
 		etc_bus_cfg = etc_dir + File.separator + "bus.cfg";
 		etc_custom_cfg = etc_dir + File.separator + "custom.cfg";
 		etc_environment_cfg = etc_dir + File.separator + "environment.cfg";
+		etc_system_cfg = etc_dir + File.separator + "system.cfg";
 		cache_dir = bus_home + File.separator + ".cache";
 		System.setProperty(BusConstants.CACHE_DIR, cache_dir);
 	}
@@ -305,6 +310,7 @@ public class CIBus {
 		reader.loadCnf(etc_bus_cfg);
 		reader.loadCnf(etc_custom_cfg);
 		reader.loadCnf(etc_environment_cfg);
+		reader.loadCnf(etc_system_cfg);
 		configration = reader.getConfigration();
 	}
 
@@ -490,6 +496,7 @@ public class CIBus {
 									.getName()));
 			int level = startLevel.getInitialBundleStartLevel();
 			List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
+			Map<String, List<URL>> sysLibMap = allSystemEnv();
 			// 读取系统扩展bundle包
 			File[] files = new File(dir).listFiles();
 			List<URL> urlList;
@@ -514,6 +521,12 @@ public class CIBus {
 										.readJarBus(systemExtFile);
 								urlList = FileUtil.getAllJar(lib_ext_dir);
 								urlList.addAll(busProperty.getLoaderUrlList());
+								for (String k : sysLibMap.keySet()) {
+									if (systemExtFile.getName().startsWith(k)) {
+										urlList.addAll(sysLibMap.get(k));
+										break;
+									}
+								}
 								BundleLoader loader = new BundleLoader(context,
 										systemExtFile, startLevel,
 										busProperty.getStartLevel(),
@@ -553,6 +566,14 @@ public class CIBus {
 										&& busProperty != null) {
 									urlList.addAll(busProperty
 											.getLoaderUrlList());
+									
+									for (String k : sysLibMap.keySet()) {
+										if (systemExtDir.getName().startsWith(k)) {
+											urlList.addAll(sysLibMap.get(k));
+											break;
+										}
+									}
+									
 									BundleLoader loader = new BundleLoader(
 											context, extBundleFile, startLevel,
 											busProperty.getStartLevel(),
@@ -571,6 +592,35 @@ public class CIBus {
 				new BundleExecutor(loader).execute();
 			}
 		}
+	}
+	
+	private Map<String, List<URL>> allSystemEnv() {
+		String env_suffix = ".env";
+		Map<String, List<URL>> urlMap = new HashMap<String, List<URL>>();
+		List<URL> uList = FileUtil.getAllJar(system_lib_dir);
+		for (Object k : configration.getProps().keySet()) {
+			String key = (String) k;
+			if (key.endsWith(env_suffix)) {
+				String v = configration.getString(key);
+				if (v != null) {
+					List<URL> urlList = new ArrayList<URL>();
+					String[] vs = v.split(",");
+					for (String value : vs) {
+						for (URL u : uList) {
+							if (u.getFile().endsWith(value.trim())) {
+								urlList.add(u);
+								break;
+							}
+						}
+					}
+					if (!urlList.isEmpty()) {
+						urlMap.put(key.substring(0, key.lastIndexOf(env_suffix)), urlList);
+					}
+				}
+			}
+		}
+		
+		return urlMap;
 	}
 
 	/*
