@@ -37,7 +37,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-8-29 下午3:17:02
  */
 public abstract class CommonBusActivator implements BundleActivator {
-	private static Logger log4j = null;			// log4j
+	protected static Logger log4j = null;			// log4j
 	protected static final String LOGSERVICE_CLSNAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	private static final String PACKET_SUFFIX = "com.antelope.ci.bus";
 	private static final String PACKET_SERVICE = "service";
@@ -90,7 +90,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 			Object o = ProxyUtil.invokeRet(logService, "getLog4j", new Object[]{clazz});
 			if (o != null) {
 				log4j = (Logger) o;
-				log4j.info("得到Bus Log Service");
+				log4j.info(clazz.getName() + "得到Bus Log Service");
 				return log4j;
 			}
 			throw new CIBusException("log4j is null");

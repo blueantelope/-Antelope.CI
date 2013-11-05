@@ -8,15 +8,10 @@
 
 package com.antelope.ci.bus.portal;
 
-import java.io.IOException;
-
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
-import com.antelope.ci.bus.server.BusServer;
-import com.antelope.ci.bus.server.BusServerConfig;
-import com.antelope.ci.bus.server.BusServerConfig.KT;
 
 
 /**
@@ -31,6 +26,8 @@ public class BusPortalActivator extends CommonBusActivator {
 	
 	@Override
 	protected void customInit() throws CIBusException {
+		log4j(BusPortalActivator.class);
+		log4j.info("启动portal");
 		server = new BusPortalServer();
 		server.start();
 	}

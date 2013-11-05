@@ -142,6 +142,7 @@ public class CIBus {
 	private static String etc_environment_cfg; // environment.cfg路径
 	private static String etc_system_cfg;			 //system.cfg路径
 	private static BasicConfigrationReader configration; // ect下配置文件参数集合
+	private static Map<String, List<URL>> sysLibMap;
 
 	// 参数属性名
 	private static String BOOT_ENVIRONMENT = "bus.boot.environment";
@@ -253,7 +254,7 @@ public class CIBus {
 		System.setProperty(BusConstants.LOG_DIR, log_dir);
 		system_dir = bus_home + File.separator + "system";
 		System.setProperty(BusConstants.SYSTEM_DIR, system_dir);
-		system_lib_dir = bus_home + File.separator + "lib";
+		system_lib_dir = system_dir + File.separator + "lib";
 		System.setProperty(BusConstants.SYSTEM_LIB_DIR, system_lib_dir);
 		system_ext_dir = system_dir + File.separator + "ext";
 		System.setProperty(BusConstants.SYSTEM_EXT_DIR, system_ext_dir);
@@ -455,7 +456,7 @@ public class CIBus {
 			framework = factory.newFramework(parameters);
 			try {
 				framework.init();
-				FrameworkEvent event;
+				parseSyslibs();
 				runSystem(); // 启动system bundle
 				framework.start();
 				runSystemExt(); // 启动system扩展bundle
@@ -496,7 +497,6 @@ public class CIBus {
 									.getName()));
 			int level = startLevel.getInitialBundleStartLevel();
 			List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
-			Map<String, List<URL>> sysLibMap = allSystemEnv();
 			// 读取系统扩展bundle包
 			File[] files = new File(dir).listFiles();
 			List<URL> urlList;
@@ -588,15 +588,15 @@ public class CIBus {
 				}
 			}
 			// 加载bundle包
-			for (BundleLoader loader : loaderList) {
+   			for (BundleLoader loader : loaderList) {
 				new BundleExecutor(loader).execute();
 			}
 		}
 	}
 	
-	private Map<String, List<URL>> allSystemEnv() {
+	private void parseSyslibs() {
 		String env_suffix = ".env";
-		Map<String, List<URL>> urlMap = new HashMap<String, List<URL>>();
+		sysLibMap = new HashMap<String, List<URL>>();
 		List<URL> uList = FileUtil.getAllJar(system_lib_dir);
 		for (Object k : configration.getProps().keySet()) {
 			String key = (String) k;
@@ -614,13 +614,11 @@ public class CIBus {
 						}
 					}
 					if (!urlList.isEmpty()) {
-						urlMap.put(key.substring(0, key.lastIndexOf(env_suffix)), urlList);
+						sysLibMap.put(key.substring(0, key.lastIndexOf(env_suffix)), urlList);
 					}
 				}
 			}
 		}
-		
-		return urlMap;
 	}
 
 	/*

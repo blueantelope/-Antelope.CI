@@ -62,12 +62,14 @@
 			</fileset>
 		</copy>
 
+		<!--
 		<copy todir="${app.portal.server.bundle.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
+		-->
 		
 		<copy todir="${app.portal.bundle}">
 			<fileset dir="${target.depends}">
@@ -75,12 +77,14 @@
 			</fileset>
 		</copy>
 		
+		<!--
 		<copy todir="${app.portal.bundle.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
+		-->
 		
 		<copy todir="${app.portal.system.lib}">
 			<fileset dir="${target.depends}">
