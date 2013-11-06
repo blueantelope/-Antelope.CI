@@ -61,7 +61,7 @@ class BundleExecutor {
 	 */
 	private void attachBundleUrl(Bundle bundle) {
 		String bundle_urls = StringUtil.convertUrlList(loader.clsUrlList, ",");
-		bundle.getHeaders().put(BusConstants.BUS_BUNDLE_URLS, bundle_urls);
+		System.setProperty(bundle.getSymbolicName(), bundle_urls);
 	}
 	
 	/*

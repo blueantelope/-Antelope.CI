@@ -45,17 +45,20 @@ public abstract class CommonBusActivator implements BundleActivator {
 	private static final String BUS_LOAD_SERVICES = "bus.load.services";
 	private static final String DIVISION = ",";
 	protected BundleContext m_context;
-	protected static Map<String, ServiceInfo> serviceMap = new HashMap<String, ServiceInfo>();
+	protected static Map<String, ServiceInfo> serviceMap;
 	protected static Properties properties; // bundle的属性
-	protected List<String> loadServices = new ArrayList<String>(); // 需要加载的service列表
+	protected List<String> loadServices; // 需要加载的service列表
 	protected static ServiceReference log_ref = null;
 	protected static Object logService = null;
-	private List<ServiceTracker> trackerList = new ArrayList<ServiceTracker>();
+	private List<ServiceTracker> trackerList;
 	protected boolean logServiceProvider = false;
 
 	public CommonBusActivator() {
 		super();
+		serviceMap = new HashMap<String, ServiceInfo>();
 		properties = new Properties();
+		loadServices = new ArrayList<String>();
+		trackerList = new ArrayList<ServiceTracker>();
 	}
 
 	public CommonBusActivator(Properties props) {

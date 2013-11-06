@@ -521,12 +521,7 @@ public class CIBus {
 										.readJarBus(systemExtFile);
 								urlList = FileUtil.getAllJar(lib_ext_dir);
 								urlList.addAll(busProperty.getLoaderUrlList());
-								for (String k : sysLibMap.keySet()) {
-									if (systemExtFile.getName().startsWith(k)) {
-										urlList.addAll(sysLibMap.get(k));
-										break;
-									}
-								}
+								attatchSysLibUrls(systemExtFile.getName(), urlList);
 								BundleLoader loader = new BundleLoader(context,
 										systemExtFile, startLevel,
 										busProperty.getStartLevel(),
@@ -566,14 +561,7 @@ public class CIBus {
 										&& busProperty != null) {
 									urlList.addAll(busProperty
 											.getLoaderUrlList());
-									
-									for (String k : sysLibMap.keySet()) {
-										if (systemExtDir.getName().startsWith(k)) {
-											urlList.addAll(sysLibMap.get(k));
-											break;
-										}
-									}
-									
+									attatchSysLibUrls(systemExtDir.getName(), urlList);
 									BundleLoader loader = new BundleLoader(
 											context, extBundleFile, startLevel,
 											busProperty.getStartLevel(),
@@ -590,6 +578,27 @@ public class CIBus {
 			// 加载bundle包
    			for (BundleLoader loader : loaderList) {
 				new BundleExecutor(loader).execute();
+			}
+		}
+	}
+	
+	private void attatchSysLibUrls(String filename, List<URL> urlList) {
+		for (String k : sysLibMap.keySet()) {
+			if (filename.startsWith(k)) {
+				List<URL> sysLibUrls = sysLibMap.get(k);
+				for (URL sysLibUrl : sysLibUrls) {
+					boolean isAdd = true;
+					for (URL url : urlList) {
+						if (sysLibUrl.equals(url)) {
+							isAdd = false;
+							break;
+						}
+					}
+					if (isAdd) {
+						urlList.add(sysLibUrl);
+					}
+				}
+				break;
 			}
 		}
 	}

@@ -73,7 +73,6 @@ import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Wire;
 
-import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.framework.BusClassLoader;
 
@@ -711,10 +710,10 @@ public class BundleWiringImpl implements BundleWiring
     private synchronized BusClassLoader getClassLoaderOfBus() {
     		if (bus_classLoader == null) {
     			Bundle bundle = m_revision.getBundle();
-    			// TODO 解析bus.perperties中的url
-			if (bundle.getHeaders().get(BusConstants.BUS_BUNDLE_URLS) != null) {
+			if (System.getProperty(bundle.getSymbolicName()) != null) {
 				List<URL> bundle_url_list = new ArrayList<URL>();
-				String bundle_urls = (String) bundle.getHeaders().get(BusConstants.BUS_BUNDLE_URLS);
+				String bundle_urls = System.getProperty(bundle.getSymbolicName());
+				System.out.println(bundle.getSymbolicName() + " : " + bundle_urls);
 				for (String bundle_url : bundle_urls.split(",")) {
 					try {
 						bundle_url_list.add(new URL(bundle_url));
