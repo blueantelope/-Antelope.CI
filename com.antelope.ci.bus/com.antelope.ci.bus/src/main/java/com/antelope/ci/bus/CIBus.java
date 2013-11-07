@@ -149,11 +149,11 @@ public class CIBus {
 	// 参数属性名
 	private static String BOOT_ENVIRONMENT = "bus.boot.environment";
 	private static String INIT_STARTLEVEL = "bus.bundle.init.startlevel";
-	private static String STARTLEVEL_BEGIN = "bus.startlevel.begin";
+	private static String STARTLEVEL = "bus.startlevel";
 	private static String BOOT_ENVIRONMENT_DEFAULT = "jre-1.6";
 	
 	private int bundle_init_startlevel = 50;
-	private int startlevel_begin = 100;
+	private int startlevel = 100;
 
 	/**
 	 * 输入参数处理
@@ -402,8 +402,8 @@ public class CIBus {
 				BOOT_ENVIRONMENT_DEFAULT);
 		bundle_init_startlevel = configration.getInt(INIT_STARTLEVEL, 
 				bundle_init_startlevel);
-		startlevel_begin = configration.getInt(STARTLEVEL_BEGIN,
-				startlevel_begin);
+		startlevel = configration.getInt(STARTLEVEL,
+				startlevel);
 		if (boot_envs.equals(BOOT_ENVIRONMENT_DEFAULT)) {
 			bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
 		} else {
@@ -422,7 +422,7 @@ public class CIBus {
 			parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT,
 					Constants.FRAMEWORK_BUNDLE_PARENT_APP);
 		}
-		parameters.put(Constants.FRAMEWORK_BEGINNING_STARTLEVEL, String.valueOf(startlevel_begin));
+		parameters.put(Constants.FRAMEWORK_BEGINNING_STARTLEVEL, String.valueOf(startlevel));
 		// genBundleClassPath();
 		// addSystemPackages();
 	}
