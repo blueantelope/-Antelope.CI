@@ -15,6 +15,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,8 @@ import java.util.jar.Manifest;
 import org.apache.felix.framework.FrameworkFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.launch.Framework;
+import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.service.startlevel.StartLevel;
 
 import com.antelope.ci.bus.common.BusConstants;
@@ -146,7 +148,12 @@ public class CIBus {
 
 	// 参数属性名
 	private static String BOOT_ENVIRONMENT = "bus.boot.environment";
+	private static String INIT_STARTLEVEL = "bus.bundle.init.startlevel";
+	private static String STARTLEVEL_BEGIN = "bus.startlevel.begin";
 	private static String BOOT_ENVIRONMENT_DEFAULT = "jre-1.6";
+	
+	private int bundle_init_startlevel = 50;
+	private int startlevel_begin = 100;
 
 	/**
 	 * 输入参数处理
@@ -393,6 +400,10 @@ public class CIBus {
 		String bootdelegation = "";
 		String boot_envs = configration.getString(BOOT_ENVIRONMENT,
 				BOOT_ENVIRONMENT_DEFAULT);
+		bundle_init_startlevel = configration.getInt(INIT_STARTLEVEL, 
+				bundle_init_startlevel);
+		startlevel_begin = configration.getInt(STARTLEVEL_BEGIN,
+				startlevel_begin);
 		if (boot_envs.equals(BOOT_ENVIRONMENT_DEFAULT)) {
 			bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
 		} else {
@@ -411,6 +422,7 @@ public class CIBus {
 			parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT,
 					Constants.FRAMEWORK_BUNDLE_PARENT_APP);
 		}
+		parameters.put(Constants.FRAMEWORK_BEGINNING_STARTLEVEL, String.valueOf(startlevel_begin));
 		// genBundleClassPath();
 		// addSystemPackages();
 	}
@@ -459,6 +471,8 @@ public class CIBus {
 				parseSyslibs();
 				runSystem(); // 启动system bundle
 				framework.start();
+				FrameworkStartLevel sl = framework.adapt(FrameworkStartLevel.class);
+		        sl.setInitialBundleStartLevel(bundle_init_startlevel);
 				runSystemExt(); // 启动system扩展bundle
 				// do {
 				// event = framework.waitForStop(0);
@@ -474,21 +488,41 @@ public class CIBus {
 	 * 运行系统osgi包
 	 */
 	private void runSystem() {
-		runBundle(system_dir, 1);
+		List<BundleLoader> loaderList = loadSystemBundle(system_dir, 1);
+		// 加载bundle包
+		for (BundleLoader loader : loaderList) {
+			new BundleExecutor(loader).execute();
+		}
 	}
 
 	/*
 	 * 运行系统扩展bundle包
 	 */
 	private void runSystemExt() {
-		runBundle(system_ext_dir, 2); // 不带lib库
-		runBundle(system_ext_dir, 3); // 带lib库支持
+		List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
+		loaderList.addAll(
+				loadSystemBundle(system_ext_dir, 2)); // 不带lib库
+		loaderList.addAll(
+				loadSystemBundle(system_ext_dir, 3)); // 带lib库支持
+		Collections.sort(loaderList, new Comparator() {
+			@Override
+			public int compare(Object o1, Object o2) {
+				BundleLoader loader1 = (BundleLoader) o1;
+				BundleLoader loader2 = (BundleLoader) o2;
+				return loader1.level - loader2.level;
+			}
+		});
+		// 加载bundle包
+		for (BundleLoader loader : loaderList) {
+			new BundleExecutor(loader).execute();
+		}
 	}
 
 	/*
 	 * 运行osgi bundle 分为系统包和系统扩展包 系统扩展包可指定classloader
 	 */
-	private void runBundle(String dir, int type) {
+	private List<BundleLoader> loadSystemBundle(String dir, int type) {
+		List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
 		if (null != framework) {
 			BundleContext context = framework.getBundleContext();
 			StartLevel startLevel = (StartLevel) context
@@ -496,7 +530,6 @@ public class CIBus {
 							.getServiceReference(org.osgi.service.startlevel.StartLevel.class
 									.getName()));
 			int level = startLevel.getInitialBundleStartLevel();
-			List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
 			// 读取系统扩展bundle包
 			File[] files = new File(dir).listFiles();
 			List<URL> urlList;
@@ -575,11 +608,9 @@ public class CIBus {
 					}
 				}
 			}
-			// 加载bundle包
-   			for (BundleLoader loader : loaderList) {
-				new BundleExecutor(loader).execute();
-			}
 		}
+		
+		return loaderList;
 	}
 	
 	private void attatchSysLibUrls(String filename, List<URL> urlList) {
