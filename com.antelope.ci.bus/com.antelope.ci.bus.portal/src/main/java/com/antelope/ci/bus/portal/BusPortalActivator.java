@@ -11,7 +11,7 @@ package com.antelope.ci.bus.portal;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.BusCommonServerActivator;
 
 
 /**
@@ -21,31 +21,36 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @version  0.1
  * @Date	 2013-10-21		下午12:10:23 
  */
-public class BusPortalActivator extends CommonBusActivator {
-	private BusPortalServer server;
-	
+public class BusPortalActivator extends BusCommonServerActivator {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#run()
+	 */
 	@Override
-	protected void customInit() throws CIBusException {
-		log4j(BusPortalActivator.class);
+	protected void run() throws CIBusException {
 		log4j.info("启动portal");
 		server = new BusPortalServer();
 		server.start();
 	}
 
-	@Override
-	protected void run() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.BusCommonServerActivator#destroy()
+	 */
 	@Override
 	protected void destroy() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		if (server != null) {
+			server.stop();
+		}
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleLoadService(java.lang.String, org.osgi.framework.ServiceReference, java.lang.Object)
+	 */
 	@Override
 	protected void handleLoadService(String clsName, ServiceReference ref,
 			Object service) throws CIBusException {
@@ -54,6 +59,11 @@ public class BusPortalActivator extends CommonBusActivator {
 		
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleUnloadService(org.osgi.framework.ServiceReference)
+	 */
 	@Override
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
@@ -62,6 +72,11 @@ public class BusPortalActivator extends CommonBusActivator {
 		
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleStopAllService()
+	 */
 	@Override
 	protected void handleStopAllService() throws CIBusException {
 		

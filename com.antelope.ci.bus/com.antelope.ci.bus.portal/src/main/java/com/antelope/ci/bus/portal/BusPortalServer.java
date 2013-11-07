@@ -20,8 +20,7 @@ import com.antelope.ci.bus.server.service.impl.PublickeyAuthServiceImpl;
 
 
 /**
- * TODO 描述
- *
+ * portal server extend to server
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-29		下午9:04:32 

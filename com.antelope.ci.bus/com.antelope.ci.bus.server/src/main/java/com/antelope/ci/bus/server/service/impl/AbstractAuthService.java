@@ -43,7 +43,7 @@ public abstract class AbstractAuthService implements AuthService {
 		if (userMap != null)
 			this.userMap = userMap;
 		try {
-			log = BusServerActivator.log4j(this.getClass());
+			log = BusServerActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
 			e.printStackTrace();
 		}

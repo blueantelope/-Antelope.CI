@@ -22,8 +22,6 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @Date	 2013-7-30		下午11:23:33 
  */
 public class BusServerActivator extends CommonBusActivator {
-	private BusServer server;
-	
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -51,9 +49,7 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void destroy() throws CIBusException {
-		if (server != null) {
-			server.stop();
-		}
+	
 	}
 
 	/**

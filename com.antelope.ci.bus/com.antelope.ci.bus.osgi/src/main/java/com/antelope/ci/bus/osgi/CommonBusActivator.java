@@ -88,17 +88,31 @@ public abstract class CommonBusActivator implements BundleActivator {
 		return null;
 	}
 	
-	public static Logger log4j(Class clazz) throws CIBusException {
-		if (logService != null && log4j == null) {
-			Object o = ProxyUtil.invokeRet(logService, "getLog4j", new Object[]{clazz});
-			if (o != null) {
-				log4j = (Logger) o;
-				log4j.info(clazz.getName() + "得到Bus Log Service");
-				return log4j;
-			}
-			throw new CIBusException("log4j is null");
+	protected Logger log4j() throws CIBusException {
+		if (log4j != null)
+			return log4j;
+		if (logService != null) {
+			return instanceLog4j(this.getClass());
 		}
-		throw new CIBusException("log4j is null");
+		throw new CIBusException("logService is null");
+	}
+	
+	public static Logger getLog4j(Class clazz) throws CIBusException {
+		if (logService != null) {
+			return instanceLog4j(clazz);
+		}
+		
+		throw new CIBusException("logService is null");
+	}
+	
+	private static Logger instanceLog4j(Class clazz) throws CIBusException{
+		Object o = ProxyUtil.invokeRet(logService, "getLog4j", new Object[]{clazz});
+		if (o != null) {
+			log4j = (Logger) o;
+			log4j.info(clazz.getName() + "得到Bus Log Service");
+			return log4j;
+		}
+		throw new CIBusException("could not initialize log4j");
 	}
 
 	/**
@@ -110,9 +124,9 @@ public abstract class CommonBusActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_context = context;
-		init(); // 初始化
 		loadServicesByTrack();
 		addServices(); // 增加service
+		init(); // 初始化
 		run(); // 自定义运行
 	}
 
