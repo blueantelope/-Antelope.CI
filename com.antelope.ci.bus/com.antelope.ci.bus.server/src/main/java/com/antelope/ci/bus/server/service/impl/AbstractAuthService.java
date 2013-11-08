@@ -14,13 +14,12 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.EncryptUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.BusServerActivator;
 import com.antelope.ci.bus.server.service.AuthService;
+import com.antelope.ci.bus.server.service.CommonService;
 import com.antelope.ci.bus.server.service.user.User;
 import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.service.user.UserKey;
@@ -33,20 +32,15 @@ import com.antelope.ci.bus.server.service.user.UserPassword;
  * @version  0.1
  * @Date	 2013-10-15		下午12:55:02 
  */
-public abstract class AbstractAuthService implements AuthService {
+public abstract class AbstractAuthService extends CommonService implements AuthService {
 	protected static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.AuthService";
-	protected static Logger log;
 	protected Map<String, User> userMap = new HashMap<String, User>();
 	
 	
 	public AbstractAuthService(Map<String, User> userMap) throws CIBusException {
+		super();
 		if (userMap != null)
 			this.userMap = userMap;
-		try {
-			log = BusServerActivator.getLog4j(this.getClass());
-		} catch (CIBusException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	// 得到用户信息

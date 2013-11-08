@@ -8,6 +8,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
@@ -20,6 +21,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
@@ -29,8 +31,8 @@
 	<target name="make">
 		<copy todir="${app.portal.lib}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.framework-0.1.0.jar" />
-				<include name="com.antelope.ci.bus-0.1.0.jar" />
+				<include name="com.antelope.ci.bus.framework-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus-${bus.version}.jar" />
 			</fileset>
 		</copy>
 
@@ -38,8 +40,8 @@
 			<fileset dir="${target.depends}">
 				<include name="log4j*.jar" />
 				<include name="slf4j*.jar" />
-				<include name="com.antelope.ci.bus.common-0.1.0.jar" />
-				<include name="com.antelope.ci.bus.osgi-0.1.0.jar" />
+				<include name="com.antelope.ci.bus.common-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.osgi-${bus.version}.jar" />
 			</fileset>
 		</copy>
 
@@ -52,13 +54,19 @@
 
 		<copy todir="${app.portal.system.ext}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.logger*.jar" />
+				<include name="com.antelope.ci.bus.logger-${bus.version}.jar" />
 			</fileset>
 		</copy>
 
 		<copy todir="${app.portal.server.bundle}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.server*.jar" />
+				<include name="com.antelope.ci.bus.server-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${app.portal.system.ext}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
 			</fileset>
 		</copy>
 
@@ -73,7 +81,7 @@
 		
 		<copy todir="${app.portal.bundle}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.portal*.jar" />
+				<include name="com.antelope.ci.bus.portal-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		

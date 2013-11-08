@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: Antelope CI Bus Server UserStore Service
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.server.service.userstore.file
+Fragment-Host: com.antelope.ci.bus.server.service.userstore.file; bundle-version="0.1.0"

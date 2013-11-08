@@ -132,6 +132,28 @@
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>
 	</target>
+
+	<target name="service.userstorefile.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.service.userstorefile.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="service.userstorefile.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.service.userstorefile.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="service.userstorefile.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.service.userstorefile.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
 	
 	<target name="depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">

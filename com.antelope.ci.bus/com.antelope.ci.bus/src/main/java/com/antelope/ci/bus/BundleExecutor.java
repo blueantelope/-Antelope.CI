@@ -11,7 +11,6 @@ package com.antelope.ci.bus;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
-import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.JarLoadMethod;
 import com.antelope.ci.bus.common.StringUtil;
 
@@ -42,6 +41,7 @@ class BundleExecutor {
 		try {
 			if (loader.method == JarLoadMethod.INSTALL || loader.method == JarLoadMethod.START) {
 				Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
+				loader.startLevel.setBundleStartLevel(bundle, loader.level);
 				if (loader.clsUrlList != null) {
 					attachBundleUrl(bundle);
 				}
@@ -69,7 +69,6 @@ class BundleExecutor {
 	 */
 	private void startBundle(Bundle bundle) {
 		try {
-			loader.startLevel.setBundleStartLevel(bundle, loader.level);
 			bundle.start();
 		} catch (BundleException e) {
 			e.printStackTrace();

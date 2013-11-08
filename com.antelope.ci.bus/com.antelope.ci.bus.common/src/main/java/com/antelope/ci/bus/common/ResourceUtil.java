@@ -31,6 +31,10 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-7-31 下午12:39:34
  */
 public class ResourceUtil {
+	private final static char DOT = '.';
+	private final static char SLASH = '/';
+    private final static String CLASS_SUFFIX = ".class";
+	
 	/**
 	 * 取得jar所在的上级目录
 	 * 
@@ -198,7 +202,6 @@ public class ResourceUtil {
 
 	/**
 	 * 取得className最后的名称，带class后缀
-	 * 
 	 * @param @param className
 	 * @param @return
 	 * @return String
@@ -211,7 +214,6 @@ public class ResourceUtil {
 
 	/**
 	 * 取得package下的所有类，并以类的url列表返回
-	 * 
 	 * @param @param packageName
 	 * @param @return
 	 * @return List<URL>
@@ -219,7 +221,7 @@ public class ResourceUtil {
 	 */
 	public static List<URL> getClassUrlInPackage(String packageName) {
 		List<URL> urlList = new ArrayList<URL>();
-		for (String className : getClassName(packageName)) {
+		for (String className : getClassUrl(packageName)) {
 			try {
 				urlList.add(classNameToUrl(className));
 			} catch (Exception e) {
@@ -232,40 +234,121 @@ public class ResourceUtil {
 
 	/**
 	 * 获取某包下（包括该包的所有子包）所有类
-	 * 
 	 * @param @param packageName
 	 * @param @return
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> getClassName(String packageName) {
-		return getClassName(packageName, true);
+	public static List<String> getClassUrl(String packageName) {
+		return getClassUrl(packageName, true);
 	}
 
 	/**
 	 * 获取某包下所有类
-	 * 
 	 * @param @param packageName
 	 * @param @param childPackage
 	 * @param @return
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> getClassName(String packageName, boolean childPackage) {
+	public static List<String> getClassUrl(String packageName, boolean childPackage) {
+		return getClassUrl(packageName, Thread.currentThread().getContextClassLoader(), childPackage);
+	}
+	
+	/**
+	 * 获取包下（包括该包的所有子包）所有类，可指定0到多个类加载容器
+	 * @param  @param packageName
+	 * @param  @param clsLoaders
+	 * @param  @return
+	 * @return List<String>
+	 * @throws
+	 */
+	public static List<String> getClassName(String packageName,  ClassLoader... clsLoaders) {
+		if (clsLoaders.length == 0) {
+			return getClassUrl(packageName, true);
+		}
+		List<String> caList = new ArrayList<String>();
+		for (ClassLoader clsLoader : clsLoaders) {
+			caList.addAll(getClassUrl(packageName, clsLoader, true));
+		}
+			
+		return caList;
+	}
+	
+	/**
+	 * 指定类加载器获取某包下（包括该包的所有子包）所有类
+	 * @param  @param packageName
+	 * @param  @param clsLoader
+	 * @param  @return
+	 * @return List<String>
+	 * @throws
+	 */
+	public static List<String> getClassName(String packageName,  ClassLoader clsLoader) {
+		return getClassUrl(packageName, clsLoader, true);
+	}
+	
+	public static List<String> getClasspath(String packageName,  ClassLoader... clsLoaders) {
+		if (clsLoaders.length == 0) {
+			return getClasspath(packageName, Thread.currentThread().getContextClassLoader(), true);
+		}
+		List<String> caList = new ArrayList<String>();
+		for (ClassLoader clsLoader : clsLoaders) {
+			caList.addAll(getClasspath(packageName, clsLoader, true));
+		}
+			
+		return caList;
+	}
+	
+	public static List<String> getClasspath(String packageName, ClassLoader clsLoader, boolean childPackage) {
 		List<String> caList = new ArrayList<String>();
 		Map<String, String> cMap = new HashMap<String, String>();
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		String packagePath = packageName.replace(".", "/");
-		URL url = loader.getResource(packagePath);
+		String packagePath = packageName.replace(DOT, SLASH);
+		URL url = clsLoader.getResource(packagePath);
 		if (url != null) {
-			for (String cs : findClassPath(url, loader, packageName, childPackage)) {
+			for (String cs : findClassUrl(url, clsLoader, packageName, childPackage)) {
+				String cpackage = cs.substring(url.toString().length());
+				cMap.put(cpackage,  cpackage);
+			}
+		}
+		// 多个url中查找包，包括包的下层子包，反加这些子包下所有class的列表
+		List<URL> uList = searchPackageInJreEnv(packagePath);
+		for (URL u : uList) {
+			for (String cs : findClassUrl(u, clsLoader, packageName, childPackage)) {
+				String cpackage = cs.substring(url.toString().length());
+				cMap.put(cpackage,  cpackage);
+			}
+		}
+	
+		for (String cname : cMap.keySet()) {
+			caList.add(cname);
+		}
+		
+		return caList;
+	}
+	
+	/**
+	 * 获取指定类加载器某包下所有类
+	 * @param  @param packageName
+	 * @param  @param clsLoader
+	 * @param  @param childPackage
+	 * @param  @return
+	 * @return List<String>
+	 * @throws
+	 */
+	public static List<String> getClassUrl(String packageName, ClassLoader clsLoader, boolean childPackage) {
+		List<String> caList = new ArrayList<String>();
+		Map<String, String> cMap = new HashMap<String, String>();
+		String packagePath = packageName.replace(DOT, SLASH);
+		URL url = clsLoader.getResource(packagePath);
+		if (url != null) {
+			for (String cs : findClassUrl(url, clsLoader, packageName, childPackage)) {
 				cMap.put(cs,  cs);
 			}
 		}
 		// 多个url中查找包，包括包的下层子包，反加这些子包下所有class的列表
 		List<URL> uList = searchPackageInJreEnv(packagePath);
 		for (URL u : uList) {
-			for (String cs : findClassPath(u, loader, packageName, childPackage)) {
+			for (String cs : findClassUrl(u, clsLoader, packageName, childPackage)) {
 				cMap.put(cs,  cs);
 			}
 		}
@@ -280,7 +363,7 @@ public class ResourceUtil {
 	/*
 	 * 在一个url路径中找包下的所有类，返回这些类的url列表
 	 */
-	private static List<String> findClassPath(URL url, ClassLoader loader, String packageName, boolean childPackage) {
+	private static List<String> findClassUrl(URL url, ClassLoader loader, String packageName, boolean childPackage) {
 		String packagePath = packageName.replace(".", "/");
 		List<String> fileNames = null;
 		if (url != null) {

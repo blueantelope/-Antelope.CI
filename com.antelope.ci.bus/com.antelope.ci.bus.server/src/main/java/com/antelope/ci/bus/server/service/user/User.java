@@ -20,10 +20,10 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  */
 public class User {
 	public enum AUTH_TYPE {
-		OPNE(1>>0, "open"),						// 无验证，开放式
-		DEFINE(1>>1, "define"),					// 自定义验证
-		PASSWORD(1>>2, "password"),		// 用户名密码方式
-		PUBLICKEY(1>>3, "publickey");		// 密钥方式
+		OPNE(1<<0, "open"),						// 无验证，开放式
+		DEFINE(1<<1, "define"),					// 自定义验证
+		PASSWORD(1<<2, "password"),		// 用户名密码方式
+		PUBLICKEY(1<<3, "publickey");		// 密钥方式
 		
 		private int code;
 		private String name;
