@@ -41,7 +41,7 @@ public class TestResourceUtil extends TestCase {
 	
 	@Test
 	public void testGetClassName() {
-		List<String> nameList = ResourceUtil.getClassUrl("sun.security.util");
+		List<String> nameList = ResourceUtil.findClasspath("sun.security.util");
 		for (String name : nameList) {
 			System.out.println(name);
 		}

@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.ResourceUtil;
-import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -25,19 +24,30 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2013-11-8		下午5:24:03 
  */
-public class TestClassLoader extends TestCase {
+public class TestFindClass extends TestCase {
+	private static boolean first = true;
+	
+	public TestFindClass() {
+		if (!first)
+			System.out.println("Construct");
+		else
+			first = false;
+	}
 
 	@Test
-	public void test() throws CIBusException {
+	public void test() throws Exception {
 		ClassLoader cl = this.getClass().getClassLoader();
-		List<String> clsList = ResourceUtil.getClasspath("com.antelope.ci.bus.common.test", this.getClass().getClassLoader());
+		List<String> clsList = ResourceUtil.findClasspath("com.antelope.ci.bus.common.test", this.getClass().getClassLoader());
 		for (String cls : clsList) {
 			System.out.println(cls);
+			if (cls.endsWith("TestFindClass")) {
+				Class.forName(cls).newInstance();
+			}
 		}
 	}
 	
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestClassLoader.class);
+		junit.textui.TestRunner.run(TestFindClass.class);
 	}
 }
 

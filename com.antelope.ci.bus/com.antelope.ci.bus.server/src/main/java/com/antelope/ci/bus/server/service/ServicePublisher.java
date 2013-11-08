@@ -33,7 +33,7 @@ public class ServicePublisher {
 				while (true) {
 					String cls_name = "";
 					try {
-						List<String>  classList = ResourceUtil.getClassUrl("com.antelope.ci.bus.server.service");
+						List<String>  classList = ResourceUtil.findClasspath("com.antelope.ci.bus.server.service");
 						List<String> regList = new ArrayList<String>();
 						for (String cls : classList) {
 							cls_name = cls;

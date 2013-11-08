@@ -31,8 +31,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-7-31 下午12:39:34
  */
 public class ResourceUtil {
-	private final static char DOT = '.';
-	private final static char SLASH = '/';
+	private final static String DOT = ".";
+	private final static String SLASH = "/";
     private final static String CLASS_SUFFIX = ".class";
 	
 	/**
@@ -92,11 +92,11 @@ public class ResourceUtil {
 
 	private static File getClassFile(Class clazz) {
 		URL path = clazz.getResource(clazz.getName().substring(
-				clazz.getName().lastIndexOf(".") + 1)
-				+ ".class");
+				clazz.getName().lastIndexOf(DOT) + 1)
+				+ "CLASS_SUFFIX");
 		if (path == null) {
-			String name = clazz.getName().replaceAll("[.]", "/");
-			path = clazz.getResource("/" + name + ".class");
+			String name = clazz.getName().replaceAll("[.]", DOT);
+			path = clazz.getResource(SLASH + name + "CLASS_SUFFIX");
 		}
 		return new File(path.getFile());
 	}
@@ -123,7 +123,7 @@ public class ResourceUtil {
 	public static URL classNameToUrl(String className) throws CIBusException {
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			String class_name = className.replace(".", "/") + ".class";
+			String class_name = className.replace(DOT, SLASH) + "CLASS_SUFFIX";
 			URL url = loader.getResource(class_name);
 			if (url == null) {
 				url = searchClassInJreEnv(class_name);
@@ -147,7 +147,7 @@ public class ResourceUtil {
 				if (proto.equals("file") || proto.equals("jar")) {
 					try {
 						JarClassReader cReader = new JarClassReader(url.getFile());
-						if (name.endsWith(".class")) {
+						if (name.endsWith("CLASS_SUFFIX")) {
 							if (cReader.existClass(name)) {
 								return new URL("jar:file:/" + path + "!/" + name);
 							}
@@ -177,7 +177,7 @@ public class ResourceUtil {
 					try {
 						JarClassReader cReader = new JarClassReader(url.getFile());
 						for (String p : cReader.getContainsPackageList(name)) {
-							urlList.add(new URL("jar:file:/" + path + "!/" + p.replace(".", "/") + "/"));
+							urlList.add(new URL("jar:file:/" + path + "!/" + p.replace(DOT, SLASH) + SLASH));
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -209,7 +209,7 @@ public class ResourceUtil {
 	 */
 	private static String getLastClassName(String className) {
 		String[] cp = className.split("\\.");
-		return cp[cp.length - 1] + ".class";
+		return cp[cp.length - 1] + "CLASS_SUFFIX";
 	}
 
 	/**
@@ -219,9 +219,9 @@ public class ResourceUtil {
 	 * @return List<URL>
 	 * @throws
 	 */
-	public static List<URL> getClassUrlInPackage(String packageName) {
+	public static List<URL> findClassUrl(String packageName) {
 		List<URL> urlList = new ArrayList<URL>();
-		for (String className : getClassUrl(packageName)) {
+		for (String className : findClasspath(packageName)) {
 			try {
 				urlList.add(classNameToUrl(className));
 			} catch (Exception e) {
@@ -239,8 +239,8 @@ public class ResourceUtil {
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> getClassUrl(String packageName) {
-		return getClassUrl(packageName, true);
+	public static List<String> findClasspath(String packageName) {
+		return findClasspath(packageName, true);
 	}
 
 	/**
@@ -251,8 +251,8 @@ public class ResourceUtil {
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> getClassUrl(String packageName, boolean childPackage) {
-		return getClassUrl(packageName, Thread.currentThread().getContextClassLoader(), childPackage);
+	public static List<String> findClasspath(String packageName, boolean childPackage) {
+		return findClasspath(packageName, Thread.currentThread().getContextClassLoader(), childPackage);
 	}
 	
 	/**
@@ -263,13 +263,13 @@ public class ResourceUtil {
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> getClassName(String packageName,  ClassLoader... clsLoaders) {
+	public static List<String> findClasspath(String packageName,  ClassLoader... clsLoaders) {
 		if (clsLoaders.length == 0) {
-			return getClassUrl(packageName, true);
+			return findClasspath(packageName, true);
 		}
 		List<String> caList = new ArrayList<String>();
 		for (ClassLoader clsLoader : clsLoaders) {
-			caList.addAll(getClassUrl(packageName, clsLoader, true));
+			caList.addAll(findClasspath(packageName, clsLoader, true));
 		}
 			
 		return caList;
@@ -283,48 +283,10 @@ public class ResourceUtil {
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> getClassName(String packageName,  ClassLoader clsLoader) {
-		return getClassUrl(packageName, clsLoader, true);
+	public static List<String> findClasspath(String packageName,  ClassLoader clsLoader) {
+		return findClasspath(packageName, clsLoader, true);
 	}
 	
-	public static List<String> getClasspath(String packageName,  ClassLoader... clsLoaders) {
-		if (clsLoaders.length == 0) {
-			return getClasspath(packageName, Thread.currentThread().getContextClassLoader(), true);
-		}
-		List<String> caList = new ArrayList<String>();
-		for (ClassLoader clsLoader : clsLoaders) {
-			caList.addAll(getClasspath(packageName, clsLoader, true));
-		}
-			
-		return caList;
-	}
-	
-	public static List<String> getClasspath(String packageName, ClassLoader clsLoader, boolean childPackage) {
-		List<String> caList = new ArrayList<String>();
-		Map<String, String> cMap = new HashMap<String, String>();
-		String packagePath = packageName.replace(DOT, SLASH);
-		URL url = clsLoader.getResource(packagePath);
-		if (url != null) {
-			for (String cs : findClassUrl(url, clsLoader, packageName, childPackage)) {
-				String cpackage = cs.substring(url.toString().length());
-				cMap.put(cpackage,  cpackage);
-			}
-		}
-		// 多个url中查找包，包括包的下层子包，反加这些子包下所有class的列表
-		List<URL> uList = searchPackageInJreEnv(packagePath);
-		for (URL u : uList) {
-			for (String cs : findClassUrl(u, clsLoader, packageName, childPackage)) {
-				String cpackage = cs.substring(url.toString().length());
-				cMap.put(cpackage,  cpackage);
-			}
-		}
-	
-		for (String cname : cMap.keySet()) {
-			caList.add(cname);
-		}
-		
-		return caList;
-	}
 	
 	/**
 	 * 获取指定类加载器某包下所有类
@@ -335,20 +297,20 @@ public class ResourceUtil {
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> getClassUrl(String packageName, ClassLoader clsLoader, boolean childPackage) {
+	public static List<String> findClasspath(String packageName, ClassLoader clsLoader, boolean childPackage) {
 		List<String> caList = new ArrayList<String>();
 		Map<String, String> cMap = new HashMap<String, String>();
 		String packagePath = packageName.replace(DOT, SLASH);
 		URL url = clsLoader.getResource(packagePath);
 		if (url != null) {
-			for (String cs : findClassUrl(url, clsLoader, packageName, childPackage)) {
+			for (String cs : searchClasspath(url, clsLoader, packageName, childPackage)) {
 				cMap.put(cs,  cs);
 			}
 		}
 		// 多个url中查找包，包括包的下层子包，反加这些子包下所有class的列表
 		List<URL> uList = searchPackageInJreEnv(packagePath);
 		for (URL u : uList) {
-			for (String cs : findClassUrl(u, clsLoader, packageName, childPackage)) {
+			for (String cs : searchClasspath(u, clsLoader, packageName, childPackage)) {
 				cMap.put(cs,  cs);
 			}
 		}
@@ -363,45 +325,43 @@ public class ResourceUtil {
 	/*
 	 * 在一个url路径中找包下的所有类，返回这些类的url列表
 	 */
-	private static List<String> findClassUrl(URL url, ClassLoader loader, String packageName, boolean childPackage) {
-		String packagePath = packageName.replace(".", "/");
+	private static List<String> searchClasspath(URL url, ClassLoader loader, String packageName, boolean childPackage) {
+		String packagePath = packageName.replace(".",  "/");
 		List<String> fileNames = null;
 		if (url != null) {
 			String type = url.getProtocol();
 			if (type.equals("file")) {
-				fileNames = getClassNameByFile(url.getPath(), null,
-						childPackage);
+				fileNames = searchClassNameByFile(url.getPath(), packagePath, childPackage);
 			} else if (type.equals("jar")) {
-				fileNames = getClassNameByJar(url.getPath(), childPackage);
+				fileNames = searchClassNameByJar(url.getPath(), childPackage);
 			}
 		} else {
-			fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(),
+			fileNames = searchClassNameByJars(((URLClassLoader) loader).getURLs(),
 					packagePath, childPackage);
 		}
 		return fileNames;
 	}
 
 	/*
-	 * 从项目文件获取某包下所有类
+	 * 文件中获取某包下所有类
 	 */
-	private static List<String> getClassNameByFile(String filePath,
-			List<String> className, boolean childPackage) {
+	private static List<String> searchClassNameByFile(String filePath, String packagePath, boolean childPackage) {
 		List<String> myClassName = new ArrayList<String>();
 		File file = new File(filePath);
 		File[] childFiles = file.listFiles();
 		for (File childFile : childFiles) {
 			if (childFile.isDirectory()) {
 				if (childPackage) {
-					myClassName.addAll(getClassNameByFile(childFile.getPath(),
-							myClassName, childPackage));
+					myClassName.addAll(searchClassNameByFile(childFile.getPath(), packagePath, childPackage));
 				}
 			} else {
 				String childFilePath = childFile.getPath();
-				if (childFilePath.endsWith(".class")) {
+				if (childFilePath.endsWith(CLASS_SUFFIX)) {
+					
 					childFilePath = childFilePath.substring(
-							childFilePath.indexOf("\\classes") + 9,
-							childFilePath.lastIndexOf("."));
-					childFilePath = childFilePath.replace("\\", ".");
+							childFilePath.lastIndexOf(packagePath),
+							childFilePath.lastIndexOf(DOT));
+					childFilePath = childFilePath.replace(SLASH, DOT);
 					myClassName.add(childFilePath);
 				}
 			}
@@ -413,11 +373,11 @@ public class ResourceUtil {
 	/*
 	 * 从jar获取某包下所有类
 	 */
-	private static List<String> getClassNameByJar(String jarPath,
+	private static List<String> searchClassNameByJar(String jarPath,
 			boolean childPackage) {
 		List<String> classNameList = new ArrayList<String>();
 		String[] jarInfo = jarPath.split("!");
-		String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
+		String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf(SLASH));
 		String packagePath = jarInfo[1].substring(1);
 		try {
 //			DebugUtil.assert_out("jar路径 = " + jarPath + ", jar文件路径 = " + jarFilePath);
@@ -426,15 +386,15 @@ public class ResourceUtil {
 			while (entrys.hasMoreElements()) {
 				JarEntry jarEntry = entrys.nextElement();
 				String entryName = jarEntry.getName();
-				if (entryName.endsWith(".class")) {
+				if (entryName.endsWith("CLASS_SUFFIX")) {
 					//DebugUtil.assert_out(entryName);
 					if (childPackage) {
 						if (entryName.startsWith(packagePath)) {
-							entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
+							entryName = entryName.replace(SLASH, DOT).substring(0, entryName.lastIndexOf(SLASH));
 							classNameList.add(entryName);
 						}
 					} else {
-						int index = entryName.lastIndexOf("/");
+						int index = entryName.lastIndexOf(SLASH);
 						String myPackagePath;
 						if (index != -1) {
 							myPackagePath = entryName.substring(0, index);
@@ -442,8 +402,8 @@ public class ResourceUtil {
 							myPackagePath = entryName;
 						}
 						if (myPackagePath.equals(packagePath)) {
-							entryName = entryName.replace("/", ".").substring(
-									0, entryName.lastIndexOf("."));
+							entryName = entryName.replace(SLASH, DOT).substring(
+									0, entryName.lastIndexOf(DOT));
 							classNameList.add(entryName);
 						}
 					}
@@ -458,7 +418,7 @@ public class ResourceUtil {
 	/*
 	 * 从所有jar中搜索该包，并获取该包下所有类
 	 */
-	private static List<String> getClassNameByJars(URL[] urls,
+	private static List<String> searchClassNameByJars(URL[] urls,
 			String packagePath, boolean childPackage) {
 		List<String> myClassName = new ArrayList<String>();
 		if (urls != null) {
@@ -466,11 +426,11 @@ public class ResourceUtil {
 				URL url = urls[i];
 				String urlPath = url.getPath();
 				// 不必搜索classes文件夹
-				if (urlPath.endsWith("classes/") || urlPath.equals("/")) {
+				if (urlPath.endsWith("classes/") || urlPath.equals(SLASH)) {
 					continue;
 				}
 				String jarPath = urlPath + "!/" + packagePath;
-				myClassName.addAll(getClassNameByJar(jarPath, childPackage));
+				myClassName.addAll(searchClassNameByJar(jarPath, childPackage));
 			}
 		}
 		return myClassName;

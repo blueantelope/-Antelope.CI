@@ -28,7 +28,7 @@ import com.antelope.ci.bus.common.ResourceUtil;
 public class TestGetClassUrlInPackage extends TestCase {
 	@Test
 	public void testGetClassUrlInPackage() {
-		List<URL> urlList = ResourceUtil.getClassUrlInPackage("sun.security");
+		List<URL> urlList = ResourceUtil.findClassUrl("sun.security");
 		System.out.println(urlList);
 	}
 	
