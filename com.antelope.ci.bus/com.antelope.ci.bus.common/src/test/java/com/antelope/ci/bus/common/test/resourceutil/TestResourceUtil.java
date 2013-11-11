@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common.test;
+package com.antelope.ci.bus.common.test.resourceutil;
 
 import java.net.URL;
 import java.util.List;
@@ -37,27 +37,6 @@ public class TestResourceUtil extends TestCase {
 	public void testGetJarParent() throws CIBusException {
 		URL path = ResourceUtil.getJarParent();
 		System.out.println("====testGetJarParent==== : " + path);
-	}
-	
-	@Test
-	public void testGetClassName() {
-		List<String> nameList = ResourceUtil.findClasspath("sun.security.util");
-		for (String name : nameList) {
-			System.out.println(name);
-		}
-	}
-	
-	@Test
-	public void testClassNameToUrl() {
-		try {
-			URL url = ResourceUtil.classNameToUrl("java.util.List");
-			System.out.println(url);
-		} catch (CIBusException e) {
-			
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		}
 	}
 	
 	public static void main(String[] args) {

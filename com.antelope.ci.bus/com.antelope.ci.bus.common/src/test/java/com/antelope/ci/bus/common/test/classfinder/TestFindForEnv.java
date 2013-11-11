@@ -6,16 +6,16 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common.test.resourceutil;
+package com.antelope.ci.bus.common.test.classfinder;
 
-import java.net.URL;
 import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import com.antelope.ci.bus.common.ResourceUtil;
+import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -25,15 +25,17 @@ import com.antelope.ci.bus.common.ResourceUtil;
  * @version  0.1
  * @Date	 2013-9-6		下午3:18:22 
  */
-public class TestGetClassUrlInPackage extends TestCase {
+public class TestFindForEnv extends TestCase {
 	@Test
-	public void testGetClassUrlInPackage() {
-		List<URL> urlList = ResourceUtil.findClassUrl("sun.security");
-		System.out.println(urlList);
+	public void test() throws CIBusException {
+		List<String> cnList = ClassFinder.findClasspath("sun.security");
+		for (String cname : cnList) {
+			System.out.println(cname);
+		}
 	}
 	
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestGetClassUrlInPackage.class);
+		junit.textui.TestRunner.run(TestFindForEnv.class);
 	}
 }
 

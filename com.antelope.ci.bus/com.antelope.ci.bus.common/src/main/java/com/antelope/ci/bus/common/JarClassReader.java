@@ -118,7 +118,6 @@ public class JarClassReader {
 			return pList;
 		}
 		String cpa = packageName.replace("/", ".");
-		DebugUtil.assert_out(jarFile.getName());
 		for (String pa : packageMap.keySet()) {
 			if (pa.startsWith(cpa))
 				pList.add(pa);

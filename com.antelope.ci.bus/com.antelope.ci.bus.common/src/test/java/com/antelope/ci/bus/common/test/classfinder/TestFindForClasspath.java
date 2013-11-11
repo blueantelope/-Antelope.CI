@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common.test;
+package com.antelope.ci.bus.common.test.classfinder;
 
 import java.util.List;
 
@@ -14,7 +14,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import com.antelope.ci.bus.common.ResourceUtil;
+import com.antelope.ci.bus.common.ClassFinder;
+
 
 
 /**
@@ -24,10 +25,10 @@ import com.antelope.ci.bus.common.ResourceUtil;
  * @version  0.1
  * @Date	 2013-11-8		下午5:24:03 
  */
-public class TestFindClass extends TestCase {
+public class TestFindForClasspath extends TestCase {
 	private static boolean first = true;
 	
-	public TestFindClass() {
+	public TestFindForClasspath() {
 		if (!first)
 			System.out.println("Construct");
 		else
@@ -37,7 +38,7 @@ public class TestFindClass extends TestCase {
 	@Test
 	public void test() throws Exception {
 		ClassLoader cl = this.getClass().getClassLoader();
-		List<String> clsList = ResourceUtil.findClasspath("com.antelope.ci.bus.common.test", this.getClass().getClassLoader());
+		List<String> clsList = ClassFinder.findClasspath("com.antelope.ci.bus.common", this.getClass().getClassLoader());
 		for (String cls : clsList) {
 			System.out.println(cls);
 			if (cls.endsWith("TestFindClass")) {
@@ -47,7 +48,7 @@ public class TestFindClass extends TestCase {
 	}
 	
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestFindClass.class);
+		junit.textui.TestRunner.run(TestFindForClasspath.class);
 	}
 }
 

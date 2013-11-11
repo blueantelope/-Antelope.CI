@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.wiring.BundleWiring;
 
-import com.antelope.ci.bus.common.ResourceUtil;
+import com.antelope.ci.bus.common.ClassFinder;
 
 
 /**
@@ -33,7 +35,7 @@ public class ServicePublisher {
 				while (true) {
 					String cls_name = "";
 					try {
-						List<String>  classList = ResourceUtil.findClasspath("com.antelope.ci.bus.server.service");
+						List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.server.service", m_context.getBundle().getClass().getClassLoader());
 						List<String> regList = new ArrayList<String>();
 						for (String cls : classList) {
 							cls_name = cls;
