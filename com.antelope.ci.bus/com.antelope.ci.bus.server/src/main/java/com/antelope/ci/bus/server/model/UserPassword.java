@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.service.user;
+package com.antelope.ci.bus.server.model;
 
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 

@@ -15,8 +15,8 @@ import com.antelope.ci.bus.portal.shell.BusPortalShellCommand;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerConfig;
-import com.antelope.ci.bus.server.service.impl.PasswordAuthServiceImpl;
-import com.antelope.ci.bus.server.service.impl.PublickeyAuthServiceImpl;
+import com.antelope.ci.bus.server.service.auth.PasswordAuthServiceImpl;
+import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
 
 /**

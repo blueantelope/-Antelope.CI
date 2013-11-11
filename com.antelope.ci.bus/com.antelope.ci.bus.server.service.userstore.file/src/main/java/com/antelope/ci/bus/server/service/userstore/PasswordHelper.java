@@ -22,10 +22,10 @@ import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
-import com.antelope.ci.bus.server.service.user.User;
-import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
-import com.antelope.ci.bus.server.service.user.UserKey;
-import com.antelope.ci.bus.server.service.user.UserPassword;
+import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.UserKey;
+import com.antelope.ci.bus.server.model.UserPassword;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 
 
 /**

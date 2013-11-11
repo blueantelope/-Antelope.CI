@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.ClassFinder;
 
@@ -58,6 +56,7 @@ public class ServicePublisher {
 						}
 						serviceList.addAll(regList);
 					} catch (Exception e) {
+						e.printStackTrace();
 						log.warn("problem for add service :" + cls_name);
 					}
 					try {

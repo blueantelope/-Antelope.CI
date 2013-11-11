@@ -22,12 +22,12 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerConfig;
-import com.antelope.ci.bus.server.service.impl.PasswordAuthServiceImpl;
-import com.antelope.ci.bus.server.service.impl.PublickeyAuthServiceImpl;
-import com.antelope.ci.bus.server.service.user.User;
-import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
-import com.antelope.ci.bus.server.service.user.UserKey;
-import com.antelope.ci.bus.server.service.user.UserPassword;
+import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.UserKey;
+import com.antelope.ci.bus.server.model.UserPassword;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
+import com.antelope.ci.bus.server.service.auth.PasswordAuthServiceImpl;
+import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
 
 /**

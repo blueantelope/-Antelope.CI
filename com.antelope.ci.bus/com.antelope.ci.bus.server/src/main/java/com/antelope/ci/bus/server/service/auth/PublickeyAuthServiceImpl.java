@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.service.impl;
+package com.antelope.ci.bus.server.service.auth;
 
 import java.security.PublicKey;
 import java.util.Map;
@@ -14,8 +14,8 @@ import java.util.Map;
 import org.apache.sshd.server.session.ServerSession;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.service.user.User;
-import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
+import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 
 
 /**

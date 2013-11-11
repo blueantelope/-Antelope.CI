@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.service.impl;
+package com.antelope.ci.bus.server.service.auth;
 
 import java.security.PublicKey;
 import java.util.Dictionary;
@@ -18,12 +18,12 @@ import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.EncryptUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.UserKey;
+import com.antelope.ci.bus.server.model.UserPassword;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.service.AuthService;
 import com.antelope.ci.bus.server.service.CommonService;
-import com.antelope.ci.bus.server.service.user.User;
-import com.antelope.ci.bus.server.service.user.User.AUTH_TYPE;
-import com.antelope.ci.bus.server.service.user.UserKey;
-import com.antelope.ci.bus.server.service.user.UserPassword;
 
 /**
  * TODO 描述

@@ -14,8 +14,8 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.antelope.ci.bus.server.model.User;
 import com.antelope.ci.bus.server.service.UserStoreService;
-import com.antelope.ci.bus.server.service.user.User;
 import com.antelope.ci.bus.server.service.userstore.FileUserStoreServiceImpl;
 
 

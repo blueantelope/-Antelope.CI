@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.antelope.ci.bus.server.service.impl.AbstractAuthService;
-import com.antelope.ci.bus.server.service.user.User;
+import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.service.auth.AbstractAuthService;
 
 
 /**

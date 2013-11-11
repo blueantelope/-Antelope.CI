@@ -19,7 +19,7 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.service.impl.AbstractAuthService;
+import com.antelope.ci.bus.server.service.auth.AbstractAuthService;
 import com.antelope.ci.bus.server.shell.BusShellFactory;
 
 

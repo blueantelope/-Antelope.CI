@@ -5,6 +5,8 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.portal
 Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, 
  com.antelope.ci.bus.server, com.antelope.ci.bus.server.service, 
- com.antelope.ci.bus.server.service.impl, com.antelope.ci.bus.server.service.user,
  com.antelope.ci.bus.server.shell
 Bundle-Activator: com.antelope.ci.bus.portal.BusPortalActivator
+DynamicImport-Package: com.antelope.ci.bus.server.service.model.*, 
+ com.antelope.ci.bus.server.service.*
+
