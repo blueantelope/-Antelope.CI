@@ -30,7 +30,7 @@ import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleRevisions;
 import org.osgi.framework.wiring.BundleWiring;
 
-class URLHandlersBundleURLConnection extends URLConnection
+public class URLHandlersBundleURLConnection extends URLConnection
 {
     private Felix m_framework;
     private BundleRevision m_targetRevision;
@@ -227,7 +227,7 @@ class URLHandlersBundleURLConnection extends URLConnection
      *
      * @return the local URL
      */
-    URL getLocalURL()
+    public URL getLocalURL()
     {
         if ((m_targetRevision == null) || (m_classPathIdx < 0))
         {

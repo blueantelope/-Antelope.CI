@@ -11,6 +11,7 @@ package com.antelope.ci.bus.common;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -156,9 +157,18 @@ public class ClassFinder {
 	/*
 	 * 在一个url路径中找包下的所有类，返回这些类的url列表
 	 */
-	private static List<String> searchClasspath(URL url, String packageName, boolean childPackage) {
-		List<String> fileNames = null;
+	private static List<String> searchClasspath(URL url, String packageName, boolean childPackage) throws CIBusException {
+		List<String> fileNames = new ArrayList<String>();
 		String type = url.getProtocol();
+		if (type.equals("bundle")) {
+			try {
+				URLConnection conn = url.openConnection();
+				url = (URL) ProxyUtil.invokeRet(conn, "getLocalURL");
+				type = url.getProtocol();
+			} catch (Exception e) {
+				throw new CIBusException("", e);
+			}
+		} 
 		if (type.equals("file")) {
 			fileNames = searchClassNameByFile(url.getPath(), packageName.replace(DOT, File.separator), childPackage);
 		} else if (type.equals("jar")) {

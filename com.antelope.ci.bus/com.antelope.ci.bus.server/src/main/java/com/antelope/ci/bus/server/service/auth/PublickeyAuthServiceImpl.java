@@ -16,16 +16,21 @@ import org.apache.sshd.server.session.ServerSession;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.model.User;
 import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
+import com.antelope.ci.bus.server.service.ServerService;
 
 
 /**
- * TODO 描述
- *
+ * public key auth
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-14		下午5:02:20 
  */
+@ServerService
 public class PublickeyAuthServiceImpl extends AbstractAuthService {
+	
+	public PublickeyAuthServiceImpl() {
+		
+	}
 
 	public PublickeyAuthServiceImpl(Map<String, User> userMap) throws CIBusException {
 		super(userMap);

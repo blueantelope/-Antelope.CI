@@ -36,6 +36,9 @@ public abstract class AbstractAuthService extends CommonService implements AuthS
 	protected static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.AuthService";
 	protected Map<String, User> userMap = new HashMap<String, User>();
 	
+	public AbstractAuthService() {
+		
+	}
 	
 	public AbstractAuthService(Map<String, User> userMap) throws CIBusException {
 		super();

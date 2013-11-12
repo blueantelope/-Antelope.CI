@@ -18,6 +18,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
@@ -192,7 +193,8 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 */
 	private void loadServicesByTrack() throws CIBusException {
 		for (String  cls_name : loadServices) {
-			ServiceTracker tracker = new ServiceTracker(m_context, cls_name, new BusServiceTrackerCustomizer(cls_name));  
+			Filter filter = m_context.createFilter("(objectClass=" + cls_name + ")");
+			ServiceTracker tracker = new ServiceTracker(m_context, filter, new BusServiceTrackerCustomizer(cls_name));  
 			tracker.open();
 			trackerList.add(tracker);
 		}

@@ -17,6 +17,7 @@ import org.osgi.framework.BundleContext;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.model.User;
 import com.antelope.ci.bus.server.service.CommonService;
+import com.antelope.ci.bus.server.service.ServerService;
 import com.antelope.ci.bus.server.service.UserStoreService;
 
 
@@ -26,6 +27,7 @@ import com.antelope.ci.bus.server.service.UserStoreService;
  * @version  0.1
  * @Date	 2013-11-8		下午12:01:44 
  */
+@ServerService
 public class FileUserStoreServiceImpl  extends CommonService implements UserStoreService {
 	public FileUserStoreServiceImpl() {
 		super();
@@ -38,10 +40,9 @@ public class FileUserStoreServiceImpl  extends CommonService implements UserStor
 
 	@Override
 	public void register(BundleContext m_context) throws CIBusException {
-		UserStoreService userStoreService = new FileUserStoreServiceImpl();
 		Dictionary<String, ?> properties = new Hashtable<String, Object>();
-		m_context.registerService(SERVICE_NAME, userStoreService, properties);
-		log.info("注册服务SERVICE_NAME : " + userStoreService.getClass().getName());
+		m_context.registerService(SERVICE_NAME, this, properties);
+		log.info("注册服务SERVICE_NAME : " + this.getClass().getName());
 	}
 
 	/**

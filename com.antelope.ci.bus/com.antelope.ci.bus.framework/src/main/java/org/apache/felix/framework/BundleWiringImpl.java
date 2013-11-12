@@ -704,9 +704,6 @@ public class BundleWiringImpl implements BundleWiring
         return m_classLoader;
     }
     
-    /*
-     * 取得加载bus.properties中定义url的类加载器
-     */
     private synchronized BusClassLoader getClassLoaderOfBus() {
     		if (bus_classLoader == null) {
     			Bundle bundle = m_revision.getBundle();
@@ -1542,7 +1539,11 @@ public class BundleWiringImpl implements BundleWiring
                     if (result == null) {
                     		BusClassLoader clob = getClassLoaderOfBus();
                     		if (clob != null) {
-                    			result = clob.findClassOrResource(name, isClass);
+                    			try {
+                    				result = clob.findClassOrResource(name, isClass);
+                    			} catch (ClassNotFoundException e) {
+                    				
+                    			}
                     		}
                     }
 

@@ -23,9 +23,9 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.model.UserKey;
 import com.antelope.ci.bus.server.model.UserPassword;
-import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 
 
 /**
@@ -153,7 +153,7 @@ class PasswordHelper {
 		        return name.equalsIgnoreCase(name);
 		    }
 		});
-		if (files.length == 1)
+		if (files != null && files.length > 0)
 			return files[0].toURI().toURL().toString();
 		return null;
 	}

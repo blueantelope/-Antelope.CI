@@ -16,6 +16,7 @@ import org.apache.sshd.server.session.ServerSession;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.model.User;
 import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
+import com.antelope.ci.bus.server.service.ServerService;
 
 
 /**
@@ -24,7 +25,12 @@ import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
  * @version  0.1
  * @Date	 2013-10-14		下午4:58:51 
  */
+@ServerService
 public class PasswordAuthServiceImpl extends AbstractAuthService {
+	
+	public PasswordAuthServiceImpl() {
+		
+	}
 	
 	public PasswordAuthServiceImpl(Map<String, User> userMap) throws CIBusException {
 		super(userMap);

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-Version: 0.1.0
-Bundle-Name: Antelope CI Bus Server
+Bundle-Name: com.antelope.ci.bus.server
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.server
 Export-Package: com.antelope.ci.bus.server, com.antelope.ci.bus.server.service, 
@@ -8,3 +8,4 @@ Export-Package: com.antelope.ci.bus.server, com.antelope.ci.bus.server.service,
  com.antelope.ci.bus.server.shell
 Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service
 Bundle-Activator: com.antelope.ci.bus.server.BusServerActivator
+Bundle-Vendor: blueantelope@gmail.com
