@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
@@ -32,23 +33,22 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * 为CI BUS定义bunlde activator CI BUS所有的bundle的activator必须由此类来实现
- * 
  * @author blueantelope
  * @version 0.1
  * @Date 2013-8-29 下午3:17:02
  */
 public abstract class CommonBusActivator implements BundleActivator {
 	protected static Logger log4j = null;			// log4j
-	protected static final String LOGSERVICE_CLSNAME = "com.antelope.ci.bus.logger.service.BusLogService";
+	protected static final String LOG_SERVICE_NAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	private static final String PACKET_SUFFIX = "com.antelope.ci.bus";
 	private static final String PACKET_SERVICE = "service";
 	private static final String PROPS_FILE = "/META-INF/bus.properties";
 	private static final String BUS_LOAD_SERVICES = "bus.load.services";
 	private static final String DIVISION = ",";
 	protected BundleContext m_context;
-	protected static Map<String, ServiceInfo> serviceMap;
+	protected static Map<String, List<ServiceInfo>> serviceMap;
 	protected static Properties properties; // bundle的属性
-	protected List<String> loadServices; // 需要加载的service列表
+	protected List<String> serviceList; // 需要加载的service列表
 	protected static ServiceReference log_ref = null;
 	protected static Object logService = null;
 	private List<ServiceTracker> trackerList;
@@ -56,9 +56,9 @@ public abstract class CommonBusActivator implements BundleActivator {
 
 	public CommonBusActivator() {
 		super();
-		serviceMap = new HashMap<String, ServiceInfo>();
+		serviceMap = new HashMap<String, List<ServiceInfo>>();
 		properties = new Properties();
-		loadServices = new ArrayList<String>();
+		serviceList = new ArrayList<String>();
 		trackerList = new ArrayList<ServiceTracker>();
 	}
 
@@ -70,16 +70,36 @@ public abstract class CommonBusActivator implements BundleActivator {
 		return properties;
 	}
 
-	public static Map<String, ServiceInfo> getServiceMap() {
+	public static Map<String, List<ServiceInfo>> getServiceMap() {
 		return serviceMap;
 	}
 
-	public static ServiceReference getServiceReference(String clazz) {
-		return serviceMap.get(clazz).ref;
+	public static ServiceReference getServiceReference(String serviceName, String className) {
+		ServiceInfo info;
+		if ((info=getServiceInfo(serviceName, className)) != null)
+			return info.ref;
+		return null;
 	}
 
-	public static Object getService(String clazz) {
-		return serviceMap.get(clazz).service;
+	public static Object getService(String serviceName, String className) {
+		ServiceInfo info;
+		if ((info=getServiceInfo(serviceName, className)) != null)
+			return info.service;
+		return null;
+	}
+	
+	private static ServiceInfo getServiceInfo(String serviceName, String className) {
+		List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+		if (infoList != null) {
+			for (ServiceInfo info : infoList) {
+				if (info.className.equals(className));
+						return info;
+			}
+			
+			return null;
+		}
+		
+		return null;
 	}
 
 	protected URL getResource(String name) {
@@ -125,9 +145,9 @@ public abstract class CommonBusActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		m_context = context;
-		loadServicesByTrack();
-		addServices(); // 增加service
 		init(); // 初始化
+		loadServices();
+		addServices(); // 增加service
 		run(); // 自定义运行
 	}
 
@@ -158,7 +178,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 */
 	private void initDefaultService() {
 		// log service
-		loadServices.add(LOGSERVICE_CLSNAME);
+		serviceList.add(LOG_SERVICE_NAME);
 	}
 	
 	/*
@@ -169,7 +189,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 			String load_services = properties.getProperty(BUS_LOAD_SERVICES);
 			if (load_services != null) {
 				for (String load_service : load_services.split(DIVISION)) {
-					loadServices.add(load_service.trim());
+					serviceList.add(load_service.trim());
 				}
 			}
 		}
@@ -191,26 +211,28 @@ public abstract class CommonBusActivator implements BundleActivator {
 	/*
 	 * 使用serviceTrack加载所有定义的service
 	 */
-	private void loadServicesByTrack() throws CIBusException {
-		for (String  cls_name : loadServices) {
-			Filter filter = m_context.createFilter("(objectClass=" + cls_name + ")");
-			ServiceTracker tracker = new ServiceTracker(m_context, filter, new BusServiceTrackerCustomizer(cls_name));  
-			tracker.open();
-			trackerList.add(tracker);
+	private void loadServices() throws CIBusException {
+		for (String  service : serviceList) {
+			try {
+				Filter filter = m_context.createFilter("(objectClass=" + service + ")");
+				ServiceTracker tracker = new ServiceTracker(m_context, filter, new BusServiceTrackerCustomizer());  
+				tracker.open();
+				trackerList.add(tracker);
+			} catch (InvalidSyntaxException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
 	private class BusServiceTrackerCustomizer implements ServiceTrackerCustomizer {
-		private String clsName;
 		
-		private BusServiceTrackerCustomizer(String clsName) {
-			this.clsName = clsName;
+		private BusServiceTrackerCustomizer() {
 		}
 
 		@Override
 		public Object addingService(ServiceReference reference) {
 			try {
-				return loadService(reference, clsName);
+				return loadService(reference);
 			} catch (CIBusException e) {
 				DebugUtil.assert_exception(e);
 				return null;
@@ -225,27 +247,34 @@ public abstract class CommonBusActivator implements BundleActivator {
 		@Override
 		public void removedService(ServiceReference reference, Object service) {
 			try {
-				unloadService(clsName, reference, service);
+				String service_name = (String) reference.getProperty(BusOsgiConstants.SERVICE_NAME);
+				String service_class_name = (String) reference.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+				unloadService(service_name, service_class_name,reference, service);
 			} catch (CIBusException e) {
 				DebugUtil.assert_exception(e);
 			}
 		}  
-        
 	}  
 
 	/*
 	 * 加载osgi注册的service
 	 */
-	private Object loadService(ServiceReference ref, String clsName) throws CIBusException {
+	private Object loadService(ServiceReference ref) throws CIBusException {
 		Object service = m_context.getService(ref);
-		String cls_name = service.getClass().getName();
-		if (cls_name.equals(LOGSERVICE_CLSNAME)) {
+		String service_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_NAME);
+		String service_class_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+		if (service_name.equals(LOG_SERVICE_NAME)) {
 			if (!logServiceProvider)
 				loadLogService(ref, service);
 		} else {
-			serviceMap.put(cls_name, new ServiceInfo(service, ref));
+			if (serviceMap.get(service_name) == null) {
+				serviceMap.put(service_name, new ArrayList<ServiceInfo>());
+			}
+			List<ServiceInfo> infoList = serviceMap.get(service_name);
+			ServiceInfo info = new ServiceInfo(service_class_name, service, ref);
+			infoList.add(info);
 		}
-		handleLoadService(clsName, ref, service);
+		handleLoadService(service_class_name, ref, service);
 		DebugUtil.assert_out("service类：" + service.getClass().getName() +", 调用者：" + this.getClass().getName());
 		return service;
 	}
@@ -253,11 +282,24 @@ public abstract class CommonBusActivator implements BundleActivator {
 	/*
 	 * 卸载osgi注册的service
 	 */
-	private void unloadService(String cls_name, ServiceReference ref, Object service) throws CIBusException {
+	private void unloadService(String service_name, String servcie_class_name, ServiceReference ref, Object service) throws CIBusException {
 		m_context.ungetService(ref);
 		ref = null;
 		service = null;
-		serviceMap.remove(cls_name);
+		if (serviceMap.get(service_name) != null) {
+			int del_index = -1;
+			for (ServiceInfo info : serviceMap.get(service_name)) {
+				if (info.equals(servcie_class_name)) {
+					break;
+				}
+				del_index++;
+			}
+			if (del_index != -1) {
+				serviceMap.get(service_name).remove(del_index);
+			}
+			if (serviceMap.get(service_name).isEmpty())
+				serviceMap.remove(service_name);
+		}
 		handleUnloadService(ref);
 	}
 
@@ -272,9 +314,13 @@ public abstract class CommonBusActivator implements BundleActivator {
 			logService = service;
 		}
 		DebugUtil.assert_out("logService : " + logService);
-		if (serviceMap.get(LOGSERVICE_CLSNAME) == null) {
+		if (serviceMap.get(LOG_SERVICE_NAME) == null) {
 			DebugUtil.assert_out("加载日志service");
-			serviceMap.put(LOGSERVICE_CLSNAME, new ServiceInfo(logService, log_ref));
+			List<ServiceInfo> logServiceList = new ArrayList<ServiceInfo>();
+			String service_name = (String) log_ref.getProperty(BusOsgiConstants.SERVICE_NAME);
+			ServiceInfo logInfo = new ServiceInfo(service_name, logService, log_ref);
+			logServiceList.add(logInfo);
+			serviceMap.put(LOG_SERVICE_NAME, logServiceList);
 		}
 	}
 
@@ -282,13 +328,19 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 * 停止注册的service
 	 */
 	private void stopAllService() throws CIBusException {
-		for (String cls_name : serviceMap.keySet()) {
-			ServiceInfo si = serviceMap.get(cls_name);
-			if (cls_name.equals(LOGSERVICE_CLSNAME)) {
-				log_ref = null;
-				logService = null;
+		for (String service_name : serviceMap.keySet()) {
+			if (serviceMap.get(service_name) != null) {
+				for (ServiceInfo info : serviceMap.get(service_name)) {
+					if (service_name.equals(LOG_SERVICE_NAME)) {
+						log_ref = null;
+						logService = null;
+					}
+					ServiceReference ref = info.ref;
+					Object service = info.service;
+					String service_class_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+					unloadService(service_name, service_class_name, ref, service);
+				}
 			}
-			unloadService(cls_name, si.ref, si.service);
 		}
 		for (ServiceTracker tracker : trackerList) {
 			tracker.close();
@@ -394,13 +446,19 @@ public abstract class CommonBusActivator implements BundleActivator {
 
 	// osgi service信息
 	private static class ServiceInfo {
+		public String className;
 		public Object service;
 		public ServiceReference ref;
 
-		public ServiceInfo(Object service, ServiceReference ref) {
+		public ServiceInfo(String className, Object service, ServiceReference ref) {
 			super();
+			this.className = className;
 			this.service = service;
 			this.ref = ref;
+		}
+		
+		public String getClassName() {
+			return className;
 		}
 
 		public Object getService() {

@@ -25,7 +25,7 @@ import com.antelope.ci.bus.server.service.ServerService;
  * @version  0.1
  * @Date	 2013-10-14		下午5:02:20 
  */
-@ServerService
+@ServerService(serviceName="com.antelope.ci.bus.server.service.AuthService")
 public class PublickeyAuthServiceImpl extends AbstractAuthService {
 	
 	public PublickeyAuthServiceImpl() {

@@ -8,15 +8,12 @@
 
 package com.antelope.ci.bus.logger;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.apache.log4j.LogManager;
 import org.osgi.framework.ServiceReference;
 
-import com.antelope.ci.bus.common.DebugUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.logger.service.BusLogServiceImpl;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
@@ -88,9 +85,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 	protected void addServices() throws CIBusException {
 		if (logService == null) {
 			logService = new BusLogServiceImpl();
-			Dictionary<String, ?> properties = new Hashtable<String, Object>();
-			m_context.registerService(LOGSERVICE_CLSNAME, logService, properties);
-			DebugUtil.assert_out("注册log4j服务");
+			BusOsgiUtil.addServiceToContext(m_context, logService, LOG_SERVICE_NAME);
 		}
 	}
 

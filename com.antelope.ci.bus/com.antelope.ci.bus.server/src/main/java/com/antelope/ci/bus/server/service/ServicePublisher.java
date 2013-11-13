@@ -16,6 +16,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 
 
 /**
@@ -57,8 +58,10 @@ public class ServicePublisher {
 						if (isReg) {
 							Class clazz = Class.forName(cls);
 							if (Service.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(ServerService.class)) {
+								ServerService ss =  (ServerService) clazz.getAnnotation(ServerService.class);
 								Service service = (Service) clazz.newInstance();
-								service.register(m_context);
+								String serviceName = ss.serviceName();
+								BusOsgiUtil.addServiceToContext(m_context, service, serviceName);
 								regList.add(cls);
 								log.info("add service :" + cls_name);
 							}
