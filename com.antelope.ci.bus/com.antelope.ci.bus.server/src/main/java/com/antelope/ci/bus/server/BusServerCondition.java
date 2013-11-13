@@ -14,25 +14,23 @@ import java.util.List;
 import java.util.Map;
 
 import com.antelope.ci.bus.server.model.User;
-import com.antelope.ci.bus.server.service.auth.AbstractAuthService;
+import com.antelope.ci.bus.server.service.AuthService;
 
 
 /**
- * TODO 描述
- *
+ * 
  * @author   blueantelope
- * @version  0.1
- * @Date	 2013-10-17		下午11:30:48 
+ * @version  0.1 * @Date	 2013-10-17		下午11:30:48 
  */
 public class BusServerCondition {
 	private Map<String, User> userMap;
 	private Class command_class;
 	private String command_className;
-	private List<AbstractAuthService> authServiceList;
+	private List<AuthService> authServiceList;
 	
 	public BusServerCondition() {
 		userMap = new HashMap<String, User>();
-		authServiceList = new ArrayList<AbstractAuthService>();
+		authServiceList = new ArrayList<AuthService>();
 	}
 	
 	// getter and setter
@@ -54,10 +52,10 @@ public class BusServerCondition {
 	public void setCommand_className(String command_className) {
 		this.command_className = command_className;
 	}
-	public List<AbstractAuthService> getAuthServiceList() {
+	public List<AuthService> getAuthServiceList() {
 		return authServiceList;
 	}
-	public void setAuthServiceList(List<AbstractAuthService> authServiceList) {
+	public void setAuthServiceList(List<AuthService> authServiceList) {
 		this.authServiceList = authServiceList;
 	}
 	
@@ -65,7 +63,7 @@ public class BusServerCondition {
 		userMap.put(user.getUsername(), user);
 	}
 	
-	public void addAuthService(AbstractAuthService authService) {
+	public void addAuthService(AuthService authService) {
 		authServiceList.add(authService);
 	}
 }

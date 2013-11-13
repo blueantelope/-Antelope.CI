@@ -88,6 +88,29 @@ public abstract class CommonBusActivator implements BundleActivator {
 		return null;
 	}
 	
+	public static Object getUsingService(String serviceName) {
+		List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+		if (infoList != null) {
+			return infoList.get(0).service;
+		}
+		
+		return null;
+	}
+	
+	public static List<Object> getServices(String serviceName) {
+		List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+		if (infoList != null) {
+			List<Object> sList = new ArrayList<Object>();
+			for (ServiceInfo info : infoList) {
+				sList.add(info.getService());
+			}
+			
+			return sList;
+		}
+		
+		return null;
+	}
+	
 	private static ServiceInfo getServiceInfo(String serviceName, String className) {
 		List<ServiceInfo> infoList =  serviceMap.get(serviceName);
 		if (infoList != null) {

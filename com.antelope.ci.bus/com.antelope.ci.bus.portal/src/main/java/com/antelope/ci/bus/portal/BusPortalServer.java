@@ -15,8 +15,6 @@ import com.antelope.ci.bus.portal.shell.BusPortalShellCommand;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerConfig;
-import com.antelope.ci.bus.server.service.auth.PasswordAuthServiceImpl;
-import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
 
 /**
@@ -39,12 +37,8 @@ public class BusPortalServer extends BusServer {
 	}
 
 	@Override
-	protected BusServerCondition attatchCondition() throws CIBusException {
-		BusServerCondition condition = new BusServerCondition();
-		condition.setCommand_class(BusPortalShellCommand.class);
-		condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
-		condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));
-		return condition;
+	protected void attatchCondition(BusServerCondition server_condition) throws CIBusException {
+		server_condition.setCommand_class(BusPortalShellCommand.class);
 	}
 
 }

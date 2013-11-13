@@ -9,19 +9,21 @@
 package com.antelope.ci.bus.server.service.auth;
 
 import java.security.PublicKey;
-import java.util.Dictionary;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.EncryptUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
 import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.model.UserKey;
 import com.antelope.ci.bus.server.model.UserPassword;
-import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.service.AuthService;
 import com.antelope.ci.bus.server.service.CommonService;
 
@@ -33,17 +35,22 @@ import com.antelope.ci.bus.server.service.CommonService;
  * @Date	 2013-10-15		下午12:55:02 
  */
 public abstract class AbstractAuthService extends CommonService implements AuthService {
-	protected static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.AuthService";
-	protected Map<String, User> userMap = new HashMap<String, User>();
+	public static final String SERVICE_AUTH_TYPE = "service.auth.type";
+	protected Map<String, User> userStore = new HashMap<String, User>();
+	protected AUTH_TYPE auth_type = null;
 	
 	public AbstractAuthService() {
-		
+		auth_type = initAuthType();
 	}
 	
 	public AbstractAuthService(Map<String, User> userMap) throws CIBusException {
 		super();
 		if (userMap != null)
-			this.userMap = userMap;
+			this.userStore = userMap;
+	}
+	
+	public void initUserStore(Map<String, User> userStore) {
+		this.userStore = userStore;
 	}
 	
 	// 得到用户信息
@@ -52,8 +59,8 @@ public abstract class AbstractAuthService extends CommonService implements AuthS
 			log.info("用户名为空!");
 			return null;
 		}
-		if (userMap.get(username) != null)
-			return userMap.get(username);
+		if (userStore.get(username) != null)
+			return userStore.get(username);
 		
 		log.info("系统上无此用户");
 		return null;
@@ -111,11 +118,17 @@ public abstract class AbstractAuthService extends CommonService implements AuthS
 	 */
 	@Override
 	public void register(BundleContext m_context) throws CIBusException {
-		Dictionary<String, ?> properties = new Hashtable<String, Object>();
-		m_context.registerService(SERVICE_NAME, this, properties);
+		List<ServiceProperty> otherList = new ArrayList<ServiceProperty>(); 
+		if (auth_type != null) {
+			otherList.add(new ServiceProperty(SERVICE_AUTH_TYPE, auth_type.getName()));
+		}
+		otherList.addAll(extendServiceProperties());
+		BusOsgiUtil.addServiceToContext(m_context, this, "com.antelope.ci.bus.server.service.AuthService", 
+				otherList.toArray(new ServiceProperty[otherList.size()]));
 	}
+
+	protected abstract AUTH_TYPE initAuthType();
 	
-	// get auth_type for this service
-	public abstract AUTH_TYPE getAuthType();
+	protected abstract List<ServiceProperty> extendServiceProperties();
 }
 

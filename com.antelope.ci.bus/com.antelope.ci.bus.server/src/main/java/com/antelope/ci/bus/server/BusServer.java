@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
@@ -19,7 +20,9 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.service.auth.AbstractAuthService;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.service.AuthService;
+import com.antelope.ci.bus.server.service.UserStoreService;
 import com.antelope.ci.bus.server.shell.BusShellFactory;
 
 
@@ -32,8 +35,9 @@ import com.antelope.ci.bus.server.shell.BusShellFactory;
  */
 public abstract class BusServer {
 	protected SshServer sshServer;
-	protected BusServerConfig config;					// server配置项
+	protected BusServerConfig config;							// server配置项
 	protected BusServerCondition condition;
+	private static final long waitForInit = 3 * 1000;		// 3 seconds
 	
 	public BusServer() throws CIBusException {
 		init();
@@ -41,8 +45,49 @@ public abstract class BusServer {
 	
 	private void init() throws CIBusException {
 		config = readConfig();
-		condition = attatchCondition();
+		condition = new BusServerCondition();
+		long start_tm = System.currentTimeMillis();
+		boolean pwd_added = false;
+		boolean key_added = false;
+		while ((System.currentTimeMillis()-start_tm) < waitForInit) {
+			if (condition.getUserMap() != null) {
+				if (pwd_added && key_added)
+					break;
+				List authServices = CommonBusActivator.getServices(AuthService.SERVICE_NAME);
+				if (authServices == null)
+					continue;
+				for (Object service : authServices) {
+					AuthService authService = (AuthService) service;
+					switch (authService.getAuthType()) {
+						case PASSWORD:
+							if (!pwd_added) {
+								authService.initUserStore(condition.getUserMap());
+								condition.addAuthService(authService);
+								pwd_added = true;
+							}
+							break;
+						case PUBLICKEY:
+							if (!key_added) {
+								authService.initUserStore(condition.getUserMap());
+								condition.addAuthService(authService);
+								key_added = true;
+							}
+							break;
+					}
+				}
+				if (pwd_added && key_added)
+					break;
+				continue;
+			}
+			
+			if (CommonBusActivator.getUsingService(AuthService.SERVICE_NAME) != null) {
+				UserStoreService userStoreService = (UserStoreService) CommonBusActivator.getUsingService(UserStoreService.SERVICE_NAME);
+				condition.setUserMap(userStoreService.getUserMap());
+			}
+		}
+		attatchCondition(condition);
 	}
+
 	
 	public void start() throws CIBusException {
 		sshServer = SshServer.setUpDefaultServer();
@@ -69,7 +114,7 @@ public abstract class BusServer {
 			throw new CIBusException("", "create shell factory error");
 		}
 		sshServer.setShellFactory(shellFactory);
-		for (AbstractAuthService authService : condition.getAuthServiceList()) {
+		for (AuthService authService : condition.getAuthServiceList()) {
 			switch (authService.getAuthType()) {
 				case PASSWORD:
 					sshServer.setPasswordAuthenticator(authService);
@@ -127,5 +172,5 @@ public abstract class BusServer {
 	/*
 	 * 加入条件变量
 	 */
-	protected abstract BusServerCondition attatchCondition() throws CIBusException;
+	protected abstract void attatchCondition(BusServerCondition server_condition) throws CIBusException;
 }

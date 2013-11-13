@@ -8,8 +8,13 @@
 
 package com.antelope.ci.bus.server.service;
 
+import java.util.Map;
+
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.PublickeyAuthenticator;
+
+import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 
 /**
  * 登录验证service
@@ -19,5 +24,9 @@ import org.apache.sshd.server.PublickeyAuthenticator;
  * @Date 2013-10-14 下午4:56:20
  */
 public interface AuthService extends PasswordAuthenticator, PublickeyAuthenticator, Service {
+	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.AuthService";
 	
+	public void initUserStore(Map<String, User> userStore);
+	
+	public abstract AUTH_TYPE getAuthType();
 }

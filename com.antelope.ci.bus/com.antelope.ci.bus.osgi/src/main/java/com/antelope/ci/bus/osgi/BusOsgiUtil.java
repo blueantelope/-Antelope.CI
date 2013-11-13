@@ -21,12 +21,43 @@ import org.osgi.framework.BundleContext;
  * @Date	 2013-11-13		上午11:33:44 
  */
 public class BusOsgiUtil {
-	public static void addServiceToContext(BundleContext m_context, Object service, String serviceName) {
+	
+	public static void addServiceToContext(BundleContext m_context, Object service, String serviceName, ServiceProperty... others) {
+		m_context.registerService(serviceName, service, initServiceProperties(serviceName, service.getClass().getName(), others));
+		System.out.println("register service : " + serviceName + ", " + service.getClass().getName());
+	}
+	
+	private static Dictionary initServiceProperties(String serviceName, String className, ServiceProperty... others) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(BusOsgiConstants.SERVICE_NAME, serviceName);
-		properties.put(BusOsgiConstants.SERVICE_CLASS_NAME, service.getClass().getName());
-		m_context.registerService(serviceName, service, properties);
-		System.out.println("register service : " + serviceName + ", " + service.getClass().getName());
+		properties.put(BusOsgiConstants.SERVICE_CLASS_NAME, className);
+		for (ServiceProperty other : others) {
+			properties.put(other.getKey(), other.getValue());
+		}
+		return properties;
+	}
+	
+	public static class ServiceProperty {
+		private String key;
+		private String value;
+		
+		public ServiceProperty(String key, String value) {
+			this.key = key;
+			this.value = value;
+		}
+		
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public String getValue() {
+			return value;
+		}
+		public void setValue(String value) {
+			this.value = value;
+		}
 	}
 }
 

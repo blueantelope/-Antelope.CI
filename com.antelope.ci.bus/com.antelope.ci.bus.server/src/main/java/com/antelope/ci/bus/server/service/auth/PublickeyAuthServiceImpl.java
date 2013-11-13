@@ -9,11 +9,13 @@
 package com.antelope.ci.bus.server.service.auth;
 
 import java.security.PublicKey;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.sshd.server.session.ServerSession;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
 import com.antelope.ci.bus.server.model.User;
 import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.service.ServerService;
@@ -64,6 +66,20 @@ public class PublickeyAuthServiceImpl extends AbstractAuthService {
 	public AUTH_TYPE getAuthType() {
 		return AUTH_TYPE.PUBLICKEY;
 	}
+
+	@Override
+	protected AUTH_TYPE initAuthType() {
+		return AUTH_TYPE.PUBLICKEY;
+	}
+
+	@Override
+	protected List<ServiceProperty> extendServiceProperties() {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
 
 }
 

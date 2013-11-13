@@ -23,9 +23,9 @@ import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.model.User;
+import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.model.UserKey;
 import com.antelope.ci.bus.server.model.UserPassword;
-import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.service.auth.PasswordAuthServiceImpl;
 import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
@@ -50,14 +50,14 @@ public class TestBusServer extends TestCase {
 			return config;
 		}
 
+
 		@Override
-		protected BusServerCondition attatchCondition() throws CIBusException {
-			BusServerCondition condition = new BusServerCondition();
-			condition.setCommand_class(TestBusShellCommand.class);
-			condition.addUser(createUser());
-			condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
-			condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));
-			return condition;
+		protected void attatchCondition(BusServerCondition server_condition)
+				throws CIBusException {
+			server_condition.setCommand_class(TestBusShellCommand.class);
+			server_condition.addUser(createUser());
+			server_condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
+			server_condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));
 		}
 		
 		private User createUser() {
@@ -119,6 +119,7 @@ public class TestBusServer extends TestCase {
 			
 			return user;
 		}
+
 		
 	}
 	

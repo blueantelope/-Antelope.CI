@@ -8,13 +8,12 @@
 
 package com.antelope.ci.bus.server.service.userstore;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.model.User;
 import com.antelope.ci.bus.server.service.CommonService;
 import com.antelope.ci.bus.server.service.ServerService;
@@ -40,9 +39,7 @@ public class FileUserStoreServiceImpl  extends CommonService implements UserStor
 
 	@Override
 	public void register(BundleContext m_context) throws CIBusException {
-		Dictionary<String, ?> properties = new Hashtable<String, Object>();
-		m_context.registerService(SERVICE_NAME, this, properties);
-		log.info("注册服务SERVICE_NAME : " + this.getClass().getName());
+		BusOsgiUtil.addServiceToContext(m_context, this, SERVICE_NAME);
 	}
 
 	/**
