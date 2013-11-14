@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portal-terminal>
+	<bannder><![CDATA[ANTELOPE CI
+	|]]></bannder>
+	
+	<top-menus extends_start="20">
+		<menu name="top.menu.dash" sort="0" />
+		<menu name="top.memu.project" sort="1" />
+		<menu name="top.menu.test" sort="2" />
+		<menu name="top.menu.device" "sort="3" />
+		<menu name="top.menu.version" "sort="4" />
+	</top-menus>
+
+</portal-terminal>

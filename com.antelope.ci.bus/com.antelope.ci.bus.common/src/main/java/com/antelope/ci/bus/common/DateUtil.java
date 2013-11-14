@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.common;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,7 +24,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-10-23		下午4:37:11 
  */
 public class DateUtil {
-	private static final String defaultDatePattern = "yyyyMMdd";						// 默认的日期样式
+	private static final String defaultDatePattern = "yyyy-MM-dd";						// 默认的日期样式
 	private static final String defaultTimePattern = "yyyy-MM-dd HH:mm:ss";		// 默认的时间样式
 	private static final String minutePattern = "yyyy-MM-dd HH:mm";				// 分钟时间样式
 	private static final String hourPattern = "yyyy-MM-dd HH";							// 小时时间样式
@@ -57,6 +58,23 @@ public class DateUtil {
 		String s2 = timeFormat.format(d2);
 		try {
 			return (int) ((timeFormat.parse(s1).getTime() - timeFormat.parse(s2).getTime()) / differ);
+		} catch (ParseException e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static Date parseDate(String date) throws CIBusException {
+		return parse(date, defaultDatePattern);
+	}
+	
+	public static Date parseTime(String time) throws CIBusException {
+		return parse(time, defaultTimePattern);
+	}
+	
+	private static Date parse(String time, String format) throws CIBusException {
+		DateFormat df = new SimpleDateFormat(format);
+		try {
+			return df.parse(time);
 		} catch (ParseException e) {
 			throw new CIBusException("", e);
 		}

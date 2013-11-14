@@ -49,10 +49,9 @@ public abstract class BusServer {
 		long start_tm = System.currentTimeMillis();
 		boolean pwd_added = false;
 		boolean key_added = false;
+		boolean userstore_added = false;
 		while ((System.currentTimeMillis()-start_tm) < waitForInit) {
-			if (condition.getUserMap() != null) {
-				if (pwd_added && key_added)
-					break;
+			if (userstore_added) {
 				List authServices = CommonBusActivator.getServices(AuthService.SERVICE_NAME);
 				if (authServices == null)
 					continue;
@@ -77,14 +76,18 @@ public abstract class BusServer {
 				}
 				if (pwd_added && key_added)
 					break;
-				continue;
-			}
-			
-			if (CommonBusActivator.getUsingService(AuthService.SERVICE_NAME) != null) {
+			} else {
 				UserStoreService userStoreService = (UserStoreService) CommonBusActivator.getUsingService(UserStoreService.SERVICE_NAME);
+				if (userStoreService == null)
+					continue;
 				condition.setUserMap(userStoreService.getUserMap());
+				userstore_added = true;
 			}
 		}
+		if (!userstore_added)
+			throw new CIBusException("", "server could not get service of user store");
+		if (!pwd_added || !key_added)
+			throw new CIBusException("", "server could not get services of auth");
 		attatchCondition(condition);
 	}
 

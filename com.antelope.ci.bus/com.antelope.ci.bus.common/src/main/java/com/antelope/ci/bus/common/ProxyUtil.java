@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-
 /**
  * 反射代理工具类
  * @author blueantelope
@@ -351,5 +350,72 @@ public class ProxyUtil {
 		} finally {
 			return ret;
 		}
+	}
+	
+	public static Object createObject(String className) throws CIBusException {
+		try {
+			return Class.forName(className).newInstance();
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static Object createObject(Class clazz, ClassLoader... loader) throws CIBusException {
+		if (loader.length == 0) {
+			try {
+				return clazz.newInstance();
+			} catch (Exception e) {
+				throw new CIBusException("", e);
+			}
+		} else {
+			try {
+				return loader[0].loadClass(clazz.getName()).newInstance();
+			} catch (Exception e) {
+				throw new CIBusException("", e);
+			}
+		} 
+	}
+	
+	public static Object convertString(Class clazz, String value) throws CIBusException {
+		if (value == null)
+			return null;
+		if (clazz.isAssignableFrom(String.class))			// String
+			return value;
+		if (clazz.isAssignableFrom(Integer.class))			// Integer
+			return Integer.valueOf(value);
+		if (clazz.isAssignableFrom(Long.class))				// Long
+			return Long.valueOf(value);
+		if (clazz.isAssignableFrom(Float.class))				// Float
+			return Float.valueOf(value);
+		if (clazz.isAssignableFrom(Double.class))			// Double
+			return Double.valueOf(value);
+		if (clazz.isAssignableFrom(Boolean.class))		// Double
+			return Boolean.valueOf(value);
+		if (clazz.isAssignableFrom(Date.class))				// Date
+			return DateUtil.parseDate(value);
+		if (clazz.isAssignableFrom(Date.class))				// Time
+			return DateUtil.parseTime(value);
+		return value;
+	}
+	
+	public static Object createObject(String className, Class superClass) throws CIBusException {
+		try {
+			Class clazz = Class.forName(className);
+			if (superClass.isAssignableFrom(clazz)) {
+				return clazz.newInstance();
+			} else {
+				throw new CIBusException("", "not support cause parent class");
+			}
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static Object createObject(String className, ClassLoader loader) throws CIBusException {
+		try {
+			return loader.loadClass(className).newInstance();
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		} 
 	}
 }

@@ -34,8 +34,7 @@ public class CIBusException extends Exception {
 	 */
 	public CIBusException(String code) {
 		super();
-		this.code = code;
-		message = suffix + code + " - " + CIBusExceptionContent.getExContent().getException(code);
+		makeMessage(code);
 	}
 	
 	/**
@@ -47,8 +46,20 @@ public class CIBusException extends Exception {
 	 */
 	public CIBusException(String code, String value) {
 		super();
-		this.code = code;
-		message = suffix + code + " - " + value;
+		makeMessage(code, value);
+	}
+	
+	private void makeMessage(String code, String... values) {
+		this.code = "undefined";
+		String tips = "";
+		if (code != null && code.length() > 0) {
+			this.code = code;
+			if (values == null || values.length == 0)
+				tips = CIBusExceptionContent.getExContent().getException(code);
+		}
+		if (values != null && values.length > 0)
+			tips = values[0];
+		message = suffix + "(" + code + ") - " + tips;
 	}
 	
 	/**
