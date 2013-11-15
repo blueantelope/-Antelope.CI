@@ -6,12 +6,15 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal;
+package com.antelope.ci.bus.portal.configuration;
+
+import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
@@ -29,9 +32,11 @@ public class BusPortalConfiguration {
 		return configuration;
 	}
 	
+	private static final String PORTAL_TERMINAL_XML= "portal_terminal.xml";
 	private static final String PORTAL_TERMINAL_RESOURCE = "com.antelope.ci.bus.portal.portal_terminal";
 	private static Logger log;
-	private ResourceReader terminalReader; 
+	private PortalTerminal terminal;
+	private ResourceReader reader; 
 	private BusPortalConfiguration() {
 		try {
 			log = CommonBusActivator.getLog4j(this.getClass());
@@ -46,10 +51,28 @@ public class BusPortalConfiguration {
 	}
 	
 	private void init() throws CIBusException {
-		terminalReader = new ResourceReader();
-		terminalReader.addResource(PORTAL_TERMINAL_RESOURCE);
+		parseXml();
+		parseProperties();
+		convert();
 	}
 	
+	private void parseXml() throws CIBusException {
+		InputStream in = BusPortalConfiguration.class.getResourceAsStream(PORTAL_TERMINAL_XML);
+		terminal = (PortalTerminal) BusXmlHelper.prase(PortalTerminal.class, in);
+	}
+	
+	private void parseProperties() throws CIBusException {
+		reader = new ResourceReader();
+		reader.addResource(PORTAL_TERMINAL_RESOURCE);
+	}
+	
+	private void convert() {
+		for (TopMenu topMenu : terminal.getTopMenus().getMenuList()) {
+			if (reader.getString(topMenu.getName()) != null) {
+				topMenu.setValue(reader.getString(topMenu.getName()));
+			}
+		}
+	}
 
 }
 

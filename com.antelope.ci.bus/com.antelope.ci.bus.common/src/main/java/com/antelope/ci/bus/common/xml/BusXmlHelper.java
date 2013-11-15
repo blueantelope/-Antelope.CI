@@ -49,7 +49,6 @@ public class BusXmlHelper {
 	
 	private static Document load(InputStream input) throws CIBusException {
 		SAXReader reader = new SAXReader();
-		Document document = null;
 		try {
 			return reader.read(input);
 		} catch (DocumentException e) {
@@ -70,21 +69,19 @@ public class BusXmlHelper {
 				query += "/" + xmlElement.name();
 				if (setter != null) {
 					if (subClass.isAnnotationPresent(XmlEntity.class) || 
-							Collection.class.isAssignableFrom(subClass)) {
-						if (xmlElement.hasChildren()) {			// 是否存在子节点
-							String className = subClass.getName();
-							if (xmlElement.isList()) {	
-								className = ArrayList.class.getName();		// 列表使用ArrayList做为属性
-							}
-							Object arg = ProxyUtil.createObject(className, loader);
-							try {
-								setter.invoke(parent, arg);		// 设置setter方法
-							} catch (Exception e) {
-								throw new CIBusException("", e);
-							}		
-							DomQuery domQuery = new DomQuery(xmlElement, arg, query);
-							domQueryList.add(domQuery);		// 放入列表中,待一个object的全部属性设置完成后，再做子节点的解析设置
+						Collection.class.isAssignableFrom(subClass)) {
+						String className = subClass.getName();
+						if (xmlElement.isList()) {	
+							className = ArrayList.class.getName();		// 列表使用ArrayList做为属性
 						}
+						Object arg = ProxyUtil.createObject(className, loader);
+						try {
+							setter.invoke(parent, arg);		// 设置setter方法
+						} catch (Exception e) {
+							throw new CIBusException("", e);
+						}		
+						DomQuery domQuery = new DomQuery(xmlElement, arg, query);
+						domQueryList.add(domQuery);		// 放入列表中,待一个object的全部属性设置完成后，再做子节点的解析设置
 					} else {
 						Element element = (Element) document.selectSingleNode(query);
 						Object arg = ProxyUtil.convertString(subClass, element.getText());
@@ -149,23 +146,21 @@ public class BusXmlHelper {
 				if (setter != null) {
 					if (subClass.isAnnotationPresent(XmlEntity.class) || 
 							Collection.class.isAssignableFrom(subClass)) {		// 返回的类型为ARXmlEntity定义类型及Colletion类型
-						if (xmlElement.hasChildren()) {			// 是否存在子节点
-							String className = subClass.getName();
-							if (xmlElement.isList()) {	
-								className = ArrayList.class.getName();		// 列表使用ArrayList做为属性
-							}
-							Object arg = ProxyUtil.createObject(className, loader);
-							try {
-								setter.invoke(parentObj, arg);		// 设置setter方法
-							} catch (Exception e) {
-								throw new CIBusException("", e);
-							}
-							List<Element> cEleList = parentEle.elements(eleName);
-							for (Element cEle : cEleList) {
-								// 放入列表中,待一个object的全部属性设置完成后，再做子节点的解析设置
-								ChildElement childElement = new ChildElement(arg, cEle, xmlElement);
-								childElementList.add(childElement);
-							}
+						String className = subClass.getName();
+						if (xmlElement.isList()) {	
+							className = ArrayList.class.getName();		// 列表使用ArrayList做为属性
+						}
+						Object arg = ProxyUtil.createObject(className, loader);
+						try {
+							setter.invoke(parentObj, arg);		// 设置setter方法
+						} catch (Exception e) {
+							throw new CIBusException("", e);
+						}
+						List<Element> cEleList = parentEle.elements(eleName);
+						for (Element cEle : cEleList) {
+							// 放入列表中,待一个object的全部属性设置完成后，再做子节点的解析设置
+							ChildElement childElement = new ChildElement(arg, cEle, xmlElement);
+							childElementList.add(childElement);
 						}
 					} else {
 						Element element = parentEle.element(eleName);

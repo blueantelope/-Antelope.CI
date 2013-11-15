@@ -37,11 +37,6 @@ public @interface XmlElement {
 	boolean necessary() default false;
 	
 	/*
-	 * 是否有子节点
-	 */
-	boolean hasChildren() default false;
-	
-	/*
 	 * 是否是个list,多个相同的element
 	 */
 	boolean isList() default false;
