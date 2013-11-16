@@ -634,9 +634,9 @@ public class CIBus {
 								File server_bundle_file = server_bundle_files[0];
 								JarBusProperty busProperty = JarBusProperty.readJarBus(server_bundle_file);
 								File[] server_lib_files = FileUtil.getChildFiles(server_dir, "lib");
-								lib_urlList = new ArrayList<URL>();
+								lib_urlList = FileUtil.getAllJar(lib_ext_dir);
 								if (server_lib_files != null && server_lib_files.length == 1) {
-									lib_urlList = FileUtil.getAllJar(server_lib_files[0].getPath());
+									lib_urlList.addAll(FileUtil.getAllJar(server_lib_files[0].getPath()));
 								}
 								attatchSysLibUrls(server_dir.getName(), lib_urlList);
 								BundleLoader loader = new BundleLoader(

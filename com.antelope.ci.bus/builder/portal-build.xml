@@ -83,6 +83,12 @@
 			</fileset>
 		</copy>
 		
+		<copy todir="${app.portal.service.bundle.lib}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.service-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
 		<copy todir="${app.portal.bundle}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.portal-${bus.version}.jar" />

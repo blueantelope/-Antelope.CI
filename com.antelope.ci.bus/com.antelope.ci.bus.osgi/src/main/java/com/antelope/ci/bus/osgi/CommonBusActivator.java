@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
@@ -53,6 +56,9 @@ public abstract class CommonBusActivator implements BundleActivator {
 	protected static Object logService = null;
 	private List<ServiceTracker> trackerList;
 	protected boolean logServiceProvider = false;
+	protected final static ReadWriteLock service_lock = new ReentrantReadWriteLock();
+	protected final static Lock service_readLock = service_lock.readLock();
+	protected final static Lock service_writeLock = service_lock.writeLock();
 
 	public CommonBusActivator() {
 		super();
@@ -89,40 +95,60 @@ public abstract class CommonBusActivator implements BundleActivator {
 	}
 	
 	public static Object getUsingService(String serviceName) {
-		List<ServiceInfo> infoList =  serviceMap.get(serviceName);
-		if (infoList != null) {
-			return infoList.get(0).service;
+		service_readLock.lock();
+		Object service = null;
+		try {
+			List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+			if (infoList != null) {
+				service = infoList.get(0).getService();
+			}
+		} catch (Exception e) {
+			
+		} finally {
+			service_readLock.unlock();
+			return service;
 		}
-		
-		return null;
 	}
 	
 	public static List<Object> getServices(String serviceName) {
-		List<ServiceInfo> infoList =  serviceMap.get(serviceName);
-		if (infoList != null) {
-			List<Object> sList = new ArrayList<Object>();
-			for (ServiceInfo info : infoList) {
-				sList.add(info.getService());
+		service_readLock.lock();
+		List<Object> sList = null;
+		try {
+			List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+			if (infoList != null) {
+				sList = new ArrayList<Object>();
+				for (ServiceInfo info : infoList) {
+					sList.add(info.getService());
+				}
+				
 			}
+		} catch (Exception e) {
 			
+		} finally {
+			service_readLock.unlock();
 			return sList;
 		}
-		
-		return null;
 	}
 	
 	private static ServiceInfo getServiceInfo(String serviceName, String className) {
-		List<ServiceInfo> infoList =  serviceMap.get(serviceName);
-		if (infoList != null) {
-			for (ServiceInfo info : infoList) {
-				if (info.className.equals(className));
-						return info;
+		service_readLock.lock();
+		ServiceInfo serviceInfo = null;
+		try {
+			List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+			if (infoList != null) {
+				for (ServiceInfo info : infoList) {
+					if (info.className.equals(className)) {
+						serviceInfo = info;
+						break;
+					}
+				}
 			}
+		} catch (Exception e) {
 			
-			return null;
+		} finally {
+			service_readLock.unlock();
+			return serviceInfo;
 		}
-		
-		return null;
 	}
 
 	protected URL getResource(String name) {
@@ -290,12 +316,19 @@ public abstract class CommonBusActivator implements BundleActivator {
 			if (!logServiceProvider)
 				loadLogService(ref, service);
 		} else {
-			if (serviceMap.get(service_name) == null) {
-				serviceMap.put(service_name, new ArrayList<ServiceInfo>());
+			service_writeLock.lock();
+			try {
+				if (serviceMap.get(service_name) == null) {
+					serviceMap.put(service_name, new ArrayList<ServiceInfo>());
+				}
+				List<ServiceInfo> infoList = serviceMap.get(service_name);
+				ServiceInfo info = new ServiceInfo(service_class_name, service, ref);
+				infoList.add(info);
+			} catch (Exception e) {
+				
+			} finally {
+				service_writeLock.unlock();
 			}
-			List<ServiceInfo> infoList = serviceMap.get(service_name);
-			ServiceInfo info = new ServiceInfo(service_class_name, service, ref);
-			infoList.add(info);
 		}
 		handleLoadService(service_class_name, ref, service);
 		DebugUtil.assert_out("service类：" + service.getClass().getName() +", 调用者：" + this.getClass().getName());
@@ -310,18 +343,25 @@ public abstract class CommonBusActivator implements BundleActivator {
 		ref = null;
 		service = null;
 		if (serviceMap.get(service_name) != null) {
-			int del_index = -1;
-			for (ServiceInfo info : serviceMap.get(service_name)) {
-				if (info.equals(servcie_class_name)) {
-					break;
+			service_writeLock.lock();
+			try {
+				int del_index = -1;
+				for (ServiceInfo info : serviceMap.get(service_name)) {
+					if (info.equals(servcie_class_name)) {
+						break;
+					}
+					del_index++;
 				}
-				del_index++;
+				if (del_index != -1) {
+					serviceMap.get(service_name).remove(del_index);
+				}
+				if (serviceMap.get(service_name).isEmpty())
+					serviceMap.remove(service_name);
+			} catch (Exception e) {
+				
+			} finally {
+				service_writeLock.unlock();
 			}
-			if (del_index != -1) {
-				serviceMap.get(service_name).remove(del_index);
-			}
-			if (serviceMap.get(service_name).isEmpty())
-				serviceMap.remove(service_name);
 		}
 		handleUnloadService(ref);
 	}
@@ -339,11 +379,13 @@ public abstract class CommonBusActivator implements BundleActivator {
 		DebugUtil.assert_out("logService : " + logService);
 		if (serviceMap.get(LOG_SERVICE_NAME) == null) {
 			DebugUtil.assert_out("加载日志service");
+			service_writeLock.lock();
 			List<ServiceInfo> logServiceList = new ArrayList<ServiceInfo>();
 			String service_name = (String) log_ref.getProperty(BusOsgiConstants.SERVICE_NAME);
 			ServiceInfo logInfo = new ServiceInfo(service_name, logService, log_ref);
 			logServiceList.add(logInfo);
 			serviceMap.put(LOG_SERVICE_NAME, logServiceList);
+			service_writeLock.unlock();
 		}
 	}
 
@@ -351,19 +393,26 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 * 停止注册的service
 	 */
 	private void stopAllService() throws CIBusException {
-		for (String service_name : serviceMap.keySet()) {
-			if (serviceMap.get(service_name) != null) {
-				for (ServiceInfo info : serviceMap.get(service_name)) {
-					if (service_name.equals(LOG_SERVICE_NAME)) {
-						log_ref = null;
-						logService = null;
+		service_writeLock.lock();
+		try {
+			for (String service_name : serviceMap.keySet()) {
+				if (serviceMap.get(service_name) != null) {
+					for (ServiceInfo info : serviceMap.get(service_name)) {
+						if (service_name.equals(LOG_SERVICE_NAME)) {
+							log_ref = null;
+							logService = null;
+						}
+						ServiceReference ref = info.ref;
+						Object service = info.service;
+						String service_class_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+						unloadService(service_name, service_class_name, ref, service);
 					}
-					ServiceReference ref = info.ref;
-					Object service = info.service;
-					String service_class_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
-					unloadService(service_name, service_class_name, ref, service);
 				}
 			}
+		} catch (Exception e) {
+			
+		} finally {
+			service_writeLock.unlock();
 		}
 		for (ServiceTracker tracker : trackerList) {
 			tracker.close();
