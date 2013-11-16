@@ -10,6 +10,7 @@ package com.antelope.ci.bus.common;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -226,6 +227,26 @@ public class FileUtil {
 				}
 			}
 		}
+	}
+	
+	public static File[] getChildFiles(File root, final String filename) {
+		return root.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(filename);
+			}
+			
+		});
+	}
+	
+	public static String[] getChildFilenames(File root, final String filename) {
+		return root.list(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(filename);
+			}
+			
+		});
 	}
 	
 	/*

@@ -29,6 +29,16 @@
 		</dependency>
 		<dependency>
 			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.service</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.model.user</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
 			<artifactId>com.antelope.ci.bus.server</artifactId>
 			<version>0.1.0</version>
 		</dependency>

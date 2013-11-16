@@ -7,8 +7,10 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="model.user.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="service.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
@@ -20,8 +22,10 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="model.user.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="service.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
@@ -40,6 +44,9 @@
 			<fileset dir="${target.depends}">
 				<include name="log4j*.jar" />
 				<include name="slf4j*.jar" />
+				<include name="jaxen*.jar" />
+				<include name="dom4j*.jar" />
+				<include name="xml-apis*.jar" />
 				<include name="com.antelope.ci.bus.common-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.osgi-${bus.version}.jar" />
 			</fileset>
@@ -64,20 +71,17 @@
 			</fileset>
 		</copy>
 		
-		<copy todir="${app.portal.system.ext}">
+		<copy todir="${app.portal.server.bundle.lib}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.model.user-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<copy todir="${app.portal.server.bundle.service}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
 			</fileset>
 		</copy>
-
-		<!--
-		<copy todir="${app.portal.server.bundle.lib}">
-			<fileset dir="${target.depends}">
-				<include name="mina*.jar" />
-				<include name="sshd*.jar" />
-			</fileset>
-		</copy>
-		-->
 		
 		<copy todir="${app.portal.bundle}">
 			<fileset dir="${target.depends}">
@@ -85,22 +89,13 @@
 			</fileset>
 		</copy>
 		
-		<!--
-		<copy todir="${app.portal.bundle.lib}">
-			<fileset dir="${target.depends}">
-				<include name="mina*.jar" />
-				<include name="sshd*.jar" />
-			</fileset>
-		</copy>
-		-->
-		
 		<copy todir="${app.portal.system.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
-
+		
 		<copy todir="${app.portal.etc}">
 			<fileset dir="${prj.bus.etc}" />
 		</copy>
@@ -119,6 +114,10 @@
 		<mkdir dir="${app.portal.system.ext}" />
 		<mkdir dir="${app.portal.server.bundle}" />
 		<mkdir dir="${app.portal.server.bundle.lib}" />
+		<mkdir dir="${app.portal.server.bundle.service}" />
+		<mkdir dir="${app.portal.service.bundle}" />
+		<mkdir dir="${app.portal.service.bundle.lib}" />
+		<mkdir dir="${app.portal.service.bundle.service}" />
 		<mkdir dir="${app.portal.bundle}" />
 		<mkdir dir="${app.portal.bundle.lib}" />
 		<mkdir dir="${app.portal.lib}" />

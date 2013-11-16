@@ -10,9 +10,11 @@ package com.antelope.ci.bus.server.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.ClassFinder;
@@ -27,7 +29,7 @@ import com.antelope.ci.bus.osgi.BusOsgiUtil;
  */
 public class ServicePublisher {
 	private static final Logger log = Logger.getLogger(ServicePublisher.class);
-	private static List<String> serviceList = new ArrayList<String>();
+	private static List<String> serviceList = new Vector<String>();
 
 	public static void publish(BundleContext m_context) {
 		new ServicePublishHook(m_context).start();

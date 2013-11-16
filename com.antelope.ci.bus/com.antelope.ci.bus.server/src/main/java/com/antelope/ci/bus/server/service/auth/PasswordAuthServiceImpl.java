@@ -15,9 +15,9 @@ import java.util.Map;
 import org.apache.sshd.server.session.ServerSession;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.model.user.User;
+import com.antelope.ci.bus.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
-import com.antelope.ci.bus.server.model.User;
-import com.antelope.ci.bus.server.model.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.service.ServerService;
 
 

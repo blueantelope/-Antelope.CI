@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.model;
+package com.antelope.ci.bus.model.user;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
