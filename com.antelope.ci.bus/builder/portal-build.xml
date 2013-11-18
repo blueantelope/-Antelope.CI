@@ -12,6 +12,10 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.target.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.version.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
 		<antcall target="make" />
@@ -27,6 +31,10 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.target.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.version.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
 		<antcall target="make" />
@@ -95,6 +103,15 @@
 			</fileset>
 		</copy>
 		
+		<copy todir="${app.portal.bundle.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.portal.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.portal.usecase-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.portal.target-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.portal.version-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
 		<copy todir="${app.portal.system.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
@@ -126,6 +143,7 @@
 		<mkdir dir="${app.portal.service.bundle.service}" />
 		<mkdir dir="${app.portal.bundle}" />
 		<mkdir dir="${app.portal.bundle.lib}" />
+		<mkdir dir="${app.portal.bundle.part}" />
 		<mkdir dir="${app.portal.lib}" />
 		<mkdir dir="${app.portal.lib.ext}" />
 		<mkdir dir="${app.portal.plugin}" />

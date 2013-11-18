@@ -137,6 +137,7 @@ public class CIBus {
 	private static String system_ext_dir; // osgi系统扩展包目录
 	private static String system_ext_server_dir;
 	private static String system_ext_service_dir;
+	private static String system_ext_protal_dir;
 	private static String lib_dir; // 系统jar目录
 	private static String lib_ext_dir; // 系统扩展jar目录
 	private static String cache_dir; // 运行时缓存目录
@@ -273,6 +274,8 @@ public class CIBus {
 		System.setProperty(BusConstants.SYSTEM_EXT_SERVER_DIR, system_ext_server_dir);
 		system_ext_service_dir = system_ext_dir + File.separator + BusConstants.SYSTEM_EXT_SERVICE_DIRNAME;
 		System.setProperty(BusConstants.SYSTEM_EXT_SERVICE_DIR, system_ext_service_dir);
+		system_ext_protal_dir = system_ext_dir + File.separator + BusConstants.SYSTEM_EXT_PORTAL_DIRNAME;
+		System.setProperty(BusConstants.SYSTEM_EXT_PORTAL_DIR, system_ext_protal_dir);
 		plugin_dir = bus_home + File.separator + "plugin";
 		System.setProperty(BusConstants.PLUGIN_DIR, plugin_dir);
 		lib_dir = bus_home + File.separator + "lib";
@@ -516,6 +519,8 @@ public class CIBus {
 				loadSystemBundle(system_ext_dir, 4)); // com.antelope.ci.bus.server支持
 		loaderList.addAll(
 				loadSystemBundle(system_ext_dir, 5)); // com.antelope.ci.bus.service支持
+		loaderList.addAll(
+				loadSystemBundle(system_ext_dir, 6)); // com.antelope.ci.bus.portal支持
 		Collections.sort(loaderList, new Comparator() {
 			@Override
 			public int compare(Object o1, Object o2) {
@@ -588,6 +593,7 @@ public class CIBus {
 							if (systemExtDir.isDirectory() 
 									&& !BusConstants.SYSTEM_EXT_SERVER_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
 									&& !BusConstants.SYSTEM_EXT_SERVICE_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
+									&& !BusConstants.SYSTEM_EXT_PORTAL_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
 									) {
 								for (File extBundle : systemExtDir.listFiles()) {
 									if (extBundle.isFile()
@@ -625,53 +631,77 @@ public class CIBus {
 					break;
 					
 				case 4:		// com.antelope.ci.bus.server
-					File[] server_files = FileUtil.getChildFiles(root, BusConstants.SYSTEM_EXT_SERVER_DIRNAME);
-					if (server_files != null && server_files.length == 1) {
-						try {
-							File server_dir = server_files[0];
-							File[] server_bundle_files = FileUtil.getChildFiles(server_dir, ".jar");
-							if (server_bundle_files != null && server_bundle_files.length == 1) {
-								File server_bundle_file = server_bundle_files[0];
-								JarBusProperty busProperty = JarBusProperty.readJarBus(server_bundle_file);
-								File[] server_lib_files = FileUtil.getChildFiles(server_dir, "lib");
-								lib_urlList = FileUtil.getAllJar(lib_ext_dir);
-								if (server_lib_files != null && server_lib_files.length == 1) {
-									lib_urlList.addAll(FileUtil.getAllJar(server_lib_files[0].getPath()));
-								}
-								attatchSysLibUrls(server_dir.getName(), lib_urlList);
-								BundleLoader loader = new BundleLoader(
-										context, server_bundle_file, startLevel,
-										busProperty.getStartLevel(),
-										busProperty.getLoad(), lib_urlList);
-								loaderList.add(loader);
-								
-								File[] server_service_files = FileUtil.getChildFiles(server_dir, "service");
-								if (server_service_files != null && server_service_files.length == 1) {
-									for (File server_service_file : server_service_files[0].listFiles()) {
-										if (server_service_file.getName().endsWith(".jar")) {
-											busProperty = JarBusProperty.readJarBus(server_service_file);
-											loader = new BundleLoader(
-													context, server_service_file, startLevel,
-													busProperty.getStartLevel(),
-													busProperty.getLoad(), new ArrayList<URL>());
-											loaderList.add(loader);
-										}
-									}
-								}
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
+					loadContaintFragments(context, startLevel, loaderList, 
+							root, BusConstants.SYSTEM_EXT_SERVER_DIRNAME, "service");
 					break;
 				case 5:		// com.antelope.ci.bus.service
 					
+					break;
+				case 6:		// com.antelope.ci.bus.portal
+					loadContaintFragments(context, startLevel, loaderList, 
+							root, BusConstants.SYSTEM_EXT_PORTAL_DIRNAME, "part");
 					break;
 				}
 			}
 		}
 		
 		return loaderList;
+	}
+	
+	private void loadContaintFragments(BundleContext context, StartLevel startLevel, 
+			List<BundleLoader> loaderList, File root, String dirname, String fragmentdir) {
+		File[] bundle_files = FileUtil.getChildFiles(root, dirname);
+		if (bundle_files != null && bundle_files.length == 1) {
+			try {
+				File bundle_dir = bundle_files[0];
+				File[] bundle_jar_files = FileUtil.getChildFiles(bundle_dir, ".jar");
+				if (bundle_jar_files != null && bundle_jar_files.length == 1) {
+					File bundle_jar_file = bundle_jar_files[0];
+					File[] server_lib_files = FileUtil.getChildFiles(bundle_dir, "lib");
+					List<URL> lib_urlList = FileUtil.getAllJar(lib_ext_dir);
+					if (server_lib_files != null && server_lib_files.length == 1) {
+						lib_urlList.addAll(FileUtil.getAllJar(server_lib_files[0].getPath()));
+					}
+					attatchSysLibUrls(bundle_dir.getName(), lib_urlList);
+					
+					File[] fragment_files = FileUtil.getChildFiles(bundle_dir, fragmentdir);
+					if (fragment_files != null && fragment_files.length == 1) {
+						for (File fragment_file : fragment_files[0].listFiles()) {
+							 if (fragment_file.isDirectory()) {
+								 for (File fragment : fragment_file.listFiles()) {
+									 if (fragment.isDirectory() && "lib".equalsIgnoreCase(fragment.getName())) {
+										 lib_urlList.addAll(FileUtil.getAllJar(fragment.getPath()));
+									 } else if (fragment.getName().endsWith(".jar")) {
+										 	JarBusProperty busProperty = JarBusProperty.readJarBus(fragment);
+											BundleLoader loader = new BundleLoader(
+													context, fragment, startLevel,
+													busProperty.getStartLevel(),
+													busProperty.getLoad(), new ArrayList<URL>());
+											loaderList.add(loader);
+									}
+								 }
+							} else if (fragment_file.getName().endsWith(".jar")) {
+								JarBusProperty busProperty = JarBusProperty.readJarBus(fragment_file);
+								BundleLoader loader = new BundleLoader(
+										context, fragment_file, startLevel,
+										busProperty.getStartLevel(),
+										busProperty.getLoad(), new ArrayList<URL>());
+								loaderList.add(loader);
+							}
+						}
+					}
+					
+					JarBusProperty busProperty = JarBusProperty.readJarBus(bundle_jar_file);
+					BundleLoader loader = new BundleLoader(
+							context, bundle_jar_file, startLevel,
+							busProperty.getStartLevel(),
+							busProperty.getLoad(), lib_urlList);
+					loaderList.add(loader);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private void attatchSysLibUrls(String filename, List<URL> urlList) {

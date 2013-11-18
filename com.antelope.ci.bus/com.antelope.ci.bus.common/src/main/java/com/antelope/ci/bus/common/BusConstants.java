@@ -35,6 +35,9 @@ public class BusConstants {
 	/* osgi system启动扩展包service目录 */
 	public static final String SYSTEM_EXT_SERVICE_DIR	= "antelope.ci.bus.system.ext.service.dir";
 	public final static String SYSTEM_EXT_SERVICE_DIRNAME 	= "com.antelope.ci.bus.service";
+	/* osgi system启动扩展包portal目录 */
+	public static final String SYSTEM_EXT_PORTAL_DIR		= "antelope.ci.bus.system.ext.portal.dir";
+	public final static String SYSTEM_EXT_PORTAL_DIRNAME 	= "com.antelope.ci.bus.portal";
 	/* 系统jar目录 */
 	public static final String LIB_DIR							= "lantelope.ci.bus.ib.dir";
 	/* 系统扩展jar目录 */

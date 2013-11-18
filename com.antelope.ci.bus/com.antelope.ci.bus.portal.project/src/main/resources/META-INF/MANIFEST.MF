@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: com.antelope.ci.bus.portal.project
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.portal.project
+Fragment-Host: com.antelope.ci.bus.portal; bundle-version="0.1.0"
+Bundle-Vendor: blueantelope@gmail.com

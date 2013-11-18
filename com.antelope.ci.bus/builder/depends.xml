@@ -53,6 +53,26 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.portal.project</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.portal.usecase</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.portal.target</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus</groupId>
+			<artifactId>com.antelope.ci.bus.portal.version</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.bundlerepository</artifactId>
 			<version>1.6.6</version>

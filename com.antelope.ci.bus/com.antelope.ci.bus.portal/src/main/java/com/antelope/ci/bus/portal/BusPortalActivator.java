@@ -11,6 +11,7 @@ package com.antelope.ci.bus.portal;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.entrance.EntranceManager;
 import com.antelope.ci.bus.server.BusCommonServerActivator;
 
 
@@ -32,6 +33,11 @@ public class BusPortalActivator extends BusCommonServerActivator {
 		log4j.info("启动portal");
 		server = new BusPortalServer();
 		server.start();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
+		EntranceManager.monitor(m_context);
 	}
 
 	/**

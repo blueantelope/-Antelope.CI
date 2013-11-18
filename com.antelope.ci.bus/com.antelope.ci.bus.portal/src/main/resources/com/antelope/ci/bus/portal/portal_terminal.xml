@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portal-terminal>
-	<bannder><![CDATA[ANTELOPE CI
-	|]]></bannder>
+	<bannder><![CDATA[ANTELOPE CI]></bannder>
 	
 	<top-menus extends_start="20">
 		<top-menu name="top.menu.dash" sort="0" />
