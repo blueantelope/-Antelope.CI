@@ -35,7 +35,7 @@ public class BusPortalConfiguration {
 	private static final String PORTAL_TERMINAL_XML= "portal_terminal.xml";
 	private static final String PORTAL_TERMINAL_RESOURCE = "com.antelope.ci.bus.portal.portal_terminal";
 	private static Logger log;
-	private PortalTerminal terminal;
+	private Portal terminal;
 	private ResourceReader reader; 
 	private BusPortalConfiguration() {
 		try {
@@ -58,7 +58,7 @@ public class BusPortalConfiguration {
 	
 	private void parseXml() throws CIBusException {
 		InputStream in = BusPortalConfiguration.class.getResourceAsStream(PORTAL_TERMINAL_XML);
-		terminal = (PortalTerminal) BusXmlHelper.prase(PortalTerminal.class, in);
+		terminal = (Portal) BusXmlHelper.parse(Portal.class, in);
 	}
 	
 	private void parseProperties() throws CIBusException {

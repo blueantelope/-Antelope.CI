@@ -24,14 +24,13 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * TODO 描述
- *
+ * xml operation helper
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-14		上午11:43:43 
  */
 public class BusXmlHelper {
-	public static Object prase(Class<?> clazz, InputStream input) throws CIBusException {
+	public static Object parse(Class<?> clazz, InputStream input) throws CIBusException {
 		Object o = null;
 		if (clazz.isAnnotationPresent(XmlEntity.class)) {
 			Document document = load(input);

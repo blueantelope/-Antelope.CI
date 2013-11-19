@@ -38,7 +38,7 @@ public class TestParseXml extends TestCase {
 	@Test
 	public void test() {
 		try {
-			PortalTerminal pt = (PortalTerminal) BusXmlHelper.prase(PortalTerminal.class, xml_in);
+			PortalTerminal pt = (PortalTerminal) BusXmlHelper.parse(PortalTerminal.class, xml_in);
 			System.out.println(pt.toString());
 		} catch (CIBusException e) {
 			

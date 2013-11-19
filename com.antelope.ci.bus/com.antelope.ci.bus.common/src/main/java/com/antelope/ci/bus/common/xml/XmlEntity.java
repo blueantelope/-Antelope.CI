@@ -30,11 +30,6 @@ public @interface XmlEntity {
 	 * 名称
 	 */
 	String name();			
-	
-	/*
-	 * 是否根节点
-	 */
-	boolean root() default false;
 }
 
 

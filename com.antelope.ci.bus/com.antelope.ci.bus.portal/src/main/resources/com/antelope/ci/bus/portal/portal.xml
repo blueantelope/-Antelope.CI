@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<portal-terminal>
-	<bannder><![CDATA[ANTELOPE CI]></bannder>
+<portal>
+	<banner><![CDATA[ANTELOPE CI]]></banner>
 	
 	<top-menus extends_start="20">
 		<top-menu name="top.menu.dash" sort="0" />
@@ -10,4 +10,4 @@
 		<top-menu name="top.menu.version" sort="4" />
 	</top-menus>
 
-</portal-terminal>
+</portal>

@@ -8,6 +8,12 @@
 
 package com.antelope.ci.bus.portal.entrance;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 /**
  * TODO 描述
@@ -16,6 +22,9 @@ package com.antelope.ci.bus.portal.entrance;
  * @version  0.1
  * @Date	 2013-11-18		下午10:18:42 
  */
+@Target(ElementType.TYPE)   
+@Retention(RetentionPolicy.RUNTIME)  
+@Documented
 public @interface PortalEntrance {
 
 }

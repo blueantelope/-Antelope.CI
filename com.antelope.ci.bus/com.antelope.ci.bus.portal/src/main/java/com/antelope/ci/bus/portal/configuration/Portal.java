@@ -20,8 +20,8 @@ import com.antelope.ci.bus.common.xml.test.Banner;
  * @version  0.1
  * @Date	 2013-11-15		下午5:54:11 
  */
-@XmlEntity(name="portal-terminal", root=true)
-public class PortalTerminal {
+@XmlEntity(name="portal")
+public class Portal {
 	private Banner banner;
 	private TopMenus topMenus;
 	

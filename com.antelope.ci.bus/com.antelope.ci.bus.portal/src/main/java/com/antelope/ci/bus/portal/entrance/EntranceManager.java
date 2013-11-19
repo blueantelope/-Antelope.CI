@@ -51,6 +51,9 @@ public class EntranceManager {
 							m_context.getBundle().adapt(BundleWiring.class).getClassLoader());
 					unmount(classList);
 					mount(classList);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) { }
 				} catch (Exception e) {
 					log.error(e);
 				}
