@@ -21,7 +21,7 @@ import com.antelope.ci.bus.common.xml.test.Banner;
  * @Date	 2013-11-15		下午5:54:11 
  */
 @XmlEntity(name="portal")
-public class Portal {
+public class Configuration {
 	private Banner banner;
 	private TopMenus topMenus;
 	

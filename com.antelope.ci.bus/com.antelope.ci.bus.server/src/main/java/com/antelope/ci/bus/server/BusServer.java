@@ -43,7 +43,7 @@ public abstract class BusServer {
 		init();
 	}
 	
-	private void init() throws CIBusException {
+	protected void init() throws CIBusException {
 		config = readConfig();
 		condition = new BusServerCondition();
 		long start_tm = System.currentTimeMillis();

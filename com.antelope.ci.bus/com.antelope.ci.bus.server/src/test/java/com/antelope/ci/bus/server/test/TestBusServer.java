@@ -42,6 +42,13 @@ public class TestBusServer extends TestCase {
 		public MyBusServer() throws CIBusException {
 			super();
 		}
+		
+		@Override
+		protected void init() throws CIBusException {
+			config = readConfig();
+			condition = new BusServerCondition();
+			attatchCondition(condition);
+		}
 
 		@Override
 		protected BusServerConfig readConfig() throws CIBusException {

@@ -25,19 +25,19 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @version  0.1
  * @Date	 2013-11-14		上午11:15:09 
  */
-public class BusPortalConfiguration {
-	private static final BusPortalConfiguration configuration = new BusPortalConfiguration();
+public class BusPortalConfigurationHelper {
+	private static final BusPortalConfigurationHelper helper = new BusPortalConfigurationHelper();
 	
-	public final BusPortalConfiguration getConfiguration() {
-		return configuration;
+	public final static BusPortalConfigurationHelper getHelper() {
+		return helper;
 	}
 	
 	private static final String PORTAL_TERMINAL_XML= "portal_terminal.xml";
 	private static final String PORTAL_TERMINAL_RESOURCE = "com.antelope.ci.bus.portal.portal_terminal";
 	private static Logger log;
-	private Portal terminal;
+	private Configuration configutation;
 	private ResourceReader reader; 
-	private BusPortalConfiguration() {
+	private BusPortalConfigurationHelper() {
 		try {
 			log = CommonBusActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
@@ -56,9 +56,13 @@ public class BusPortalConfiguration {
 		convert();
 	}
 	
-	private void parseXml() throws CIBusException {
-		InputStream in = BusPortalConfiguration.class.getResourceAsStream(PORTAL_TERMINAL_XML);
-		terminal = (Portal) BusXmlHelper.parse(Portal.class, in);
+	public void parseXml() throws CIBusException {
+		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_TERMINAL_XML);
+		configutation = (Configuration) BusXmlHelper.parse(Configuration.class, in);
+	}
+	
+	public Configuration getConfiguration() {
+		return configutation;
 	}
 	
 	private void parseProperties() throws CIBusException {
@@ -67,7 +71,7 @@ public class BusPortalConfiguration {
 	}
 	
 	private void convert() {
-		for (TopMenu topMenu : terminal.getTopMenus().getMenuList()) {
+		for (TopMenu topMenu : configutation.getTopMenus().getMenuList()) {
 			if (reader.getString(topMenu.getName()) != null) {
 				topMenu.setValue(reader.getString(topMenu.getName()));
 			}

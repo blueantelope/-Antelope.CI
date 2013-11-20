@@ -8,7 +8,10 @@
 
 package com.antelope.ci.bus.portal.shell;
 
+import java.io.IOException;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
@@ -21,6 +24,7 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @Date	 2013-10-29		下午9:15:32 
  */
 public class BusPortalShell extends BusShell {
+	private BusPortalConfigurationHelper configurationHelper;
 
 	public BusPortalShell(BusShellSession session) {
 		super(session);
@@ -28,15 +32,13 @@ public class BusPortalShell extends BusShell {
 
 	@Override
 	protected void custom() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		configurationHelper = BusPortalConfigurationHelper.getHelper();
+		configurationHelper.parseXml();
 	}
 
 	@Override
 	protected void show() throws CIBusException {
-		
-		// TODO Auto-generated method stub
+		showBanner();
 		
 	}
 
@@ -45,6 +47,13 @@ public class BusPortalShell extends BusShell {
 		
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void showBanner() {
+		try {
+			io.println(configurationHelper.getConfiguration().getBanner().getText());
+		} catch (IOException e) {
+		}
 	}
 
 }
