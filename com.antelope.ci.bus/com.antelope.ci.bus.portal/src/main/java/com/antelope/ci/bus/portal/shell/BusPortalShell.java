@@ -33,7 +33,7 @@ public class BusPortalShell extends BusShell {
 	@Override
 	protected void custom() throws CIBusException {
 		configurationHelper = BusPortalConfigurationHelper.getHelper();
-		configurationHelper.parseXml();
+		configurationHelper.init();
 	}
 
 	@Override
@@ -50,10 +50,7 @@ public class BusPortalShell extends BusShell {
 	}
 	
 	private void showBanner() {
-		try {
-			io.println(configurationHelper.getConfiguration().getBanner().getText());
-		} catch (IOException e) {
-		}
+		println(configurationHelper.getConfiguration().getBanner().getText());
 	}
 
 }

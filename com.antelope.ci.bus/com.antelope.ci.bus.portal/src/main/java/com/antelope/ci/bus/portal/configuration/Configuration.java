@@ -10,7 +10,6 @@ package com.antelope.ci.bus.portal.configuration;
 
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
-import com.antelope.ci.bus.common.xml.test.Banner;
 
 
 /**

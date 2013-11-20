@@ -32,8 +32,8 @@ public class BusPortalConfigurationHelper {
 		return helper;
 	}
 	
-	private static final String PORTAL_TERMINAL_XML= "portal_terminal.xml";
-	private static final String PORTAL_TERMINAL_RESOURCE = "com.antelope.ci.bus.portal.portal_terminal";
+	private static final String PORTAL_XML= "portal.xml";
+	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.configuration.portal";
 	private static Logger log;
 	private Configuration configutation;
 	private ResourceReader reader; 
@@ -43,31 +43,22 @@ public class BusPortalConfigurationHelper {
 		} catch (CIBusException e) {
 			e.printStackTrace();
 		} 
-		try {
-			init();
-		} catch (CIBusException e) {
-			
-		}
 	}
 	
-	private void init() throws CIBusException {
+	public void init() throws CIBusException {
 		parseXml();
 		parseProperties();
 		convert();
 	}
 	
-	public void parseXml() throws CIBusException {
-		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_TERMINAL_XML);
+	private void parseXml() throws CIBusException {
+		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_XML);
 		configutation = (Configuration) BusXmlHelper.parse(Configuration.class, in);
-	}
-	
-	public Configuration getConfiguration() {
-		return configutation;
 	}
 	
 	private void parseProperties() throws CIBusException {
 		reader = new ResourceReader();
-		reader.addResource(PORTAL_TERMINAL_RESOURCE);
+		reader.addResource(PORTAL_RESOURCE);
 	}
 	
 	private void convert() {
@@ -78,5 +69,8 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 
+	public Configuration getConfiguration() {
+		return configutation;
+	}
 }
 

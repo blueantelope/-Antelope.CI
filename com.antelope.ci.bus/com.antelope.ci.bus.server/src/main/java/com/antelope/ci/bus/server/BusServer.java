@@ -11,10 +11,16 @@ package com.antelope.ci.bus.server;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.sshd.SshServer;
+import org.apache.sshd.common.Channel;
+import org.apache.sshd.common.NamedFactory;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
+import org.apache.sshd.server.Environment;
+import org.apache.sshd.server.channel.ChannelDirectTcpip;
+import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 
 import com.antelope.ci.bus.common.BusConstants;
@@ -94,6 +100,9 @@ public abstract class BusServer {
 	
 	public void start() throws CIBusException {
 		sshServer = SshServer.setUpDefaultServer();
+		sshServer.setChannelFactories(Arrays.<NamedFactory<Channel>>asList(
+                new BusServerChannelSession.Factory(),
+                new ChannelDirectTcpip.Factory()));
 		sshServer.setPort(config.getPort());
 		String key_path;
 		switch (config.getKt()) {
@@ -166,6 +175,17 @@ public abstract class BusServer {
 		
 		return key_path;
 	}
+	
+	protected static class BusServerChannelSession extends ChannelSession {
+		public int getWidth() {
+			return Integer.valueOf(super.getEnvironment().getEnv().get(Environment.ENV_COLUMNS));
+		}
+		
+		public int getHeight() {
+			return Integer.valueOf(super.getEnvironment().getEnv().get(Environment.ENV_LINES));
+		}
+	}
+
 	
 	/*
 	 * 读取服务配置

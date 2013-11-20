@@ -62,8 +62,12 @@ public abstract class BusShell {
 		custom();
 	}
 
-	protected void println(String text) throws IOException {
-		io.println(text);
+	protected void println(String text) {
+		try {
+			io.println(text);
+		} catch (IOException e) {
+			
+		}
 	}
 
 	protected void print(String text) throws IOException {
