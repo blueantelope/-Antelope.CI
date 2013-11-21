@@ -97,5 +97,13 @@ public class JarResourceReader extends BasicConfigrationReader {
 		
 	}
 
+	@Override
+	public void addResource(String resource, ClassLoader classLoader)
+			throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 

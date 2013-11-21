@@ -87,5 +87,17 @@ public class URLResourceReader extends BasicConfigrationReader {
 		
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, java.lang.ClassLoader)
+	 */
+	@Override
+	public void addResource(String resource, ClassLoader classLoader) throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 

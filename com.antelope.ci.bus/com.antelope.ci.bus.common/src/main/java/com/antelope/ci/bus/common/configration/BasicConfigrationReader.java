@@ -53,6 +53,16 @@ public abstract class BasicConfigrationReader {
 	public abstract void addResource(String resource) throws CIBusException;
 	
 	/**
+	 * 增加资源文件到资源表中去，用定义的classloader加载资源文件
+	 * @param  @param resource
+	 * @param  @param classLoader
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
+	 */
+	public abstract void addResource(String resource, ClassLoader classLoader) throws CIBusException;
+	
+	/**
 	 * 增加资源记录
 	 * 并且记录中的属性需要满足如果key为int型，
 	 * 必须为大于start的值

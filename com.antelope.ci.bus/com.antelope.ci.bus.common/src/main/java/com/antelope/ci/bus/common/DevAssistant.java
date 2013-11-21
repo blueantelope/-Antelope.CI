@@ -8,16 +8,16 @@
 
 package com.antelope.ci.bus.common;
 
+import java.io.PrintStream;
+
 
 /**
- * 调试工具
- *
+ * 开发调试辅助工具
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-8-26		上午10:39:56 
  */
-public class DebugUtil {
-
+public class DevAssistant {
 	/**
 	 * assert打开，输出assert调试语句
 	 * @param  @param s
@@ -58,6 +58,21 @@ public class DebugUtil {
 		boolean opened = false;
 		assert opened = true;
 		return opened;
+	}
+	
+	public static void println(String str) {
+		println(System.out, str);
+	}
+	
+	public static void errorln(String err) {
+		println(System.err, err);
+	}
+	
+	private static void println(PrintStream ps, String message) {
+		if (System.getProperty(BusConstants.BUS_RUN_MODE) != null && 
+				System.getProperty(BusConstants.BUS_RUN_MODE).equalsIgnoreCase(RUN_MODE.DEV.getName())) {
+			ps.println(message);
+		}
 	}
 }
 

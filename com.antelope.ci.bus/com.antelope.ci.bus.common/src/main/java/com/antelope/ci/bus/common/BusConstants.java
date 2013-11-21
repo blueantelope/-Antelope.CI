@@ -61,5 +61,8 @@ public class BusConstants {
 	public static final String BUS_BUNDLE_URLS			= "bus.bundle.urls";
 	/* CI BUS bundle自定义属性 */
 	public static final String BUS_BUNDLE_PROPS			= "bus.bundle.props";
+	
+	/* run mode, include app and dev */
+	public static final String BUS_RUN_MODE				= "bus.run.mode";
 }
 

@@ -22,6 +22,7 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.channel.ChannelDirectTcpip;
 import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
@@ -44,9 +45,17 @@ public abstract class BusServer {
 	protected BusServerConfig config;							// server配置项
 	protected BusServerCondition condition;
 	private static final long waitForInit = 3 * 1000;		// 3 seconds
+	protected BundleContext m_context;
 	
 	public BusServer() throws CIBusException {
 		init();
+		customInit();
+	}
+	
+	public BusServer(BundleContext m_context) throws CIBusException {
+		this.m_context = m_context;
+		init();
+		customInit();
 	}
 	
 	protected void init() throws CIBusException {
@@ -141,6 +150,7 @@ public abstract class BusServer {
 		} catch (IOException e) {
 			throw new CIBusException("", e);
 		}
+		customRun();
 	}
 	
 	public void stop() {
@@ -196,4 +206,14 @@ public abstract class BusServer {
 	 * 加入条件变量
 	 */
 	protected abstract void attatchCondition(BusServerCondition server_condition) throws CIBusException;
+	
+	/*
+	 * 自定义初始化时的动作
+	 */
+	protected abstract void customInit()  throws CIBusException;
+	
+	/*
+	 * 自定义需要在启动时的动作
+	 */
+	protected abstract void customRun() throws CIBusException;
 }

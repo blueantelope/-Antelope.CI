@@ -153,5 +153,6 @@
 	<target name="clean">
 		<delete dir="${app.portal.root}" />
 		<delete dir="${src.portal.root}" />
+		<delete dir="${target.depends}" />
 	</target>
 </project>

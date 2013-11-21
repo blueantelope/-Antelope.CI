@@ -27,7 +27,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import com.antelope.ci.bus.common.DebugUtil;
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
@@ -283,7 +283,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 			try {
 				return loadService(reference);
 			} catch (CIBusException e) {
-				DebugUtil.assert_exception(e);
+				DevAssistant.assert_exception(e);
 				return null;
 			}
 		}
@@ -300,7 +300,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 				String service_class_name = (String) reference.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
 				unloadService(service_name, service_class_name,reference, service);
 			} catch (CIBusException e) {
-				DebugUtil.assert_exception(e);
+				DevAssistant.assert_exception(e);
 			}
 		}  
 	}  
@@ -331,7 +331,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 			}
 		}
 		handleLoadService(service_class_name, ref, service);
-		DebugUtil.assert_out("service类：" + service.getClass().getName() +", 调用者：" + this.getClass().getName());
+		DevAssistant.assert_out("service类：" + service.getClass().getName() +", 调用者：" + this.getClass().getName());
 		return service;
 	}
 
@@ -376,9 +376,9 @@ public abstract class CommonBusActivator implements BundleActivator {
 		if (logService == null) {
 			logService = service;
 		}
-		DebugUtil.assert_out("logService : " + logService);
+		DevAssistant.assert_out("logService : " + logService);
 		if (serviceMap.get(LOG_SERVICE_NAME) == null) {
-			DebugUtil.assert_out("加载日志service");
+			DevAssistant.assert_out("加载日志service");
 			service_writeLock.lock();
 			List<ServiceInfo> logServiceList = new ArrayList<ServiceInfo>();
 			String service_name = (String) log_ref.getProperty(BusOsgiConstants.SERVICE_NAME);

@@ -37,12 +37,17 @@ public class BusPortalConfigurationHelper {
 	private static Logger log;
 	private Configuration configutation;
 	private ResourceReader reader; 
+	private ClassLoader classLoader;
 	private BusPortalConfigurationHelper() {
 		try {
 			log = CommonBusActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
-			e.printStackTrace();
+			
 		} 
+	}
+	
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
 	}
 	
 	public void init() throws CIBusException {
@@ -58,7 +63,11 @@ public class BusPortalConfigurationHelper {
 	
 	private void parseProperties() throws CIBusException {
 		reader = new ResourceReader();
-		reader.addResource(PORTAL_RESOURCE);
+		if (classLoader != null) {
+			reader.addResource(PORTAL_RESOURCE, classLoader);
+		} else {
+			reader.addResource(PORTAL_RESOURCE);
+		}
 	}
 	
 	private void convert() {
@@ -71,6 +80,10 @@ public class BusPortalConfigurationHelper {
 
 	public Configuration getConfiguration() {
 		return configutation;
+	}
+	
+	public void addPart(Part part) {
+		configutation.addPart(part);
 	}
 }
 

@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antelope.ci.bus.common.xml.XmlAttribute;
@@ -26,6 +27,11 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 public class TopMenus {
 	private Integer extends_start;
 	private List<TopMenu> menuList;
+	
+	public TopMenus() {
+		extends_start = 20;
+		menuList = new ArrayList<TopMenu>();
+	}
 	
 	@XmlAttribute(name="extends_start")
 	public Integer getExtends_start() {

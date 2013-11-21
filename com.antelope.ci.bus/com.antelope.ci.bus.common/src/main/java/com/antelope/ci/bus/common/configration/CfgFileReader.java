@@ -87,5 +87,13 @@ public class CfgFileReader extends BasicConfigrationReader {
 	public void addInputStream(InputStream in, int start) throws CIBusException {
 
 	}
+
+	@Override
+	public void addResource(String resource, ClassLoader classLoader)
+			throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }
 

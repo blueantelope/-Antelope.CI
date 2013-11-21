@@ -66,5 +66,11 @@ public class Configuration {
 		
 		return sb.toString();
 	}
+	
+	public void addPart(Part part) {
+		if (topMenus != null) {
+			topMenus.getMenuList().add(part.getTopMenu());
+		}
+	}
 }
 

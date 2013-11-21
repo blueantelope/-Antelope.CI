@@ -127,6 +127,16 @@ public class TestBusServer extends TestCase {
 			return user;
 		}
 
+		@Override
+		protected void customInit() throws CIBusException {
+			System.out.println("enter custom init");
+		}
+
+		@Override
+		protected void customRun() throws CIBusException {
+			System.out.println("enter custom run");
+		}
+
 		
 	}
 	

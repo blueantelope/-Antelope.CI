@@ -18,7 +18,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 /**
  * 资源文件读取
  * 支付本地化
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-8-1		上午9:40:42 
@@ -97,6 +96,20 @@ public class ResourceReader extends BasicConfigrationReader {
 	@Override
 	public void addInputStream(InputStream in, int start) throws CIBusException {
 		
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, java.lang.ClassLoader)
+	 */
+	@Override
+	public void addResource(String resource, ClassLoader classLoader) throws CIBusException {
+		removeResource(resource);
+		ResourceBundle bundle = ResourceBundle.getBundle(resource, locale, classLoader);
+		resourceMap.put(resource, bundle);
+		for (String key : bundle.keySet()) 
+			props.put(key, bundle.getObject(key));
 	}
 }
 

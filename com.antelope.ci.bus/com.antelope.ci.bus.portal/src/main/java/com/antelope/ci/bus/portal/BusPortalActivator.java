@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.entrance.EntranceManager;
@@ -30,7 +31,8 @@ public class BusPortalActivator extends BusCommonServerActivator {
 	@Override
 	protected void run() throws CIBusException {
 		log4j.info("启动portal");
-		server = new BusPortalServer();
+		//m_context.getBundle().adapt(BundleWiring.class).getClassLoader()
+		server = new BusPortalServer(m_context);
 		server.start();
 		try {
 			Thread.sleep(1000);

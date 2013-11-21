@@ -8,7 +8,7 @@
 
 package com.antelope.ci.bus.portal.shell;
 
-import java.io.IOException;
+import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
@@ -24,6 +24,7 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @Date	 2013-10-29		下午9:15:32 
  */
 public class BusPortalShell extends BusShell {
+	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	private BusPortalConfigurationHelper configurationHelper;
 
 	public BusPortalShell(BusShellSession session) {
@@ -33,7 +34,6 @@ public class BusPortalShell extends BusShell {
 	@Override
 	protected void custom() throws CIBusException {
 		configurationHelper = BusPortalConfigurationHelper.getHelper();
-		configurationHelper.init();
 	}
 
 	@Override

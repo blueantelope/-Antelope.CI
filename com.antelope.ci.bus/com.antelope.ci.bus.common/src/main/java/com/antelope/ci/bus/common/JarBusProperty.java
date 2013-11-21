@@ -127,7 +127,7 @@ public class JarBusProperty {
 				try {
 					urlList.add(new URL(url.toString()));
 				} catch (MalformedURLException e) {
-					DebugUtil.assert_exception(e);
+					DevAssistant.assert_exception(e);
 				}
 			}
 		}

@@ -73,7 +73,7 @@ import org.osgi.resource.Capability;
 import org.osgi.resource.Requirement;
 import org.osgi.resource.Wire;
 
-import com.antelope.ci.bus.common.DebugUtil;
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.framework.BusClassLoader;
 
 public class BundleWiringImpl implements BundleWiring
@@ -715,7 +715,7 @@ public class BundleWiringImpl implements BundleWiring
 					try {
 						bundle_url_list.add(new URL(bundle_url));
 					} catch (MalformedURLException e) {
-						DebugUtil.assert_exception(e);
+						DevAssistant.assert_exception(e);
 					}
 				}
 				if (!bundle_url_list.isEmpty()) {
@@ -1571,13 +1571,13 @@ public class BundleWiringImpl implements BundleWiring
         {
             if (isClass)
             {
-            	DebugUtil.assert_err("class can not been loaded : = " + name);
+            	DevAssistant.assert_err("class can not been loaded : = " + name);
                 throw new ClassNotFoundException(
                     name + " not found by " + this.getBundle());
             }
             else
             {
-            	DebugUtil.assert_err("resource can not been loaded : = " + name);
+            	DevAssistant.assert_err("resource can not been loaded : = " + name);
                 throw new ResourceNotFoundException(
                     name + " not found by " + this.getBundle());
             }

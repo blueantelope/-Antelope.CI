@@ -59,7 +59,7 @@ import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
-import com.antelope.ci.bus.common.DebugUtil;
+import com.antelope.ci.bus.common.DevAssistant;
 
 /**
  * The ExtensionManager class is used in several ways.
@@ -720,7 +720,7 @@ class ExtensionManager extends URLStreamHandler implements Content
         ExtensionManagerRevision(Felix felix)
         {
             super(felix, "0");
-            DebugUtil.assert_out("felix.version = " + (String)m_configMap.get(FelixConstants.FELIX_VERSION_PROPERTY));
+            DevAssistant.assert_out("felix.version = " + (String)m_configMap.get(FelixConstants.FELIX_VERSION_PROPERTY));
             m_version = new Version((String)
                 m_configMap.get(FelixConstants.FELIX_VERSION_PROPERTY));
         }

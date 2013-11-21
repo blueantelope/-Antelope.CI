@@ -34,6 +34,7 @@ import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.JarBusProperty;
 import com.antelope.ci.bus.common.JarLoadMethod;
+import com.antelope.ci.bus.common.RUN_MODE;
 import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
@@ -58,58 +59,6 @@ public class CIBus {
 		CIBus bus = new CIBus();
 		bus.opts(args); // 参数处理
 		bus.start(); // 启动
-	}
-
-	// 运行模式
-	public enum RUN_MODE {
-		DEV("dev", "开发模式"), // 开发中使用的运行模式，不会用到缓存
-		APP("app", "应用模式"); // 实际的应用模式，拥有全部功能
-
-		private String name; // 表示名称
-		private String value; // 显示名称
-
-		private RUN_MODE(String name, String value) {
-			this.name = name;
-			this.value = value;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		/**
-		 * 返回value (non-Javadoc)
-		 * 
-		 * @see java.lang.Enum#toString()
-		 */
-		@Override
-		public String toString() {
-			return value;
-		}
-
-		/**
-		 * 由给定的表示名称转换为运行模式
-		 * 
-		 * @param @param name
-		 * @param @return
-		 * @return RUN_MODE
-		 * @throws
-		 */
-		public static RUN_MODE toMode(String name) {
-			if (name != null && !"".equals(name)) {
-				for (RUN_MODE mode : RUN_MODE.values()) {
-					if (name.trim().equalsIgnoreCase(mode.getName())) {
-						return mode;
-					}
-				}
-			}
-
-			return null;
-		}
 	}
 
 	/* 帮助信息 */
@@ -190,6 +139,7 @@ public class CIBus {
 							System.err.print(FATAL);
 							System.exit(-1);
 						}
+						System.setProperty(BusConstants.BUS_RUN_MODE, run_mode.getName());
 					} else { // 非法选项
 						System.err.print(FATAL);
 						System.exit(-1);
