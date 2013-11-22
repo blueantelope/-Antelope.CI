@@ -13,7 +13,7 @@ import java.util.List;
 
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusBasePortalShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
 /**
@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @version 0.1
  * @Date 2013-10-14 下午3:02:14
  */
-class TestBusPortalShell extends BusShell {
+class PortalShell extends BusBasePortalShell {
 	private static final int ROWS = 6;
 	private long timestamp;
 	boolean stop = false;
@@ -44,8 +44,8 @@ class TestBusPortalShell extends BusShell {
 			27 // 设备型号
 	};
 
-	public TestBusPortalShell(BusShellSession session) {
-		super(session, SHELL_TYPE.PORTAL);
+	public PortalShell(BusShellSession session) {
+		super(session);
 	}
 
 	private void showBanner() throws IOException {
@@ -164,7 +164,7 @@ class TestBusPortalShell extends BusShell {
 	}
 
 	@Override
-	protected void show() throws CIBusException {
+	protected void mainView() throws CIBusException {
 		timestamp = System.currentTimeMillis();
 		schedule = true;
 		showData();
@@ -179,7 +179,7 @@ class TestBusPortalShell extends BusShell {
 	}
 
 	@Override
-	protected void keyAnswer(int c) throws CIBusException {
+	protected void answer(int c) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
@@ -187,26 +187,11 @@ class TestBusPortalShell extends BusShell {
 
 	@Override
 	protected String help() {
-		return "help\n";
-	}
-
-	@Override
-	protected void keyHelpAnswer(int c) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected String commandPrompt() {
-		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
 
 	@Override
-	protected void handleCommand(String command) throws CIBusException {
+	protected void answerHelp(int c) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

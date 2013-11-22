@@ -9,7 +9,7 @@
 package com.antelope.ci.bus.server.command.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusBaseCommandShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
 
@@ -20,21 +20,14 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @version  0.1
  * @Date	 2013-11-22		下午5:22:04 
  */
-public class TestBusCommandShell  extends BusShell {
+public class CommandShell extends BusBaseCommandShell {
 
-	public TestBusCommandShell(BusShellSession session) {
-		super(session, SHELL_TYPE.COMMAND);
+	public CommandShell(BusShellSession session) {
+		super(session);
 	}
 
 	@Override
 	protected void custom() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void show() throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
@@ -47,38 +40,22 @@ public class TestBusCommandShell  extends BusShell {
 		
 	}
 
+
 	@Override
-	protected void keyAnswer(int c) throws CIBusException {
+	protected String prompt() {
+		return "[test command]# "; 
+	}
+
+	@Override
+	protected void execute(String command) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected String help() {
-		
-		// TODO Auto-generated method stub
+	protected String header() {
 		return null;
-		
-	}
-
-	@Override
-	protected void keyHelpAnswer(int c) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected String commandPrompt() {
-		return "[test shell] #"; 
-	}
-
-	@Override
-	protected void handleCommand(String command) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
 	}
 
 }

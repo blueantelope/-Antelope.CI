@@ -97,4 +97,10 @@ public class StringUtil {
 		
 		return str.substring(n);
 	}
+	
+	public static boolean empty(String str) {
+		if (str != null && str.length() > 0)
+			return false;
+		return true;
+	}
 }

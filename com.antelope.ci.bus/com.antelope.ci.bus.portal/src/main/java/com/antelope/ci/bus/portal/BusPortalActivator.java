@@ -31,7 +31,6 @@ public class BusPortalActivator extends BusCommonServerActivator {
 	@Override
 	protected void run() throws CIBusException {
 		log4j.info("启动portal");
-		//m_context.getBundle().adapt(BundleWiring.class).getClassLoader()
 		server = new BusPortalServer(m_context);
 		server.start();
 		try {

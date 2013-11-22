@@ -10,9 +10,10 @@ package com.antelope.ci.bus.portal.shell;
 
 import org.apache.log4j.Logger;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
-import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusBasePortalShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
 /**
@@ -21,25 +22,40 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @version  0.1
  * @Date	 2013-10-29		下午9:15:32 
  */
-public class BusPortalShell extends BusShell {
+public class BusPortalShell extends BusBasePortalShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	private BusPortalConfigurationHelper configurationHelper;
 
 	public BusPortalShell(BusShellSession session) {
-		super(session, SHELL_TYPE.PORTAL);
+		super(session);
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#custom()
+	 */
 	@Override
 	protected void custom() throws CIBusException {
 		configurationHelper = BusPortalConfigurationHelper.getHelper();
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#mainView()
+	 */
 	@Override
-	protected void show() throws CIBusException {
+	protected void mainView() throws CIBusException {
 		showBanner();
 		
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#shutdown()
+	 */
 	@Override
 	protected void shutdown() throws CIBusException {
 		
@@ -47,17 +63,23 @@ public class BusPortalShell extends BusShell {
 		
 	}
 	
-	private void showBanner() {
-		println(configurationHelper.getConfiguration().getBanner().getText());
-	}
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusBasePortalShell#answer(int)
+	 */
 	@Override
-	protected void keyAnswer(int c) throws CIBusException {
+	protected void answer(int c) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusBasePortalShell#help()
+	 */
 	@Override
 	protected String help() {
 		
@@ -66,27 +88,22 @@ public class BusPortalShell extends BusShell {
 		
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusBasePortalShell#answerHelp(int)
+	 */
 	@Override
-	protected void keyHelpAnswer(int c) throws CIBusException {
+	protected void answerHelp(int c) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	protected String commandPrompt() {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
+	private void showBanner() {
+		String banner = configurationHelper.getConfiguration().getBanner().getText();
+		if (!StringUtil.empty(banner))
+			println(banner);
 	}
-
-	@Override
-	protected void handleCommand(String command) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
 }
 

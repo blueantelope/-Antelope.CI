@@ -19,6 +19,7 @@ import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 
 
 /**
@@ -48,7 +49,7 @@ public class EntranceManager {
 			while (true) {
 				try {
 					List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.portal", 
-							m_context.getBundle().adapt(BundleWiring.class).getClassLoader());
+							BusOsgiUtil.getBundleClassLoader(m_context));
 					unmount(classList);
 					mount(classList);
 					try {

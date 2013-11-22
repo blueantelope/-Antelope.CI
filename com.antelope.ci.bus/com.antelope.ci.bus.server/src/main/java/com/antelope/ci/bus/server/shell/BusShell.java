@@ -11,12 +11,12 @@ package com.antelope.ci.bus.server.shell;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.CharBuffer;
 
 import org.apache.sshd.server.Environment;
 
-import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.core.ConnectionData;
+import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 /**
  * shell view template
@@ -25,10 +25,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-10-14 下午1:06:49
  */
 public abstract class BusShell {
-	public enum SHELL_TYPE {
-		PORTAL, COMMAND
-	}
-	
 	protected BusShellSession session;
 	protected TerminalIO io;
 	protected ConnectionData setting;
@@ -37,15 +33,11 @@ public abstract class BusShell {
 	protected OutputStream err;
 	protected boolean onShell;
 	protected boolean quit;
-	protected boolean onHelp;
-	protected SHELL_TYPE shellType;
 
-	public BusShell(BusShellSession session, SHELL_TYPE shellType) {
+	public BusShell(BusShellSession session) {
 		this.session = session;
-		this.shellType = shellType;
 		onShell = true;
 		quit = false;
-		onHelp = false;
 	}
 
 	public ConnectionData getSetting() {
@@ -59,89 +51,17 @@ public abstract class BusShell {
 	public void open() throws CIBusException {
 		environment();
 		clear();
-		show();
-		switch (shellType) {
-			case PORTAL:
-				actionPortal();
-				break;
-			case COMMAND:
-				try {
-					io.write(commandPrompt());
-				} catch (IOException e) {
-					throw new CIBusException("", e);
-				}
-				actionCommand();
-				break;
-		}
+		mainView();
+		loopAction();
 	}
 	
-	protected void actionCommand() {
-		try {
-			CharBuffer command_buf = CharBuffer.allocate(1024);
-			int c;
-			while ((c = io.read()) != -1) {
-				try {
-					io.write((byte) c);
-					command_buf.put((char) c);
-					if (c == 10) {
-						command_buf.flip();
-						handleCommand(command_buf.toString());
-						command_buf.clear();
-						io.println();
-						io.write(commandPrompt());
-					}
-				} catch (Exception e) {
-					DevAssistant.errorln(e);
-				}
-			}
-		} catch (IOException e) {
-			DevAssistant.errorln(e);
-		}
-	}
-	
-	protected void actionPortal() {
+	private void loopAction() throws CIBusException {
 		while (onShell) {
 			if (quit) {
+				close();
 				break;
 			}
-			try {
-				int c = io.read();
-				if (c != -1) {
-					if (onHelp) {
-						switch (c) {
-							case 'q':
-							case 'Q':
-								refresh();
-								onHelp = false;
-							default:
-								keyHelpAnswer(c);
-								break;
-						}
-					} else {
-						switch (c) {
-							case 'f':
-				            case 'F': 		// refresh portal window
-				            	refresh();
-				            	break;
-							case 'q':
-							case 'Q':
-								close();
-								break;
-							case 'h':
-							case 'H':
-								clear();
-								io.write(help());
-								onHelp = true;
-								break;
-							default:
-								keyAnswer(c);
-								break;
-						}
-					}
-				} 
-			} catch (Exception e) {
-				DevAssistant.errorln(e);
-			}
+			action(); 
 		}
 	}
 	
@@ -164,12 +84,11 @@ public abstract class BusShell {
 			} catch (IOException e) { }
 		}
 		session.getCallback().onExit(0);
-		quit = true;
 	}
 	
 	protected void refresh() throws CIBusException {
 		clear();
-		show();
+		mainView();
 	}
 
 	private void environment() throws CIBusException {
@@ -185,6 +104,14 @@ public abstract class BusShell {
 	protected void println(String text) {
 		try {
 			io.println(text);
+		} catch (IOException e) {
+			
+		}
+	}
+	
+	protected void println() {
+		try {
+			io.println();
 		} catch (IOException e) {
 			
 		}
@@ -241,11 +168,11 @@ public abstract class BusShell {
 		return strBuf.toString();
 	}
 
-	public int getConsoleWidth() {
+	protected int getConsoleWidth() {
 		return setting.getTerminalColumns();
 	}
 
-	public int getConsoleHeight() {
+	protected int getConsoleHeight() {
 		return setting.getTerminalRows();
 	}
 
@@ -265,30 +192,22 @@ public abstract class BusShell {
     }
     
     protected int getHeight() {
-    	return Integer.valueOf(getEnv(Environment.ENV_LINES));
+    		return Integer.valueOf(getEnv(Environment.ENV_LINES));
     }
     
     protected int getWidth() {
-    	return Integer.valueOf(getEnv(Environment.ENV_COLUMNS));
+    		return Integer.valueOf(getEnv(Environment.ENV_COLUMNS));
     }
     
     protected String getEnv(String key) {
-    	return session.getEnv().getEnv().get(key);
+    		return session.getEnv().getEnv().get(key);
     }
 
 	protected abstract void custom() throws CIBusException;
 	
-	protected abstract void show() throws CIBusException;
+	protected abstract void mainView() throws CIBusException;
+	
+	protected abstract void action() throws CIBusException;
 	
 	protected abstract void shutdown() throws CIBusException;
-	
-	protected abstract void keyAnswer(int c) throws CIBusException;
-	
-	protected abstract String help();
-	
-	protected abstract void keyHelpAnswer(int c) throws CIBusException;
-	
-	protected abstract String commandPrompt();
-	
-	protected abstract  void handleCommand(String command) throws CIBusException;
 }

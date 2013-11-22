@@ -61,7 +61,7 @@ public class TestBusServerPortal extends TestCase {
 		@Override
 		protected void attatchCondition(BusServerCondition server_condition)
 				throws CIBusException {
-			server_condition.setLauncher_class(TestBusPortalShellLauncher.class);
+			server_condition.setLauncher_class(PortalShellLauncher.class);
 			server_condition.addUser(createUser());
 			server_condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
 			server_condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));

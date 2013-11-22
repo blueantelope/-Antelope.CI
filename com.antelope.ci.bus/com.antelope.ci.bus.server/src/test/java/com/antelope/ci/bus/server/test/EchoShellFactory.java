@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.portal.test;
+package com.antelope.ci.bus.server.test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import org.apache.sshd.server.ExitCallback;
  * @version 0.1
  * @Date 2013-10-14 下午12:43:48
  */
-public class TestEchoShellFactory {
+public class EchoShellFactory {
 	public Command create() {
 		return new EchoShell();
 	}

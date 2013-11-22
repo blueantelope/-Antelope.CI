@@ -14,8 +14,6 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
@@ -46,7 +44,7 @@ public class ServicePublisher {
 				String cls_name = "";
 				try {
 					List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.server.service", 
-							m_context.getBundle().adapt(BundleWiring.class).getClassLoader());
+							BusOsgiUtil.getBundleClassLoader(m_context));
 					List<String> regList = new ArrayList<String>();
 					for (String cls : classList) {
 						cls_name = cls;

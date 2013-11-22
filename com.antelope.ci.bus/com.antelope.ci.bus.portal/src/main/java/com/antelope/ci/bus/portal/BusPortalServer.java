@@ -14,6 +14,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.shell.BusPortalShellLauncher;
 import com.antelope.ci.bus.server.BusServer;
@@ -67,7 +68,7 @@ public class BusPortalServer extends BusServer {
 	@Override
 	protected void customInit() throws CIBusException {
 		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
-		configurationHelper.setClassLoader(m_context.getBundle().adapt(BundleWiring.class).getClassLoader());
+		configurationHelper.setClassLoader(BusOsgiUtil.getBundleClassLoader(m_context));
 		configurationHelper.init();
 	}
 

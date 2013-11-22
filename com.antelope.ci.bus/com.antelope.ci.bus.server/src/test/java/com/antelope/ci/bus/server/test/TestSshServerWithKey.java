@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.portal.test;
+package com.antelope.ci.bus.server.test;
 
 import java.io.IOException;
 

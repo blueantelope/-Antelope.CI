@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.shell;
+package com.antelope.ci.bus.server.shell.core;
 
 import java.net.InetAddress;
 import java.util.HashMap;

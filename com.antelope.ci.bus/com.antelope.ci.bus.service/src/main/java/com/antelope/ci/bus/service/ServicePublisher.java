@@ -44,7 +44,7 @@ public class ServicePublisher {
 				String cls_name = "";
 				try {
 					List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.service", 
-							m_context.getBundle().adapt(BundleWiring.class).getClassLoader());
+							BusOsgiUtil.getBundleClassLoader(m_context));
 					List<String> regList = new ArrayList<String>();
 					for (String cls : classList) {
 						cls_name = cls;
