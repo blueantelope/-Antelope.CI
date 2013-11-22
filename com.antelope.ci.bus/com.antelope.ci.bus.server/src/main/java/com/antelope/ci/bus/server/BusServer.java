@@ -127,10 +127,10 @@ public abstract class BusServer {
 				break;
 		}
 		BusShellFactory shellFactory;
-		if (condition.getCommand_class() != null) {
-			shellFactory = new BusShellFactory(condition.getCommand_class());
-		} else if (condition.getCommand_className() != null && condition.getCommand_className().length() > 0) {
-			shellFactory = new BusShellFactory(condition.getCommand_className());
+		if (condition.getLauncher_class() != null) {
+			shellFactory = new BusShellFactory(condition.getLauncher_class());
+		} else if (condition.getLauncher_className() != null && condition.getLauncher_className().length() > 0) {
+			shellFactory = new BusShellFactory(condition.getLauncher_className());
 		} else {
 			throw new CIBusException("", "create shell factory error");
 		}

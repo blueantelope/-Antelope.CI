@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.test;
+package com.antelope.ci.bus.server.portal.test;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @version 0.1
  * @Date 2013-10-14 下午3:02:14
  */
-public class TestBusShell extends BusShell {
+class TestBusPortalShell extends BusShell {
 	private static final int ROWS = 6;
 	private long timestamp;
 	boolean stop = false;
@@ -44,8 +44,8 @@ public class TestBusShell extends BusShell {
 			27 // 设备型号
 	};
 
-	public TestBusShell(BusShellSession session) {
-		super(session);
+	public TestBusPortalShell(BusShellSession session) {
+		super(session, SHELL_TYPE.PORTAL);
 	}
 
 	private void showBanner() throws IOException {
@@ -168,11 +168,45 @@ public class TestBusShell extends BusShell {
 		timestamp = System.currentTimeMillis();
 		schedule = true;
 		showData();
-		mainLoop();
+//		mainLoop();
 	}
 
 	@Override
 	protected void shutdown() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void keyAnswer(int c) throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected String help() {
+		return "help\n";
+	}
+
+	@Override
+	protected void keyHelpAnswer(int c) throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected String commandPrompt() {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	protected void handleCommand(String command) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

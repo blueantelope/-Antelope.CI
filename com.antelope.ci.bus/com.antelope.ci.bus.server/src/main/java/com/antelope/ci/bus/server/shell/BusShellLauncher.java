@@ -21,18 +21,18 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-17		下午10:22:10 
  */
-public abstract class BusShellCommand implements Command {
+public abstract class BusShellLauncher implements Command {
 	protected InputStream in;
 	protected OutputStream out;
 	protected OutputStream err;
 	protected ExitCallback callback;
+	protected Environment env;
 	
-	public BusShellCommand() {
+	public BusShellLauncher() {
 		
 	}
 
@@ -58,11 +58,12 @@ public abstract class BusShellCommand implements Command {
 
 	@Override
 	public void start(Environment env) throws IOException {
+		this.env = env;
 		new Thread() {
 			public void run() {
 				BusShell shell = null;
 				try {
-					shell = initShell();
+					shell = createShell();
 					shell.open();
 				} catch (CIBusException e) {
 					if (shell != null) {
@@ -83,10 +84,10 @@ public abstract class BusShellCommand implements Command {
 	}
 	
 	protected BusShellSession createShellSession() {
-		BusShellSession shellSession = new BusShellSession(in, out, err);
+		BusShellSession shellSession = new BusShellSession(in, out, err, callback, env);
 		return shellSession;
 	}
 	
-	protected abstract BusShell initShell() throws CIBusException;
+	protected abstract BusShell createShell() throws CIBusException;
 }
 

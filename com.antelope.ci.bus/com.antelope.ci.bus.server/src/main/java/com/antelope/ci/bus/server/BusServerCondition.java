@@ -24,8 +24,8 @@ import com.antelope.ci.bus.server.service.AuthService;
  */
 public class BusServerCondition {
 	private Map<String, User> userMap;
-	private Class command_class;
-	private String command_className;
+	private Class launcher_class;
+	private String launcher_className;
 	private List<AuthService> authServiceList;
 	
 	public BusServerCondition() {
@@ -40,18 +40,22 @@ public class BusServerCondition {
 	public void setUserMap(Map<String, User> userMap) {
 		this.userMap = userMap;
 	}
-	public Class getCommand_class() {
-		return command_class;
+	
+	public Class getLauncher_class() {
+		return launcher_class;
 	}
-	public void setCommand_class(Class command_class) {
-		this.command_class = command_class;
+	public void setLauncher_class(Class launcher_class) {
+		this.launcher_class = launcher_class;
 	}
-	public String getCommand_className() {
-		return command_className;
+
+	public String getLauncher_className() {
+		return launcher_className;
 	}
-	public void setCommand_className(String command_className) {
-		this.command_className = command_className;
+
+	public void setLauncher_className(String launcher_className) {
+		this.launcher_className = launcher_className;
 	}
+
 	public List<AuthService> getAuthServiceList() {
 		return authServiceList;
 	}

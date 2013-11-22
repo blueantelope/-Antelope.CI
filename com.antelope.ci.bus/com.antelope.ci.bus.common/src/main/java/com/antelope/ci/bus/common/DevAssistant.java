@@ -68,6 +68,10 @@ public class DevAssistant {
 		println(System.err, err);
 	}
 	
+	public static void errorln(Exception e) {
+		println(System.err, e.getMessage());
+	}
+	
 	private static void println(PrintStream ps, String message) {
 		if (System.getProperty(BusConstants.BUS_RUN_MODE) != null && 
 				System.getProperty(BusConstants.BUS_RUN_MODE).equalsIgnoreCase(RUN_MODE.DEV.getName())) {

@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell;
 import org.apache.sshd.common.Factory;
 import org.apache.sshd.server.Command;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
@@ -37,7 +38,7 @@ public class BusShellFactory implements Factory<Command> {
 	}
 	
 	private void setCommandClass(Class command_class) throws CIBusException {
-		if (!BusShellCommand.class.isAssignableFrom(command_class))
+		if (!BusShellLauncher.class.isAssignableFrom(command_class))
 			throw new CIBusException("", "Shell Command Define Error");
 		this.command_class = command_class;
 	}
@@ -48,7 +49,7 @@ public class BusShellFactory implements Factory<Command> {
 			try {
 				command = (Command) command_class.newInstance();
 			} catch (Exception e) {
-				
+				DevAssistant.errorln(e);
 			} finally {
 				return command;
 			}

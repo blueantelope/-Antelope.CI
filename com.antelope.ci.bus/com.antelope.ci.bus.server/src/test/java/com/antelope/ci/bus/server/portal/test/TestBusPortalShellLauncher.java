@@ -6,11 +6,11 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.test;
+package com.antelope.ci.bus.server.portal.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusShell;
-import com.antelope.ci.bus.server.shell.BusShellCommand;
+import com.antelope.ci.bus.server.shell.BusShellLauncher;
 
 
 /**
@@ -20,11 +20,11 @@ import com.antelope.ci.bus.server.shell.BusShellCommand;
  * @version  0.1
  * @Date	 2013-10-19		上午1:07:58 
  */
-public class TestBusShellCommand extends BusShellCommand {
+public class TestBusPortalShellLauncher extends BusShellLauncher {
 
 	@Override
-	protected BusShell initShell() throws CIBusException {
-		return new TestBusShell(createShellSession());
+	protected BusShell createShell() throws CIBusException {
+		return new TestBusPortalShell(createShellSession());
 	}
 
 }

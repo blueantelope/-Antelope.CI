@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.shell.BusPortalShell.java
+// com.antelope.ci.bus.server.command.test.TestBusCommandShell.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -6,37 +6,37 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.shell;
-
-import org.apache.log4j.Logger;
+package com.antelope.ci.bus.server.command.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
+
 /**
  * TODO 描述
+ *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-10-29		下午9:15:32 
+ * @Date	 2013-11-22		下午5:22:04 
  */
-public class BusPortalShell extends BusShell {
-	private static final Logger log = Logger.getLogger(BusPortalShell.class);
-	private BusPortalConfigurationHelper configurationHelper;
+public class TestBusCommandShell  extends BusShell {
 
-	public BusPortalShell(BusShellSession session) {
-		super(session, SHELL_TYPE.PORTAL);
+	public TestBusCommandShell(BusShellSession session) {
+		super(session, SHELL_TYPE.COMMAND);
 	}
 
 	@Override
 	protected void custom() throws CIBusException {
-		configurationHelper = BusPortalConfigurationHelper.getHelper();
+		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void show() throws CIBusException {
-		showBanner();
+		
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -45,10 +45,6 @@ public class BusPortalShell extends BusShell {
 		
 		// TODO Auto-generated method stub
 		
-	}
-	
-	private void showBanner() {
-		println(configurationHelper.getConfiguration().getBanner().getText());
 	}
 
 	@Override
@@ -75,10 +71,7 @@ public class BusPortalShell extends BusShell {
 
 	@Override
 	protected String commandPrompt() {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
+		return "[test shell] #"; 
 	}
 
 	@Override

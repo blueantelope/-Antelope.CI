@@ -22,7 +22,6 @@ import com.antelope.ci.bus.common.StringUtil;
 
 /**
  * TODO 描述
- * 
  * @author blueantelope
  * @version 0.1
  * @Date 2013-10-14 下午1:10:50

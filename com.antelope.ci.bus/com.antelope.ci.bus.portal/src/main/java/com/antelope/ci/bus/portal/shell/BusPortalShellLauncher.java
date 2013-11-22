@@ -10,20 +10,19 @@ package com.antelope.ci.bus.portal.shell;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusShell;
-import com.antelope.ci.bus.server.shell.BusShellCommand;
+import com.antelope.ci.bus.server.shell.BusShellLauncher;
 
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-29		下午9:18:22 
  */
-public class BusPortalShellCommand extends BusShellCommand {
+public class BusPortalShellLauncher extends BusShellLauncher {
 
 	@Override
-	protected BusShell initShell() throws CIBusException {
+	protected BusShell createShell() throws CIBusException {
 		return new BusPortalShell(createShellSession());
 	}
 
