@@ -79,5 +79,13 @@ public class BusShellSession {
 	public void setEnv(Environment env) {
 		this.env = env;
 	}
+	
+	public int getWidth() {
+		return Integer.valueOf(env.getEnv().get(Environment.ENV_COLUMNS));
+	}
+
+	public int getHeigth() {
+		return Integer.valueOf(env.getEnv().get(Environment.ENV_LINES));
+	}
 }
 

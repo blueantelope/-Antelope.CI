@@ -47,13 +47,6 @@ public class CommandShell extends BusBaseCommandShell {
 	}
 
 	@Override
-	protected void execute(String command) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected String header() {
 		return null;
 	}

@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -24,7 +23,6 @@ import com.antelope.ci.bus.osgi.BusOsgiUtil;
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-18		下午10:11:47 

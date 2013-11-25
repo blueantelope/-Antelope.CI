@@ -150,7 +150,7 @@ public abstract class BusShell {
 		while (in != TerminalIO.ENTER) {
 			if (in == TerminalIO.DELETE || in == TerminalIO.BACKSPACE) {
 				if (strBuf.length() > 0) {
-					sendDelete();
+					sendBackspace();
 					strBuf.deleteCharAt(strBuf.length() - 1);
 				}
 			} else {
@@ -176,10 +176,23 @@ public abstract class BusShell {
 		return setting.getTerminalRows();
 	}
 
-	protected void sendDelete() throws IOException {
+	protected void sendBackspace() throws IOException {
 		io.write(new String(new byte[] { 27, '[', '1', 'D' }));// 光标左移一位
 		io.write(new String(new byte[] { 27, '[', 'K' }));// 删除光标到行尾部分的内容
 		io.flush();
+	}
+	
+	protected void sendDelete() throws IOException {
+		io.write(new String(new byte[] { 27, '[', 'K' }));// 删除光标到行尾部分的内容
+		io.flush();
+	}
+	
+	protected void sendLeft() throws IOException {
+		io.write(new String(new byte[] { 27, '[', '1', 'D' }));// 光标左移一位
+	}
+	
+	protected void sendRight() throws IOException {
+		io.write(new String(new byte[] { 27, ']', '1', 'D' }));// 光标左移一位
 	}
 	
     protected void clear () throws CIBusException {
