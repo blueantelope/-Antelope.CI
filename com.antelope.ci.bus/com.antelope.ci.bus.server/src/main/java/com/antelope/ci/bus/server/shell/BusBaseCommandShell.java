@@ -10,6 +10,10 @@ package com.antelope.ci.bus.server.shell;
 
 import java.io.IOException;
 import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
@@ -25,11 +29,33 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 public abstract class BusBaseCommandShell extends BusShell {
 	private static final int command_buf_size = 1024;
 	protected CharBuffer command_buf;
+	protected Map<String, CommandDefine> commandMap;
 	
 	public BusBaseCommandShell(BusShellSession session) {
 		super(session);
 		command_buf = CharBuffer.allocate(command_buf_size);
+		initCommand();
 	}
+	
+	protected void initCommand() {
+		commandMap = new HashMap<String, CommandDefine>();
+		addCmd("help", "help");
+		addCmd("exit", "exit, quit");
+	}
+	
+	public void addCmd(String name, String cmds) {
+		List<String> cmdList = new ArrayList<String>();
+		for (String cmd : cmds.split(",")) {
+			cmdList.add(cmd);
+		}
+		CommandDefine cmdDefine;
+		if (commandMap.get(name) == null) {
+			cmdDefine = new CommandDefine(name);
+		}
+		cmdDefine = commandMap.get(name);
+		cmdDefine.addCommands(cmdList);
+	}
+	
 
 	/**
 	 * 
@@ -77,6 +103,44 @@ public abstract class BusBaseCommandShell extends BusShell {
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
+		}
+	}
+	
+	public static class CommandDefine {
+		private String name;
+		private List<String> commandList;
+		
+		public CommandDefine() {
+			commandList = new ArrayList<String>();
+		}
+		
+		public CommandDefine(String name) {
+			this.name = name;
+			commandList = new ArrayList<String>();
+		}
+		
+		public CommandDefine(String name, List<String> commandList) {
+			this.name = name;
+			this.commandList = commandList;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public List<String> getCommandList() {
+			return commandList;
+		}
+		public void setCommandList(List<String> commandList) {
+			this.commandList = commandList;
+		}
+		public void addCommand(String command) {
+			commandList.add(command);
+		}
+		public void addCommands(List<String> cmdList) {
+			commandList.addAll(cmdList);
 		}
 	}
 	
