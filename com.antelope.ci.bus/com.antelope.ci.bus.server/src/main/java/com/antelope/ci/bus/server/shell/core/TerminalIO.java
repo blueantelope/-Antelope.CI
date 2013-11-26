@@ -634,6 +634,11 @@ public class TerminalIO {
 	public static final int NOLINEWRAP = 10007;
 
 	// Constants
+	
+	/**
+	 * blank
+	 */
+	public static final int BLANK = 32;
 
 	/**
 	 * Left (defining a direction on the terminal)

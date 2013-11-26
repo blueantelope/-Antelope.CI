@@ -9,11 +9,12 @@
 package com.antelope.ci.bus.server.shell;
 
 import java.io.IOException;
-import java.nio.CharBuffer;
+import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.BusCommandBuffer.CommandArgs;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -25,24 +26,16 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-11-22		下午8:30:50 
  */
 public abstract class BusBaseCommandShell extends BusShell {
-	private static final int command_buf_size = 1024;
-	protected CharBuffer inputBuf;
-	protected boolean _32Click;
-	protected int cmdIndex;
-	protected int cursorIndex;
+	protected BusCommandBuffer cmdBuf;
 	
 	public BusBaseCommandShell(BusShellSession session) {
 		super(session);
-		inputBuf = CharBuffer.allocate(command_buf_size);
 	}
 	
 	protected void resetCommand() {
-		_32Click = false;
-		cmdIndex = prompt().length();
-		cursorIndex = prompt().length();
+		cmdBuf.reset();
 	}
 	
-
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -56,56 +49,30 @@ public abstract class BusBaseCommandShell extends BusShell {
 			if (c != -1) {
 				switch (c) {
 					case TerminalIO.LEFT:
-						if (cmdIndex > prompt().length()) {
-							sendLeft();
-							cursorIndex--;
-						}
+						cmdBuf.left();
 						break;
 					case TerminalIO.RIGHT:
-						if (cursorIndex < cmdIndex) {
-							sendRight();
-							cursorIndex++;
-						}
+						cmdBuf.right();
 						break;
 					case TerminalIO.DELETE:
-						sendDelete();
-						cmdIndex--;
+						cmdBuf.delete();
 						break;
 					case TerminalIO.BACKSPACE:
-						if (cmdIndex > prompt().length()) {
-							sendBackspace();
-							cmdIndex--;
-							cursorIndex--;
-						}
+						cmdBuf.backspace();
 						break;
-					case 32:
-						io.write((byte) c);
-						_32Click = true;
-						cmdIndex++;
-						cursorIndex++;
+					case TerminalIO.BLANK:
+						cmdBuf.put((char) c);
+						cmdBuf.addBlank();
 						break;
 					case TerminalIO.TABULATOR:
-						if (!_32Click) {
-							inputBuf.mark();
-							inputBuf.flip();
-							cmdAdapter.showCommands(io, inputBuf.toString(), session.getWidth());
-							inputBuf.reset();
-							inputBuf.limit(inputBuf.capacity());
+						if (!cmdBuf.exitBlank()) {
+							List<String> cmdList = cmdAdapter.findCommands(cmdBuf.read());
+							cmdBuf.tabCommands(cmdList, session.getWidth());
 						}
 						break;
 					case TerminalIO.ENTER:
-						io.write((byte) c);
-						inputBuf.flip();
-						String line = inputBuf.toString();
-						inputBuf.clear();
-						String[] strs = line.split(" ");
-						String command = strs[0];
-						String[] args = new String[strs.length-1];
-						int n = 0;
-						while (n < args.length) {
-							args[n] = strs[++n];
-						}
-						cmdAdapter.execute(command, io, args);
+						CommandArgs cmdArgs = cmdBuf.enter((char) c);
+						cmdAdapter.execute(cmdArgs.getCommand(), io, cmdArgs.getArgs());
 						if (cmdAdapter.isQuit()) {
 							quit = true;
 						} else {
@@ -115,10 +82,7 @@ public abstract class BusBaseCommandShell extends BusShell {
 						resetCommand();
 						break;
 					default:
-						io.write((byte) c);
-						inputBuf.put((char) c);
-						cmdIndex++;
-						cursorIndex++;
+						cmdBuf.put((char) c);
 						break;
 				}
 			}
@@ -136,6 +100,7 @@ public abstract class BusBaseCommandShell extends BusShell {
 	@Override
 	protected void mainView() throws CIBusException {
 		try {
+			cmdBuf = new BusCommandBuffer(io, prompt().length());
 			if (!StringUtil.empty(header()))
 				io.println(header());
 			io.write(prompt());

@@ -21,7 +21,8 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
+ * 命令适配器
+ * 所有命令调用由此适配器进入
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-25		下午9:23:21 
@@ -53,6 +54,26 @@ public class CommandAdapter {
 			String name = serverCommand.name().toLowerCase().trim();
 			commandMap.put(name, command);
 		}
+	}
+	
+	public List<String> findCommands(String prCmd) {
+		List<String> cmdList = new ArrayList<String>();
+		for (String name : commandMap.keySet()) {
+			Command command = commandMap.get(name);
+			ServerCommand serverCommand = command.getClass().getAnnotation(ServerCommand.class);
+			for (String scmd : serverCommand.commands().split(",")) {
+				if (scmd.contains(prCmd.toLowerCase())) {
+					cmdList.add(scmd);
+				}
+			}
+		}
+		Collections.sort(cmdList, new Comparator<String>() {
+			@Override
+			public int compare(String c1, String c2) {
+				return c1.compareTo(c2);
+			}
+		});
+		return cmdList;
 	}
 	
 	public void showCommands(TerminalIO io, String prCmd, int width) {
