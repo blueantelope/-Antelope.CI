@@ -20,7 +20,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
+ * 命令式shell
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-22		下午8:30:50 
@@ -28,14 +28,17 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 public abstract class BusBaseCommandShell extends BusShell {
 	protected BusCommandBuffer cmdBuf;
 	protected CommandAdapter cmdAdapter;
+	private boolean tabPress;
 	
 	public BusBaseCommandShell(BusShellSession session) {
 		super(session);
 		cmdAdapter = CommandAdapter.getAdapter();
+		tabPress = false;
 	}
 	
 	protected void resetCommand() {
 		cmdBuf.reset();
+		tabPress = false;
 	}
 	
 	/**
@@ -55,14 +58,19 @@ public abstract class BusBaseCommandShell extends BusShell {
 					case TerminalIO.RIGHT:
 						cmdBuf.right();
 						break;
+					case TerminalIO.UP:
+						
+						break;
+					case TerminalIO.DOWN:
+						break;
 					case TerminalIO.DELETE:
 						cmdBuf.delete();
-						if (cmdBuf.cmdShowed())
+						if (cmdBuf.tipShowed())
 							matchCommand();
 						break;
 					case TerminalIO.BACKSPACE:
 						cmdBuf.backspace();
-						if (cmdBuf.cmdShowed())
+						if (cmdBuf.tipShowed())
 							matchCommand();
 						break;
 					case TerminalIO.BLANK:
@@ -70,15 +78,20 @@ public abstract class BusBaseCommandShell extends BusShell {
 						cmdBuf.addBlank();
 						break;
 					case TerminalIO.TABULATOR:
-						if (cmdBuf.cmdShowed()) {
-							cmdBuf.tabCommand();
-						} else {
+						if (!cmdBuf.inCmdTab()) {
 							matchCommand();
+							if (tabPress) {
+								cmdBuf.tabTip();
+								tabPress = false;
+							}
+							if (!tabPress)
+								tabPress = true;
 						}
 						break;
 					case TerminalIO.ENTER:
 						if (cmdBuf.inCmdTab()) {
-							cmdBuf.selectCommand();
+							cmdBuf.enterTip();
+							cmdBuf.clearTips();
 						} else {
 							CommandArgs cmdArgs = cmdBuf.enter((char) c);
 							cmdAdapter.execute(cmdArgs.getCommand(), io, cmdArgs.getArgs());
@@ -94,7 +107,7 @@ public abstract class BusBaseCommandShell extends BusShell {
 						break;
 					default:
 						cmdBuf.put((char) c);
-						if (cmdBuf.cmdShowed())
+						if (cmdBuf.tipShowed())
 							matchCommand();
 						break;
 				}
@@ -108,7 +121,7 @@ public abstract class BusBaseCommandShell extends BusShell {
 	private void matchCommand() {
 		if (!cmdBuf.exitBlank()) {
 			List<String> cmdList = cmdAdapter.findCommands(cmdBuf.read());
-			cmdBuf.printCommands(cmdList, session.getWidth());
+			cmdBuf.printTips(cmdList, session.getWidth());
 		}
 	}
 	

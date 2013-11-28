@@ -28,9 +28,7 @@ public class CommandShell extends BusBaseCommandShell {
 
 	@Override
 	protected void custom() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		cmdAdapter.addCommand(new HCommand());		
 	}
 
 	@Override
