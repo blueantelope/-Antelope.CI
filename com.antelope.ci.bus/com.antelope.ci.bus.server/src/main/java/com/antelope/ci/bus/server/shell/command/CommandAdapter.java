@@ -63,7 +63,7 @@ public class CommandAdapter {
 			ServerCommand serverCommand = command.getClass().getAnnotation(ServerCommand.class);
 			for (String scmd : serverCommand.commands().split(",")) {
 				if (scmd.contains(prCmd.toLowerCase())) {
-					cmdList.add(scmd);
+					cmdList.add(scmd.toLowerCase().trim());
 				}
 			}
 		}

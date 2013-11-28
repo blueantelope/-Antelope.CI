@@ -27,9 +27,11 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  */
 public abstract class BusBaseCommandShell extends BusShell {
 	protected BusCommandBuffer cmdBuf;
+	protected CommandAdapter cmdAdapter;
 	
 	public BusBaseCommandShell(BusShellSession session) {
 		super(session);
+		cmdAdapter = CommandAdapter.getAdapter();
 	}
 	
 	protected void resetCommand() {
@@ -43,7 +45,6 @@ public abstract class BusBaseCommandShell extends BusShell {
 	 */
 	@Override
 	protected void action() throws CIBusException {
-		CommandAdapter cmdAdapter = CommandAdapter.getAdapter();
 		try {
 			int c = io.read();
 			if (c != -1) {
@@ -56,39 +57,58 @@ public abstract class BusBaseCommandShell extends BusShell {
 						break;
 					case TerminalIO.DELETE:
 						cmdBuf.delete();
+						if (cmdBuf.cmdShowed())
+							matchCommand();
 						break;
 					case TerminalIO.BACKSPACE:
 						cmdBuf.backspace();
+						if (cmdBuf.cmdShowed())
+							matchCommand();
 						break;
 					case TerminalIO.BLANK:
 						cmdBuf.put((char) c);
 						cmdBuf.addBlank();
 						break;
 					case TerminalIO.TABULATOR:
-						if (!cmdBuf.exitBlank()) {
-							List<String> cmdList = cmdAdapter.findCommands(cmdBuf.read());
-							cmdBuf.tabCommands(cmdList, session.getWidth());
+						if (cmdBuf.cmdShowed()) {
+							cmdBuf.tabCommand();
+						} else {
+							matchCommand();
 						}
 						break;
 					case TerminalIO.ENTER:
-						CommandArgs cmdArgs = cmdBuf.enter((char) c);
-						cmdAdapter.execute(cmdArgs.getCommand(), io, cmdArgs.getArgs());
-						if (cmdAdapter.isQuit()) {
-							quit = true;
+						if (cmdBuf.inCmdTab()) {
+							cmdBuf.selectCommand();
 						} else {
-							io.println();
-							io.write(prompt());
+							CommandArgs cmdArgs = cmdBuf.enter((char) c);
+							cmdAdapter.execute(cmdArgs.getCommand(), io, cmdArgs.getArgs());
+							if (cmdAdapter.isQuit()) {
+								quit = true;
+							} else {
+								if (!StringUtil.empty(cmdArgs.getCommand()))
+									io.println();
+								io.write(prompt());
+							}
+							resetCommand();
 						}
-						resetCommand();
 						break;
 					default:
 						cmdBuf.put((char) c);
+						if (cmdBuf.cmdShowed())
+							matchCommand();
 						break;
 				}
 			}
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
+		}
+	}
+	
+	private void matchCommand() {
+		if (!cmdBuf.exitBlank()) {
+			List<String> cmdList = cmdAdapter.findCommands(cmdBuf.read());
+			cmdBuf.printCommands(cmdList, session.getWidth());
 		}
 	}
 	
