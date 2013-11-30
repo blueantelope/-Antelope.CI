@@ -36,16 +36,18 @@ public class BusCommandBuffer {
 	private List<String> tipList;
 	private int tipLines;
 	private int tipCols;
+	private int tipLineLimit;
 	private boolean tipShowed;
 	private int tipShowCursor;
 	private int tipWidth;
+	private int tipTabCol;
 	private int tipTabLine;
 	private boolean inTip;
 	
 	public BusCommandBuffer(TerminalIO io, int cursorStart) {
 		buffer = CharBuffer.allocate(BUF_SIZE);
 		this.io = io;
-		this.cursorStart = cursorStart == 0 ? 0 : cursorStart - 1;
+		this.cursorStart = cursorStart;
 		blankList = new ArrayList<Integer>();
 		reset();
 	}
@@ -79,9 +81,11 @@ public class BusCommandBuffer {
 		buffer.clear();
 		tipLines = 0;
 		tipCols = 0;
+		tipLineLimit = 0;
 		tipShowCursor = 0;
 		tipWidth = 0;
 		tipTabLine = -1;
+		tipTabCol = -1;
 		tipShowed = false;
 		inTip = false;
 	}
@@ -103,7 +107,7 @@ public class BusCommandBuffer {
 		} else {
 			buffer.put(c);
 			io.write(c);
-			cursor += 1;
+			cursor++;
 		}
 	}
 	
@@ -280,11 +284,15 @@ public class BusCommandBuffer {
 	public void enterTip() {
 		try {
 			io.moveUp(tipTabLine + 1);
-			io.moveLeft(tipShowCursor);
-			io.moveRight(cursor + 1);
+			int m = tipShowCursor - cursor;
+			if (m > 0)
+				io.moveLeft(m);
+			else
+				io.moveRight(-m);
 		} catch (IOException e) {}
 		tipShowCursor = 0;
 		tipTabLine = -1;
+		tipTabCol = -1;
 		inTip = false;
 	}
 	
@@ -294,20 +302,24 @@ public class BusCommandBuffer {
 			inTip = true;
 			try {
 				tipShowCursor = 0;
-				tipTabLine++; 
+				tipTabLine++;
+				tipTabCol = 1;
 				String tip = tipList.get(0);
 				String tipContent = packTip(tip);
-				tipShowCursor += tipWidth;
-				String tail = getTabTips(1, 1).getTips();
 				fillTip(0, tip, false);
 				io.moveDown(1);
-				io.moveLeft(cursorStart+tip.length()+1);
-				io.eraseLine();
+				int m = cursor + 1 - tipWidth;
+				if (m > 0)
+					io.moveLeft(m);
+				else
+					io.moveRight(-m);
+				io.eraseToBeginOfLine();
+				io.moveLeft(tipWidth);
 				io.setReverse(true);
 				io.write(tipContent);
 				io.setReverse(false);
-				io.write(tail);
-				io.moveLeft(tail.length());
+				io.moveLeft(1);
+				tipShowCursor = tipWidth - 1;
 			} catch (IOException e) {
 				DevAssistant.errorln(e);
 			}
@@ -316,33 +328,35 @@ public class BusCommandBuffer {
 	
 	// 左移命令提示
 	public void leftTip() {
-		int position = tipShowCursor / tipWidth;
-		int tipIndex = tipTabLine * tipCols + position - 1;
+		int tipIndex = tipTabLine * tipCols + tipTabCol - 1;
 		if (inTip && tipIndex > 0) {
 			try {
-				if (tipShowCursor == tipWidth) {
+				if (tipShowCursor == tipWidth - 1) {
 					String tip = tipList.get(tipIndex - 1);
 					String tipContent = packTip(tip);
 					fillTip(tipTabLine+1, tip, true);
-					io.moveLeft(tipWidth);
-					io.eraseLine();
-					String curTips = getTabTips(1, tipIndex).getTips();
-					io.write(curTips);
+					io.moveLeft(1);
+					io.eraseToBeginOfLine();
+					io.moveLeft(tipWidth - 1);
+					io.write(packTip(tipList.get(tipIndex)));
 					io.moveUp(1);
-					io.moveLeft(curTips.length());
-					io.moveRight(tipWidth * tipCols - tipWidth - 1);
+					io.moveLeft(tipWidth);
+					io.moveRight(tipWidth * tipCols - tipWidth);
 					io.eraseToEndOfLine();
 					io.setReverse(true);
 					io.write(tipContent);
 					io.setReverse(false);
 					tipTabLine--; 
-					tipShowCursor = tipWidth * tipCols;
+					tipTabCol = tipCols;
+					tipShowCursor = tipWidth * tipCols - 1;
 				} else {
 					String tip = tipList.get(tipIndex - 1);
 					String tipContent = packTip(tip);
-					String tail = getTabTips(position-1, tipIndex).getTips();
+					String tail = getTabTips(tipTabCol-1, tipIndex).getTips();
 					fillTip(tipTabLine+1, tip, true);
-					io.moveLeft(tipWidth * 2);
+					io.moveLeft(tipWidth * 2 - 1);
+					if (tipShowCursor == tipWidth * tipCols && tipWidth * tipCols == tipLineLimit) 
+						io.moveRight(1);
 					io.eraseToEndOfLine();
 					io.setReverse(true);
 					io.write(tipContent);
@@ -350,6 +364,9 @@ public class BusCommandBuffer {
 					io.write(tail);
 					io.moveLeft(tail.length());
 					tipShowCursor -= tipWidth;
+					tipTabCol--;
+					if (tipTabCol * tipWidth + tail.length() < tipWidth * tipCols)
+						io.moveLeft(1);
 				}
 			} catch (IOException e) {}
 		}
@@ -357,36 +374,35 @@ public class BusCommandBuffer {
 	
 	// 右移命令提示
 	public void rightTip() {
-		int position = tipShowCursor / tipWidth;
-		int tipIndex = tipTabLine * tipCols + position;
+		int tipIndex = tipTabLine * tipCols + tipTabCol;
 		if (inTip && tipIndex < tipList.size()) {
 			try {
-				if (tipShowCursor == tipWidth * tipCols) {
+				if (tipTabCol == tipCols) {
 					if (tipList.size() / tipCols > tipTabLine) {
 						String tip = tipList.get(tipIndex);
 						String tipContent = packTip(tip);
-						String tail = getTabTips(1, tipIndex+1).getTips();
 						fillTip(tipTabLine+1, tip, true);
-						io.moveLeft(tipWidth);
+						io.moveLeft(tipWidth - 1);
 						io.eraseToEndOfLine();
-						io.write(getTabTips(position-1, tipIndex-1).getTips());
+						io.write(getTabTips(tipTabCol-1, tipIndex-1).getTips());
 						io.moveDown(1);
-						io.moveLeft(tipWidth * tipCols);
-						io.eraseLine();
+						io.moveLeft(tipWidth * (tipCols - 1));
+						io.eraseToBeginOfLine();
+						io.moveLeft(tipWidth);
 						io.setReverse(true);
 						io.write(tipContent);
 						io.setReverse(false);
-						io.write(tail);
-						io.moveLeft(tail.length());
+						io.moveLeft(1);
 						tipTabLine++; 
-						tipShowCursor = tipWidth;
+						tipTabCol = 1;
+						tipShowCursor = tipWidth - 1;
 					}
 				} else {
 					String tip = tipList.get(tipIndex);
 					String tipContent = packTip(tip);
-					String tail = getTabTips(position+1, tipIndex+1).getTips();
+					String tail = getTabTips(tipTabCol+1, tipIndex+1).getTips();
 					fillTip(tipTabLine+1, tip, true);
-					io.moveLeft(tipWidth);
+					io.moveLeft(tipWidth - 1);
 					io.eraseToEndOfLine();
 					io.write(packTip(tipList.get(tipIndex-1)));
 					io.setReverse(true);
@@ -395,6 +411,9 @@ public class BusCommandBuffer {
 					io.write(tail);
 					io.moveLeft(tail.length());
 					tipShowCursor += tipWidth;
+					tipTabCol++;
+					if (tipTabCol * tipWidth + tail.length() < tipWidth * tipCols)
+						io.moveLeft(1);
 				}
 			} catch (IOException e) {}
 		}
@@ -413,23 +432,26 @@ public class BusCommandBuffer {
 	}
 	
 	// shell处放入命令提示
-	private void fillTip(int ups, String tip, boolean back) {
+	private void fillTip(int ups, String tip, boolean restore) {
 		try {
 			if (ups == 0) {
 				io.moveLeft(cursor - cursorStart);
 			} else {
 				io.moveUp(ups);
-				io.moveLeft(tipShowCursor);
-				io.moveRight(cursorStart + 1);
+				int m = tipShowCursor - cursorStart;
+				if (m > 0)
+					io.moveLeft(m);
+				else
+					io.moveRight(-m);
 			}
 			io.eraseToEndOfLine();
 			io.write(tip);
 			buffer.clear();
 			buffer.put(tip);
 			cursor = cursorStart + tip.length();
-			if (back) {
+			if (restore) {
 				io.moveDown(ups);
-				int m = tipShowCursor - cursor - 1;
+				int m = tipShowCursor - cursor;
 				if (m > 0)
 					io.moveRight(m);
 				else 
@@ -522,13 +544,26 @@ public class BusCommandBuffer {
 	// tab显示相关命令列表
 	public void printTips(List<String> cmdList, int width) {
 		clearTips();
-		this.tipList = cmdList;
+		
 		if (cmdList.isEmpty())			// 空命令列表，直接返回
 			return;
+		if (cmdList.size() == 1) {
+			try {
+				String cmd = cmdList.get(0);
+				io.moveLeft(cursor - cursorStart);
+				io.write(cmd);
+				buffer.clear();
+				buffer.put(cmd);
+				cursor += cmd.length();
+				return;
+			} catch (IOException e) { }
+		}
 		
+		this.tipList = cmdList;
+		this.tipLineLimit = width;
 		int maxLen = 0;
-		for (String cmd : cmdList) {
-			maxLen = cmd.length() > maxLen ? cmd.length() : maxLen;
+		for (String tip : tipList) {
+			maxLen = tip.length() > maxLen ? tip.length() : maxLen;
 		}
 		tipWidth = maxLen + TAB_SIZE;
 		tipCols = width / tipWidth;
@@ -536,18 +571,18 @@ public class BusCommandBuffer {
 		int n = 0;
 		int tipCursor = 0;
 		StringBuffer tips = new StringBuffer();
-		while (n < cmdList.size()) {
+		while (n < tipList.size()) {
 			if (n % tipCols == 0) {
 				tips.append('\n');
 				tipLines++;
 				tipCursor = 0;
 			}
-			String cmd = cmdList.get(n);
-			tips.append(cmd);
-			int cmdSize = cmd.length();
-			while (cmdSize < tipWidth) {
+			String tip = tipList.get(n);
+			tips.append(tip);
+			int tipSize = tip.length();
+			while (tipSize < tipWidth) {
 				tips.append((char) TerminalIO.BLANK);
-				cmdSize++;
+				tipSize++;
 			}
 			tipCursor += tipWidth;
 			n++;
@@ -561,7 +596,7 @@ public class BusCommandBuffer {
 		try {
 			io.moveUp(tipLines);
 			io.moveLeft(tipCursor);
-			io.moveRight(cursor + 1);
+			io.moveRight(cursor);
 		} catch (IOException e) { }
 	}
 	
@@ -585,7 +620,9 @@ public class BusCommandBuffer {
 		tipWidth = 0;
 		tipLines = 0;
 		tipCols = 0;
+		tipLineLimit = 0;
 		tipTabLine = -1;
+		tipTabCol = -1;
 		inTip = false;
 		tipShowed = false;
 	}

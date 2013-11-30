@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -58,6 +59,8 @@ public class CommandAdapter {
 	
 	public List<String> findCommands(String prCmd) {
 		List<String> cmdList = new ArrayList<String>();
+		if (StringUtil.empty(prCmd))
+			return cmdList;
 		for (String name : commandMap.keySet()) {
 			Command command = commandMap.get(name);
 			ServerCommand serverCommand = command.getClass().getAnnotation(ServerCommand.class);

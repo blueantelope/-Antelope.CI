@@ -65,13 +65,9 @@ public abstract class BusBaseCommandShell extends BusShell {
 						break;
 					case TerminalIO.DELETE:
 						cmdBuf.delete();
-						if (cmdBuf.tipShowed())
-							matchCommand();
 						break;
 					case TerminalIO.BACKSPACE:
 						cmdBuf.backspace();
-						if (cmdBuf.tipShowed())
-							matchCommand();
 						break;
 					case TerminalIO.BLANK:
 						cmdBuf.put((char) c);
@@ -98,8 +94,6 @@ public abstract class BusBaseCommandShell extends BusShell {
 							if (cmdAdapter.isQuit()) {
 								quit = true;
 							} else {
-								if (!StringUtil.empty(cmdArgs.getCommand()))
-									io.println();
 								io.write(prompt());
 							}
 							resetCommand();
@@ -107,8 +101,6 @@ public abstract class BusBaseCommandShell extends BusShell {
 						break;
 					default:
 						cmdBuf.put((char) c);
-						if (cmdBuf.tipShowed())
-							matchCommand();
 						break;
 				}
 			}
