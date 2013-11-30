@@ -59,9 +59,10 @@ public abstract class BusBaseCommandShell extends BusShell {
 						cmdBuf.right();
 						break;
 					case TerminalIO.UP:
-						
+						cmdBuf.up();
 						break;
 					case TerminalIO.DOWN:
+						cmdBuf.down();
 						break;
 					case TerminalIO.DELETE:
 						cmdBuf.delete();
@@ -89,6 +90,8 @@ public abstract class BusBaseCommandShell extends BusShell {
 							cmdBuf.enterTip();
 							cmdBuf.clearTips();
 						} else {
+							if (cmdBuf.tipShowed())
+								cmdBuf.clearTips();
 							CommandArgs cmdArgs = cmdBuf.enter((char) c);
 							cmdAdapter.execute(cmdArgs.getCommand(), io, cmdArgs.getArgs());
 							if (cmdAdapter.isQuit()) {
