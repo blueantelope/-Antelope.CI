@@ -6,29 +6,29 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.command.test;
+package com.antelope.ci.bus.server.shell.echo.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusBaseCommandShell;
+import com.antelope.ci.bus.server.shell.BusBaseEchoShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-22		下午5:22:04 
  */
-public class CommandShell extends BusBaseCommandShell {
+public class EchoShell extends BusBaseEchoShell {
 
-	public CommandShell(BusShellSession session) {
+	public EchoShell(BusShellSession session) {
 		super(session);
 	}
 
 	@Override
 	protected void custom() throws CIBusException {
-		cmdAdapter.addCommand(new HCommand());		
+		keyBell = true;
+		cmdAdapter.addCommand(new HEcho());		
 	}
 
 	@Override

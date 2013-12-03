@@ -48,7 +48,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 	private static final String PROPS_FILE = "/META-INF/bus.properties";
 	private static final String BUS_LOAD_SERVICES = "bus.load.services";
 	private static final String DIVISION = ",";
-	protected BundleContext m_context;
+	protected static BundleContext m_context;
 	protected static Map<String, List<ServiceInfo>> serviceMap;
 	protected static Properties properties; // bundle的属性
 	protected List<String> serviceList; // 需要加载的service列表
@@ -74,6 +74,10 @@ public abstract class CommonBusActivator implements BundleActivator {
 
 	public static Properties getProperties() {
 		return properties;
+	}
+	
+	public static ClassLoader getClassLoader() {
+		return BusOsgiUtil.getBundleClassLoader(m_context);
 	}
 
 	public static Map<String, List<ServiceInfo>> getServiceMap() {

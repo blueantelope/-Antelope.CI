@@ -14,25 +14,31 @@ import java.util.List;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusCommandBuffer.CommandArgs;
-import com.antelope.ci.bus.server.shell.command.CommandAdapter;
+import com.antelope.ci.bus.server.shell.BusEchoBuffer.CommandArgs;
+import com.antelope.ci.bus.server.shell.command.echo.EchoAdapter;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * 命令式shell
+ * 交互式shell
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-22		下午8:30:50 
  */
-public abstract class BusBaseCommandShell extends BusShell {
-	protected BusCommandBuffer cmdBuf;
-	protected CommandAdapter cmdAdapter;
+public abstract class BusBaseEchoShell extends BusShell {
+	protected BusEchoBuffer cmdBuf;
+	protected EchoAdapter cmdAdapter;
 	private boolean tabPress;
 	
-	public BusBaseCommandShell(BusShellSession session) {
+	public BusBaseEchoShell() {
+		super();
+		cmdAdapter = new EchoAdapter();
+		tabPress = false;
+	}
+	
+	public BusBaseEchoShell(BusShellSession session) {
 		super(session);
-		cmdAdapter = CommandAdapter.getAdapter();
+		cmdAdapter = new EchoAdapter();
 		tabPress = false;
 	}
 	
@@ -51,6 +57,8 @@ public abstract class BusBaseCommandShell extends BusShell {
 		try {
 			int c = io.read();
 			if (c != -1) {
+				if (keyBell)
+					io.bell();
 				switch (c) {
 					case TerminalIO.LEFT:
 						cmdBuf.left();
@@ -94,12 +102,12 @@ public abstract class BusBaseCommandShell extends BusShell {
 								cmdBuf.clearTips();
 							CommandArgs cmdArgs = cmdBuf.enter((char) c);
 							cmdAdapter.execute(cmdArgs.getCommand(), io, cmdArgs.getArgs());
+							resetCommand();
 							if (cmdAdapter.isQuit()) {
 								quit = true;
 							} else {
 								io.write(prompt());
 							}
-							resetCommand();
 						}
 						break;
 					default:
@@ -128,7 +136,7 @@ public abstract class BusBaseCommandShell extends BusShell {
 	@Override
 	protected void mainView() throws CIBusException {
 		try {
-			cmdBuf = new BusCommandBuffer(io, prompt().length());
+			cmdBuf = new BusEchoBuffer(io, prompt().length());
 			if (!StringUtil.empty(header()))
 				io.println(header());
 			io.write(prompt());

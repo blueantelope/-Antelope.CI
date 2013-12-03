@@ -14,15 +14,20 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * TODO 描述
+ * portal shell template class
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-22		下午8:30:35 
  */
-public abstract class BusBasePortalShell extends BusShell {
+public abstract class BusBaseFrameShell extends BusShell {
 	protected boolean onHelp;
+	
+	public BusBaseFrameShell() {
+		super();
+		onHelp = false;
+	}
 
-	public BusBasePortalShell(BusShellSession session) {
+	public BusBaseFrameShell(BusShellSession session) {
 		super(session);
 		onHelp = false;
 	}

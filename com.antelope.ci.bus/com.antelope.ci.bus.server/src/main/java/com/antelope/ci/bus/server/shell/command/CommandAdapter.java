@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.server.shell.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,44 +15,72 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * 命令适配器
- * 所有命令调用由此适配器进入
+ * TODO 描述
+ *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-11-25		下午9:23:21 
+ * @Date	 2013-12-3		上午10:18:19 
  */
-public class CommandAdapter {
-	public static final CommandAdapter adapter = new CommandAdapter();
-	
-	public static final CommandAdapter getAdapter() {
-		return adapter;
-	}
-	
-	protected Map<String, Command> commandMap;
+public abstract class CommandAdapter {
+	protected static final String DOT = ".";
+	protected Map<String, ICommand> commandMap;
+	protected CommandType cType;
 	protected boolean isQuit;
 	
-	private CommandAdapter() {
-		commandMap = new HashMap<String, Command>();
+	public CommandAdapter(CommandType cType) {
+		this.cType = cType;
+		commandMap = new HashMap<String, ICommand>();
+		isQuit = false;
 		init();
 	}
 	
-	private void init() {
-		addCommand(new HelpCommand());
-		addCommand(new QuitCommand());
-		isQuit = false;
+	public void addCommand(ICommand command) {
+		if (command.getClass().isAnnotationPresent(Command.class)) {
+			Command cmd = command.getClass().getAnnotation(Command.class);
+			if (cmd.type() == cType) {
+				String key = cmd.status() + DOT + cmd.name();
+				commandMap.put(key, command);
+			}
+		}
 	}
 	
-	public void addCommand(Command command) {
-		if (command.getClass().isAnnotationPresent(ServerCommand.class)) {
-			ServerCommand serverCommand = command.getClass().getAnnotation(ServerCommand.class);
-			String name = serverCommand.name().toLowerCase().trim();
-			commandMap.put(name, command);
+	public void addCommands(String packpath) throws CIBusException {
+		List<String>  classList = ClassFinder.findClasspath(packpath, CommonBusActivator.getClassLoader());
+		for (String clsname : classList) {
+			try {
+				Class cls = Class.forName(clsname);
+				if (cls.isAssignableFrom(ICommand.class)) {
+					ICommand command = (ICommand) cls.newInstance();
+					addCommand(command);
+				}
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+	}
+	
+	public void addCommands(String packpath, String status) throws CIBusException {
+		List<String>  classList = ClassFinder.findClasspath(packpath, CommonBusActivator.getClassLoader());
+		for (String clsname : classList) {
+			try {
+				Class cls = Class.forName(clsname);
+				if (cls.isAssignableFrom(ICommand.class)) {
+					ICommand command = (ICommand) cls.newInstance();
+					addCommand(command);
+				}
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
 		}
 	}
 	
@@ -61,12 +88,14 @@ public class CommandAdapter {
 		List<String> cmdList = new ArrayList<String>();
 		if (StringUtil.empty(prCmd))
 			return cmdList;
-		for (String name : commandMap.keySet()) {
-			Command command = commandMap.get(name);
-			ServerCommand serverCommand = command.getClass().getAnnotation(ServerCommand.class);
-			for (String scmd : serverCommand.commands().split(",")) {
-				if (scmd.toLowerCase().trim().startsWith(prCmd.toLowerCase())) {
-					cmdList.add(scmd.toLowerCase().trim());
+		for (String key : commandMap.keySet()) {
+			ICommand command = commandMap.get(key);
+			Command cmd = command.getClass().getAnnotation(Command.class);
+			if (cmd.type() == cType) {
+				for (String scmd : cmd.commands().split(",")) {
+					if (scmd.toLowerCase().trim().startsWith(prCmd.toLowerCase())) {
+						cmdList.add(scmd.toLowerCase().trim());
+					}
 				}
 			}
 		}
@@ -79,74 +108,37 @@ public class CommandAdapter {
 		return cmdList;
 	}
 	
-	public void showCommands(TerminalIO io, String prCmd, int width) {
-		List<String> cmdList = new ArrayList<String>();
-		int maxLen = 0;
-		for (String name : commandMap.keySet()) {
-			Command command = commandMap.get(name);
-			ServerCommand serverCommand = command.getClass().getAnnotation(ServerCommand.class);
-			for (String scmd : serverCommand.commands().split(",")) {
-				if (scmd.contains(prCmd.toLowerCase())) {
-					cmdList.add(scmd);
-					maxLen = scmd.length() > maxLen ? scmd.length() : maxLen;
-				}
-			}
-		}
-		Collections.sort(cmdList, new Comparator<String>() {
-			@Override
-			public int compare(String c1, String c2) {
-				return c1.compareTo(c2);
-			}
-		});
-		int tab = 4;
-		int colWidth = maxLen + tab;
-		int cols = width / colWidth;
-		cols = cols == 0 ? 1: cols;
-		int n = 0;
-		while (n < cmdList.size()) {
-			if (n % cols == 0) {
-				try {
-					io.println();
-				} catch (IOException e) { }
-			}
-			String cmd = cmdList.get(n);
-			try {
-				io.println(cmd);
-				int cmdSize = cmd.length();
-				while (cmdSize < colWidth) {
-					io.write(' ');
-					cmdSize++;
-				}
-			} catch (IOException e) { }
-			n++;
-		}
-	}
-	
 	public void execute(String cmd, TerminalIO io, Object... args) throws CIBusException {
-		for (String name : commandMap.keySet()) {
-			Command command = commandMap.get(name);
+		for (String key : commandMap.keySet()) {
+			ICommand command = commandMap.get(key);
 			if (match(command, cmd)) {
-				command.execute(io, args);
-				if (command instanceof QuitCommand) {
+				String status = command.execute(io, args);
+				afterExecute(command, status, io, args);
+				if (status.equals(BusShellStatus.QUIT))
 					isQuit = true;
-				}
 				break;
 			}
 		}
+	}
+	
+	protected boolean match(ICommand command, String cmdStr) {
+		Command cmd = command.getClass().getAnnotation(Command.class);
+		for (String scmd : cmd.commands().split(",")) {
+			if (cmdStr.equalsIgnoreCase(scmd.trim()))
+				return true;
+		}
+		
+		return false;
 	}
 	
 	public boolean isQuit() {
 		return isQuit;
 	}
 	
-	private boolean match(Command command, String cmd) {
-		ServerCommand serverCommand = command.getClass().getAnnotation(ServerCommand.class);
-		for (String scmd : serverCommand.commands().split(",")) {
-			if (cmd.equalsIgnoreCase(scmd.trim()))
-				return true;
-		}
-		
-		return false;
-	}
+	protected abstract void init();
+	
+	protected abstract void afterExecute(ICommand command, String status, TerminalIO io, Object... args) throws CIBusException;
+	
+	public abstract void showCommands(TerminalIO io, String prCmd, int width);
 }
 

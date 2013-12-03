@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<help>
+	<type name="echo">
+		<status name="help">
+<![CDATA[help:
+info 1:
+info 2:
+info 3:]]>				
+		</status>
+	</type>
+	
+	<type name="frame">
+		<status name="help">
+<![CDATA[help:
+info 1:
+info 2:
+info 3:]]>				
+		</status>
+	</type>
+</help>
+

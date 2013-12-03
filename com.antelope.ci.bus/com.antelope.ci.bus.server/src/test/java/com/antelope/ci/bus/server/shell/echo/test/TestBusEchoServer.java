@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.portal.test;
+package com.antelope.ci.bus.server.shell.echo.test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,10 +36,10 @@ import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
  * @version  0.1
  * @Date	 2013-7-30		下午11:24:39 
  */
-public class TestBusServerPortal extends TestCase {
-	public static class MyBusServerPortal extends BusServer {
+public class TestBusEchoServer extends TestCase {
+	public static class MyBusServerCommand extends BusServer {
 		
-		public MyBusServerPortal() throws CIBusException {
+		public MyBusServerCommand() throws CIBusException {
 			super();
 		}
 		
@@ -61,7 +61,7 @@ public class TestBusServerPortal extends TestCase {
 		@Override
 		protected void attatchCondition(BusServerCondition server_condition)
 				throws CIBusException {
-			server_condition.setLauncher_class(PortalShellLauncher.class);
+			server_condition.setLauncher_class(EchoShellLauncher.class);
 			server_condition.addUser(createUser());
 			server_condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
 			server_condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));
@@ -141,15 +141,15 @@ public class TestBusServerPortal extends TestCase {
 	}
 	
 	/**
-	 * @throws CIBusException 
 	 * 启动服务器测试
+	 * @throws CIBusException 
 	 * @param  @throws IOException
 	 * @return void
 	 * @throws
 	 */
 	@Test
 	public void testServer() throws IOException, CIBusException {
-		BusServer server = new MyBusServerPortal();
+		BusServer server = new MyBusServerCommand();
 		server.start();
 	}
 	
@@ -216,7 +216,7 @@ public class TestBusServerPortal extends TestCase {
 	}
 	
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestBusServerPortal.class);
+		junit.textui.TestRunner.run(TestBusEchoServer.class);
 	}
 }
 

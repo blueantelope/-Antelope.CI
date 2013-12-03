@@ -8,8 +8,11 @@
 
 package com.antelope.ci.bus.server.shell.command;
 
-import com.antelope.ci.bus.common.xml.XmlCdata;
-import com.antelope.ci.bus.common.xml.XmlEntity;
+import java.io.InputStream;
+
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.common.xml.BusXmlHelper;
 
 
 /**
@@ -17,19 +20,64 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-11-25		下午9:47:12 
+ * @Date	 2013-12-3		下午3:54:28 
  */
-@XmlEntity(name="help")
 public class HelpContent {
-	private String content;
-
-	@XmlCdata
-	public String getContent() {
+	private static final String HELP_XML= "/commands/help.xml";
+	private static final HelpContent content = new HelpContent();
+	
+	public static final HelpContent getContent() {
 		return content;
 	}
-
-	public void setContent(String content) {
-		this.content = content;
+	
+	private Help help;
+	
+	private HelpContent() {
+		try {
+			init();
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	private void init() throws CIBusException {
+		InputStream in =Help.class.getResourceAsStream(HELP_XML);
+		refresh(in);
+	}
+	
+	private void refresh() throws CIBusException {
+		init();
+	}
+	
+	public void refresh(InputStream in) throws CIBusException {
+		help =  (Help) BusXmlHelper.parse(Help.class, in);
+	}
+	
+	public String getContent(String type, String status) {
+		String content = null;
+		if (help.getTypeList() != null) {
+			for (HelpType tc : help.getTypeList()) {
+				if (tc.getName().equalsIgnoreCase(type)) {
+					if (tc != null) {
+						for (HelpTypeStatus sc : tc.getStatusList()) {
+							if (sc.getName().equalsIgnoreCase(status))
+								content = sc.getContent();
+						}
+					}
+					break;
+				}
+			}
+		}
+		
+		return content;
+	}
+	
+	public String getEchoContent(String status) {
+		return getContent(CommandType.ECHO.getShell(), status);
+	}
+	
+	public String getFrameContent(String status) {
+		return getContent(CommandType.Hit.getShell(), status);
 	}
 }
 

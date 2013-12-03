@@ -25,7 +25,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-11-26		上午10:10:07 
  */
-public class BusCommandBuffer {
+public class BusEchoBuffer {
 	private static final int BUF_SIZE = 1024;
 	private static final int TAB_SIZE = 4;
 	private CharBuffer buffer;
@@ -44,7 +44,7 @@ public class BusCommandBuffer {
 	private int tipTabLine;
 	private boolean inTip;
 	
-	public BusCommandBuffer(TerminalIO io, int cursorStart) {
+	public BusEchoBuffer(TerminalIO io, int cursorStart) {
 		buffer = CharBuffer.allocate(BUF_SIZE);
 		this.io = io;
 		this.cursorStart = cursorStart;
@@ -389,8 +389,6 @@ public class BusCommandBuffer {
 					String tail = getTabTips(tipTabCol-1, tipIndex).getTips();
 					fillTip(tipTabLine+1, tip, true);
 					io.moveLeft(tipWidth * 2 - 1);
-					if (tipShowCursor == tipWidth * tipCols && tipWidth * tipCols == tipLineLimit) 
-						io.moveRight(1);
 					io.eraseToEndOfLine();
 					io.setReverse(true);
 					io.write(tipContent);
@@ -399,8 +397,12 @@ public class BusCommandBuffer {
 					io.moveLeft(tail.length());
 					tipShowCursor -= tipWidth;
 					tipTabCol--;
-					if (tipTabCol * tipWidth + tail.length() < tipWidth * tipCols)
+					if (tipTabCol == tipCols) {
 						io.moveLeft(1);
+						tipShowCursor -= 1;
+					} else if (tipTabLine + 1 == tipLines && tipList.size() % tipTabCol < tipCols) {
+						io.moveLeft(1);
+					}
 				}
 			} catch (IOException e) {}
 		}
@@ -443,11 +445,12 @@ public class BusCommandBuffer {
 					io.write(tipContent);
 					io.setReverse(false);
 					io.write(tail);
-					io.moveLeft(tail.length());
+					if (tipCols *  (tipTabLine + 1) <= tipList.size() && tipCols < tipList.size())
+						io.moveLeft(tail.length());
+					else
+						io.moveLeft(tail.length() + 1);
 					tipShowCursor += tipWidth;
 					tipTabCol++;
-					if (tipTabCol * tipWidth + tail.length() < tipWidth * tipCols)
-						io.moveLeft(1);
 				}
 			} catch (IOException e) {}
 		}

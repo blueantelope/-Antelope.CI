@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.server.shell.BusCommand.java
+// com.antelope.ci.bus.server.shell.command.Command.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -8,18 +8,32 @@
 
 package com.antelope.ci.bus.server.shell.command;
 
-import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.antelope.ci.bus.server.shell.BusShellStatus;
 
 
 /**
  * TODO 描述
+ *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-11-25		下午8:46:24 
+ * @Date	 2013-12-3		上午9:43:27 
  */
-public interface Command {
+@Target(ElementType.TYPE)   
+@Retention(RetentionPolicy.RUNTIME)  
+@Documented
+public @interface Command {
+	String name();
 	
-	public abstract void execute(TerminalIO io, Object... args) throws CIBusException;
+	String status() default BusShellStatus.ROOT;
+	
+	String commands() default "";
+	
+	CommandType type();
 }
 

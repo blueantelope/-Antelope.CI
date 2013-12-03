@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
-import com.antelope.ci.bus.server.shell.BusBasePortalShell;
+import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
 /**
@@ -22,7 +22,7 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @version  0.1
  * @Date	 2013-10-29		下午9:15:32 
  */
-public class BusPortalShell extends BusBasePortalShell {
+public class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	private BusPortalConfigurationHelper configurationHelper;
 
@@ -66,7 +66,7 @@ public class BusPortalShell extends BusBasePortalShell {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusBasePortalShell#answer(int)
+	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#answer(int)
 	 */
 	@Override
 	protected void answer(int c) throws CIBusException {
@@ -78,7 +78,7 @@ public class BusPortalShell extends BusBasePortalShell {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusBasePortalShell#help()
+	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#help()
 	 */
 	@Override
 	protected String help() {
@@ -91,7 +91,7 @@ public class BusPortalShell extends BusBasePortalShell {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusBasePortalShell#answerHelp(int)
+	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#answerHelp(int)
 	 */
 	@Override
 	protected void answerHelp(int c) throws CIBusException {

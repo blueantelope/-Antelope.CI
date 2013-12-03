@@ -6,14 +6,14 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.portal.test;
+package com.antelope.ci.bus.server.shell.frame.test;
 
 import java.io.IOException;
 import java.util.List;
 
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusBasePortalShell;
+import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellSession;
 
 /**
@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @version 0.1
  * @Date 2013-10-14 下午3:02:14
  */
-class PortalShell extends BusBasePortalShell {
+class PortalShell extends BusBaseFrameShell {
 	private static final int ROWS = 6;
 	private long timestamp;
 	boolean stop = false;

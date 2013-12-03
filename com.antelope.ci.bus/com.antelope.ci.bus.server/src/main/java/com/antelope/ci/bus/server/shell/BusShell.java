@@ -31,13 +31,34 @@ public abstract class BusShell {
 	protected InputStream in;
 	protected OutputStream out;
 	protected OutputStream err;
-	protected boolean onShell;
+	protected boolean opened;
 	protected boolean quit;
+	protected boolean keyBell;
+	private boolean statusSetted;
+	protected String status;
+	protected String actionStatus;
+	protected BusShellContainer container;
 
 	public BusShell(BusShellSession session) {
+		this();
 		this.session = session;
-		onShell = true;
+	}
+	
+	public BusShell() {
+		opened = false;
 		quit = false;
+		keyBell = false;
+		status = BusShellStatus.ROOT;
+		actionStatus = status;
+		statusSetted = false;
+	}
+	
+	void attatchContaint(BusShellContainer container) {
+		this.container = container;
+	}
+	
+	public void attatchSession(BusShellSession session) {
+		this.session = session;
 	}
 
 	public ConnectionData getSetting() {
@@ -48,7 +69,25 @@ public abstract class BusShell {
 		return io;
 	}
 	
+	public void setStatus(String status) {
+		if (!statusSetted) {
+			this.status = status;
+			actionStatus = status;
+			statusSetted = true;
+		}
+	}
+	
+	public String getStatus() {
+		return this.status;
+	}
+	
+	
+	public boolean isOpened() {
+		return opened;
+	}
+
 	public void open() throws CIBusException {
+		opened = true;
 		environment();
 		clear();
 		mainView();
@@ -56,12 +95,29 @@ public abstract class BusShell {
 	}
 	
 	private void loopAction() throws CIBusException {
-		while (onShell) {
+		while (true) {
+			action(); 
 			if (quit) {
 				close();
 				break;
 			}
-			action(); 
+			if (container != null && !actionStatus.equals(status))  {
+				BusShell wakeShell  = container.getShell(actionStatus);
+				wakeShell.notify();
+				if (wakeShell.isOpened())
+					wakeShell.refresh();
+				else
+					wakeShell.open();
+				waitForWake();
+			}
+		}
+	}
+	
+	protected void waitForWake() {
+		synchronized(container.getShell(status)) {
+			try {
+				wait();
+			} catch (InterruptedException e) { }
 		}
 	}
 	
@@ -191,15 +247,15 @@ public abstract class BusShell {
     }
     
     protected int getHeight() {
-    		return Integer.valueOf(getEnv(Environment.ENV_LINES));
+    	return Integer.valueOf(getEnv(Environment.ENV_LINES));
     }
     
     protected int getWidth() {
-    		return Integer.valueOf(getEnv(Environment.ENV_COLUMNS));
+    	return Integer.valueOf(getEnv(Environment.ENV_COLUMNS));
     }
     
     protected String getEnv(String key) {
-    		return session.getEnv().getEnv().get(key);
+    	return session.getEnv().getEnv().get(key);
     }
 
 	protected abstract void custom() throws CIBusException;
