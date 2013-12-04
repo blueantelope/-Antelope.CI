@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
 /**
@@ -46,6 +47,8 @@ public class BusShellProxyLauncher extends BusShellLauncher {
 	@Override
 	protected BusShell createShell() throws CIBusException {
 		BusShell shell = (BusShell) ProxyUtil.newObject(shellClass);
+		if (shell == null)
+			shell = (BusShell) ProxyUtil.newObject(shellClass, CommonBusActivator.getClassLoader());
 		shell.attatchSession(createShellSession());
 		return shell;
 	}

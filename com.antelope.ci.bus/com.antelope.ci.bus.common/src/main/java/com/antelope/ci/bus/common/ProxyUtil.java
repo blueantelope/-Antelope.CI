@@ -307,12 +307,8 @@ public class ProxyUtil {
 		Object ret = null;
 		try {
 			ret = loader.loadClass(className).newInstance();
-		} catch (InstantiationException e) {
-
-		} catch (IllegalAccessException e) {
-
-		} catch (ClassNotFoundException e) {
-
+		} catch (Exception e) {
+			DevAssistant.errorln(e);
 		} finally {
 			return ret;
 		}

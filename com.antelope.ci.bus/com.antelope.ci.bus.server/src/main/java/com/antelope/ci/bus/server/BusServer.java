@@ -131,7 +131,6 @@ public abstract class BusServer {
 		}
 		
 		BusShellLauncher shellLauncher = null;
-		boolean launcherCreated = false;
 		switch (condition.getLauncherType()) {
 			case PROXY:
 				shellLauncher = new BusShellProxyLauncher();

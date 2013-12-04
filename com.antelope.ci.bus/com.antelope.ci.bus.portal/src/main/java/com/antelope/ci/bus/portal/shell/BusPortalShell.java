@@ -14,7 +14,6 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
-import com.antelope.ci.bus.server.shell.BusShellSession;
 
 /**
  * TODO 描述
@@ -26,8 +25,8 @@ public class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	private BusPortalConfigurationHelper configurationHelper;
 
-	public BusPortalShell(BusShellSession session) {
-		super(session);
+	public BusPortalShell() {
+		super();
 	}
 
 	/**

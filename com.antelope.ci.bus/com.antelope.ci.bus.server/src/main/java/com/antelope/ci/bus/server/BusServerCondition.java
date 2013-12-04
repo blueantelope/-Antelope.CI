@@ -85,6 +85,7 @@ public class BusServerCondition {
 	public List<AuthService> getAuthServiceList() {
 		return authServiceList;
 	}
+	
 	public void setAuthServiceList(List<AuthService> authServiceList) {
 		this.authServiceList = authServiceList;
 	}
