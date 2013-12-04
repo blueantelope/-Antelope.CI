@@ -295,12 +295,8 @@ public class ProxyUtil {
 		Object ret = null;
 		try {
 			ret = Class.forName(className).newInstance();
-		} catch (InstantiationException e) {
-
-		} catch (IllegalAccessException e) {
-
-		} catch (ClassNotFoundException e) {
-
+		} catch (Exception e) {
+			DevAssistant.errorln(e);
 		} finally {
 			return ret;
 		}

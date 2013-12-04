@@ -21,9 +21,11 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-10-14		下午12:43:31 
  */
 public class BusShellFactory implements Factory<Command> {
-	private Class command_class = null;
+	private Class command_class;
+	private BusShellLauncher shellLauncher;
 	
 	public BusShellFactory(String classname) throws CIBusException {
+		this();
 		try {
 			Class clazz = Class.forName(classname);
 			setCommandClass(command_class);
@@ -34,7 +36,18 @@ public class BusShellFactory implements Factory<Command> {
 	}
 	
 	public BusShellFactory(Class command_class) throws CIBusException {
+		this();
 		setCommandClass(command_class);
+	}
+	
+	public BusShellFactory(BusShellLauncher shellLauncher) {
+		this();
+		this.shellLauncher = shellLauncher;
+	}
+	
+	public BusShellFactory() {
+		this.command_class = null;
+		this.shellLauncher = null;
 	}
 	
 	private void setCommandClass(Class command_class) throws CIBusException {
@@ -43,7 +56,19 @@ public class BusShellFactory implements Factory<Command> {
 		this.command_class = command_class;
 	}
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see org.apache.sshd.common.Factory#create()
+	 */
+	@Override
 	public Command create() {
+		if (shellLauncher != null)
+			return shellLauncher;
+		return createShellLauncher();
+    }
+	
+	private Command createShellLauncher() {
 		Command command = null;
 		if (command_class != null) {
 			try {
@@ -56,7 +81,6 @@ public class BusShellFactory implements Factory<Command> {
 		}
 		
 		return command;
-    }
-	
+	}
 }
 

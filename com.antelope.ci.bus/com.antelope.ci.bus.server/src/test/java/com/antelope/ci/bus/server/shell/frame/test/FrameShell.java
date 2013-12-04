@@ -14,7 +14,6 @@ import java.util.List;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
-import com.antelope.ci.bus.server.shell.BusShellSession;
 
 /**
  * TODO 描述
@@ -23,7 +22,7 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  * @version 0.1
  * @Date 2013-10-14 下午3:02:14
  */
-class PortalShell extends BusBaseFrameShell {
+public class FrameShell extends BusBaseFrameShell {
 	private static final int ROWS = 6;
 	private long timestamp;
 	boolean stop = false;
@@ -43,9 +42,9 @@ class PortalShell extends BusBaseFrameShell {
 			21, // 设备IP
 			27 // 设备型号
 	};
-
-	public PortalShell(BusShellSession session) {
-		super(session);
+	
+	public FrameShell() {
+		super();
 	}
 
 	private void showBanner() throws IOException {

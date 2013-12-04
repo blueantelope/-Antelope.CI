@@ -26,6 +26,7 @@ import com.antelope.ci.bus.model.user.UserPassword;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.service.auth.PasswordAuthServiceImpl;
 import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
@@ -36,7 +37,7 @@ import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
  * @version  0.1
  * @Date	 2013-7-30		下午11:24:39 
  */
-public class TestBusServerPortal extends TestCase {
+public class TestBusServerFrame extends TestCase {
 	public static class MyBusServerPortal extends BusServer {
 		
 		public MyBusServerPortal() throws CIBusException {
@@ -61,7 +62,8 @@ public class TestBusServerPortal extends TestCase {
 		@Override
 		protected void attatchCondition(BusServerCondition server_condition)
 				throws CIBusException {
-			server_condition.setLauncher_class(PortalShellLauncher.class);
+			server_condition.setLauncherType(LAUNCHER_TYPE.CONTAINER);
+			server_condition.addShellClass(FrameShell.class.getName());
 			server_condition.addUser(createUser());
 			server_condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
 			server_condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));
@@ -216,7 +218,7 @@ public class TestBusServerPortal extends TestCase {
 	}
 	
 	public static void main(String[] args) {
-		junit.textui.TestRunner.run(TestBusServerPortal.class);
+		junit.textui.TestRunner.run(TestBusServerFrame.class);
 	}
 }
 

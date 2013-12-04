@@ -10,7 +10,6 @@ package com.antelope.ci.bus.server.shell.echo.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusBaseEchoShell;
-import com.antelope.ci.bus.server.shell.BusShellSession;
 
 
 /**
@@ -21,8 +20,8 @@ import com.antelope.ci.bus.server.shell.BusShellSession;
  */
 public class EchoShell extends BusBaseEchoShell {
 
-	public EchoShell(BusShellSession session) {
-		super(session);
+	public EchoShell() {
+		super();
 	}
 
 	@Override

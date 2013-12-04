@@ -30,7 +30,10 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.service.AuthService;
 import com.antelope.ci.bus.server.service.UserStoreService;
+import com.antelope.ci.bus.server.shell.BusShellContainerLauncher;
 import com.antelope.ci.bus.server.shell.BusShellFactory;
+import com.antelope.ci.bus.server.shell.BusShellLauncher;
+import com.antelope.ci.bus.server.shell.BusShellProxyLauncher;
 
 
 /**
@@ -126,13 +129,31 @@ public abstract class BusServer {
 				sshServer.setKeyPairProvider(new FileKeyPairProvider(new String[] {key_path}));
 				break;
 		}
+		
+		BusShellLauncher shellLauncher = null;
+		boolean launcherCreated = false;
+		switch (condition.getLauncherType()) {
+			case PROXY:
+				shellLauncher = new BusShellProxyLauncher();
+				break;
+			case CONTAINER:
+				shellLauncher = new BusShellContainerLauncher();
+				break;
+			default:
+				break;
+		}
 		BusShellFactory shellFactory;
-		if (condition.getLauncher_class() != null) {
-			shellFactory = new BusShellFactory(condition.getLauncher_class());
-		} else if (condition.getLauncher_className() != null && condition.getLauncher_className().length() > 0) {
-			shellFactory = new BusShellFactory(condition.getLauncher_className());
+		if (shellLauncher == null) {
+			if (condition.getLauncher_class() != null) {
+				shellFactory = new BusShellFactory(condition.getLauncher_class());
+			} else if (condition.getLauncher_className() != null && condition.getLauncher_className().length() > 0) {
+				shellFactory = new BusShellFactory(condition.getLauncher_className());
+			} else {
+				throw new CIBusException("", "create shell factory error");
+			}
 		} else {
-			throw new CIBusException("", "create shell factory error");
+			shellLauncher.addShell(condition.getShellClassList());
+			shellFactory = new BusShellFactory(shellLauncher);
 		}
 		sshServer.setShellFactory(shellFactory);
 		for (AuthService authService : condition.getAuthServiceList()) {

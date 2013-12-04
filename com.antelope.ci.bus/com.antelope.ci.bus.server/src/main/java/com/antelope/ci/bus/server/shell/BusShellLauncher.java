@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.apache.sshd.server.Command;
 import org.apache.sshd.server.Environment;
@@ -84,9 +85,10 @@ public abstract class BusShellLauncher implements Command {
 	}
 	
 	protected BusShellSession createShellSession() {
-		BusShellSession shellSession = new BusShellSession(in, out, err, callback, env);
-		return shellSession;
+		return new BusShellSession(in, out, err, callback, env);
 	}
+	
+	public abstract void addShell(List<String> shellClsList) throws CIBusException;
 	
 	protected abstract BusShell createShell() throws CIBusException;
 }

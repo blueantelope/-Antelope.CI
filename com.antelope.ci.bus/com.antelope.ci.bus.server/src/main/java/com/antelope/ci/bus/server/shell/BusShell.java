@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
 
 import org.apache.sshd.server.Environment;
 
@@ -37,7 +38,8 @@ public abstract class BusShell {
 	private boolean statusSetted;
 	protected String status;
 	protected String actionStatus;
-	protected BusShellContainer container;
+	protected String quitStatus;
+	protected Map<String, BusShell> shellMap;
 
 	public BusShell(BusShellSession session) {
 		this();
@@ -51,14 +53,20 @@ public abstract class BusShell {
 		status = BusShellStatus.ROOT;
 		actionStatus = status;
 		statusSetted = false;
+		quitStatus = BusShellStatus.QUIT;
+		shellMap = null;
 	}
 	
-	void attatchContaint(BusShellContainer container) {
-		this.container = container;
+	public void setShellMap(Map<String, BusShell> shellMap) {
+		this.shellMap = shellMap;
 	}
 	
 	public void attatchSession(BusShellSession session) {
 		this.session = session;
+	}
+	
+	public BusShellSession getSession() {
+		return this.session;
 	}
 
 	public ConnectionData getSetting() {
@@ -67,6 +75,10 @@ public abstract class BusShell {
 
 	public TerminalIO getIO() {
 		return io;
+	}
+	
+	public void setQuitStatus(String quitStatus) {
+		this.quitStatus = quitStatus;
 	}
 	
 	public void setStatus(String status) {
@@ -98,12 +110,16 @@ public abstract class BusShell {
 		while (true) {
 			action(); 
 			if (quit) {
-				close();
-				break;
+				if (shellMap == null || quitStatus.equals(BusShellStatus.QUIT)) {
+					close();
+					break;
+				}
 			}
-			if (container != null && !actionStatus.equals(status))  {
-				BusShell wakeShell  = container.getShell(actionStatus);
+			if (shellMap != null && !actionStatus.equals(status))  {
+				BusShell wakeShell  = shellMap.get(actionStatus);
 				wakeShell.notify();
+				if (wakeShell.getSession() == null) 
+					wakeShell.attatchSession(session);
 				if (wakeShell.isOpened())
 					wakeShell.refresh();
 				else
@@ -114,7 +130,7 @@ public abstract class BusShell {
 	}
 	
 	protected void waitForWake() {
-		synchronized(container.getShell(status)) {
+		synchronized(shellMap.get(status)) {
 			try {
 				wait();
 			} catch (InterruptedException e) { }

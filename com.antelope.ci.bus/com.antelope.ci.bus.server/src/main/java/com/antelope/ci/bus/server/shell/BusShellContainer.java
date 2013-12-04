@@ -16,7 +16,6 @@ import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
-
 /**
  * shell容器，支持多个shell切换
  * @author   blueantelope
@@ -24,46 +23,46 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-12-3		上午9:31:43 
  */
 public class BusShellContainer {
-	protected BusShellSession session;
-	protected Map<String, BusShell> shellMap;
+	protected Map<String, String> shellClassMap;
 	
-	public BusShellContainer(BusShellSession session) {
-		this.session = session;
-		shellMap = new HashMap<String, BusShell>();
+	public BusShellContainer() {
+		shellClassMap = new HashMap<String, String>();
 	}
 
-	public BusShellContainer(BusShellSession session, List<String> shellClsList) throws CIBusException {
-		this.session = session;
-		shellMap = new HashMap<String, BusShell>();
+	public BusShellContainer(List<String> shellClsList) throws CIBusException {
+		shellClassMap = new HashMap<String, String>();
 		addShell(shellClsList);
 	}
 	
 	public void addShell(List<String> shellClsList) throws CIBusException {
 		for (String shellCls : shellClsList) {
 			try {
-				BusShell shell = (BusShell) ProxyUtil.newObject(shellCls);
-				shell.attatchSession(session);
-				addShell(shell);
+				addShell(shellCls);
 			} catch (Exception e) {
 				throw new CIBusException("", e);
 			}
 		}
 	}
 	
-	public void addShell(BusShell shell) throws CIBusException {
+	public void addShell(String shellClass) throws CIBusException {
+		BusShell shell = (BusShell) ProxyUtil.newObject(shellClass);
 		String status = shell.getStatus();
-		if (shellMap.get(status) != null)
+		if (shellClassMap.get(status) != null)
 			throw new CIBusException("", "");
-		shell.attatchContaint(this);
-		shellMap.put(shell.getStatus(), shell);
+		shellClassMap.put(shell.getStatus(), shellClass);
+	}
+	
+	public BusShell createShell(String status) throws CIBusException {
+		String clsName = shellClassMap.get(status);
+		return (BusShell) ProxyUtil.newObject(clsName);
 	}
 
-	public BusShell getShell(String status) {
-		return shellMap.get(status);
+	public String getShellClass(String status) {
+		return shellClassMap.get(status);
 	}
 
-	public Map<String, BusShell> getShellMap() {
-		return shellMap;
+	public Map<String, String> getShellClassMap() {
+		return shellClassMap;
 	}
 }
 
