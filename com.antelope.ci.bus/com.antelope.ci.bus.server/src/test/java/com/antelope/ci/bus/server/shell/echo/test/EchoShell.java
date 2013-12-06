@@ -27,7 +27,7 @@ public class EchoShell extends BusBaseEchoShell {
 	@Override
 	protected void custom() throws CIBusException {
 		keyBell = true;
-		cmdAdapter.addCommand(new HEcho());		
+		commandAdapter.addCommand(new HEcho());		
 	}
 
 	@Override

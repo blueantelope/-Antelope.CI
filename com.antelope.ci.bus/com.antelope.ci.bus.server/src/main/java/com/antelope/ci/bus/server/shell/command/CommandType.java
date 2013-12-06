@@ -19,7 +19,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  */
 public enum CommandType {
 	ECHO("echo", "echo"),
-	Hit("hit", "frame");
+	HIT("hit", "frame");
 	
 	private String name;
 	private String shell;

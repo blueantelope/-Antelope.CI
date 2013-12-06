@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.server.shell.command.hit;
 
-import java.util.Map;
-
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -26,18 +24,15 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-2		下午5:15:36 
  */
 public class HitAdapter extends CommandAdapter {
-	private static final String BASE_CLASSPATH = "com.antelope.ci.bus.portal.shell";
-	protected Map<String, Hit> portalMap;
-	
 	public HitAdapter() {
-		super(CommandType.Hit);
+		super(CommandType.HIT);
 	}
 
 	@Override
 	protected void init() {
-		
-		// TODO Auto-generated method stub
-		
+		addCommand(new HelpHit());
+		addCommand(new QuitHit());
+		addCommand(new QuitOnHelpHit());
 	}
 
 	@Override

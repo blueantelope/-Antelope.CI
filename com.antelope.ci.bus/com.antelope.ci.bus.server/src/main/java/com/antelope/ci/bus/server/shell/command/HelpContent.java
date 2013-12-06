@@ -77,7 +77,7 @@ public class HelpContent {
 	}
 	
 	public String getFrameContent(String status) {
-		return getContent(CommandType.Hit.getShell(), status);
+		return getContent(CommandType.HIT.getShell(), status);
 	}
 }
 

@@ -15,7 +15,10 @@ import java.util.Map;
 
 import org.apache.sshd.server.Environment;
 
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.core.ConnectionData;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -40,6 +43,7 @@ public abstract class BusShell {
 	protected String actionStatus;
 	protected String quitStatus;
 	protected Map<String, BusShell> shellMap;
+	protected CommandAdapter commandAdapter;
 
 	public BusShell(BusShellSession session) {
 		this();
@@ -55,6 +59,30 @@ public abstract class BusShell {
 		statusSetted = false;
 		quitStatus = BusShellStatus.QUIT;
 		shellMap = null;
+		init();
+	}
+	
+	private void init() {
+		Class clazz = this.getClass();
+		for ( ;commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz=clazz.getSuperclass()) {
+			fetchShellInfo(clazz);
+		}
+	}
+	
+	private void fetchShellInfo(Class clazz) {
+		if (clazz.isAnnotationPresent(Shell.class)) {
+			Shell sa = (Shell) clazz.getAnnotation(Shell.class);
+			String caCls = sa.commandAdapter();
+			Object o = ProxyUtil.newObject(caCls);
+			if (o == null)
+				o = ProxyUtil.newObject(caCls, CommonBusActivator.getClassLoader());
+			commandAdapter = (CommandAdapter) o;
+			status = sa.status();
+		}
+	}
+	
+	public void setCommandAdapter(CommandAdapter commandAdapter) {
+		this.commandAdapter = commandAdapter;
 	}
 	
 	public void setShellMap(Map<String, BusShell> shellMap) {

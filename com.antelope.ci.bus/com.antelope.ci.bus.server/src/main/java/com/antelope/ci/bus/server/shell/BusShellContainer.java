@@ -14,6 +14,7 @@ import java.util.Map;
 
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
 /**
@@ -45,11 +46,38 @@ public class BusShellContainer {
 	}
 	
 	public void addShell(String shellClass) throws CIBusException {
-		BusShell shell = (BusShell) ProxyUtil.newObject(shellClass);
-		String status = shell.getStatus();
+		String status = BusShellStatus.ROOT;
+		Class clazz;
+		try {
+			clazz = Class.forName(shellClass);
+		} catch (ClassNotFoundException e) {
+			try {
+				clazz = Class.forName(shellClass, false, CommonBusActivator.getClassLoader());
+			} catch (ClassNotFoundException e1) {
+				throw new CIBusException("", e1);
+			}
+			
+		}
+		for ( ;BusShell.class.isAssignableFrom(clazz); clazz=clazz.getSuperclass()) {
+			String fs = null;
+			fs = fetchStatus(clazz);
+			if (fs != null) {
+				status = fs;
+				break;
+			}
+		}
 		if (shellClassMap.get(status) != null)
 			throw new CIBusException("", "");
-		shellClassMap.put(shell.getStatus(), shellClass);
+		shellClassMap.put(status, shellClass);
+	}
+	
+	private String fetchStatus(Class clazz) {
+		if (clazz.isAnnotationPresent(Shell.class)) {
+			Shell sa = (Shell) clazz.getAnnotation(Shell.class);
+			return sa.status();
+		}
+		
+		return null;
 	}
 	
 	public BusShell createShell(String status) throws CIBusException {

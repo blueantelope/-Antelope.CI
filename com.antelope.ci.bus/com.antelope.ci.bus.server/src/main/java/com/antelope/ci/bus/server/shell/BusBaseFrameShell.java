@@ -19,6 +19,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2013-11-22		下午8:30:35 
  */
+@Shell(commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
 public abstract class BusBaseFrameShell extends BusShell {
 	protected boolean onHelp;
 	
@@ -42,6 +43,8 @@ public abstract class BusBaseFrameShell extends BusShell {
 		try {
 			int c = io.read();
 			if (c != -1) {
+				if (keyBell)
+					io.bell();
 				if (onHelp) {
 					switch (c) {
 						case 'q':
