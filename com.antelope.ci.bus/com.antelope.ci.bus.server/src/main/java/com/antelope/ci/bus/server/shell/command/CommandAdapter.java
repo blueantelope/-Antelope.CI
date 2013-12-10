@@ -108,7 +108,7 @@ public abstract class CommandAdapter {
 		return cmdList;
 	}
 	
-	public void execute(String cmd, TerminalIO io, Object... args) throws CIBusException {
+	public boolean execute(String cmd, TerminalIO io, Object... args) throws CIBusException {
 		for (String key : commandMap.keySet()) {
 			ICommand command = commandMap.get(key);
 			if (match(command, cmd)) {
@@ -116,9 +116,10 @@ public abstract class CommandAdapter {
 				afterExecute(command, status, io, args);
 				if (status.equals(BusShellStatus.QUIT))
 					isQuit = true;
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	protected boolean match(ICommand command, String cmdStr) {

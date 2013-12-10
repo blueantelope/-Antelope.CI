@@ -42,17 +42,6 @@ public class BusPortalShell extends BusBaseFrameShell {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusShell#mainView()
-	 */
-	@Override
-	protected void mainView() throws CIBusException {
-		showBanner();
-		
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
 	 * @see com.antelope.ci.bus.server.shell.BusShell#shutdown()
 	 */
 	@Override
@@ -62,47 +51,20 @@ public class BusPortalShell extends BusBaseFrameShell {
 		
 	}
 	
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#answer(int)
-	 */
-	@Override
-	protected void answer(int c) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#help()
-	 */
-	@Override
-	protected String help() {
-		
-		// TODO Auto-generated method stub
-		return null;
-		
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#answerHelp(int)
-	 */
-	@Override
-	protected void answerHelp(int c) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
 	private void showBanner() {
 		String banner = configurationHelper.getConfiguration().getBanner().getText();
 		if (!StringUtil.empty(banner))
 			println(banner);
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#view()
+	 */
+	@Override
+	protected void view() throws CIBusException {
+		showBanner();
 	}
 }
 

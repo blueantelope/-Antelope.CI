@@ -114,47 +114,6 @@ public class FrameShell extends BusBaseFrameShell {
 		io.write(footer);
 	}
 
-	private void mainLoop() throws CIBusException  {
-		stop = false;
-		while (!stop) {
-			int ch = -1;
-			try {
-				ch = io.read();
-			} catch (IOException e) {
-				throw new CIBusException("", e);
-			}
-
-			timestamp = System.currentTimeMillis();
-			switch (ch) {
-				case 'f':
-				case 'F': // refresh portal window
-					showData();
-					break;
-				case 'q':
-				case 'Q': // 退出
-					try {
-						exit();
-					} catch (IOException e) {
-						
-					}
-					break;
-				default:
-					break;
-			}
-		}
-
-		schedule = false;
-		timestamp = -1;
-	}
-
-	private void exit() throws IOException {
-		io.closeInput();
-		io.eraseScreen();
-		io.homeCursor();
-		io.flush();
-		stop = true;
-	}
-
 	@Override
 	protected void custom() throws CIBusException {
 		
@@ -163,7 +122,7 @@ public class FrameShell extends BusBaseFrameShell {
 	}
 
 	@Override
-	protected void mainView() throws CIBusException {
+	protected void view() throws CIBusException {
 		timestamp = System.currentTimeMillis();
 		schedule = true;
 		showData();
@@ -176,25 +135,4 @@ public class FrameShell extends BusBaseFrameShell {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	protected void answer(int c) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected String help() {
-		return null;
-	}
-
-	@Override
-	protected void answerHelp(int c) throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-
-
 }

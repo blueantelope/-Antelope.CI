@@ -9,8 +9,10 @@
 package com.antelope.ci.bus.server.shell;
 
 import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
+import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
+import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -21,16 +23,18 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  */
 @Shell(commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
 public abstract class BusBaseFrameShell extends BusShell {
+	protected BusHitBuffer buffer;
 	protected boolean onHelp;
+	protected String cmd;
 	
 	public BusBaseFrameShell() {
 		super();
-		onHelp = false;
+		cmd = new String();
 	}
 
 	public BusBaseFrameShell(BusShellSession session) {
 		super(session);
-		onHelp = false;
+		cmd = new String();
 	}
 	
 	/**
@@ -42,52 +46,101 @@ public abstract class BusBaseFrameShell extends BusShell {
 	protected void action() throws CIBusException {
 		try {
 			int c = io.read();
+			ShellCommandArg cmdArg;
 			if (c != -1) {
 				if (keyBell)
 					io.bell();
-				if (onHelp) {
-					switch (c) {
-						case 'q':
-						case 'Q':
-							refresh();
-							onHelp = false;
-						default:
-							answerHelp(c);
-							break;
-					}
-				} else {
-					switch (c) {
-						case 'f':
-			            case 'F': 		// refresh portal window
-				            	refresh();
-				            	break;
-						case 'q':
-						case 'Q':
-							quit = true;
-							break;
-						case 'h':
-						case 'H':
-							clear();
-							if (!StringUtil.empty(help()))
-								io.write(help());
-							onHelp = true;
-							break;
-						default:
-							answer(c);
-							break;
-					}
-				}
+				switch (c) {
+					case TerminalIO.LEFT:
+						buffer.left();
+						break;
+					case TerminalIO.RIGHT:
+						buffer.right();
+						break;
+					case TerminalIO.UP:
+						buffer.up();
+						break;
+					case TerminalIO.DOWN:
+						buffer.down();
+						break;
+					case TerminalIO.DELETE:
+						buffer.delete();
+						break;
+					case TerminalIO.BACKSPACE:
+						buffer.backspace();
+						break;
+					case TerminalIO.SPACE:
+						buffer.space();
+						break;
+					case TerminalIO.TABULATOR:
+						buffer.tab();
+						break;
+					case TerminalIO.ENTER:
+						cmdArg = buffer.enter();
+						if (cmdArg != null && cmdArg.exist()) {
+							commandAdapter.execute(cmdArg.getCommand(), io, cmdArg.getArgs());
+							buffer.reset();
+						}
+						break;
+					default:
+						buffer.put((char) c);
+						cmdArg = buffer.toCommand();
+						if (cmdArg != null && cmdArg.exist()) {
+							if (commandAdapter.execute(cmdArg.getCommand(), io, cmdArg.getArgs()))
+								buffer.reset();
+						}
+						break;
+			}
+//				if (onHelp) {
+//					switch (c) {
+//						case 'q':
+//						case 'Q':
+//							clear();
+//							onHelp = false;
+//						default:
+//							answerHelp(c);
+//							break;
+//					}
+//				} else {
+//					switch (c) {
+//						case 'f':
+//			            case 'F': 		// refresh portal window
+//				            	refresh();
+//				            	break;
+//						case 'q':
+//						case 'Q':
+//							quit = true;
+//							break;
+//						case 'h':
+//						case 'H':
+//							clear();
+//							if (!StringUtil.empty(help()))
+//								io.write(help());
+//							onHelp = true;
+//							break;
+//						default:
+//							answer(c);
+//							break;
+//					}
+//				}
 			} 
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
 		}
 	}
-
-	protected abstract void answer(int c) throws CIBusException;
 	
-	protected abstract String help();
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#mainView()
+	 */
+	@Override
+	protected void mainView() throws CIBusException {
+		buffer = new BusHitBuffer(io, 0, 0, session.getWidth(), session.getHeigth());
+		view();
+	}
 	
-	protected abstract void answerHelp(int c) throws CIBusException;
+	protected abstract void view() throws CIBusException;
 }
 

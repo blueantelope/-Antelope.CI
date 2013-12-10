@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.sshd.server.Environment;
@@ -18,6 +19,7 @@ import org.apache.sshd.server.Environment;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.core.ConnectionData;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -282,12 +284,7 @@ public abstract class BusShell {
 	}
 	
     protected void clear() throws CIBusException {
-		try {
-			io.eraseScreen ();
-			io.homeCursor ();
-		} catch (IOException e) {
-			throw new CIBusException("", e);
-		}
+    	ShellUtil.clear(io);
     }
     
     protected int getHeight() {
@@ -301,7 +298,7 @@ public abstract class BusShell {
     protected String getEnv(String key) {
     	return session.getEnv().getEnv().get(key);
     }
-
+    
 	protected abstract void custom() throws CIBusException;
 	
 	protected abstract void mainView() throws CIBusException;

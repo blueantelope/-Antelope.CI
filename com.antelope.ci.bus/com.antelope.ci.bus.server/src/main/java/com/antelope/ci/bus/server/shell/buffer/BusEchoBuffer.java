@@ -6,10 +6,9 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.shell;
+package com.antelope.ci.bus.server.shell.buffer;
 
 import java.io.IOException;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +24,10 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-11-26		上午10:10:07 
  */
-public class BusEchoBuffer {
-	private static final int BUF_SIZE = 1024;
-	private static final int TAB_SIZE = 4;
-	private CharBuffer buffer;
+public class BusEchoBuffer extends BusBuffer {
 	private int cursor;
-	private TerminalIO io;
 	private final int cursorStart;
-	private List<Integer> blankList;
+	private List<Integer> spaceList;
 	private List<String> tipList;
 	private int tipLines;
 	private int tipCols;
@@ -45,10 +40,10 @@ public class BusEchoBuffer {
 	private boolean inTip;
 	
 	public BusEchoBuffer(TerminalIO io, int cursorStart) {
-		buffer = CharBuffer.allocate(BUF_SIZE);
+		super(io);
 		this.io = io;
 		this.cursorStart = cursorStart;
-		blankList = new ArrayList<Integer>();
+		spaceList = new ArrayList<Integer>();
 		reset();
 	}
 	
@@ -65,20 +60,20 @@ public class BusEchoBuffer {
 	}
 	
 	// 增加空格光标位
-	public void addBlank() {
+	public void addSpace() {
 		clearTips();
-		blankList.add(cursor);
+		spaceList.add(cursor);
 	}
 	
 	// 空格光标位是否存在
-	public boolean exitBlank() {
-		resetBlankList();
-		return blankList.isEmpty() ? false : true;
+	public boolean exitSpace() {
+		resetSpaceList();
+		return spaceList.isEmpty() ? false : true;
 	}
 	
 	public void reset() {
+		super.reset();
 		cursor = cursorStart;
-		buffer.clear();
 		tipLines = 0;
 		tipCols = 0;
 		tipLineLimit = 0;
@@ -111,62 +106,6 @@ public class BusEchoBuffer {
 		}
 	}
 	
-	public String read() {
-		int mark = buffer.position();
-		buffer.flip();
-		String s = buffer.toString();
-		buffer.position(mark);
-		buffer.limit(buffer.capacity());
-		return s;
-	}
-	
-	public CommandArgs enter(char c) throws CIBusException {
-		try {
-			io.write(c);
-		} catch(IOException e) {
-			throw new CIBusException("", e);
-		}
-		buffer.flip();
-		String line = buffer.toString();
-		String[] strs = line.split(" ");
-		String command = "";
-		String[] args = new String[0];
-		if (strs.length > 0) {
-			command = strs[0];
-			args = new String[strs.length-1];
-			int n = 0;
-			while (n < args.length) {
-				args[n] = strs[++n];
-			}
-		}
-		return new CommandArgs(command, args);
-	}
-	
-	public static class CommandArgs {
-		private String command;
-		private String[] args;
-		public CommandArgs(String command, String[] args) {
-			super();
-			this.command = command;
-			this.args = args;
-		}
-		public String getCommand() {
-			return command;
-		}
-		public String[] getArgs() {
-			return args;
-		}
-	}
-	
-	// 向右删除多个字符
-	public void delete(int times) {
-		int n = 0;
-		while (n < times) {
-			if (!delete())
-				break;
-		}
-	}
-	
 	// 向右删除1个字符
 	public boolean delete() {
 		if (inTip)
@@ -191,16 +130,7 @@ public class BusEchoBuffer {
 		
 		return isDel;
 	}
-	
-	// 向左删除多个字符
-	public void backspace(int times) {
-		int n = 0;
-		while (n < times) {
-			if (!backspace())
-				break;
-		}
-	}
-	
+
 	// 向左删除一个字符
 	public boolean backspace() {
 		if (inTip)
@@ -227,14 +157,6 @@ public class BusEchoBuffer {
 		return isBack;
 	}
 	
-	public void left(int times) {
-		int n = 0;
-		while (n < times) {
-			if (!left())
-				break;
-		}
-	}
-	
 	public boolean left() {
 		if (inTip) {
 			leftTip();
@@ -252,14 +174,6 @@ public class BusEchoBuffer {
 		}
 		
 		return moved;
-	}
-	
-	public void right(int times) {
-		int n = 0;
-		while (n < times) {
-			if (!left())
-				break;
-		}
 	}
 	
 	public boolean right() {
@@ -281,14 +195,6 @@ public class BusEchoBuffer {
 		return moved;
 	}
 	
-	public void up(int times) {
-		int n = 0;
-		while (n < times) {
-			if (!up())
-				break;
-		}
-	}
-	
 	public boolean up() {
 		if (inTip) {
 			upTip();
@@ -296,14 +202,6 @@ public class BusEchoBuffer {
 		}
 		boolean moved = false;
 		return false;
-	}
-	
-	public void down(int times) {
-		int n = 0;
-		while (n < times) {
-			if (!down())
-				break;
-		}
 	}
 	
 	public boolean down() {
@@ -574,7 +472,7 @@ public class BusEchoBuffer {
 		String tipStr = tip;
 		int tipSize = tip.length();
 		while (tipSize < tipWidth) {
-			tipStr += (char) TerminalIO.BLANK;
+			tipStr += (char) TerminalIO.SPACE;
 			tipSize++;
 		}
 		return tipStr;
@@ -587,7 +485,7 @@ public class BusEchoBuffer {
 			tips.append(tip);
 			int tipSize = tip.length();
 			while (tipSize < tipWidth) {
-				tips.append((char) TerminalIO.BLANK);
+				tips.append((char) TerminalIO.SPACE);
 				tipSize++;
 			}
 			position++;
@@ -642,7 +540,7 @@ public class BusEchoBuffer {
 		for (String tip : tipList) {
 			maxLen = tip.length() > maxLen ? tip.length() : maxLen;
 		}
-		tipWidth = maxLen + TAB_SIZE;
+		tipWidth = maxLen + tabSize;
 		tipCols = width / tipWidth;
 		tipCols = tipCols == 0 ? 1 : tipCols;
 		int n = 0;
@@ -658,7 +556,7 @@ public class BusEchoBuffer {
 			tips.append(tip);
 			int tipSize = tip.length();
 			while (tipSize < tipWidth) {
-				tips.append((char) TerminalIO.BLANK);
+				tips.append((char) TerminalIO.SPACE);
 				tipSize++;
 			}
 			tipCursor += tipWidth;
@@ -704,14 +602,44 @@ public class BusEchoBuffer {
 		tipShowed = false;
 	}
 	
-	private void resetBlankList() {
+	private void resetSpaceList() {
 		List<Integer> delList = new ArrayList<Integer>();
-		for (Integer i : blankList) {
+		for (Integer i : spaceList) {
 			if (i > cursor) {
 				delList.add(i);
 			}
 		}
-		blankList.removeAll(delList);
+		spaceList.removeAll(delList);
+	}
+
+	@Override
+	public void tab() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void space() throws CIBusException {
+		try {
+			put((char) TerminalIO.SPACE);
+			addSpace();
+		} catch(IOException e) {
+			new CIBusException("", e);
+		}
+	}
+
+	@Override
+	public ShellCommandArg enter() throws CIBusException {
+		if (inTip) {
+			enterTip();
+			clearTips();
+			return null;
+		}
+		
+		if (tipShowed)
+			clearTips();
+		return super.enter();
 	}
 }
 

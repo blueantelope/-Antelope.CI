@@ -638,7 +638,7 @@ public class TerminalIO {
 	/**
 	 * blank
 	 */
-	public static final int BLANK = 32;
+	public static final int SPACE = 32;
 
 	/**
 	 * Left (defining a direction on the terminal)

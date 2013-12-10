@@ -14,8 +14,8 @@ import java.util.List;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusEchoBuffer.CommandArgs;
-import com.antelope.ci.bus.server.shell.command.echo.EchoAdapter;
+import com.antelope.ci.bus.server.shell.buffer.BusEchoBuffer;
+import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -27,7 +27,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  */
 @Shell(commandAdapter="com.antelope.ci.bus.server.shell.command.echo.EchoAdapter")
 public abstract class BusBaseEchoShell extends BusShell {
-	protected BusEchoBuffer cmdBuf;
+	protected BusEchoBuffer buffer;
 	private boolean tabPress;
 	
 	public BusBaseEchoShell() {
@@ -41,7 +41,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	}
 	
 	protected void resetCommand() {
-		cmdBuf.reset();
+		buffer.reset();
 		tabPress = false;
 	}
 	
@@ -59,32 +59,31 @@ public abstract class BusBaseEchoShell extends BusShell {
 					io.bell();
 				switch (c) {
 					case TerminalIO.LEFT:
-						cmdBuf.left();
+						buffer.left();
 						break;
 					case TerminalIO.RIGHT:
-						cmdBuf.right();
+						buffer.right();
 						break;
 					case TerminalIO.UP:
-						cmdBuf.up();
+						buffer.up();
 						break;
 					case TerminalIO.DOWN:
-						cmdBuf.down();
+						buffer.down();
 						break;
 					case TerminalIO.DELETE:
-						cmdBuf.delete();
+						buffer.delete();
 						break;
 					case TerminalIO.BACKSPACE:
-						cmdBuf.backspace();
+						buffer.backspace();
 						break;
-					case TerminalIO.BLANK:
-						cmdBuf.put((char) c);
-						cmdBuf.addBlank();
+					case TerminalIO.SPACE:
+						buffer.space();
 						break;
 					case TerminalIO.TABULATOR:
-						if (!cmdBuf.inCmdTab()) {
+						if (!buffer.inCmdTab()) {
 							matchCommand();
 							if (tabPress) {
-								cmdBuf.tabTip();
+								buffer.tabTip();
 								tabPress = false;
 							}
 							if (!tabPress)
@@ -92,14 +91,9 @@ public abstract class BusBaseEchoShell extends BusShell {
 						}
 						break;
 					case TerminalIO.ENTER:
-						if (cmdBuf.inCmdTab()) {
-							cmdBuf.enterTip();
-							cmdBuf.clearTips();
-						} else {
-							if (cmdBuf.tipShowed())
-								cmdBuf.clearTips();
-							CommandArgs cmdArgs = cmdBuf.enter((char) c);
-							commandAdapter.execute(cmdArgs.getCommand(), io, cmdArgs.getArgs());
+						ShellCommandArg cmdArg = buffer.enter();
+						if (cmdArg != null) {
+							commandAdapter.execute(cmdArg.getCommand(), io, cmdArg.getArgs());
 							resetCommand();
 							if (commandAdapter.isQuit()) {
 								quit = true;
@@ -109,7 +103,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 						}
 						break;
 					default:
-						cmdBuf.put((char) c);
+						buffer.put((char) c);
 						break;
 				}
 			}
@@ -120,9 +114,9 @@ public abstract class BusBaseEchoShell extends BusShell {
 	}
 	
 	private void matchCommand() {
-		if (!cmdBuf.exitBlank()) {
-			List<String> cmdList = commandAdapter.findCommands(cmdBuf.read());
-			cmdBuf.printTips(cmdList, session.getWidth());
+		if (!buffer.exitSpace()) {
+			List<String> cmdList = commandAdapter.findCommands(buffer.read());
+			buffer.printTips(cmdList, session.getWidth());
 		}
 	}
 	
@@ -134,7 +128,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	@Override
 	protected void mainView() throws CIBusException {
 		try {
-			cmdBuf = new BusEchoBuffer(io, prompt().length());
+			buffer = new BusEchoBuffer(io, prompt().length());
 			if (!StringUtil.empty(header()))
 				io.println(header());
 			io.write(prompt());
