@@ -108,18 +108,18 @@ public abstract class CommandAdapter {
 		return cmdList;
 	}
 	
-	public boolean execute(String cmd, TerminalIO io, Object... args) throws CIBusException {
+	public String execute(String status, boolean refresh, String cmd, TerminalIO io,Object... args) throws CIBusException {
 		for (String key : commandMap.keySet()) {
-			ICommand command = commandMap.get(key);
-			if (match(command, cmd)) {
-				String status = command.execute(io, args);
-				afterExecute(command, status, io, args);
-				if (status.equals(BusShellStatus.QUIT))
-					isQuit = true;
-				return true;
+			if (key.contains(status)) {
+				ICommand command = commandMap.get(key);
+				if (match(command, cmd)) {
+					String actionStatus = command.execute(refresh, io, args);
+					afterExecute(command, status, io, args);
+					return actionStatus;
+				}
 			}
 		}
-		return false;
+		return BusShellStatus.KEEP;
 	}
 	
 	protected boolean match(ICommand command, String cmdStr) {

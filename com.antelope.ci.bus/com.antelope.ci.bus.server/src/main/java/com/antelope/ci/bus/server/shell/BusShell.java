@@ -11,15 +11,15 @@ package com.antelope.ci.bus.server.shell;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.sshd.server.Environment;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
-import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
+import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.core.ConnectionData;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -43,7 +43,7 @@ public abstract class BusShell {
 	private boolean statusSetted;
 	protected String status;
 	protected String actionStatus;
-	protected String quitStatus;
+	protected String lastStatus;
 	protected Map<String, BusShell> shellMap;
 	protected CommandAdapter commandAdapter;
 
@@ -57,11 +57,11 @@ public abstract class BusShell {
 		quit = false;
 		keyBell = false;
 		status = BusShellStatus.ROOT;
-		actionStatus = status;
 		statusSetted = false;
-		quitStatus = BusShellStatus.QUIT;
 		shellMap = null;
 		init();
+		actionStatus = BusShellStatus.INIT;
+		lastStatus = BusShellStatus.INIT;
 	}
 	
 	private void init() {
@@ -107,14 +107,11 @@ public abstract class BusShell {
 		return io;
 	}
 	
-	public void setQuitStatus(String quitStatus) {
-		this.quitStatus = quitStatus;
-	}
-	
 	public void setStatus(String status) {
 		if (!statusSetted) {
 			this.status = status;
-			actionStatus = status;
+			actionStatus = BusShellStatus.INIT;
+			lastStatus = BusShellStatus.INIT;
 			statusSetted = true;
 		}
 	}
@@ -123,6 +120,9 @@ public abstract class BusShell {
 		return this.status;
 	}
 	
+	public void setLastStatus(String lastStatus) {
+		this.lastStatus = lastStatus;
+	}
 	
 	public boolean isOpened() {
 		return opened;
@@ -140,21 +140,34 @@ public abstract class BusShell {
 		while (true) {
 			action(); 
 			if (quit) {
-				if (shellMap == null || quitStatus.equals(BusShellStatus.QUIT)) {
-					close();
-					break;
-				}
+				close();
+				break;
 			}
-			if (shellMap != null && !actionStatus.equals(status))  {
-				BusShell wakeShell  = shellMap.get(actionStatus);
-				wakeShell.notify();
-				if (wakeShell.getSession() == null) 
-					wakeShell.attatchSession(session);
-				if (wakeShell.isOpened())
-					wakeShell.refresh();
-				else
-					wakeShell.open();
-				waitForWake();
+			if (multiShell()) {
+				if (actionStatus.equals(lastStatus)) {
+					BusShell lastShell = shellMap.get(actionStatus);
+					lastShell.notify();
+					lastShell.refresh();
+					waitForWake();
+					continue;
+				}
+				if (!actionStatus.equals(status)) {
+					BusShell wakeShell = shellMap.get(actionStatus);
+					wakeShell.setLastStatus(status);
+					wakeShell.notify();
+					if (wakeShell.getSession() == null) 
+						wakeShell.attatchSession(session);
+					if (wakeShell.isOpened())
+						wakeShell.refresh();
+					else
+						wakeShell.open();
+					waitForWake();
+					continue;
+				}
+			} else {
+				if (actionStatus.equals(lastStatus)) {
+					refresh();
+				}
 			}
 		}
 	}
@@ -165,6 +178,36 @@ public abstract class BusShell {
 				wait();
 			} catch (InterruptedException e) { }
 		}
+	}
+	
+	protected void execute(ShellCommandArg cmdArg) {
+		if (cmdArg != null && cmdArg.exist()) {
+			try {
+				actionStatus = commandAdapter.execute(status, !multiShell(), cmdArg.getCommand(), io, cmdArg.getArgs());
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
+			}
+			switch (BusShellStatus.hash(actionStatus)) {
+				case BusShellStatus.QUIT_CODE:
+					quit = true;
+					break;
+				case BusShellStatus.KEEP_CODE:
+					actionStatus = status;
+					break;
+				case BusShellStatus.LAST_CODE:
+					actionStatus = lastStatus;
+					break;
+				default:
+					if (!actionStatus.equals(status))
+						lastStatus = status;
+					break;
+			}
+			status = actionStatus;
+		}
+	}
+	
+	protected boolean multiShell() {
+		return shellMap != null ? true : false;
 	}
 	
 	public void close() throws CIBusException {

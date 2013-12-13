@@ -21,10 +21,6 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date 2013-12-9 下午5:39:41
  */
 public class BusHitBuffer extends BusScreenBuffer {
-	private ShellCursor cursor;
-	private ShellCursor cursorStart;
-	private ShellScreen screen;
-
 	public BusHitBuffer(TerminalIO io, ShellCursor cursorStart, ShellScreen screen) {
 		super(io, cursorStart, screen);
 	}

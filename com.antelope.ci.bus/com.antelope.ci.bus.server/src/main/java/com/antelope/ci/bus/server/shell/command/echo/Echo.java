@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.server.shell.command.echo;
 
-import com.antelope.ci.bus.server.shell.command.ICommand;
 
 
 /**
@@ -17,7 +16,7 @@ import com.antelope.ci.bus.server.shell.command.ICommand;
  * @version  0.1
  * @Date	 2013-11-25		下午8:46:24 
  */
-public interface Echo extends ICommand {
+public interface Echo {
 
 }
 

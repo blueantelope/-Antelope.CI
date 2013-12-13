@@ -92,15 +92,9 @@ public abstract class BusBaseEchoShell extends BusShell {
 						break;
 					case TerminalIO.ENTER:
 						ShellCommandArg cmdArg = buffer.enter();
-						if (cmdArg != null) {
-							commandAdapter.execute(cmdArg.getCommand(), io, cmdArg.getArgs());
-							resetCommand();
-							if (commandAdapter.isQuit()) {
-								quit = true;
-							} else {
-								io.write(prompt());
-							}
-						}
+						execute(cmdArg);
+						resetCommand();
+						io.write(prompt());
 						break;
 					default:
 						buffer.put((char) c);

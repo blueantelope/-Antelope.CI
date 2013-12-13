@@ -17,7 +17,6 @@ import com.antelope.ci.bus.common.xml.BusXmlHelper;
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-12-3		下午3:54:28 
@@ -76,7 +75,7 @@ public class HelpContent {
 		return getContent(CommandType.ECHO.getShell(), status);
 	}
 	
-	public String getFrameContent(String status) {
+	public String getHitContent(String status) {
 		return getContent(CommandType.HIT.getShell(), status);
 	}
 }

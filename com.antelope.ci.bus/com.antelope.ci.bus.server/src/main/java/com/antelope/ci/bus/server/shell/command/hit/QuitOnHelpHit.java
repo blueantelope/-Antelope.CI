@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.server.shell.command.hit;
 
 import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.command.BaseCommand;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -16,17 +17,16 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-12-6		下午9:49:33 
  */
 @Command(name="quit", commands="q, Q", status=BusShellStatus.HELP, type=CommandType.HIT)
-public class QuitOnHelpHit implements Hit {
+public class QuitOnHelpHit extends BaseCommand implements Hit {
 
 	@Override
 	public String execute(TerminalIO io, Object... args) {
-		return "quit";
+		return BusShellStatus.LAST;
 	}
 
 }

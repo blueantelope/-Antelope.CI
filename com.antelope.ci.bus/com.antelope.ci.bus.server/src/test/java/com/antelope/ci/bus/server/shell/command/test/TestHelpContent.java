@@ -29,7 +29,7 @@ public class TestHelpContent extends TestCase {
 		System.out.println(helpContent.getContent("frame", "help"));
 		
 		System.out.println(helpContent.getEchoContent("help"));
-		System.out.println(helpContent.getFrameContent("help"));
+		System.out.println(helpContent.getHitContent("help"));
 	}
 	
 	public static void main(String[] args) {

@@ -17,10 +17,36 @@ package com.antelope.ci.bus.server.shell;
  * @Date	 2013-12-3		下午12:27:49 
  */
 public class BusShellStatus {
-	public static final String ROOT = "command.status.root";
+	public static final String INIT 			= "command.status.init";
 	
-	public static final String HELP = "command.status.help";
+	public static final String ROOT 			= "command.status.root";
+	public static final int ROOT_CODE 	= 1;
 	
-	public static final String QUIT = "command.status.quit";
+	public static final String HELP 			= "command.status.help";
+	public static final int HELP_CODE 		= 2;
+	
+	public static final String QUIT 			= "command.status.quit";
+	public static final int QUIT_CODE 		= 3;
+	
+	public static final String LAST 			= "command.status.last";					// last time status
+	public static final int LAST_CODE	 	= 4;
+	
+	public static final String KEEP 			= "command.status.keep";					// current status, not to change
+	public static final int KEEP_CODE 		= 5;
+	
+	public static int hash(String status) {
+		if (status.equals(ROOT))
+			return ROOT_CODE;
+		if (status.equals(HELP))
+			return HELP_CODE;
+		if (status.equals(QUIT))
+			return QUIT_CODE;
+		if (status.equals(LAST))
+			return LAST_CODE;
+		if (status.equals(KEEP))
+			return KEEP_CODE;
+		
+		return -1;
+	}
 }
 

@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.command.BaseCommand;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.HelpContent;
@@ -26,7 +27,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-11-25		下午9:00:24 
  */
 @Command(name="help", commands="help", status=BusShellStatus.ROOT, type=CommandType.ECHO)
-public class HelpEcho implements Echo {
+public class HelpEcho extends BaseCommand implements Echo {
 
 	public HelpEcho() {
 
@@ -35,18 +36,16 @@ public class HelpEcho implements Echo {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.Object[])
 	 */
 	@Override
 	public String execute(TerminalIO io, Object... args) {
-		String status = BusShellStatus.ROOT;
 		try {
-			io.println(HelpContent.getContent().getEchoContent("help"));
-			status = BusShellStatus.HELP;
+			io.println(HelpContent.getContent().getEchoContent(BusShellStatus.HELP));
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		} finally {
-			return status;
+			return BusShellStatus.HELP;
 		}
 	}
 }

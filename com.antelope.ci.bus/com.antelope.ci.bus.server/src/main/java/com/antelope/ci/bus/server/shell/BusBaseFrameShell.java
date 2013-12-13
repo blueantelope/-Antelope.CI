@@ -77,55 +77,20 @@ public abstract class BusBaseFrameShell extends BusShell {
 						break;
 					case TerminalIO.ENTER:
 						cmdArg = buffer.enter();
-						if (cmdArg != null && cmdArg.exist()) {
-							commandAdapter.execute(cmdArg.getCommand(), io, cmdArg.getArgs());
-							buffer.reset();
-						}
+						execute(cmdArg);
+						buffer.reset();
 						break;
 					default:
 						buffer.put((char) c);
 						cmdArg = buffer.toCommand();
-						if (cmdArg != null && cmdArg.exist()) {
-							if (commandAdapter.execute(cmdArg.getCommand(), io, cmdArg.getArgs()))
-								buffer.reset();
-						}
+						execute(cmdArg);
+						buffer.reset();
 						break;
-			}
-//				if (onHelp) {
-//					switch (c) {
-//						case 'q':
-//						case 'Q':
-//							clear();
-//							onHelp = false;
-//						default:
-//							answerHelp(c);
-//							break;
-//					}
-//				} else {
-//					switch (c) {
-//						case 'f':
-//			            case 'F': 		// refresh portal window
-//				            	refresh();
-//				            	break;
-//						case 'q':
-//						case 'Q':
-//							quit = true;
-//							break;
-//						case 'h':
-//						case 'H':
-//							clear();
-//							if (!StringUtil.empty(help()))
-//								io.write(help());
-//							onHelp = true;
-//							break;
-//						default:
-//							answer(c);
-//							break;
-//					}
-//				}
+				}
 			} 
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
+			e.printStackTrace();
 			throw new CIBusException("", e);
 		}
 	}
