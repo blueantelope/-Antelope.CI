@@ -14,6 +14,7 @@ import java.util.List;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
  * TODO 描述
@@ -65,7 +66,7 @@ public class FrameShell extends BusBaseFrameShell {
 			// show footer
 			showFooter();
 	
-			io.setCursor(dataLine, 1);
+			io.setCursor(4, 1);
 			selectedLine = -1;
 		} catch (IOException e) {
 			throw new CIBusException("", e);
@@ -134,5 +135,10 @@ public class FrameShell extends BusBaseFrameShell {
 		
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected ShellCursor initCursorPosistion() {
+		return new ShellCursor(0, 4);
 	}
 }

@@ -9,9 +9,13 @@
 package com.antelope.ci.bus.common;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -47,6 +51,23 @@ public class ResourceUtil {
 		URL jarUrl = ResourceUtil.class.getProtectionDomain().getCodeSource()
 				.getLocation();
 		return urlParent(jarUrl);
+	}
+	
+	public static List<URL> getPakcetResource(ClassLoader cl, String packagePath) {
+		List<URL> resList = new ArrayList<URL>();
+		try {
+			Enumeration<URL> subUrls = cl.getResources(packagePath);
+			while (subUrls.hasMoreElements()) {  
+				URL subUrl = subUrls.nextElement(); 
+				if (!subUrl.toString().endsWith(".class")) {
+					resList.add(subUrl);
+				}
+			}
+		} catch (IOException e) {
+			
+		}
+		
+		return resList;
 	}
 
 	/*

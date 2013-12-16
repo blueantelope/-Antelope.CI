@@ -12,12 +12,10 @@ import java.io.IOException;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.ShellUtil;
 import com.antelope.ci.bus.server.shell.command.BaseCommand;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.HelpContent;
-import com.antelope.ci.bus.server.shell.command.echo.Echo;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -27,7 +25,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-6		下午9:47:12 
  */
-@Command(name="help", commands="h, H", status=BusShellStatus.ROOT, type=CommandType.HIT)
+@Command(name="help", commands="h, H", status=BusShellStatus.ROOT, type=CommandType.HIT, beforeClear=true)
 public class HelpHit extends BaseCommand implements Hit {
 
 	@Override

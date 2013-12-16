@@ -14,6 +14,7 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
  * TODO 描述
@@ -21,7 +22,7 @@ import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
  * @version  0.1
  * @Date	 2013-10-29		下午9:15:32 
  */
-public class BusPortalShell extends BusBaseFrameShell {
+public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	private BusPortalConfigurationHelper configurationHelper;
 
@@ -65,6 +66,14 @@ public class BusPortalShell extends BusBaseFrameShell {
 	@Override
 	protected void view() throws CIBusException {
 		showBanner();
+	}
+
+	@Override
+	protected ShellCursor initCursorPosistion() {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
 	}
 }
 

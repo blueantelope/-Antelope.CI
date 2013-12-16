@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.server.shell.command.hit;
 
+import com.antelope.ci.bus.server.shell.command.ICommand;
+
 
 
 /**
@@ -16,7 +18,7 @@ package com.antelope.ci.bus.server.shell.command.hit;
  * @version  0.1
  * @Date	 2013-12-2		下午5:23:37 
  */
-public interface Hit {
+public interface Hit extends ICommand {
 
 }
 

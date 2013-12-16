@@ -108,7 +108,7 @@ public abstract class CommandAdapter {
 		return cmdList;
 	}
 	
-	public String execute(String status, boolean refresh, String cmd, TerminalIO io,Object... args) throws CIBusException {
+	public String execute(String status, boolean refresh, String cmd, TerminalIO io, Object... args) throws CIBusException {
 		for (String key : commandMap.keySet()) {
 			if (key.contains(status)) {
 				ICommand command = commandMap.get(key);

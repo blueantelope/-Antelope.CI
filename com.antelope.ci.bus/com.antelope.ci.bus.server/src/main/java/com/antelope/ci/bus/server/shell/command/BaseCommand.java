@@ -13,21 +13,22 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.ShellUtil;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
-
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-12-13		下午6:33:41 
  */
 public abstract class BaseCommand implements ICommand {
 	public String execute(boolean refresh, TerminalIO io, Object... args) {
-		if (refresh) {
-			try {
-				ShellUtil.clear(io);
-			} catch (CIBusException e) {
-				DevAssistant.errorln(e);
+		if (this.getClass().isAnnotationPresent(Command.class)) {
+			Command command = this.getClass().getAnnotation(Command.class);
+			if (refresh && command.beforeClear()) {
+				try {
+					ShellUtil.clear(io);
+				} catch (CIBusException e) {
+					DevAssistant.errorln(e);
+				}
 			}
 		}
 		

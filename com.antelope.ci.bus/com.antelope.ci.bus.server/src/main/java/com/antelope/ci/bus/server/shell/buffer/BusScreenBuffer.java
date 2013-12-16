@@ -54,7 +54,7 @@ public abstract class BusScreenBuffer extends BusBuffer {
 	protected void init(ShellCursor cursorStart, ShellScreen screen) {
 		this.cursorStart = cursorStart;
 		this.screen = screen;
-		this.cursor = cursorStart;
+		this.cursor = new ShellCursor(cursorStart.getX(), cursorStart.getY());
 	}
 	
 	public void setTabSize(int tabSize) {
@@ -64,14 +64,14 @@ public abstract class BusScreenBuffer extends BusBuffer {
 	public boolean left() {
 		boolean moved = false;
 		try {
-			if (x() > 0) {
+			if (x() > cursorStart.getX()) {
 				io.moveLeft(1);
 				cursor.left(1);
 				moved = true;
 			} else {
-				if (y() > 0) {
+				if (y() > cursorStart.getY()) {
 					io.moveUp(1);
-					io.moveLeft(width());
+					io.moveRight(width());
 					cursor.lastEndline(width());
 					moved = true;
 				}
@@ -105,7 +105,7 @@ public abstract class BusScreenBuffer extends BusBuffer {
 
 	public boolean up() {
 		boolean moved = false;
-		if (y() > 0) {
+		if (y() > cursorStart.getY()) {
 			try {
 				io.moveUp(1);
 				cursor.up(1);
@@ -124,11 +124,6 @@ public abstract class BusScreenBuffer extends BusBuffer {
 			try {
 				io.moveDown(1);
 				cursor.down(1);
-				if (y() == height() -1) {
-					int steps = width() - x();
-					io.moveLeft(steps);
-					cursor.right(steps);
-				} 
 				moved = true;
 			} catch (IOException e) {
 				DevAssistant.errorln(e);

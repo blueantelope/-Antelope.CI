@@ -12,6 +12,8 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
+import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
+import com.antelope.ci.bus.server.shell.buffer.ShellScreen;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -102,9 +104,12 @@ public abstract class BusBaseFrameShell extends BusShell {
 	 */
 	@Override
 	protected void mainView() throws CIBusException {
-		buffer = new BusHitBuffer(io, 0, 0, session.getWidth(), session.getHeigth());
 		view();
+		ShellCursor cursor = initCursorPosistion();
+		buffer = new BusHitBuffer(io, cursor, new ShellScreen(session.getWidth(), session.getHeigth()));
 	}
+	
+	protected abstract ShellCursor initCursorPosistion(); 
 	
 	protected abstract void view() throws CIBusException;
 }

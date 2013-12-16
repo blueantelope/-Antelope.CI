@@ -128,6 +128,27 @@ public class BusEditBuffer extends BusScreenBuffer {
 		}
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusScreenBuffer#down()
+	 */
+	@Override
+	public boolean down() {
+		boolean moved = super.down();
+		if (moved && y() == height() -1) {
+			try {
+				int steps = width() - x();
+				io.moveLeft(steps);
+				cursor.right(steps);
+			} catch (IOException e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		
+		return moved;
+	}
+	
 	@Override
 	public ShellCommandArg enter() throws CIBusException {
 		try {

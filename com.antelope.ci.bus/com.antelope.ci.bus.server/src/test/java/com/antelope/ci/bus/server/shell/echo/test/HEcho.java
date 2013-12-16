@@ -32,7 +32,7 @@ public class HEcho extends BaseCommand implements Echo {
 	 */
 	@Override
 	public String execute(TerminalIO io, Object... args) {
-		return BusShellStatus.ROOT;
+		return BusShellStatus.KEEP;
 	}
 
 }

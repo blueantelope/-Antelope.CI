@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.portal;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.entrance.EntranceManager;

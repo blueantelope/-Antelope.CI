@@ -35,5 +35,7 @@ public @interface Command {
 	String commands() default "";
 	
 	CommandType type();
+	
+	boolean beforeClear() default false;
 }
 

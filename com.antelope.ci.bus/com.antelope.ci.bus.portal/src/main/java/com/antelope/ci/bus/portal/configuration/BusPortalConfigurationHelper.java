@@ -9,9 +9,14 @@
 package com.antelope.ci.bus.portal.configuration;
 
 import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
@@ -38,12 +43,14 @@ public class BusPortalConfigurationHelper {
 	private Configuration configutation;
 	private ResourceReader reader; 
 	private ClassLoader classLoader;
+	private Map<String, ConfigurationPair> configPairMap;
 	private BusPortalConfigurationHelper() {
 		try {
 			log = CommonBusActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
 			
 		} 
+		configPairMap = new HashMap<String, ConfigurationPair>();
 	}
 	
 	public void setClassLoader(ClassLoader classLoader) {
@@ -54,6 +61,7 @@ public class BusPortalConfigurationHelper {
 		parseXml();
 		parseProperties();
 		convert();
+		initConfigurationPair();
 	}
 	
 	private void parseXml() throws CIBusException {
@@ -77,6 +85,10 @@ public class BusPortalConfigurationHelper {
 			}
 		}
 	}
+	
+	private void initConfigurationPair() {
+		
+	}
 
 	public Configuration getConfiguration() {
 		return configutation;
@@ -84,6 +96,26 @@ public class BusPortalConfigurationHelper {
 	
 	public void addPart(Part part) {
 		configutation.addPart(part);
+	}
+	
+	public void addConfigurationPair(String packagePath) {
+		List<URL> resUrls = ResourceUtil.getPakcetResource(classLoader, packagePath);
+	}
+	
+	private static class ConfigurationPair {
+		private String props_name;
+		private String xml_name;
+		public ConfigurationPair(String props_name, String xml_name) {
+			super();
+			this.props_name = props_name;
+			this.xml_name = xml_name;
+		}
+		public String getProps_name() {
+			return props_name;
+		}
+		public String getXml_name() {
+			return xml_name;
+		}
 	}
 }
 

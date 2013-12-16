@@ -98,11 +98,11 @@ public abstract class BusShell {
 	public BusShellSession getSession() {
 		return this.session;
 	}
-
+	
 	public ConnectionData getSetting() {
 		return setting;
 	}
-
+	
 	public TerminalIO getIO() {
 		return io;
 	}
@@ -165,8 +165,10 @@ public abstract class BusShell {
 					continue;
 				}
 			} else {
-				if (actionStatus.equals(lastStatus)) {
-					refresh();
+				if (lastStatus != BusShellStatus.INIT) {
+					if (actionStatus.equals(lastStatus)) {
+						refresh();
+					}
 				}
 			}
 		}
