@@ -9,14 +9,14 @@
 package com.antelope.ci.bus.portal.configuration;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.antelope.ci.bus.common.ResourceUtil;
+import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
@@ -41,7 +41,7 @@ public class BusPortalConfigurationHelper {
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.configuration.portal";
 	private static Logger log;
 	private Configuration configutation;
-	private ResourceReader reader; 
+	private ResourceReader reader;
 	private ClassLoader classLoader;
 	private Map<String, ConfigurationPair> configPairMap;
 	private BusPortalConfigurationHelper() {
@@ -99,7 +99,11 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	public void addConfigurationPair(String packagePath) {
-		List<URL> resUrls = ResourceUtil.getPakcetResource(classLoader, packagePath);
+		try {
+			List<String> propsList = ClassFinder.getPropsResource(packagePath, classLoader);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
 	}
 	
 	private static class ConfigurationPair {

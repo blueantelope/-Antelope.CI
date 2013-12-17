@@ -33,10 +33,12 @@ public class ClassFinder {
 	private final static String DOT = ".";
 	private final static String SLASH = "/";
     private final static String CLASS_SUFFIX = ".class";
+    private final static String PROPERTIES_SUFFIX = ".properties";
+    private final static String XML_SUFFIX = ".xml";
     
 	/**
-	 * @throws CIBusException 
 	 * 取得package下的所有类，并以类的url列表返回
+	 * @throws CIBusException 
 	 * @param @param packageName
 	 * @param @return
 	 * @return List<URL>
@@ -46,18 +48,71 @@ public class ClassFinder {
 		List<URL> urlList = new ArrayList<URL>();
 		for (String className : findClasspath(packageName)) {
 			try {
-				urlList.add(classNameToUrl(className));
+				urlList.add(classNameToUrl(className, true));
 			} catch (Exception e) {
-				e.printStackTrace();
+				DevAssistant.errorln(e);
 			}
 		}
 
 		return urlList;
 	}
+	
+	public static List<URL> findResourceUrl(String packageName) throws CIBusException {
+		List<URL> urlList = new ArrayList<URL>();
+		for (String resourceName : findResource(packageName)) {
+			try {
+				urlList.add(classNameToUrl(resourceName, false));
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
 
+		return urlList;
+	}
+	
+	public static List<URL> findResourceUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
+		List<URL> urlList = new ArrayList<URL>();
+		for (String resourceName : findResource(packageName, clsLoader)) {
+			try {
+				urlList.add(classNameToUrl(resourceName, false));
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+
+		return urlList;
+	}
+	
+	public static List<URL> findXmlUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
+		List<URL> urlList = new ArrayList<URL>();
+		for (String resourceName : findResource(packageName, clsLoader)) {
+			try {
+				if (resourceName.endsWith(XML_SUFFIX))
+					urlList.add(classNameToUrl(resourceName, false));
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+
+		return urlList;
+	}
+	
+	public static List<String> getPropsResource(String packageName, ClassLoader clsLoader) throws CIBusException {
+		List<String> propsList = new ArrayList<String>();
+		for (String resourceName : findResource(packageName, clsLoader)) {
+			if (resourceName.endsWith(PROPERTIES_SUFFIX)) {
+				String props = resourceName.substring(0, resourceName.lastIndexOf(DOT));
+				props = props.replace(File.separator, DOT);
+				propsList.add(props);
+			}
+		}
+
+		return propsList;
+	}
+	
 	/**
-	 * @throws CIBusException 
 	 * 获取某包下（包括该包的所有子包）所有类
+	 * @throws CIBusException 
 	 * @param @param packageName
 	 * @param @return
 	 * @return List<String>
@@ -66,10 +121,14 @@ public class ClassFinder {
 	public static List<String> findClasspath(String packageName) throws CIBusException {
 		return findClasspath(packageName, true);
 	}
+	
+	public static List<String> findResource(String packageName) throws CIBusException {
+		return findResource(packageName, true);
+	}
 
 	/**
-	 * @throws CIBusException 
 	 * 获取某包下所有类
+	 * @throws CIBusException 
 	 * @param @param packageName
 	 * @param @param childPackage
 	 * @param @return
@@ -77,12 +136,16 @@ public class ClassFinder {
 	 * @throws
 	 */
 	public static List<String> findClasspath(String packageName, boolean childPackage) throws CIBusException {
-		return findClasspath(packageName, Thread.currentThread().getContextClassLoader(), childPackage);
+		return findClasspath(packageName, Thread.currentThread().getContextClassLoader(), childPackage, true);
+	}
+	
+	public static List<String> findResource(String packageName, boolean childPackage) throws CIBusException {
+		return findClasspath(packageName, Thread.currentThread().getContextClassLoader(), childPackage, false);
 	}
 	
 	/**
-	 * @throws CIBusException 
 	 * 获取包下（包括该包的所有子包）所有类，可指定0到多个类加载容器
+	 * @throws CIBusException 
 	 * @param  @param packageName
 	 * @param  @param clsLoaders
 	 * @param  @return
@@ -95,7 +158,7 @@ public class ClassFinder {
 		}
 		List<String> caList = new ArrayList<String>();
 		for (ClassLoader clsLoader : clsLoaders) {
-			caList.addAll(findClasspath(packageName, clsLoader, true));
+			caList.addAll(findClasspath(packageName, clsLoader, true, true));
 		}
 			
 		return caList;
@@ -110,10 +173,15 @@ public class ClassFinder {
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> findClasspath(String packageName,  ClassLoader clsLoader) throws CIBusException {
-		return findClasspath(packageName, clsLoader, true);
+	public static List<String> findClasspath(String packageName, ClassLoader clsLoader) throws CIBusException {
+		return findClasspath(packageName, clsLoader, true, true);
 	}
 	
+	
+	public static List<String> findResource(String packageName, ClassLoader clsLoader) throws CIBusException {
+		return findClasspath(packageName, clsLoader, true, false);
+	}
+
 	
 	/**
 	 * @throws CIBusException 
@@ -125,7 +193,8 @@ public class ClassFinder {
 	 * @return List<String>
 	 * @throws
 	 */
-	public static List<String> findClasspath(String packageName, ClassLoader clsLoader, boolean childPackage) throws CIBusException {
+	public static List<String> findClasspath(String packageName, ClassLoader clsLoader, 
+			boolean childPackage, boolean searchClass) throws CIBusException {
 		List<String> caList = new ArrayList<String>();
 		Map<String, String> cMap = new HashMap<String, String>();
 		String packagePath = packageName.replace(DOT, SLASH);
@@ -133,7 +202,7 @@ public class ClassFinder {
 			Enumeration<URL> urls = clsLoader.getResources(packagePath);
 			while (urls.hasMoreElements()) {
 				URL url = urls.nextElement();
-				for (String cs : searchClasspath(url, packageName, childPackage)) {
+				for (String cs : searchClasspath(url, packageName, childPackage, searchClass)) {
 					cMap.put(cs,  cs);
 				}
 			}
@@ -143,7 +212,7 @@ public class ClassFinder {
 		// 多个url中查找包，包括包的下层子包，反加这些子包下所有class的列表
 		List<URL> uList = searchPackageInJreEnv(packagePath);
 		for (URL u : uList) {
-			for (String cs : searchClassNameByJar(u.getPath(), childPackage)) {
+			for (String cs : searchClassNameByJar(u.getPath(), childPackage, searchClass)) {
 				cMap.put(cs,  cs);
 			}
 		}
@@ -157,7 +226,7 @@ public class ClassFinder {
 	/*
 	 * 在一个url路径中找包下的所有类，返回这些类的url列表
 	 */
-	private static List<String> searchClasspath(URL url, String packageName, boolean childPackage) throws CIBusException {
+	private static List<String> searchClasspath(URL url, String packageName, boolean childPackage, boolean searchClass) throws CIBusException {
 		List<String> fileNames = new ArrayList<String>();
 		String type = url.getProtocol();
 		if (type.equals("bundle")) {
@@ -170,9 +239,9 @@ public class ClassFinder {
 			}
 		} 
 		if (type.equals("file")) {
-			fileNames = searchClassNameByFile(url.getPath(), packageName.replace(DOT, File.separator), childPackage);
+			fileNames = searchClassNameByFile(url.getPath(), packageName.replace(DOT, File.separator), childPackage, searchClass);
 		} else if (type.equals("jar")) {
-			fileNames = searchClassNameByJar(url.getPath(), childPackage);
+			fileNames = searchClassNameByJar(url.getPath(), childPackage, searchClass);
 		}
 		return fileNames;
 	}
@@ -180,22 +249,26 @@ public class ClassFinder {
 	/*
 	 * 文件中获取某包下所有类
 	 */
-	private static List<String> searchClassNameByFile(String filePath, String packagePath, boolean childPackage) {
+	private static List<String> searchClassNameByFile(String filePath, String packagePath, boolean childPackage, boolean searchClass) {
 		List<String> myClassName = new ArrayList<String>();
 		File file = new File(filePath);
 		File[] childFiles = file.listFiles();
 		for (File childFile : childFiles) {
 			if (childFile.isDirectory()) {
 				if (childPackage) {
-					myClassName.addAll(searchClassNameByFile(childFile.getPath(), packagePath, childPackage));
+					myClassName.addAll(searchClassNameByFile(childFile.getPath(), packagePath, childPackage, searchClass));
 				}
 			} else {
 				String childFilePath = childFile.getPath();
-				if (childFilePath.endsWith(CLASS_SUFFIX)) {
-					childFilePath = childFilePath.substring(
-							childFilePath.lastIndexOf(packagePath),
-							childFilePath.lastIndexOf(DOT));
-					childFilePath = childFilePath.replace(File.separator, DOT);
+				if (!(childFilePath.endsWith(CLASS_SUFFIX) ^ searchClass)) {
+					if (searchClass) {
+						childFilePath = childFilePath.substring(
+								childFilePath.lastIndexOf(packagePath),
+								childFilePath.lastIndexOf(DOT));
+						childFilePath = childFilePath.replace(File.separator, DOT);
+					} else {
+						childFilePath = childFilePath.substring(childFilePath.lastIndexOf(packagePath));
+					}
 					myClassName.add(childFilePath);
 				}
 			}
@@ -207,8 +280,7 @@ public class ClassFinder {
 	/*
 	 * 从jar获取某包下所有类
 	 */
-	private static List<String> searchClassNameByJar(String jarPath,
-			boolean childPackage) {
+	private static List<String> searchClassNameByJar(String jarPath, boolean childPackage, boolean searchClass) {
 		List<String> classNameList = new ArrayList<String>();
 		String[] jarInfo = jarPath.split("!");
 		String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf(SLASH));
@@ -219,12 +291,13 @@ public class ClassFinder {
 			while (entrys.hasMoreElements()) {
 				JarEntry jarEntry = entrys.nextElement();
 				String entryName = jarEntry.getName();
-				if (entryName.endsWith(CLASS_SUFFIX)) {
+				if (!(entryName.endsWith(CLASS_SUFFIX) ^ searchClass)) {
 					if (childPackage) {
-						if (entryName.startsWith(packagePath)) {
-							entryName = entryName.replace(SLASH, DOT).substring(0, entryName.lastIndexOf(DOT));
-							classNameList.add(entryName);
+						entryName = entryName.replace(SLASH, DOT);
+						if (entryName.startsWith(packagePath) && searchClass) {
+							entryName = entryName.substring(0, entryName.lastIndexOf(DOT));
 						}
+						classNameList.add(entryName);
 					} else {
 						int index = entryName.lastIndexOf(SLASH);
 						String myPackagePath;
@@ -233,11 +306,11 @@ public class ClassFinder {
 						} else {
 							myPackagePath = entryName;
 						}
-						if (myPackagePath.equals(packagePath)) {
-							entryName = entryName.replace(SLASH, DOT).substring(
-									0, entryName.lastIndexOf(DOT));
-							classNameList.add(entryName);
+						entryName = entryName.replace(SLASH, DOT);
+						if (entryName.startsWith(packagePath) && searchClass) {
+							entryName = entryName.substring(0, entryName.lastIndexOf(DOT));
 						}
+						classNameList.add(entryName);
 					}
 				}
 			}
@@ -251,7 +324,7 @@ public class ClassFinder {
 	 * 从所有jar中搜索该包，并获取该包下所有类
 	 */
 	private static List<String> searchClassNameByJars(URL[] urls,
-			String packagePath, boolean childPackage) {
+			String packagePath, boolean childPackage, boolean searchClass) {
 		List<String> myClassName = new ArrayList<String>();
 		if (urls != null) {
 			for (int i = 0; i < urls.length; i++) {
@@ -262,7 +335,7 @@ public class ClassFinder {
 					continue;
 				}
 				String jarPath = urlPath + "!/" + packagePath;
-				myClassName.addAll(searchClassNameByJar(jarPath, childPackage));
+				myClassName.addAll(searchClassNameByJar(jarPath, childPackage, searchClass));
 			}
 		}
 		return myClassName;
@@ -310,10 +383,12 @@ public class ClassFinder {
 	/*
 	 * class名称转换为所在URL表示
 	 */
-	private static URL classNameToUrl(String className) throws CIBusException {
+	private static URL classNameToUrl(ClassLoader loader, String className, boolean isClass) throws CIBusException {
 		try {
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			String class_name = className.replace(".", "/") + ".class";
+			String class_name = className;
+			if (isClass) {
+				class_name = className.replace(".", "/") + ".class";
+			}
 			URL url = loader.getResource(class_name);
 			if (url == null) {
 				url = searchClassInJreEnv(class_name);
@@ -324,7 +399,11 @@ public class ClassFinder {
 		}
 	}
 	
-
+	private static URL classNameToUrl(String className, boolean isClass) throws CIBusException {
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		return classNameToUrl(loader, className, isClass);
+	}
+	
 	/*
 	 * 在系统jar列表中查找class所对应的url
 	 */
@@ -353,5 +432,6 @@ public class ClassFinder {
 		return null;
 	}
 
+	
 }
 
