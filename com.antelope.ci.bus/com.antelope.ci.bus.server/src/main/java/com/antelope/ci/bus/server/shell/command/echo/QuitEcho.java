@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.server.shell.command.echo;
 
 import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.command.BaseCommand;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -22,7 +21,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-11-25		下午9:07:41 
  */
 @Command(name="quit", commands="quit, exit", status=BusShellStatus.ROOT, type=CommandType.ECHO)
-public class QuitEcho extends BaseCommand implements Echo {
+public class QuitEcho extends Echo {
 	/**
 	 * 
 	 * (non-Javadoc)

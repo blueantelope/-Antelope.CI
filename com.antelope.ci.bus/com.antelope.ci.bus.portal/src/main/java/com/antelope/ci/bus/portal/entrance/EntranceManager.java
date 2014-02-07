@@ -59,7 +59,7 @@ public class EntranceManager {
 			}
 		}
 		
-		private void unmount(List<String>  classList ) {
+		private void unmount(List<String>  classList) {
 			List<String> unmountList = new ArrayList<String>();
 			for (String entrance_cls :entranceMap.keySet()) {
 				boolean is_unmount = true;
@@ -88,7 +88,7 @@ public class EntranceManager {
 			}
 		}
 		
-		private void mount(List<String>  classList ) {
+		private void mount(List<String> classList ) {
 			for (String cls : classList) {
 				try {
 					Class clazz = Class.forName(cls);

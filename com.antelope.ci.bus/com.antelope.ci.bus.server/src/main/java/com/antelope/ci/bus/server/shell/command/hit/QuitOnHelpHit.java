@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.server.shell.command.hit;
 
 import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.command.BaseCommand;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -22,7 +21,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-6		下午9:49:33 
  */
 @Command(name="quit", commands="q, Q", status=BusShellStatus.HELP, type=CommandType.HIT)
-public class QuitOnHelpHit extends BaseCommand implements Hit {
+public class QuitOnHelpHit extends Hit {
 
 	@Override
 	public String execute(TerminalIO io, Object... args) {

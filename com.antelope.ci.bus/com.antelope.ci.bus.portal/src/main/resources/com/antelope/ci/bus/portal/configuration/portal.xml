@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<portal-configuration>
+<portal>
 	<layout>
 		<place name="north">
 			<parts>
-				<part name="first.neum" place="center" />
+				<part name="banner" place="north" origin="global" />
+				<part name="first.menu" place="center" origin="part" />
 			</parts>
 		</place>
 		<place name="west">
 		</place>
 		<place name="center">
 			<parts>
-				<part name="second.menu" place="west" />
+				<part name="second.menu" place="west" origin="part" />
 				<place name="center">
 					<parts>
-						<part name="title" place="south" />
-						<part name="content" place="center" />
-						<part name="page" place="north" />
+						<part name="title" place="south" origin="part" />
+						<part name="content" place="center" origin="part" />
+						<part name="page" place="north" origin="global" />
 					</parts>
 				</place>
 			</parts>
 		</place>
 		<place name="east">
 		</place>
-		<place name="sourth">
-			<parts>
-				<part name="help" place="center" />
+		<place name="south">
+			<parts>	
+				<part name="help" place="center" origin="global" />
 			</parts>
 		</place>
 	</layout>
 
 	<parts>
+		<part name="banner">
+			<content><![CDATA[${banner.title}]]></content>
+		</part>
 		<part name="page">
 			<content><![CDATA[${page.total}#{page.total}${page.line} #{page.current}/#{page.total} ${page.per}:#{page.per}]]></content>
 		</part>
@@ -44,4 +48,4 @@
 		<extension point="parts">
 		</extension>
 	</extensions>
-</portal-configuration>
+</portal>

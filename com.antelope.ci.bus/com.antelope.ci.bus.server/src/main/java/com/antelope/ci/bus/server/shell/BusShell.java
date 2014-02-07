@@ -26,6 +26,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 /**
  * shell view template
+ * 
  * @author blueantelope
  * @version 0.1
  * @Date 2013-10-14 下午1:06:49
@@ -46,12 +47,14 @@ public abstract class BusShell {
 	protected String lastStatus;
 	protected Map<String, BusShell> shellMap;
 	protected CommandAdapter commandAdapter;
+	protected int x;
+	protected int y;
 
 	public BusShell(BusShellSession session) {
 		this();
 		this.session = session;
 	}
-	
+
 	public BusShell() {
 		opened = false;
 		quit = false;
@@ -63,50 +66,52 @@ public abstract class BusShell {
 		actionStatus = BusShellStatus.INIT;
 		lastStatus = BusShellStatus.INIT;
 	}
-	
+
 	private void init() {
 		Class clazz = this.getClass();
-		for ( ;commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz=clazz.getSuperclass()) {
+		for (; commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz = clazz
+				.getSuperclass()) {
 			fetchShellInfo(clazz);
 		}
 	}
-	
+
 	private void fetchShellInfo(Class clazz) {
 		if (clazz.isAnnotationPresent(Shell.class)) {
 			Shell sa = (Shell) clazz.getAnnotation(Shell.class);
 			String caCls = sa.commandAdapter();
 			Object o = ProxyUtil.newObject(caCls);
 			if (o == null)
-				o = ProxyUtil.newObject(caCls, CommonBusActivator.getClassLoader());
+				o = ProxyUtil.newObject(caCls,
+						CommonBusActivator.getClassLoader());
 			commandAdapter = (CommandAdapter) o;
 			status = sa.status();
 		}
 	}
-	
+
 	public void setCommandAdapter(CommandAdapter commandAdapter) {
 		this.commandAdapter = commandAdapter;
 	}
-	
+
 	public void setShellMap(Map<String, BusShell> shellMap) {
 		this.shellMap = shellMap;
 	}
-	
+
 	public void attatchSession(BusShellSession session) {
 		this.session = session;
 	}
-	
+
 	public BusShellSession getSession() {
 		return this.session;
 	}
-	
+
 	public ConnectionData getSetting() {
 		return setting;
 	}
-	
+
 	public TerminalIO getIO() {
 		return io;
 	}
-	
+
 	public void setStatus(String status) {
 		if (!statusSetted) {
 			this.status = status;
@@ -115,15 +120,15 @@ public abstract class BusShell {
 			statusSetted = true;
 		}
 	}
-	
+
 	public String getStatus() {
 		return this.status;
 	}
-	
+
 	public void setLastStatus(String lastStatus) {
 		this.lastStatus = lastStatus;
 	}
-	
+
 	public boolean isOpened() {
 		return opened;
 	}
@@ -135,10 +140,10 @@ public abstract class BusShell {
 		mainView();
 		loopAction();
 	}
-	
+
 	private void loopAction() throws CIBusException {
 		while (true) {
-			action(); 
+			action();
 			if (quit) {
 				close();
 				break;
@@ -155,7 +160,7 @@ public abstract class BusShell {
 					BusShell wakeShell = shellMap.get(actionStatus);
 					wakeShell.setLastStatus(status);
 					wakeShell.notify();
-					if (wakeShell.getSession() == null) 
+					if (wakeShell.getSession() == null)
 						wakeShell.attatchSession(session);
 					if (wakeShell.isOpened())
 						wakeShell.refresh();
@@ -174,18 +179,36 @@ public abstract class BusShell {
 		}
 	}
 	
-	protected void waitForWake() {
-		synchronized(shellMap.get(status)) {
-			try {
-				wait();
-			} catch (InterruptedException e) { }
+	protected void storeCurosr() {
+		try {
+			io.storeCursor();
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
 		}
 	}
 	
+	protected void restoreCursor() {
+		try {
+			io.restoreCursor();
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+
+	protected void waitForWake() {
+		synchronized (shellMap.get(status)) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+			}
+		}
+	}
+
 	protected void execute(ShellCommandArg cmdArg) {
 		if (cmdArg != null && cmdArg.exist()) {
 			try {
-				actionStatus = commandAdapter.execute(status, !multiShell(), cmdArg.getCommand(), io, cmdArg.getArgs());
+				actionStatus = commandAdapter.execute(status, !multiShell(),
+						cmdArg.getCommand(), io, cmdArg.getArgs());
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
@@ -207,28 +230,31 @@ public abstract class BusShell {
 			status = actionStatus;
 		}
 	}
-	
+
 	protected boolean multiShell() {
 		return shellMap != null ? true : false;
 	}
-	
+
 	public void close() throws CIBusException {
 		clear();
 		shutdown();
 		if (in != null) {
 			try {
 				in.close();
-			} catch (IOException e) { }
+			} catch (IOException e) {
+			}
 		}
 		if (out != null) {
 			try {
 				out.close();
-			} catch (IOException e) { }
+			} catch (IOException e) {
+			}
 		}
 		if (err != null) {
 			try {
 				err.close();
-			} catch (IOException e) { }
+			} catch (IOException e) {
+			}
 		}
 		session.getCallback().onExit(0);
 	}
@@ -237,7 +263,47 @@ public abstract class BusShell {
 		clear();
 		mainView();
 	}
+	
+	protected void shift(int x, int y) throws IOException {
+		ShellUtil.shift(io, x, y, getConsoleWidth(), getConsoleHeight());
+	}
+	
+	protected void shiftTop() throws IOException {
+		ShellUtil.shiftTop(io);
+	}
+	
+	protected void shiftBottom() throws IOException {
+		ShellUtil.shiftBottom(io, getConsoleHeight());
+	}
+	
+	protected void writeHeader(String header) throws IOException {
+		ShellUtil.writeHeader(io, header);
+	}
+	
+	protected void writeTail(String tail) throws IOException {
+		ShellUtil.writeTail(io, tail, getConsoleWidth(), getConsoleHeight());
+	}
 
+	protected void shiftLineEnd() throws IOException {
+		io.moveLeft(getConsoleWidth());
+	}
+	
+	protected void shiftUp(int times) throws IOException {
+		io.moveUp(times);
+	}
+	
+	protected void shifDown(int times) throws IOException {
+		io.moveDown(times);
+	}
+
+	protected void shiftRight(int times) throws IOException {
+		io.moveRight(times);
+	}
+	
+	protected void shiftLeft(int times) throws IOException {
+		io.moveLeft(times);
+	}
+	
 	private void environment() throws CIBusException {
 		in = session.getIn();
 		out = session.getOut();
@@ -252,15 +318,15 @@ public abstract class BusShell {
 		try {
 			io.println(text);
 		} catch (IOException e) {
-			
+			DevAssistant.errorln(e);
 		}
 	}
-	
+
 	protected void println() {
 		try {
 			io.println();
 		} catch (IOException e) {
-			
+			DevAssistant.errorln(e);
 		}
 	}
 
@@ -285,19 +351,13 @@ public abstract class BusShell {
 		io.errorln(text);
 	}
 
-	protected void resetIo() throws IOException {
-		io.setUnderlined(false);
-		io.setBold(false);
-		io.setReverse(false);
-	}
-
 	protected String readInput(boolean mark) throws IOException {
 		int in = io.read();
 		StringBuffer strBuf = new StringBuffer();
 		while (in != TerminalIO.ENTER) {
 			if (in == TerminalIO.DELETE || in == TerminalIO.BACKSPACE) {
 				if (strBuf.length() > 0) {
-					backspace();
+					ShellUtil.backspace(io);
 					strBuf.deleteCharAt(strBuf.length() - 1);
 				}
 			} else {
@@ -323,32 +383,27 @@ public abstract class BusShell {
 		return setting.getTerminalRows();
 	}
 
-	protected void backspace() throws IOException {
-		io.moveLeft(1);					// 光标左移一位
-		io.eraseToEndOfLine();		// 删除光标到行尾部分的内容
+	protected void clear() throws CIBusException {
+		ShellUtil.clear(io);
 	}
-	
-    protected void clear() throws CIBusException {
-    	ShellUtil.clear(io);
-    }
-    
-    protected int getHeight() {
-    	return Integer.valueOf(getEnv(Environment.ENV_LINES));
-    }
-    
-    protected int getWidth() {
-    	return Integer.valueOf(getEnv(Environment.ENV_COLUMNS));
-    }
-    
-    protected String getEnv(String key) {
-    	return session.getEnv().getEnv().get(key);
-    }
-    
+
+	protected int getHeight() {
+		return Integer.valueOf(getEnv(Environment.ENV_LINES));
+	}
+
+	protected int getWidth() {
+		return Integer.valueOf(getEnv(Environment.ENV_COLUMNS));
+	}
+
+	protected String getEnv(String key) {
+		return session.getEnv().getEnv().get(key);
+	}
+
 	protected abstract void custom() throws CIBusException;
-	
+
 	protected abstract void mainView() throws CIBusException;
-	
+
 	protected abstract void action() throws CIBusException;
-	
+
 	protected abstract void shutdown() throws CIBusException;
 }

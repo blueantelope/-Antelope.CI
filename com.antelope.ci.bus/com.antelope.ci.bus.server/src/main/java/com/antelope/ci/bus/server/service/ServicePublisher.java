@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.server.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -28,6 +27,7 @@ import com.antelope.ci.bus.osgi.BusOsgiUtil;
 public class ServicePublisher {
 	private static final Logger log = Logger.getLogger(ServicePublisher.class);
 	private static List<String> serviceList = new Vector<String>();
+	private static List<String> scanedList = new Vector<String>();
 
 	public static void publish(BundleContext m_context) {
 		new ServicePublishHook(m_context).start();
@@ -45,29 +45,28 @@ public class ServicePublisher {
 				try {
 					List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.server.service", 
 							BusOsgiUtil.getBundleClassLoader(m_context));
-					List<String> regList = new ArrayList<String>();
 					for (String cls : classList) {
 						cls_name = cls;
-						boolean isReg = true;
-						for (String service : serviceList) {
-							if (cls.equals(service)) {
-								isReg = false;
+						boolean scaned = false;
+						for (String scanedCls : scanedList) {
+							if (scanedCls.equals(cls)) {
+								scaned = true;
 								break;
 							}
 						}
-						if (isReg) {
-							Class clazz = Class.forName(cls);
+						if (!scaned) {
+							scanedList.add(cls);
+							Class clazz = Class.forName(cls, false, BusOsgiUtil.getBundleClassLoader(m_context));
 							if (Service.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(ServerService.class)) {
 								ServerService ss =  (ServerService) clazz.getAnnotation(ServerService.class);
 								Service service = (Service) clazz.newInstance();
 								String serviceName = ss.serviceName();
 								BusOsgiUtil.addServiceToContext(m_context, service, serviceName);
-								regList.add(cls);
+								serviceList.add(cls);
 								log.info("add service :" + cls_name);
 							}
 						}
 					}
-					serviceList.addAll(regList);
 				} catch (Exception e) {
 					e.printStackTrace();
 					log.warn("problem for add service :" + cls_name);

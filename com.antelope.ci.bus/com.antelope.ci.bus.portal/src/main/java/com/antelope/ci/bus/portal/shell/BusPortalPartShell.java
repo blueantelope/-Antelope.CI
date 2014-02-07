@@ -1,21 +1,22 @@
-// com.antelope.ci.bus.portal.configuration.LAYOUT_PLACE.java
+// com.antelope.ci.bus.portal.shell.BusPortalPartShell.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
  * ------------------------------------------------------------------------
- * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
+ * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.configuration;
+package com.antelope.ci.bus.portal.shell;
 
 
 /**
- * 布局
+ * TODO 描述
+ *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-12-17		下午12:39:06 
+ * @Date	 2014-2-3		下午8:45:42 
  */
-public enum LAYOUT_PLACE {
-	
+public abstract class BusPortalPartShell {
+
 }
 

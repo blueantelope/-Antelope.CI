@@ -38,7 +38,7 @@ public class TestFindForClasspath extends TestCase {
 	@Test
 	public void test() throws Exception {
 		ClassLoader cl = this.getClass().getClassLoader();
-		List<String> clsList = ClassFinder.findClasspath("com.antelope.ci.bus.common", this.getClass().getClassLoader());
+		List<String> clsList = ClassFinder.findClasspath("com.antelope.ci.bus.common.test", this.getClass().getClassLoader());
 		for (String cls : clsList) {
 			System.out.println(cls);
 			if (cls.endsWith("TestFindClass")) {

@@ -28,7 +28,7 @@ public class TestParse extends TestCase {
 	@Test
 	public void test() throws CIBusException {
 		BusPortalConfigurationHelper.getHelper().init();
-		System.out.println(BusPortalConfigurationHelper.getHelper().getConfiguration());
+		System.out.println(BusPortalConfigurationHelper.getHelper().getPortal());
 	}
 	
 	public static void main(String[] args) {

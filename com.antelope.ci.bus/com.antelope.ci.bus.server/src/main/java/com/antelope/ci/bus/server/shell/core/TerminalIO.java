@@ -34,7 +34,7 @@ public class TerminalIO {
 	private boolean m_Autoflush; // flag for autoflushing mode
 	private boolean m_ForceBold; // flag for forcing bold output
 	private boolean m_LineWrapping;
-
+	
 	public int available() throws IOException {
 		return m_io.available();
 	}
@@ -261,6 +261,11 @@ public class TerminalIO {
 			flush();
 		}
 	}// homeCursor
+	
+	public synchronized byte[] getCursor() {
+		byte[] cursor = m_Terminal.getSpecialSequence(STORECURSOR);
+		return cursor;
+	}
 
 	public synchronized void storeCursor() throws IOException {
 		m_io.write(m_Terminal.getSpecialSequence(STORECURSOR));

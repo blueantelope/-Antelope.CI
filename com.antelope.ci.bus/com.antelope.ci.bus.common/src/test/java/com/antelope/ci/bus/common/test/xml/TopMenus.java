@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common.xml.test;
+package com.antelope.ci.bus.common.test.xml;
 
 import java.util.List;
 

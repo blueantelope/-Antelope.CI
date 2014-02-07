@@ -8,8 +8,12 @@
 
 package com.antelope.ci.bus.common;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -102,5 +106,44 @@ public class StringUtil {
 		if (str != null && str.length() > 0)
 			return false;
 		return true;
+	}
+	
+	public static String[] toLines(String str) throws IOException {
+		BufferedReader reader = new BufferedReader(new StringReader(str));
+		List<String> lineList = new ArrayList<String>();
+		String line;
+		while ((line=reader.readLine()) != null)
+			lineList.add(line);
+		return lineList.toArray(new String[lineList.size()]);
+	}
+	
+	public static String[] toLines(String str, int width) throws IOException {
+		BufferedReader reader = new BufferedReader(new StringReader(str));
+		List<String> lineList = new ArrayList<String>();
+		String line;
+		while ((line=reader.readLine()) != null) {
+			int len = line.length();
+			if (len < width) {
+				lineList.add(line);
+			} else {
+				int start = 0;
+				while (start < len) {
+					int end = (start+width) > len ? len : start+width;
+					lineList.add(line.substring(start, end));
+					start += width;
+				}
+			}
+		}
+		return lineList.toArray(new String[lineList.size()]);
+	}
+	
+	public static int maxLine(String str) throws IOException {
+		String[] lines = toLines(str);
+		int maxWidth = 0;
+		for (String line : lines) {
+			maxWidth = maxWidth > line.length() ? maxWidth : line.length();
+		}
+		
+		return maxWidth;
 	}
 }

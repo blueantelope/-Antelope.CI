@@ -202,7 +202,8 @@ public class ClassFinder {
 			Enumeration<URL> urls = clsLoader.getResources(packagePath);
 			while (urls.hasMoreElements()) {
 				URL url = urls.nextElement();
-				for (String cs : searchClasspath(url, packageName, childPackage, searchClass)) {
+				List<String> csList = searchClasspath(url, packageName, childPackage, searchClass);
+				for (String cs : csList) {
 					cMap.put(cs,  cs);
 				}
 			}
@@ -212,7 +213,9 @@ public class ClassFinder {
 		// 多个url中查找包，包括包的下层子包，反加这些子包下所有class的列表
 		List<URL> uList = searchPackageInJreEnv(packagePath);
 		for (URL u : uList) {
-			for (String cs : searchClassNameByJar(u.getPath(), childPackage, searchClass)) {
+			List<String> cnList = searchClassNameByJar(u.getPath(), childPackage, searchClass);
+			List<String> csList = fetchAndTrimClassName(cnList, packageName);
+			for (String cs : csList) {
 				cMap.put(cs,  cs);
 			}
 		}
@@ -227,7 +230,7 @@ public class ClassFinder {
 	 * 在一个url路径中找包下的所有类，返回这些类的url列表
 	 */
 	private static List<String> searchClasspath(URL url, String packageName, boolean childPackage, boolean searchClass) throws CIBusException {
-		List<String> fileNames = new ArrayList<String>();
+		List<String> classNames = new ArrayList<String>();
 		String type = url.getProtocol();
 		if (type.equals("bundle")) {
 			try {
@@ -239,11 +242,24 @@ public class ClassFinder {
 			}
 		} 
 		if (type.equals("file")) {
-			fileNames = searchClassNameByFile(url.getPath(), packageName.replace(DOT, File.separator), childPackage, searchClass);
+			classNames = searchClassNameByFile(url.getPath(), packageName.replace(DOT, File.separator), childPackage, searchClass);
 		} else if (type.equals("jar")) {
-			fileNames = searchClassNameByJar(url.getPath(), childPackage, searchClass);
+			List<String> cnList = searchClassNameByJar(url.getPath(), childPackage, searchClass);
+			classNames = fetchAndTrimClassName(cnList, packageName);
 		}
-		return fileNames;
+		return classNames;
+	}
+	
+	private static List<String> fetchAndTrimClassName(List<String> cnList, String packageName) {
+		List<String> classNames = new ArrayList<String>();
+		for (String cn : cnList) {
+			if (cn.startsWith(packageName)) {
+				if (cn.endsWith(CLASS_SUFFIX)) {
+					classNames.add(cn.substring(0, cn.length()-CLASS_SUFFIX.length()));
+				}
+			}
+		}
+		return classNames;
 	}
 
 	/*

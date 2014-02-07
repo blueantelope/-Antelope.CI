@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.configuration;
+package com.antelope.ci.bus.common.test.xml;
 
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;

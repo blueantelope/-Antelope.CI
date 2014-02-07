@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.configuration;
+package com.antelope.ci.bus.common.test.xml;
 
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlEntity;
@@ -14,14 +14,14 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 
 /**
  * TODO 描述
+ *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-15		下午5:55:29 
  */
-@XmlEntity(name="top-menu")
+@XmlEntity(name="menu")
 public class TopMenu {
 	private String name;
-	private String value;
 	private Integer sort;
 	
 	@XmlAttribute(name="name")
@@ -38,14 +38,6 @@ public class TopMenu {
 	}
 	public void setSort(Integer sort) {
 		this.sort = sort;
-	}
-	
-	
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
 	}
 }
 

@@ -9,6 +9,8 @@
 package com.antelope.ci.bus.portal.configuration;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +19,13 @@ import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.portal.configuration.xo.Part;
+import com.antelope.ci.bus.portal.configuration.xo.Portal;
 
 
 /**
@@ -37,20 +42,22 @@ public class BusPortalConfigurationHelper {
 		return helper;
 	}
 	
+	private static final String LABLE_START = "${";
+	private static final String LABLE_END = "}";
 	private static final String PORTAL_XML= "portal.xml";
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.configuration.portal";
 	private static Logger log;
-	private Configuration configutation;
+	private Portal portal;
 	private ResourceReader reader;
 	private ClassLoader classLoader;
-	private Map<String, ConfigurationPair> configPairMap;
+	private Map<String, PortalPair> configPairMap;
 	private BusPortalConfigurationHelper() {
 		try {
 			log = CommonBusActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
 			
 		} 
-		configPairMap = new HashMap<String, ConfigurationPair>();
+		configPairMap = new HashMap<String, PortalPair>();
 	}
 	
 	public void setClassLoader(ClassLoader classLoader) {
@@ -66,7 +73,7 @@ public class BusPortalConfigurationHelper {
 	
 	private void parseXml() throws CIBusException {
 		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_XML);
-		configutation = (Configuration) BusXmlHelper.parse(Configuration.class, in);
+		portal = (Portal) BusXmlHelper.parse(Portal.class, in);
 	}
 	
 	private void parseProperties() throws CIBusException {
@@ -78,27 +85,80 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	private void convert() {
-		for (TopMenu topMenu : configutation.getTopMenus().getMenuList()) {
-			if (reader.getString(topMenu.getName()) != null) {
-				topMenu.setValue(reader.getString(topMenu.getName()));
-			}
+	private void convert() throws CIBusException {
+		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
+		findReplace(replaceList, portal);
+		for (PortalReplace pr : replaceList) {
+			String new_value = replaceLable(pr.getValue());
+			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
 		}
 	}
+	
+	private String replaceLable(String value) {
+		StringBuffer buf = new StringBuffer();
+		int len = value.length();
+		int index = 0;
+		while (index < len) {
+			int start = value.indexOf(LABLE_START, index);
+			if (start == -1) {
+				buf.append(value.substring(index, len));
+				break;
+			}
+			int end = value.indexOf(LABLE_END, start);
+			String key = value.substring(start+2, end);
+			String v = reader.getString(key);
+			v = (v == null) ? "" : v;
+			buf.append(value.substring(index, start)).append(v);
+			index = end + 1;
+		}
+		
+		return buf.toString();
+	}
+	
+	private void findReplace(List<PortalReplace> replaceList, Object root) throws CIBusException {
+		List<Object> deepList = new ArrayList<Object>();
+		for (Method method : root.getClass().getMethods()) {
+			if (!method.getName().equals("getClass") && method.getName().contains("get")) {
+				try {
+					Object o = ProxyUtil.invokeRet(method, root);
+					if (o == null)
+						continue;
+					if (List.class.isAssignableFrom(o.getClass())) {
+						deepList.addAll((List) o);
+					} else {
+						deepList.add(o);
+						if (o instanceof String) {
+							String setter = "set" + method.getName().substring(3);
+							Method setMethod = root.getClass().getMethod(setter, String.class);
+							if (setMethod != null) {
+								PortalReplace pr = new PortalReplace(root, setter, (String) o);
+								replaceList.add(pr);
+							}
+						}
+					}
+				} catch (Exception e) {
+					DevAssistant.errorln(e);
+				}
+			}
+		}
+		for (Object deep : deepList)
+			findReplace(replaceList, deep);
+	}
+	
 	
 	private void initConfigurationPair() {
 		
 	}
 
-	public Configuration getConfiguration() {
-		return configutation;
+	public Portal getPortal() {
+		return portal;
 	}
 	
-	public void addPart(Part part) {
-		configutation.addPart(part);
+	public void addPart(Part part) throws CIBusException {
+		portal.addPart(part);
 	}
 	
-	public void addConfigurationPair(String packagePath) {
+	public void addPortalPair(String packagePath) {
 		try {
 			List<String> propsList = ClassFinder.getPropsResource(packagePath, classLoader);
 		} catch (CIBusException e) {
@@ -106,10 +166,31 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	private static class ConfigurationPair {
+	private static class PortalReplace {
+		private Object parent;
+		private String setter;
+		private String value;
+		public PortalReplace(Object parent, String setter, String value) {
+			super();
+			this.parent = parent;
+			this.setter = setter;
+			this.value = value;
+		}
+		public Object getParent() {
+			return parent;
+		}
+		public String getSetter() {
+			return setter;
+		}
+		public String getValue() {
+			return value;
+		}
+	}
+	
+	private static class PortalPair {
 		private String props_name;
 		private String xml_name;
-		public ConfigurationPair(String props_name, String xml_name) {
+		public PortalPair(String props_name, String xml_name) {
 			super();
 			this.props_name = props_name;
 			this.xml_name = xml_name;

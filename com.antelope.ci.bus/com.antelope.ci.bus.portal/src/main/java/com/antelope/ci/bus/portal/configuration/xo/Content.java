@@ -1,12 +1,12 @@
-// com.antelope.ci.bus.common.xml.test.Banner.java
+// com.antelope.ci.bus.portal.configuration.xo.Content.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
  * ------------------------------------------------------------------------
- * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
+ * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common.xml.test;
+package com.antelope.ci.bus.portal.configuration.xo;
 
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
@@ -17,19 +17,19 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-11-15		下午6:05:12 
+ * @Date	 2014-2-2		下午8:03:52 
  */
-@XmlEntity(name="banner")
-public class Banner {
-	private String text;
+@XmlEntity(name="content")
+public class Content {
+	private String value;
 
 	@XmlCdata
-	public String getText() {
-		return text;
+	public String getValue() {
+		return value;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setValue(String value) {
+		this.value = value;
 	}
 }
 

@@ -12,7 +12,6 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.ShellUtil;
-import com.antelope.ci.bus.server.shell.command.BaseCommand;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -26,7 +25,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-9		下午5:21:43 
  */
 @Command(name="quit", commands="r, R", status=BusShellStatus.HELP, type=CommandType.HIT)
-public class RefreshHit extends BaseCommand implements Hit {
+public class RefreshHit extends Hit {
 
 	@Override
 	public String execute(TerminalIO io, Object... args) {

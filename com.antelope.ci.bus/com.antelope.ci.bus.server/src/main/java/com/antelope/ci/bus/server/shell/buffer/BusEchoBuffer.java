@@ -269,7 +269,7 @@ public class BusEchoBuffer extends BusBuffer {
 					fillTip(tipTabLine+1, tip, true);
 					io.moveLeft(1);
 					io.eraseToBeginOfLine();
-					io.moveLeft(tipWidth - 1);
+					io.moveLeft(tipWidth);
 					io.write(packTip(tipList.get(tipIndex)));
 					io.moveUp(1);
 					io.moveLeft(tipWidth);

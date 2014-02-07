@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.server.shell.echo.test;
 
 import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.command.BaseCommand;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.echo.Echo;
@@ -24,7 +23,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-11-28		下午11:00:04 
  */
 @Command(name="h", commands="h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15", type=CommandType.ECHO)
-public class HEcho extends BaseCommand implements Echo {
+public class HEcho extends Echo {
 	/**
 	 * 
 	 * (non-Javadoc)
