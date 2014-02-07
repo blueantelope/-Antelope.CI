@@ -86,9 +86,11 @@ public class FrameShell extends BusBaseFrameShell {
 		// show tab
 
 		// 打印标题,注意列宽度调整（通过空格进行控制）
+		storeCursor();
+		restoreCursor();
 		io.setBold(true);
 		String header = "[N]设备名称                [I]IP地址            [M]设备型号";
-		io.println(header);
+		println(header);
 		headerLength = header.getBytes().length / pageColumn;
 		dataLine = dataLine + headerLength;
 		pageSize = pageSize - headerLength;

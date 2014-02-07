@@ -179,7 +179,7 @@ public abstract class BusShell {
 		}
 	}
 	
-	protected void storeCurosr() {
+	protected void storeCursor() {
 		try {
 			io.storeCursor();
 		} catch (IOException e) {

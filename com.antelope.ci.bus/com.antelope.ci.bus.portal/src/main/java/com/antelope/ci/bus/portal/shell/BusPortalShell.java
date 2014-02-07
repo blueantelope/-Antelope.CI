@@ -77,7 +77,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 		if (northMap != null) {
 			layoutInner(northMap, getConsoleWidth());
 		}
-		storeCurosr();
+		storeCursor();
 
 		shiftBottom();
 		Map<String, PlacePart> southMap = placeMap.get(LAYOUT.SOUTH.getName());
@@ -102,7 +102,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 				DevAssistant.errorln(e);
 			}
 		}
-		storeCurosr();
+		storeCursor();
 
 		PlacePart southPart = placeMap.get(LAYOUT.SOUTH.getName());
 		if (southPart != null) {
@@ -118,7 +118,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 		}
 
 		restoreCursor();
-		storeCurosr();
+		storeCursor();
 		int west_width = 0;
 		PlacePart westPart = placeMap.get(LAYOUT.WEST.getName());
 		if (westPart != null) {
@@ -135,7 +135,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 		}
 
 		restoreCursor();
-		storeCurosr();
+		storeCursor();
 		int east_width = 0;
 		PlacePart eastPart = placeMap.get(LAYOUT.EAST.getName());
 		if (eastPart != null) {

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.configuration.xo.Portal;
 
 
 /**
@@ -28,7 +29,9 @@ public class TestParse extends TestCase {
 	@Test
 	public void test() throws CIBusException {
 		BusPortalConfigurationHelper.getHelper().init();
-		System.out.println(BusPortalConfigurationHelper.getHelper().getPortal());
+		Portal portal = BusPortalConfigurationHelper.getHelper().getPortal();
+		System.out.println(portal);
+		System.out.println(portal.getPartMap().get("help").getContent().getValue());
 	}
 	
 	public static void main(String[] args) {
