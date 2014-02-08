@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.shell.frame.test;
+package com.antelope.ci.bus.portal.test;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
  * @version 0.1
  * @Date 2013-10-14 下午3:02:14
  */
-public class FrameShell extends BusBaseFrameShell {
+public class TestBaseFrameShell extends BusBaseFrameShell {
 	private static final int ROWS = 6;
 	private long timestamp;
 	boolean stop = false;
@@ -44,7 +44,7 @@ public class FrameShell extends BusBaseFrameShell {
 			27 // 设备型号
 	};
 	
-	public FrameShell() {
+	public TestBaseFrameShell() {
 		super();
 	}
 

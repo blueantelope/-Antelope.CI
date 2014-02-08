@@ -273,7 +273,7 @@ public abstract class BusShell {
 	}
 	
 	protected void shiftBottom() throws IOException {
-		ShellUtil.shiftBottom(io, getConsoleHeight());
+		ShellUtil.shiftBottom(io, getHeight());
 	}
 	
 	protected void writeHeader(String header) throws IOException {

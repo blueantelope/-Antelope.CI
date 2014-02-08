@@ -146,4 +146,17 @@ public class StringUtil {
 		
 		return maxWidth;
 	}
+	
+	 public static int getWordCount(String s) {  
+        int length = 0;  
+        for(int i = 0; i < s.length(); i++)  {  
+            int codePoint = Character.codePointAt(s, i);  
+            if(codePoint >= 0 && codePoint <=255)  
+                length++;  
+            else  
+                length += 2;  
+        }
+        
+        return length;  
+    }  
 }

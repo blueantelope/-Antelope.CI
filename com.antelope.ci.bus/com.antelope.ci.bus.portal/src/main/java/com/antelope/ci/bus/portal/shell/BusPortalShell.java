@@ -75,14 +75,14 @@ public class BusPortalShell extends BusBaseFrameShell {
 		shiftTop();
 		Map<String, PlacePart> northMap = placeMap.get(LAYOUT.NORTH.getName());
 		if (northMap != null) {
-			layoutInner(northMap, getConsoleWidth());
+			layoutInner(northMap, getWidth());
 		}
 		storeCursor();
 
 		shiftBottom();
 		Map<String, PlacePart> southMap = placeMap.get(LAYOUT.SOUTH.getName());
 		if (southMap != null) {
-			layoutInner(southMap, getConsoleWidth());
+			layoutInner(southMap, getWidth());
 		}
 
 		restoreCursor();
@@ -164,7 +164,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 				for (String line : lines) {
 					shiftLeft(east_width);
 					writeLine(part_cursor, line);
-					part_cursor.setPart_x(east_width + line.length());
+					part_cursor.setPart_x(east_width + part_cursor.getPart_x());
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -182,7 +182,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 		try {
 			println();
 			print(line);
-			part_cursor.setPart_x(line.length());
+			part_cursor.setPart_x(StringUtil.getWordCount(line));
 			part_cursor.addPart_y(1);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
@@ -192,13 +192,14 @@ public class BusPortalShell extends BusBaseFrameShell {
 	private String placePartContent(PlacePart placePart) throws CIBusException {
 		ORIGIN origin = ORIGIN.toOrigin(placePart.getOrigin());
 		switch (origin) {
-		case GLOBAL:
-			Part part = configuration().getPartMap().get(placePart.getName());
-			if (part != null)
-				return part.getContent().getValue();
-			break;
-		case PART:
-
+			case GLOBAL:
+				Part part = configuration().getPartMap().get(placePart.getName());
+				if (part != null)
+					return part.getContent().getValue();
+				break;
+			case PART:
+				
+				break;
 		}
 
 		return null;
