@@ -10,6 +10,8 @@ package com.antelope.ci.bus.portal.configuration.xo;
 
 import java.util.List;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 
@@ -23,7 +25,30 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="parts")
 public class PlaceParts {
+	private String name;
 	private List<PlacePart> partList;
+	private List<Place> placeList;
+	private boolean isExtention;
+	private EU_Embed embed;
+	private String embed_exp;
+
+	public PlaceParts() {
+		this.isExtention = false;
+	}
+	
+	public boolean isExtention() {
+		return isExtention;
+	}
+	
+	@XmlAttribute(name="name")
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+		this.isExtention = true;
+	}
 
 	@XmlElement(name="part", isList=true, listClass=PlacePart.class)
 	public List<PlacePart> getPartList() {
@@ -32,6 +57,31 @@ public class PlaceParts {
 
 	public void setPartList(List<PlacePart> partList) {
 		this.partList = partList;
+	}
+	
+	@XmlElement(name="place", isList=true, listClass=Place.class)
+	public List<Place> getPlaceList() {
+		return placeList;
+	}
+	public void setPlaceList(List<Place> placeList) {
+		this.placeList = placeList;
+	}
+	
+	@XmlAttribute(name="embed")
+	public String getEmbed_exp() {
+		return embed_exp;
+	}
+	public void setEmbed_exp(String embed_exp) {
+		this.embed_exp = embed_exp;
+		try {
+			this.embed = EU_Embed.toEmbed(this.embed_exp);
+		} catch (CIBusException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public EU_Embed getEmbed() {
+		return embed;
 	}
 }
 

@@ -10,6 +10,7 @@ package com.antelope.ci.bus.portal.configuration;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
@@ -29,8 +31,7 @@ import com.antelope.ci.bus.portal.configuration.xo.Portal;
 
 
 /**
- * TODO 描述
- *
+ * configraiton reader for portal (include main and part)
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-14		上午11:15:09 
@@ -65,36 +66,51 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	public void init() throws CIBusException {
-		parseXml();
-		parseProperties();
-		convert();
+		portal = parseXml(PORTAL_XML);
+		reader = parseProperties(PORTAL_RESOURCE, classLoader);
+		convert(portal, reader);
 		initConfigurationPair();
 	}
 	
-	private void parseXml() throws CIBusException {
-		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_XML);
-		portal = (Portal) BusXmlHelper.parse(Portal.class, in);
-	}
-	
-	private void parseProperties() throws CIBusException {
-		reader = new ResourceReader();
-		if (classLoader != null) {
-			reader.addResource(PORTAL_RESOURCE, classLoader);
-		} else {
-			reader.addResource(PORTAL_RESOURCE);
+	public void parseExtention(String package_path) throws CIBusException {
+		ClassLoader cl = classLoader==null ? this.getClass().getClassLoader() : classLoader;
+		List<URL> xmlUrls = ClassFinder.findXmlUrl(package_path, cl);
+		for (URL url : xmlUrls) {
+			String name = StringUtil.getLastName(url.getFile(), "/");
+			if (name.startsWith("portal")) {
+				String xml_path = "/" + package_path.replace(".", "/");
+				xml_path += "/" + name;
+				parseXml(xml_path);
+			}
 		}
 	}
 	
-	private void convert() throws CIBusException {
+	private Portal parseXml(String xml_path) throws CIBusException {
+		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
+		return (Portal) BusXmlHelper.parse(Portal.class, in);
+	}
+	
+	private ResourceReader parseProperties(String resource_path, ClassLoader cl) throws CIBusException {
+		ResourceReader r = new ResourceReader();
+		if (cl != null) {
+			r.addResource(resource_path, cl);
+		} else {
+			r.addResource(resource_path);
+		}
+		
+		return r;
+	}
+	
+	private void convert(Portal p, ResourceReader r) throws CIBusException {
 		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
-		findReplace(replaceList, portal);
+		findReplace(replaceList, p);
 		for (PortalReplace pr : replaceList) {
-			String new_value = replaceLable(pr.getValue());
+			String new_value = replaceLable(pr.getValue(), r);
 			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
 		}
 	}
 	
-	private String replaceLable(String value) {
+	private String replaceLable(String value, ResourceReader r) {
 		StringBuffer buf = new StringBuffer();
 		int len = value.length();
 		int index = 0;
@@ -106,7 +122,7 @@ public class BusPortalConfigurationHelper {
 			}
 			int end = value.indexOf(LABLE_END, start);
 			String key = value.substring(start+2, end);
-			String v = reader.getString(key);
+			String v = r.getString(key);
 			v = (v == null) ? "" : v;
 			buf.append(value.substring(index, start)).append(v);
 			index = end + 1;

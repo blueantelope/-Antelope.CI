@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
@@ -24,6 +25,9 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 public class Part {
 	private String name;
 	private Content content;
+	private EU_Embed embed;
+	private String embed_exp;
+	private Integer sort;
 	
 	@XmlAttribute(name="name")
 	public String getName() {
@@ -39,6 +43,31 @@ public class Part {
 	}
 	public void setContent(Content content) {
 		this.content = content;
+	}
+	
+	@XmlAttribute(name="embed")
+	public String getEmbed_exp() {
+		return embed_exp;
+	}
+	public void setEmbed_exp(String embed_exp) {
+		this.embed_exp = embed_exp;
+		try {
+			this.embed = EU_Embed.toEmbed(this.embed_exp);
+		} catch (CIBusException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public EU_Embed getEmbed() {
+		return embed;
+	}
+	
+	@XmlAttribute(name="sort")
+	public Integer getSort() {
+		return sort;
+	}
+	public void setSort(Integer sort) {
+		this.sort = sort;
 	}
 }
 

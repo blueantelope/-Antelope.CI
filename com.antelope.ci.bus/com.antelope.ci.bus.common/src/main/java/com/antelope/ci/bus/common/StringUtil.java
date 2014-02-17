@@ -74,19 +74,21 @@ public class StringUtil {
 			return builder + str;
 		}
 	}
-	
-	private static int getStringLength (String str) {
-        try {
-            return new String (str.getBytes (), "8859_1").length ();
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException ("UnsupportedEncodingException Exception encountered", e);
-        }
-    }
-	
+
+	private static int getStringLength(String str) {
+		try {
+			return new String(str.getBytes(), "8859_1").length();
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(
+					"UnsupportedEncodingException Exception encountered", e);
+		}
+	}
+
 	/**
 	 * 截取第一个大写字母之后的字符串
-	 * @param  @param str
-	 * @param  @return
+	 * 
+	 * @param @param str
+	 * @param @return
 	 * @return String
 	 * @throws
 	 */
@@ -94,41 +96,41 @@ public class StringUtil {
 		int n = 0;
 		for (byte b : str.getBytes()) {
 			int i = (int) b;
-			if (i >= 65 && i<= 90)
+			if (i >= 65 && i <= 90)
 				break;
 			n++;
 		}
-		
+
 		return str.substring(n);
 	}
-	
+
 	public static boolean empty(String str) {
 		if (str != null && str.length() > 0)
 			return false;
 		return true;
 	}
-	
+
 	public static String[] toLines(String str) throws IOException {
 		BufferedReader reader = new BufferedReader(new StringReader(str));
 		List<String> lineList = new ArrayList<String>();
 		String line;
-		while ((line=reader.readLine()) != null)
+		while ((line = reader.readLine()) != null)
 			lineList.add(line);
 		return lineList.toArray(new String[lineList.size()]);
 	}
-	
+
 	public static String[] toLines(String str, int width) throws IOException {
 		BufferedReader reader = new BufferedReader(new StringReader(str));
 		List<String> lineList = new ArrayList<String>();
 		String line;
-		while ((line=reader.readLine()) != null) {
+		while ((line = reader.readLine()) != null) {
 			int len = line.length();
 			if (len < width) {
 				lineList.add(line);
 			} else {
 				int start = 0;
 				while (start < len) {
-					int end = (start+width) > len ? len : start+width;
+					int end = (start + width) > len ? len : start + width;
 					lineList.add(line.substring(start, end));
 					start += width;
 				}
@@ -136,27 +138,32 @@ public class StringUtil {
 		}
 		return lineList.toArray(new String[lineList.size()]);
 	}
-	
+
 	public static int maxLine(String str) throws IOException {
 		String[] lines = toLines(str);
 		int maxWidth = 0;
 		for (String line : lines) {
 			maxWidth = maxWidth > line.length() ? maxWidth : line.length();
 		}
-		
+
 		return maxWidth;
 	}
-	
-	 public static int getWordCount(String s) {  
-        int length = 0;  
-        for(int i = 0; i < s.length(); i++)  {  
-            int codePoint = Character.codePointAt(s, i);  
-            if(codePoint >= 0 && codePoint <=255)  
-                length++;  
-            else  
-                length += 2;  
-        }
-        
-        return length;  
-    }  
+
+	public static int getWordCount(String s) {
+		int length = 0;
+		for (int i = 0; i < s.length(); i++) {
+			int codePoint = Character.codePointAt(s, i);
+			if (codePoint >= 0 && codePoint <= 255)
+				length++;
+			else
+				length += 2;
+		}
+
+		return length;
+	}
+
+	public static String getLastName(String value, String split) {
+		String[] ss = value.split(split);
+		return ss[ss.length-1];
+	}
 }

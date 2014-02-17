@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.configuration.xo.Parts.java
+// com.antelope.ci.bus.portal.configuration.xo.Extension.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -8,9 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
@@ -20,15 +18,41 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-2-2		上午11:28:04 
+ * @Date	 2014-2-17		下午4:29:55 
  */
-@XmlEntity(name="parts")
-public class Parts {
+@XmlEntity(name="extension")
+public class Extension {
+	private String point_exp;
+	private EU_Point point;
+	private List<PlaceParts> palcePartList;
 	private List<Part> partList;
 
+	@XmlAttribute(name="point")
+	public String getPoint_exp() {
+		return point_exp;
+	}
+	public void setPoint_exp(String point_exp) {
+		this.point_exp = point_exp;
+		try {
+			this.point = EU_Point.toPoint(this.point_exp);
+		} catch (CIBusException e) {
+		}
+	}
+	
+	public EU_Point getPoint() {
+		return point;
+	}
+	
+	@XmlElement(name="parts", isList=true, listClass=PlaceParts.class)
+	public List<PlaceParts> getPalcePartList() {
+		return palcePartList;
+	}
+	public void setPalcePartList(List<PlaceParts> palcePartList) {
+		this.palcePartList = palcePartList;
+	}
+	
 	@XmlElement(name="part", isList=true, listClass=Part.class)
 	public List<Part> getPartList() {
 		return partList;
@@ -38,15 +62,6 @@ public class Parts {
 		this.partList = partList;
 	}
 	
-	public Map<String, Part> getPartMap() {
-		Map<String, Part> partMap = new HashMap<String, Part>();
-		if (partList != null) {
-			for (Part part : partList) {
-				partMap.put(part.getName(), part);
-			}
-		}
-		
-		return partMap;
-	}
+	
 }
 

@@ -403,7 +403,9 @@ public class ClassFinder {
 		try {
 			String class_name = className;
 			if (isClass) {
-				class_name = className.replace(".", "/") + ".class";
+				class_name = className.replace(DOT, SLASH) + CLASS_SUFFIX;
+			} else {
+				class_name = className.replace(File.separator, SLASH);
 			}
 			URL url = loader.getResource(class_name);
 			if (url == null) {
