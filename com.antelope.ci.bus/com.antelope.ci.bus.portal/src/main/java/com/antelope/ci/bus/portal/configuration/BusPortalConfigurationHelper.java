@@ -25,6 +25,7 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
+import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.configuration.xo.Part;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
@@ -72,17 +73,37 @@ public class BusPortalConfigurationHelper {
 		initConfigurationPair();
 	}
 	
-	public void parseExtention(String package_path) throws CIBusException {
+	public Portal parseExtention(String package_path) throws CIBusException {
 		ClassLoader cl = classLoader==null ? this.getClass().getClassLoader() : classLoader;
 		List<URL> xmlUrls = ClassFinder.findXmlUrl(package_path, cl);
+		Portal portal_ext = null;
 		for (URL url : xmlUrls) {
-			String name = StringUtil.getLastName(url.getFile(), "/");
-			if (name.startsWith("portal")) {
+			if (isPortalResource(url.getFile(), "/")) {
 				String xml_path = "/" + package_path.replace(".", "/");
-				xml_path += "/" + name;
-				parseXml(xml_path);
+				xml_path += "/" + StringUtil.getLastName(url.getFile(), "/");
+				portal_ext = parseXml(xml_path);
+				break;
 			}
 		}
+		ResourceReader reader_ext = null;
+		List<String> resList = ClassFinder.getPropsResource(package_path, cl);
+		for (String res : resList) {
+			if (isPortalResource(res, "\\.")) {
+				reader_ext = parseProperties(res, cl);
+				break;
+			}
+		}
+		if (portal_ext != null && reader_ext != null) {
+			convert(portal_ext, reader_ext);
+		}
+		
+		return portal_ext;
+	}
+		
+	private boolean isPortalResource(String res, String  deco) {
+		String name = StringUtil.getLastName(res,  deco);
+		if (name.startsWith("portal")) return true;
+		return false;
 	}
 	
 	private Portal parseXml(String xml_path) throws CIBusException {
@@ -157,8 +178,10 @@ public class BusPortalConfigurationHelper {
 				}
 			}
 		}
-		for (Object deep : deepList)
-			findReplace(replaceList, deep);
+		for (Object deep : deepList) {
+			if (deep.getClass().isAnnotationPresent(XmlEntity.class))
+				findReplace(replaceList, deep);
+		}
 	}
 	
 	

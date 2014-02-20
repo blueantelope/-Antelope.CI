@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.portal.configuration.test;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import junit.framework.TestCase;
 
@@ -17,6 +16,7 @@ import org.junit.Test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.configuration.xo.Portal;
 
 
 /**
@@ -30,8 +30,8 @@ public class TestExtentionParse extends TestCase {
 
 	@Test
 	public void test() throws CIBusException, IOException {
-		BusPortalConfigurationHelper.getHelper().parseExtention("com.antelope.ci.bus.portal.test");
-		
+		Portal portal_ext = BusPortalConfigurationHelper.getHelper().parseExtention("com.antelope.ci.bus.portal.test");
+		System.out.println(portal_ext);
 	}
 	
 	public static void main(String[] args) {

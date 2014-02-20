@@ -111,6 +111,7 @@ public class BusXmlHelper {
 			Object instance = domQuery.getInstance();
 			String xmlQuery = domQuery.getXmlQuery();
 			List<Element> elemnetList = document.selectNodes(xmlQuery);			// 子节点列表
+			if (elemnetList.isEmpty()) return;
 			
 			if (xmlElement.isList()) {				// 子节点是否为一个列表
 				if (xmlElement.listClass().isAnnotationPresent(XmlEntity.class)) {

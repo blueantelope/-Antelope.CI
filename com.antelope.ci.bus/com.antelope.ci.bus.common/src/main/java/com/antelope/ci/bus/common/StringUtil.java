@@ -162,8 +162,8 @@ public class StringUtil {
 		return length;
 	}
 
-	public static String getLastName(String value, String split) {
-		String[] ss = value.split(split);
+	public static String getLastName(String value, String  deco) {
+		String[] ss = value.split(deco);
 		return ss[ss.length-1];
 	}
 }

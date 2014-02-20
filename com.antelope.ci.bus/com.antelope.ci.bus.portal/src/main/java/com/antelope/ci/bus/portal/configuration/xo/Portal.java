@@ -29,6 +29,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 public class Portal {
 	private Layout layout;
 	private Parts parts;
+	private Extensions extensions;
 	
 	@XmlElement(name="layout")
 	public Layout getLayout() {
@@ -45,6 +46,15 @@ public class Portal {
 	public void setParts(Parts parts) {
 		this.parts = parts;
 	}
+	
+	@XmlElement(name="extensions")
+	public Extensions getExtensions() {
+		return extensions;
+	}
+	public void setExtensions(Extensions extensions) {
+		this.extensions = extensions;
+	}
+	
 	
 	public void addPart(Part part) throws CIBusException {
 		if (parts == null)
