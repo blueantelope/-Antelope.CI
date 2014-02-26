@@ -43,6 +43,8 @@
 	</parts>
 	
 	<extensions>
+		<extension point="base">
+		</extension>
 		<extension point="layout">
 		</extension>
 		<extension point="parts">

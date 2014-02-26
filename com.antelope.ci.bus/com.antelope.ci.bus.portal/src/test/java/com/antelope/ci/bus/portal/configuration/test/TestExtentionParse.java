@@ -30,7 +30,10 @@ public class TestExtentionParse extends TestCase {
 
 	@Test
 	public void test() throws CIBusException, IOException {
-		Portal portal_ext = BusPortalConfigurationHelper.getHelper().parseExtention("com.antelope.ci.bus.portal.test");
+		BusPortalConfigurationHelper helper = BusPortalConfigurationHelper.getHelper();
+		helper.init();
+		System.out.println(helper.getPortal());
+		Portal portal_ext = helper.parseExtention("com.antelope.ci.bus.portal.test");
 		System.out.println(portal_ext);
 	}
 	

@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 

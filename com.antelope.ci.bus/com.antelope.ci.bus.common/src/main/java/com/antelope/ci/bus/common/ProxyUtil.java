@@ -94,6 +94,15 @@ public class ProxyUtil {
 		}
 
 	}
+	
+	public static void invoke(Object obj, Method method, Object[] args) throws CIBusException {
+		try {
+			method.invoke(obj, args);
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+
+	}
 
 	// 代理 执行对象中的函数 无参数无返回值
 	public static void invoke(Object obj, String function) throws CIBusException {
@@ -373,19 +382,19 @@ public class ProxyUtil {
 			return null;
 		if (clazz.isAssignableFrom(String.class))			// String
 			return value;
-		if (clazz.isAssignableFrom(Integer.class))			// Integer
-			return Integer.valueOf(value);
-		if (clazz.isAssignableFrom(Long.class))				// Long
-			return Long.valueOf(value);
-		if (clazz.isAssignableFrom(Float.class))				// Float
+		if (clazz.isAssignableFrom(Integer.class) || "int".equals(clazz.toString()))				// Integer
+			return Integer.valueOf(value).intValue();
+		if (clazz.isAssignableFrom(Long.class) || "long".equals(clazz.toString()))				// Long
+			return Long.valueOf(value).longValue();
+		if (clazz.isAssignableFrom(Float.class) || "float".equals(clazz.toString()))				// Float
 			return Float.valueOf(value);
-		if (clazz.isAssignableFrom(Double.class))			// Double
-			return Double.valueOf(value);
-		if (clazz.isAssignableFrom(Boolean.class))		// Double
-			return Boolean.valueOf(value);
-		if (clazz.isAssignableFrom(Date.class))				// Date
+		if (clazz.isAssignableFrom(Double.class) || "double".equals(clazz.toString()))		// Double
+			return Double.valueOf(value).doubleValue();;
+		if (clazz.isAssignableFrom(Boolean.class) || "boolean".equals(clazz.toString()))	// Boolean
+			return Boolean.valueOf(value).booleanValue();
+		if (clazz.isAssignableFrom(Date.class) && DateUtil.isDay(value))							// Date
 			return DateUtil.parseDate(value);
-		if (clazz.isAssignableFrom(Date.class))				// Time
+		if (clazz.isAssignableFrom(Date.class) && DateUtil.isMinute(value))					// Time
 			return DateUtil.parseTime(value);
 		return value;
 	}

@@ -26,9 +26,10 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 public class Extension {
 	private String point_exp;
 	private EU_Point point;
-	private List<PlaceParts> palcePartList;
+	private Base base;
+	private List<PlaceParts> placePartList;
 	private List<Part> partList;
-
+	
 	@XmlAttribute(name="point")
 	public String getPoint_exp() {
 		return point_exp;
@@ -45,12 +46,20 @@ public class Extension {
 		return point;
 	}
 	
-	@XmlElement(name="parts", isList=true, listClass=PlaceParts.class)
-	public List<PlaceParts> getPalcePartList() {
-		return palcePartList;
+	@XmlElement(name="base")
+	public Base getBase() {
+		return base;
 	}
-	public void setPalcePartList(List<PlaceParts> palcePartList) {
-		this.palcePartList = palcePartList;
+	public void setBase(Base base) {
+		this.base = base;
+	}
+	
+	@XmlElement(name="parts", isList=true, listClass=PlaceParts.class)
+	public List<PlaceParts> getPlacePartList() {
+		return placePartList;
+	}
+	public void setPalcePartList(List<PlaceParts> placePartList) {
+		this.placePartList = placePartList;
 	}
 	
 	@XmlElement(name="part", isList=true, listClass=Part.class)

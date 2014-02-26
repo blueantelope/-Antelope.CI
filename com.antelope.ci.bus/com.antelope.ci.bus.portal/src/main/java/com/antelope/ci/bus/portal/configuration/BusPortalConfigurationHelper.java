@@ -97,6 +97,13 @@ public class BusPortalConfigurationHelper {
 			convert(portal_ext, reader_ext);
 		}
 		
+		if (portal_ext != null && portal != null) {
+			portal_ext.setBase(portal.getBase());
+			portal_ext.setLayout(portal.getLayout());
+			portal_ext.setParts(portal.getParts());
+			portal_ext.attachExtensions();
+		}
+		
 		return portal_ext;
 	}
 		

@@ -18,6 +18,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2014-2-17		下午4:31:43 
  */
 public enum EU_Point {
+	BASE("base"),
 	LAYOUT("layout"),
 	PARTS("parts");
 	

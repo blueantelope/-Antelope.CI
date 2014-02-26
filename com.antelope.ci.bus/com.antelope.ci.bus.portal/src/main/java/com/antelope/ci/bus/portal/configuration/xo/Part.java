@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -28,6 +31,7 @@ public class Part {
 	private EU_Embed embed;
 	private String embed_exp;
 	private Integer sort;
+	private List<Content> contentList;
 	
 	@XmlAttribute(name="name")
 	public String getName() {
@@ -39,6 +43,8 @@ public class Part {
 	
 	@XmlElement(name="content")
 	public Content getContent() {
+		if (content == null && contentList != null && !contentList.isEmpty()) 
+			return contentList.get(0);
 		return content;
 	}
 	public void setContent(Content content) {
@@ -68,6 +74,22 @@ public class Part {
 	}
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+	
+	public void addContet(Content content) {
+		if (contentList == null) contentList = new ArrayList<Content>();
+		contentList.add(content);
+	}
+	
+	public void addContet(int index, Content content) {
+		if (contentList == null) contentList = new ArrayList<Content>();
+		int lLen = contentList.size();
+		if (index > (lLen -1)) index = lLen;
+		contentList.add(index, content);
+	}
+	
+	public List<Content> getContentList() {
+		return contentList;
 	}
 }
 

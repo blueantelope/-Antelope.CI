@@ -19,6 +19,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -30,6 +31,49 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-11-14		上午11:43:43 
  */
 public class BusXmlHelper {
+	public static SetterGetterPair[] FetchPairOfXml(Class<?> clazz) {
+		List<SetterGetterPair> pairList = new ArrayList<SetterGetterPair>();
+		for (Method getm : fetchGetOfXml(clazz)) {
+			String set_name = "get" + getm.getName().substring(3);
+			try {
+				Method setm = clazz.getMethod(set_name, getm.getReturnType());
+				if (setm  != null) pairList.add(new SetterGetterPair(setm, getm));
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		
+		return pairList.toArray(new SetterGetterPair[pairList.size()]);
+	}
+	
+	public static Method[] FetchSetOfXml(Class<?> clazz) {
+		List<Method> setList = new ArrayList<Method>();
+		for (Method gm : fetchGetOfXml(clazz)) {
+			String set_name = "get" + gm.getName().substring(3);
+			try {
+				Method setm = clazz.getMethod(set_name, gm.getReturnType());
+				if (setm  != null) setList.add(setm);
+			} catch (Exception e) {
+				
+			}
+		}
+		
+		return setList.toArray(new Method[setList.size()]);
+	}
+	
+	public static Method[] fetchGetOfXml(Class<?> clazz) {
+		List<Method> mList = new ArrayList<Method>();
+		for (Method method : clazz.getMethods()) {
+			if (method.isAnnotationPresent(XmlElement.class) 
+					|| method.isAnnotationPresent(XmlAttribute.class)
+					|| method.isAnnotationPresent(XmlCdata.class)
+					|| method.isAnnotationPresent(XmlText.class))
+				mList.add(method);
+		}
+		
+		return mList.toArray(new Method[mList.size()]);
+	}
+	
 	public static Object parse(Class<?> clazz, InputStream input) throws CIBusException {
 		Object o = null;
 		if (clazz.isAnnotationPresent(XmlEntity.class)) {
@@ -111,7 +155,7 @@ public class BusXmlHelper {
 			Object instance = domQuery.getInstance();
 			String xmlQuery = domQuery.getXmlQuery();
 			List<Element> elemnetList = document.selectNodes(xmlQuery);			// 子节点列表
-			if (elemnetList.isEmpty()) return;
+			if (elemnetList.isEmpty()) continue;
 			
 			if (xmlElement.isList()) {				// 子节点是否为一个列表
 				if (xmlElement.listClass().isAnnotationPresent(XmlEntity.class)) {
@@ -251,7 +295,7 @@ public class BusXmlHelper {
 			setter.invoke(parent, arg);
 		} catch (Exception e) {
 			throw new CIBusException("", e);
-		} 
+		}
 	}
 	
 	/*
@@ -306,6 +350,24 @@ public class BusXmlHelper {
 
 		public XmlElement getXmlElement() {
 			return xmlElement;
+		}
+	}
+	
+	public static class SetterGetterPair {
+		private Method setter;
+		private Method getter;
+		
+		public SetterGetterPair(Method setter, Method getter) {
+			this.setter = setter;
+			this.getter = getter;
+		}
+		
+		public Method getGetter() {
+			return getter;
+		}
+
+		public Method getSetter() {
+			return setter;
 		}
 	}
 }

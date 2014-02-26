@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portal>
 	<extensions>
+		<extension point="base" >
+			<base order="1" embed="replace">
+			</base>
+		</extension>
 		<extension point="layout">
-			<parts name="center.parts" embed="replace">
+			<parts name="center" embed="replace">
 					<part name="second.menu" place="west" origin="part" />
 					<place name="center">
 						<parts>

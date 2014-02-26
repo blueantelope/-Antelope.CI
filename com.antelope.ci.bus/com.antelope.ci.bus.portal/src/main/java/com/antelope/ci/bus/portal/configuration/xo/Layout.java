@@ -32,5 +32,16 @@ public class Layout {
 	public void setPlaceList(List<Place> placeList) {
 		this.placeList = placeList;
 	}
+	
+	public Place getPlace(String name) {
+		if (placeList != null) {
+			for (Place p : placeList) {
+				if (p.getName().equals(name))
+					return p;
+			}
+		}
+		
+		return null;
+	}
 }
 

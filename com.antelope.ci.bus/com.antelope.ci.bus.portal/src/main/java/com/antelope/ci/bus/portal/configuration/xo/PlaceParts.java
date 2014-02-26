@@ -8,7 +8,10 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
@@ -82,6 +85,25 @@ public class PlaceParts {
 
 	public EU_Embed getEmbed() {
 		return embed;
+	}
+	
+	public Map<String, Place> getPlaceMap() {
+		Map<String, Place> ppMap = new HashMap<String, Place>();
+		if (placeList != null) {
+			for (Place p : placeList)
+				ppMap.put(p.getName(), p);
+		}
+		return ppMap;
+	}
+	
+	public void addPart(PlacePart part) {
+		if (partList == null) partList = new ArrayList<PlacePart>();
+		partList.add(part);
+	}
+	
+	public void addParts(List<PlacePart> addList) {
+		if (partList == null) partList = new ArrayList<PlacePart>();
+		partList.addAll(addList);
 	}
 }
 
