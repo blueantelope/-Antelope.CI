@@ -16,7 +16,9 @@ import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusCommonServerActivator;
+import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.StatusClass;
 
 
@@ -28,12 +30,21 @@ import com.antelope.ci.bus.server.shell.StatusClass;
  */
 public abstract class CommonEntrance implements Entrance {
 	private static final Logger log = Logger.getLogger(CommonEntrance.class);
+	protected BusServerCondition server_condition = null;
+	
+	@Override
+	public void init(Object... args) throws CIBusException {
+		for (Object arg : args) {
+			if (arg instanceof BusServerCondition)
+				this.server_condition = (BusServerCondition) arg;
+		}
+	}
 	
 	@Override
 	public void mount() throws CIBusException {
 		log.debug("start for portal mount");
 		beforeMount();
-		init();
+		initMount();
 		afterMount();
 		log.debug("end for portal mount");
 	}
@@ -47,13 +58,18 @@ public abstract class CommonEntrance implements Entrance {
 		log.debug("end for portal unmount");
 	}
 	
-	private void init() throws CIBusException {
+	private void initMount() throws CIBusException {
 		// mount shell status class
 		List<String> classList = ClassFinder.findClasspath(this.getClass().getPackage().getName(), 
 				BusCommonServerActivator.getClassLoader());
 		for (String cls : classList) {
 			try {
 				Class clz = Class.forName(cls, false, BusCommonServerActivator.getClassLoader());
+				if (clz.isAnnotationPresent(Shell.class)) {
+					if (server_condition != null)
+						server_condition.addShellClass(clz.getName());
+					continue;
+				}
 				if (clz.isAnnotationPresent(StatusClass.class))
 					BusShellStatus.addStatusClass(clz);
 			} catch (ClassNotFoundException e) {
@@ -69,7 +85,6 @@ public abstract class CommonEntrance implements Entrance {
 	protected abstract void beforeMount() throws CIBusException;
 	
 	protected abstract void afterMount() throws CIBusException;
-	
 	
 	protected abstract void beforeUnmount() throws CIBusException;
 	

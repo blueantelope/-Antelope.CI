@@ -57,10 +57,8 @@ public class BusPortalServer extends BusServer {
 	@Override
 	protected void attatchCondition(BusServerCondition server_condition) throws CIBusException {
 		server_condition.setLauncherType(LAUNCHER_TYPE.PROXY);
-		if (shellMap.isEmpty()) {
-			server_condition.addShellClass(BusDefaultPortalShell.class.getName());
-			shellMap.put(DEFAULT_SHELL, BusDefaultPortalShell.class.getName());
-		}
+		if (server_condition.isShellEmpty())
+			server_condition.addDefaultShellClass(BusDefaultPortalShell.class.getName());
 	}
 
 	/**

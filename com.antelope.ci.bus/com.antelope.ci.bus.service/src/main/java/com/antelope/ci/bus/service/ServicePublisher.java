@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.wiring.BundleWiring;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;

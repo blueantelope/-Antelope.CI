@@ -9,7 +9,7 @@
 package com.antelope.ci.bus.portal.version;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.entrance.Entrance;
+import com.antelope.ci.bus.portal.entrance.CommonEntrance;
 import com.antelope.ci.bus.portal.entrance.PortalEntrance;
 
 
@@ -20,17 +20,31 @@ import com.antelope.ci.bus.portal.entrance.PortalEntrance;
  * @Date	 2013-11-18		下午10:43:54 
  */
 @PortalEntrance
-public class PortalVersionEntrance implements Entrance {
+public class PortalVersionEntrance extends CommonEntrance {
 
 	@Override
-	public void mount() throws CIBusException {
+	protected void beforeMount() throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void unmount() throws CIBusException {
+	protected void afterMount() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void beforeUnmount() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void afterUnmount() throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

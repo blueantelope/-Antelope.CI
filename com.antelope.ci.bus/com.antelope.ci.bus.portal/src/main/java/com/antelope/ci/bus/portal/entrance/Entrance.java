@@ -18,6 +18,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-11-18		下午10:10:04 
  */
 public interface Entrance {
+	public void init(Object... args) throws CIBusException;
+	
 	public void mount() throws CIBusException;
 	
 	public void unmount() throws CIBusException;

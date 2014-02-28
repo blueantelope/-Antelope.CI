@@ -19,6 +19,8 @@ import org.osgi.framework.BundleContext;
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.server.BusServerCondition;
+import com.antelope.ci.bus.server.shell.Shell;
 
 
 /**
@@ -31,15 +33,17 @@ public class EntranceManager {
 	private static final Logger log = Logger.getLogger(EntranceManager.class);
 	private static Map<String, Entrance> entranceMap = new HashMap<String, Entrance>();
 	
-	public static void monitor(BundleContext m_context) {
-		new EntranceMonitor(m_context).start();
+	public static void monitor(BundleContext m_context, BusServerCondition server_condition) {
+		new EntranceMonitor(m_context, server_condition).start();
 	}
 	
 	private static class EntranceMonitor extends Thread {
 		private BundleContext m_context;
+		private BusServerCondition server_condition;
 		
-		private EntranceMonitor(BundleContext m_context) {
+		private EntranceMonitor(BundleContext m_context, BusServerCondition server_condition) {
 			this.m_context = m_context;
+			this.server_condition = server_condition;
 		}
 		
 		@Override
@@ -88,13 +92,14 @@ public class EntranceManager {
 			}
 		}
 		
-		private void mount(List<String> classList ) {
+		private void mount(List<String> classList) {
 			for (String cls : classList) {
 				try {
 					Class clazz = Class.forName(cls);
 					if (Entrance.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(PortalEntrance.class)) {
 						if (entranceMap.get(cls) == null) {
 							final Entrance entrance = (Entrance) clazz.newInstance();
+							entrance.init(server_condition);
 							log.info("mount entrance of portal : " + cls);
 							new Thread() {
 								public void run() {

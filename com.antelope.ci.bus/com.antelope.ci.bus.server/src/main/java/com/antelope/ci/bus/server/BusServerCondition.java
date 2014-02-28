@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.model.user.User;
@@ -47,9 +47,10 @@ public class BusServerCondition {
 		}
 	}
 	
+	private final static String DEFAULT_SHELL = "shell.default";
 	private Map<String, User> userMap;
 	private LAUNCHER_TYPE launcherType;
-	private List<String> shellClassList;
+	private Map<String, String> shellClassMap;
 	private Class launcher_class;
 	private String launcher_className;
 	private List<AuthService> authServiceList;
@@ -57,7 +58,8 @@ public class BusServerCondition {
 	public BusServerCondition() {
 		userMap = new HashMap<String, User>();
 		authServiceList = new ArrayList<AuthService>();
-		shellClassList = new Vector<String>();
+//		shellClassList = new Vector<String>();
+		shellClassMap = new ConcurrentHashMap<String, String>();
 	}
 	
 	// getter and setter
@@ -110,26 +112,45 @@ public class BusServerCondition {
 	public void setLauncherType(String launcherTypeName) throws CIBusException {
 		this.launcherType = LAUNCHER_TYPE.fromName(launcherTypeName);
 	}
-
-	public List<String> getShellClassList() {
-		return shellClassList;
+	
+	public Map<String, String> getShellClassMap() {
+		return shellClassMap;
 	}
 
-	public void setShellClassList(List<String> shellClassList) {
-		this.shellClassList = shellClassList;
+	public void setShellClassMap(Map<String, String> shellClassMap) {
+		this.shellClassMap = shellClassMap;
+	}
+
+	public void addShellClass(String shellClass) {
+		String default_shell = shellClassMap.get(DEFAULT_SHELL);
+		if (default_shell != null)
+			shellClassMap.remove(DEFAULT_SHELL);
+		for (String shell : shellClassMap.keySet())
+			if (shell.equals(shellClass)) return;
+		
+		shellClassMap.put(shellClass, shellClass);
 	}
 	
-	public void addShellClass(String shellClass) {
-		shellClassList.add(shellClass);
+	public void addDefaultShellClass(String shellClass) {
+		shellClassMap.put(DEFAULT_SHELL, shellClass);
 	}
 	
 	public void removeShellClass(String shellClass) {
-		int r_index = 0;
-		for (String sc : shellClassList) {
-			if (sc.equals(shellClass)) return;
-			r_index++;
-		}
-		shellClassList.remove(r_index);
+		for (String shell : shellClassMap.keySet())
+			if (shell.equals(shellClass)) return;
+	
+		shellClassMap.remove(shellClass);
+	}
+	
+	public List<String> getShellClassList() {
+		List<String> shellClassList = new ArrayList<String>();
+		for (String shell : shellClassMap.keySet())
+			shellClassList.add(shellClassMap.get(shell));
+		return shellClassList;
+	}
+	
+	public boolean isShellEmpty() {
+		return shellClassMap.isEmpty();
 	}
 }
 
