@@ -200,7 +200,7 @@ public class ProxyUtil {
 
 		return ret;
 	}
-
+	
 	// 取得带参方法
 	public static Method getMethod(Class clazz, String function, Object[] args) throws Exception {
 		int argLen = args.length;

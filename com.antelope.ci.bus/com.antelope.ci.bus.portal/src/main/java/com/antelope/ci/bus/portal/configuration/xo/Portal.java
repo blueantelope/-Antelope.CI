@@ -36,6 +36,13 @@ public class Portal {
 	private Parts parts;
 	private Extensions extensions;
 	
+	public String getName() {
+		String name = "null";
+		if (base != null && base.getName() != null)
+			name = base.getName();
+		return name;
+	}
+	
 	@XmlElement(name="base")
 	public Base getBase() {
 		return base;

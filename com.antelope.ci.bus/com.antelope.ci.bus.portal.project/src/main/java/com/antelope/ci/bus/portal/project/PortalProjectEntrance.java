@@ -8,7 +8,10 @@
 
 package com.antelope.ci.bus.portal.project;
 
+import org.apache.log4j.Logger;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.entrance.CommonEntrance;
 import com.antelope.ci.bus.portal.entrance.Entrance;
 import com.antelope.ci.bus.portal.entrance.PortalEntrance;
 
@@ -21,21 +24,33 @@ import com.antelope.ci.bus.portal.entrance.PortalEntrance;
  * @Date	 2013-11-18		下午10:44:38 
  */
 @PortalEntrance
-public class PortalProjectEntrance implements Entrance {
+public class PortalProjectEntrance extends CommonEntrance {
+	private static final Logger log = Logger.getLogger(PortalProjectEntrance.class);
 
 	@Override
-	public void mount() throws CIBusException {
-		
-		// TODO Auto-generated method stub
+	protected void beforeMount() throws CIBusException {
+		log.debug("before mount of project portal");
 		
 	}
 
 	@Override
-	public void unmount() throws CIBusException {
-		
-		// TODO Auto-generated method stub
+	protected void afterMount() throws CIBusException {
+		log.debug("after mount of project portal");
 		
 	}
+
+	@Override
+	protected void beforeUnmount() throws CIBusException {
+		log.debug("before unmount of project portal");
+		
+	}
+
+	@Override
+	protected void afterUnmount() throws CIBusException {
+		log.debug("after unmount of project portal");
+		
+	}
+
 
 }
 

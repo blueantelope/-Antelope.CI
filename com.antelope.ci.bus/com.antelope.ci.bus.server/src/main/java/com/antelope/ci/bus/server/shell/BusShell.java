@@ -212,14 +212,14 @@ public abstract class BusShell {
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
-			switch (BusShellStatus.hash(actionStatus)) {
-				case BusShellStatus.QUIT_CODE:
+			switch (BusShellStatus.toBaseStatus(actionStatus)) {
+				case QUIT:
 					quit = true;
 					break;
-				case BusShellStatus.KEEP_CODE:
+				case KEEP:
 					actionStatus = status;
 					break;
-				case BusShellStatus.LAST_CODE:
+				case LAST:
 					actionStatus = lastStatus;
 					break;
 				default:

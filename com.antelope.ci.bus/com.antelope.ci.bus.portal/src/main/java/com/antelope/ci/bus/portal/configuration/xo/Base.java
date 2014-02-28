@@ -22,9 +22,19 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="base")
 public class Base {
+	private String name;
 	private int order;
 	private EU_Embed embed;
 	private String embed_exp;
+	
+	@XmlAttribute(name="name")
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	@XmlAttribute(name="order")
 	public int getOrder() {

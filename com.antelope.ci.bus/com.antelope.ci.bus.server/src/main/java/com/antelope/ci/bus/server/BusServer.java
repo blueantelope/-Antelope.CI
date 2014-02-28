@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.Channel;
@@ -44,11 +46,32 @@ import com.antelope.ci.bus.server.shell.BusShellProxyLauncher;
  * @Date	 2013-9-5		下午10:19:24 
  */
 public abstract class BusServer {
+	protected final static String DEFAULT_SHELL = "shell.default";
 	protected SshServer sshServer;
 	protected BusServerConfig config;							// server配置项
 	protected BusServerCondition condition;
 	private static final long waitForInit = 3 * 1000;		// 3 seconds
 	protected BundleContext m_context;
+	protected Map<String, String> shellMap;
+	
+	public void addShell(String shell_class) {
+		String default_shell = shellMap.get(DEFAULT_SHELL);
+		if (default_shell != null) {
+			shellMap.remove(DEFAULT_SHELL);
+			condition.removeShellClass(default_shell);
+		}
+		for (String shell : shellMap.keySet())
+			if (shell.equals(shell_class)) return;
+		
+		shellMap.put(shell_class, shell_class);
+	}
+	
+	public void removeShell(String shell_class) {
+		for (String shell : shellMap.keySet())
+			if (shell.equals(shell_class)) return;
+	
+		shellMap.remove(shell_class);
+	}
 	
 	public BusServer() throws CIBusException {
 		init();
@@ -62,6 +85,7 @@ public abstract class BusServer {
 	}
 	
 	protected void init() throws CIBusException {
+		shellMap = new ConcurrentHashMap<String, String>();
 		config = readConfig();
 		condition = new BusServerCondition();
 		long start_tm = System.currentTimeMillis();

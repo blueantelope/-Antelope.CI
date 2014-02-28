@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.configuration.LAYOUT;
 import com.antelope.ci.bus.portal.configuration.ORIGIN;
 import com.antelope.ci.bus.portal.configuration.xo.Part;
@@ -32,46 +31,21 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
  * @version 0.1
  * @Date 2013-10-29 下午9:15:32
  */
-public class BusPortalShell extends BusBaseFrameShell {
+public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
-	private BusPortalConfigurationHelper configurationHelper;
+	protected Portal portal_config;
 
-	public BusPortalShell() {
+	public BusPortalShell() throws CIBusException {
 		super();
+		init();
+		if (portal_config == null)
+			throw new CIBusException("", "must set configration of portal");
 	}
+	
+	protected abstract void init() throws CIBusException;
 
-	private Portal configuration() {
-		return BusPortalConfigurationHelper.getHelper().getPortal();
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * 
-	 * @see com.antelope.ci.bus.server.shell.BusShell#custom()
-	 */
-	@Override
-	protected void custom() throws CIBusException {
-		configurationHelper = BusPortalConfigurationHelper.getHelper();
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * 
-	 * @see com.antelope.ci.bus.server.shell.BusShell#shutdown()
-	 */
-	@Override
-	protected void shutdown() throws CIBusException {
-
-		// TODO Auto-generated method stub
-
-	}
-
-	private void layout() throws IOException {
-		Map<String, Map<String, PlacePart>> placeMap = configuration()
-				.getPlaceMap();
-
+	protected void layout() throws IOException {
+		Map<String, Map<String, PlacePart>> placeMap = portal_config.getPlaceMap();
 		shiftTop();
 		Map<String, PlacePart> northMap = placeMap.get(LAYOUT.NORTH.getName());
 		if (northMap != null) {
@@ -88,7 +62,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 		restoreCursor();
 	}
 
-	private void layoutInner(Map<String, PlacePart> placeMap, int width) {
+	protected void layoutInner(Map<String, PlacePart> placeMap, int width) {
 		PartCursor part_cursor = new PartCursor();
 		PlacePart northPart = placeMap.get(LAYOUT.NORTH.getName());
 		if (northPart != null) {
@@ -178,7 +152,7 @@ public class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	private void writeLine(PartCursor part_cursor, String line) {
+	protected void writeLine(PartCursor part_cursor, String line) {
 		try {
 			println();
 			print(line);
@@ -189,11 +163,11 @@ public class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 
-	private String placePartContent(PlacePart placePart) throws CIBusException {
+	protected String placePartContent(PlacePart placePart) throws CIBusException {
 		ORIGIN origin = ORIGIN.toOrigin(placePart.getOrigin());
 		switch (origin) {
 			case GLOBAL:
-				Part part = configuration().getPartMap().get(placePart.getName());
+				Part part =portal_config.getPartMap().get(placePart.getName());
 				if (part != null)
 					return part.getContent().getValue();
 				break;
@@ -223,38 +197,5 @@ public class BusPortalShell extends BusBaseFrameShell {
 	@Override
 	protected ShellCursor initCursorPosistion() {
 		return new ShellCursor(0, 0);
-	}
-
-	
-	private static class PartCursor {
-		int part_x;
-		int part_y;
-		public PartCursor() {
-			super();
-			init(0, 0);
-		}
-		public PartCursor(int part_x, int part_y) {
-			super();
-			init(part_x, part_y);
-		}
-		private void init(int part_x, int part_y) {
-			this.part_x = part_x;
-			this.part_y = part_y;
-		}
-		public int getPart_x() {
-			return part_x;
-		}
-		public int getPart_y() {
-			return part_y;
-		}
-		public void setPart_x(int part_x) {
-			this.part_x = part_x;
-		}
-		public void setPart_y(int part_y) {
-			this.part_y = part_y;
-		}
-		public void addPart_y(int times) {
-			this.part_y += times;
-		}
 	}
 }

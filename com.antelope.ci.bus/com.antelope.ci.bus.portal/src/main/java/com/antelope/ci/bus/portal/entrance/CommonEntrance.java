@@ -8,7 +8,16 @@
 
 package com.antelope.ci.bus.portal.entrance;
 
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.BusCommonServerActivator;
+import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.StatusClass;
 
 
 /**
@@ -18,22 +27,39 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2014-2-17		下午4:09:19 
  */
 public abstract class CommonEntrance implements Entrance {
+	private static final Logger log = Logger.getLogger(CommonEntrance.class);
+	
 	@Override
 	public void mount() throws CIBusException {
+		log.debug("start for portal mount");
 		beforeMount();
 		init();
 		afterMount();
+		log.debug("end for portal mount");
 	}
 	
 	@Override
 	public void unmount() throws CIBusException {
+		log.debug("start for portal unmount");
 		beforeUnmount();
 		destroy();
 		afterUnmount();
+		log.debug("end for portal unmount");
 	}
 	
-	private void init() {
-		
+	private void init() throws CIBusException {
+		// mount shell status class
+		List<String> classList = ClassFinder.findClasspath(this.getClass().getPackage().getName(), 
+				BusCommonServerActivator.getClassLoader());
+		for (String cls : classList) {
+			try {
+				Class clz = Class.forName(cls, false, BusCommonServerActivator.getClassLoader());
+				if (clz.isAnnotationPresent(StatusClass.class))
+					BusShellStatus.addStatusClass(clz);
+			} catch (ClassNotFoundException e) {
+				DevAssistant.errorln(e);
+			}
+		}
 	}
 	
 	private void destroy() {

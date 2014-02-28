@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
-import com.antelope.ci.bus.portal.shell.BusPortalShell;
+import com.antelope.ci.bus.portal.shell.BusDefaultPortalShell;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
@@ -29,7 +29,6 @@ import com.antelope.ci.bus.server.BusServerConfig;
  * @Date	 2013-10-29		下午9:04:32 
  */
 public class BusPortalServer extends BusServer {
-	
 	public BusPortalServer() throws CIBusException {
 		super();
 	}
@@ -58,7 +57,10 @@ public class BusPortalServer extends BusServer {
 	@Override
 	protected void attatchCondition(BusServerCondition server_condition) throws CIBusException {
 		server_condition.setLauncherType(LAUNCHER_TYPE.PROXY);
-		server_condition.addShellClass(BusPortalShell.class.getName());
+		if (shellMap.isEmpty()) {
+			server_condition.addShellClass(BusDefaultPortalShell.class.getName());
+			shellMap.put(DEFAULT_SHELL, BusDefaultPortalShell.class.getName());
+		}
 	}
 
 	/**

@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,9 @@ public class BusPortalConfigurationHelper {
 	private ResourceReader reader;
 	private ClassLoader classLoader;
 	private Map<String, PortalPair> configPairMap;
+	private Map<String, Portal> portalExtMap;
+	private static int null_name_index;
+	
 	private BusPortalConfigurationHelper() {
 		try {
 			log = CommonBusActivator.getLog4j(this.getClass());
@@ -71,6 +75,17 @@ public class BusPortalConfigurationHelper {
 		reader = parseProperties(PORTAL_RESOURCE, classLoader);
 		convert(portal, reader);
 		initConfigurationPair();
+		portalExtMap = new LinkedHashMap<String, Portal>();
+		null_name_index = 0;
+	}
+	
+	public void addExtention(String package_path) throws CIBusException {
+		Portal portalExt = parseExtention(package_path);
+		synchronized(this) {
+			String name = portalExt.getName();
+			if (name.equals("null")) name += "_" + null_name_index++;
+			portalExtMap.put(name, portalExt);
+		}
 	}
 	
 	public Portal parseExtention(String package_path) throws CIBusException {

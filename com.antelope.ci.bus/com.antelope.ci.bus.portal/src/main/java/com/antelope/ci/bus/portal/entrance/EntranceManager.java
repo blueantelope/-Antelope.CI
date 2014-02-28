@@ -46,7 +46,7 @@ public class EntranceManager {
 		public void run() {
 			while (true) {
 				try {
-					List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.portal", 
+					List<String> classList = ClassFinder.findClasspath("com.antelope.ci.bus.portal", 
 							BusOsgiUtil.getBundleClassLoader(m_context));
 					unmount(classList);
 					mount(classList);

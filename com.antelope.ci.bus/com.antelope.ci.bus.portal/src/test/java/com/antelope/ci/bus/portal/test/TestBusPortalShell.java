@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.shell.BusPortalShell;
 
 
@@ -20,10 +21,34 @@ import com.antelope.ci.bus.portal.shell.BusPortalShell;
  * @Date	 2014-2-8		下午2:13:43 
  */
 public class TestBusPortalShell extends BusPortalShell {
+	
+	
+
+	public TestBusPortalShell() throws CIBusException {
+		
+		super();
+		// TODO Auto-generated constructor stub
+		
+	}
 
 	@Override
-	protected void view() throws CIBusException {
-		super.view();
+	protected void custom() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	protected void shutdown() throws CIBusException {
+
+	}
+
+	@Override
+	protected void init() throws CIBusException {
+		BusPortalConfigurationHelper.getHelper().init();
+		this.portal_config = BusPortalConfigurationHelper.getHelper().getPortal();
+	}
+
+	
 }
 

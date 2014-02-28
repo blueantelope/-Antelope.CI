@@ -30,13 +30,13 @@ public class BusPortalActivator extends BusCommonServerActivator {
 	@Override
 	protected void run() throws CIBusException {
 		log4j.info("启动portal");
+		EntranceManager.monitor(m_context);
 		server = new BusPortalServer(m_context);
 		server.start();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 		}
-		EntranceManager.monitor(m_context);
 	}
 
 	/**

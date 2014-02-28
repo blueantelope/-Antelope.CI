@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.model.user.User;
@@ -56,7 +57,7 @@ public class BusServerCondition {
 	public BusServerCondition() {
 		userMap = new HashMap<String, User>();
 		authServiceList = new ArrayList<AuthService>();
-		shellClassList = new ArrayList<String>();
+		shellClassList = new Vector<String>();
 	}
 	
 	// getter and setter
@@ -120,6 +121,15 @@ public class BusServerCondition {
 	
 	public void addShellClass(String shellClass) {
 		shellClassList.add(shellClass);
+	}
+	
+	public void removeShellClass(String shellClass) {
+		int r_index = 0;
+		for (String sc : shellClassList) {
+			if (sc.equals(shellClass)) return;
+			r_index++;
+		}
+		shellClassList.remove(r_index);
 	}
 }
 

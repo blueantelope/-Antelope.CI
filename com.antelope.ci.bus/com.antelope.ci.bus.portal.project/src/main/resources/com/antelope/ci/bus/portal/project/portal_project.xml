@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portal>
 	<extensions>
+		<extension point="base" >
+			<base order="0" embed="replace" name="portal.project" />
+			</base>
+		</extension>
 		<extension point="layout">
-			<place name="center" layout="replace">
-				<parts>
+			<parts name="center" embed="replace">
 					<part name="second.menu" place="west" origin="part" />
 					<place name="center">
 						<parts>
@@ -12,11 +15,10 @@
 							<part name="page" place="north" origin="global" />
 						</parts>
 					</place>
-				</parts>
-			</place>
+			</parts>
 		</extension>
 		<extension point="parts">
-			<part name="top.memu.name" layout="append" sort="1">
+			<part name="top.memu.name" embed="append" sort="0">
 				<content><![CDATA[${top.memu.name}]]></content>
 			</part>
 		</extension>
