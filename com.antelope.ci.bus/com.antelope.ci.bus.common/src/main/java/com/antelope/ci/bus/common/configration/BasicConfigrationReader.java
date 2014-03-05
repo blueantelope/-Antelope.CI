@@ -27,7 +27,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-8-1		上午11:57:24 
  */
 public abstract class BasicConfigrationReader {
-	protected Map<String, Object> resourceMap;	// 资源文件hash表
+	protected Map<String, Object> configMap;		// 配置文件hash表
 	protected Properties props;								// 配置内容
 	
 	public BasicConfigrationReader() {
@@ -39,39 +39,39 @@ public abstract class BasicConfigrationReader {
 	 * 初始化基本数据
 	 */
 	private void init() {
-		resourceMap = new HashMap<String, Object>();	// 初始化资源文件hash表
+		configMap = new HashMap<String, Object>();	// 初始化资源文件hash表
 		props = new Properties();										// 初始化配置内容
 	}
 	
 	
 	/**
 	 * 增加资源文件到资源表中去
-	 * @param  @param resource
+	 * @param  @param config
 	 * @return void
 	 * @throws CIBusException
 	 */
-	public abstract void addResource(String resource) throws CIBusException;
+	public abstract void addConfig(String config) throws CIBusException;
 	
 	/**
 	 * 增加资源文件到资源表中去，用定义的classloader加载资源文件
-	 * @param  @param resource
+	 * @param  @param config
 	 * @param  @param classLoader
 	 * @param  @throws CIBusException
 	 * @return void
 	 * @throws
 	 */
-	public abstract void addResource(String resource, ClassLoader classLoader) throws CIBusException;
+	public abstract void addConfig(String config, ClassLoader classLoader) throws CIBusException;
 	
 	/**
 	 * 增加资源记录
 	 * 并且记录中的属性需要满足如果key为int型，
 	 * 必须为大于start的值
-	 * @param  @param resource
+	 * @param  @param config
 	 * @param  @param start
 	 * @return void
 	 * @throws CIBusException
 	 */
-	public abstract void addResource(String resource, int start) throws CIBusException;
+	public abstract void addConfig(String config, int start) throws CIBusException;
 	
 	/**
 	 * 由输入流加载配置
@@ -94,6 +94,17 @@ public abstract class BasicConfigrationReader {
 	 */
 	public abstract void addInputStream(InputStream in, int start) throws CIBusException;
 	
+	public void removeConfig(String resource) throws CIBusException {
+		for (String key : configMap.keySet()) {
+			if (key.equals(resource)) {
+				configMap.remove(key);
+				Properties delProps = (Properties) configMap.get(key);
+				for (Object dk : delProps.keySet()) 
+					props.remove(dk);
+			}
+		}
+	}
+	
 	/**
 	 * 从资源表中删除资源
 	 * @param  @param resource
@@ -101,10 +112,10 @@ public abstract class BasicConfigrationReader {
 	 * @throws CIBusException
 	 */
 	public void removeResource(String resource) throws CIBusException {
-		for (String key : resourceMap.keySet()) {
+		for (String key : configMap.keySet()) {
 			if (key.equals(resource)) {
-				resourceMap.remove(key);
-				ResourceBundle bundle = (ResourceBundle) resourceMap.get(key);
+				configMap.remove(key);
+				ResourceBundle bundle = (ResourceBundle) configMap.get(key);
 				for (String bk : bundle.keySet()) 
 					props.remove(bk);
 			}

@@ -51,7 +51,7 @@ public class CIBusExceptionContent {
 	 */
 	private void initContent() {
 		try {
-			exReader.addResource(default_content);
+			exReader.addConfig(default_content);
 		} catch (CIBusException e) {
 			e.printStackTrace();
 		}
@@ -65,7 +65,7 @@ public class CIBusExceptionContent {
 	 */
 	public void addContent(String content) {
 		try {
-			exReader.addResource(content, addStart);
+			exReader.addConfig(content, addStart);
 		} catch (CIBusException e) {
 			e.printStackTrace();
 		}

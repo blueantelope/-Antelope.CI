@@ -221,7 +221,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 		URL props_url = m_context.getBundle().getResource(PROPS_FILE);
 		if (props_url != null) {
 			BasicConfigrationReader reader = new URLResourceReader();
-			reader.addResource(props_url.toString());
+			reader.addConfig(props_url.toString());
 			properties.putAll(reader.getProps());
 		}
 	}

@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-11-22		下午8:30:35 
  */
-@Shell(commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
+@Shell(name="base.frame", commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
 public abstract class BusBaseFrameShell extends BusShell {
 	protected BusHitBuffer buffer;
 	protected boolean onHelp;

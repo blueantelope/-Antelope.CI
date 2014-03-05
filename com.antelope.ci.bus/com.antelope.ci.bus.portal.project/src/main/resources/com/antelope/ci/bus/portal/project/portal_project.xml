@@ -3,7 +3,6 @@
 	<extensions>
 		<extension point="base" >
 			<base order="0" embed="replace" name="portal.project" />
-			</base>
 		</extension>
 		<extension point="layout">
 			<parts name="center" embed="replace">

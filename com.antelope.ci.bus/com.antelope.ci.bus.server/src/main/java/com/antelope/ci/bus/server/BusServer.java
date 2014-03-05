@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.Channel;
@@ -162,7 +160,7 @@ public abstract class BusServer {
 				throw new CIBusException("", "create shell factory error");
 			}
 		} else {
-			shellLauncher.addShell(condition.getShellClassList());
+			shellLauncher.setCondition(condition);
 			shellFactory = new BusShellFactory(shellLauncher);
 		}
 		sshServer.setShellFactory(shellFactory);

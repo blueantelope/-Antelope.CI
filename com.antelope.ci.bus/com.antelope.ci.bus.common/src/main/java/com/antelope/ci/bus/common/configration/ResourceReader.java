@@ -38,12 +38,12 @@ public class ResourceReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String)
 	 */
-	public void addResource(String resource) throws CIBusException {
-		removeResource(resource);
-		ResourceBundle bundle = ResourceBundle.getBundle(resource, locale);
-		resourceMap.put(resource, bundle);
+	public void addConfig(String config) throws CIBusException {
+		removeResource(config);
+		ResourceBundle bundle = ResourceBundle.getBundle(config, locale);
+		configMap.put(config, bundle);
 		for (String key : bundle.keySet()) 
 			props.put(key, bundle.getObject(key));
 	}
@@ -51,12 +51,12 @@ public class ResourceReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, int)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String, int)
 	 */
-	public void addResource(String resource, int start) throws CIBusException {
+	public void addConfig(String resource, int start) throws CIBusException {
 		removeResource(resource);
 		ResourceBundle bundle = ResourceBundle.getBundle(resource, locale);
-		resourceMap.put(resource, bundle);
+		configMap.put(resource, bundle);
 		for (String key : bundle.keySet()) {
 			if (isAdd(key, start)) {
 				props.put(key, bundle.getObject(key));
@@ -101,13 +101,13 @@ public class ResourceReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, java.lang.ClassLoader)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String, java.lang.ClassLoader)
 	 */
 	@Override
-	public void addResource(String resource, ClassLoader classLoader) throws CIBusException {
+	public void addConfig(String resource, ClassLoader classLoader) throws CIBusException {
 		removeResource(resource);
 		ResourceBundle bundle = ResourceBundle.getBundle(resource, locale, classLoader);
-		resourceMap.put(resource, bundle);
+		configMap.put(resource, bundle);
 		for (String key : bundle.keySet()) 
 			props.put(key, bundle.getObject(key));
 	}

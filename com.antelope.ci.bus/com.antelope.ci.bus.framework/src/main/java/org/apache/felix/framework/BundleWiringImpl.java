@@ -1571,13 +1571,13 @@ public class BundleWiringImpl implements BundleWiring
         {
             if (isClass)
             {
-            	DevAssistant.assert_err("class can not been loaded : = " + name);
+//            	DevAssistant.assert_err("class can not been loaded : = " + name);
                 throw new ClassNotFoundException(
                     name + " not found by " + this.getBundle());
             }
             else
             {
-            	DevAssistant.assert_err("resource can not been loaded : = " + name);
+//            	DevAssistant.assert_err("resource can not been loaded : = " + name);
                 throw new ResourceNotFoundException(
                     name + " not found by " + this.getBundle());
             }

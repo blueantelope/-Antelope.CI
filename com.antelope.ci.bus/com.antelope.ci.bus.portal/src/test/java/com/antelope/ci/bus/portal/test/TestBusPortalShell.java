@@ -44,9 +44,8 @@ public class TestBusPortalShell extends BusPortalShell {
 	}
 
 	@Override
-	protected void init() throws CIBusException {
-		BusPortalConfigurationHelper.getHelper().init();
-		this.portal_config = BusPortalConfigurationHelper.getHelper().getPortal();
+	protected void customInit() throws CIBusException {
+		
 	}
 
 	

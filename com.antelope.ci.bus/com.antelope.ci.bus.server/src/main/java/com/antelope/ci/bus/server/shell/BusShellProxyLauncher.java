@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.server.shell;
 
-import java.util.List;
-
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
@@ -23,22 +21,9 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @Date	 2013-12-4		上午9:42:48 
  */
 public class BusShellProxyLauncher extends BusShellLauncher {
-	private String shellClass;
-	
 	public BusShellProxyLauncher() {
-		
 	}
 	
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusShellLauncher#addShell(java.util.List)
-	 */
-	@Override
-	public void addShell(List<String> shellClsList) throws CIBusException {
-		this.shellClass = shellClsList.get(0);
-	}
-
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -46,6 +31,9 @@ public class BusShellProxyLauncher extends BusShellLauncher {
 	 */
 	@Override
 	protected BusShell createShell() throws CIBusException {
+		if (getShellList().isEmpty())
+			return null;
+		String shellClass = getShellList().get(0);
 		BusShell shell = (BusShell) ProxyUtil.newObject(shellClass);
 		if (shell == null)
 			shell = (BusShell) ProxyUtil.newObject(shellClass, CommonBusActivator.getClassLoader());

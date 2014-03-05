@@ -18,6 +18,7 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.BusServerCondition;
 
 
 /**
@@ -32,9 +33,18 @@ public abstract class BusShellLauncher implements Command {
 	protected OutputStream err;
 	protected ExitCallback callback;
 	protected Environment env;
+	protected BusServerCondition condition;
 	
 	public BusShellLauncher() {
 		
+	}
+	
+	public void setCondition(BusServerCondition condition) {
+		this.condition = condition;
+	}
+	
+	protected List<String> getShellList() {
+		return condition.getShellClassList();
 	}
 
 	@Override
@@ -87,8 +97,6 @@ public abstract class BusShellLauncher implements Command {
 	protected BusShellSession createShellSession() {
 		return new BusShellSession(in, out, err, callback, env);
 	}
-	
-	public abstract void addShell(List<String> shellClsList) throws CIBusException;
 	
 	protected abstract BusShell createShell() throws CIBusException;
 }

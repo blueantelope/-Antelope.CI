@@ -40,7 +40,8 @@ public class Parts {
 		Map<String, Part> partMap = new HashMap<String, Part>();
 		if (partList != null) {
 			for (Part part : partList) {
-				partMap.put(part.getName(), part);
+				if (part != null)
+					partMap.put(part.getName(), part);
 			}
 		}
 		

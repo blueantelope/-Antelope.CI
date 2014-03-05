@@ -38,7 +38,7 @@ public class CfgReader {
 	 * 加载配置文件
 	 */
 	void loadCnf(String path) throws CIBusException {
-		reader.addResource(path);
+		reader.addConfig(path);
 	}
 	
 	/**

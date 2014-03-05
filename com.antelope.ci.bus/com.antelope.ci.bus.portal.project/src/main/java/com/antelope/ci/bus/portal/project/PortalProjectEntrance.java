@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.entrance.CommonEntrance;
-import com.antelope.ci.bus.portal.entrance.Entrance;
 import com.antelope.ci.bus.portal.entrance.PortalEntrance;
 
 

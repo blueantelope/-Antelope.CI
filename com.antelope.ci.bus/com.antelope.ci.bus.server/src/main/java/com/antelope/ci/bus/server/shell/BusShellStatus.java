@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BusShellStatus {
 	public enum BaseStatus {
 		@Status(code=-1, name="command.status.none")
-		NONE(-1, "command.status.node"),
+		NONE(-1, "command.status.none"),
 		@Status(code=0, name="command.status.init")
 		INIT(0, "command.status.init"),
 		@Status(code=1, name="command.status.root")
@@ -81,45 +81,46 @@ public class BusShellStatus {
 	public static final String LAST				= "command.status.last";
 	public static final String KEEP				= "command.status.keep";
 	
-	private static List<Class> statusClassList;
+	private static List<StatusExtenstion> statusList;
 	private static Map<String, Status> statusMap;
 	
 	static {
-		statusClassList = new Vector<Class>();
+		statusList = new Vector<StatusExtenstion>();
 		statusMap = new ConcurrentHashMap<String, Status>();
-		addStatusToMap(BaseStatus.class);
+		addStatusToMap(BaseStatus.class, false);
 	}
 	
 	public static void addStatusClass(Class statusClass) {
-		statusClassList.add(statusClass);
-		addStatusToMap(statusClass);
+		addStatusToMap(statusClass, true);
 	}
 	
 	public static void removeStatusClass(Class statusClass) {
 		boolean exist = false;
 		int d_index = 0;
-		for (Class sc : statusClassList) {
+		for (StatusExtenstion se : statusList) {
+			Class sc = se.getCls();
 			if (sc == statusClass) {
-				removeStatusToMap(sc);
+				removeStatusFromMap(sc);
 				exist = true;
 				break;
 			}
 			d_index++;
 		}
-		statusClassList.remove(d_index);
+		statusList.remove(d_index);
 	}
 	
-	private static void addStatusToMap(Class statusClass) {
+	private static void addStatusToMap(Class statusClass, boolean isExtension) {
 		for (Field f : statusClass.getFields()) {
 			if (f.isAnnotationPresent(Status.class)) {
 				Status fStatus = f.getAnnotation(Status.class);
-				if (statusMap.get(f.getName()) == null)
-					statusMap.put(f.getName(), fStatus);
+				statusMap.put(f.getName(), fStatus);
+				if (isExtension)
+					statusList.add(new StatusExtenstion(fStatus.name(), statusClass));
 			}
 		}
 	}
 	
-	private static void removeStatusToMap(Class statusClass) {
+	private static void removeStatusFromMap(Class statusClass) {
 		List<String> delList = new ArrayList<String>();
 		for (Field f : statusClass.getFields()) {
 			if (f.isAnnotationPresent(Status.class)) {
@@ -144,6 +145,29 @@ public class BusShellStatus {
 	
 	public static BaseStatus toBaseStatus(String name) {
 		return BaseStatus.toStatus(name);
+	}
+	
+	public static String getStartStatus() {
+		if (statusList.isEmpty())
+			return statusList.get(0).getName();
+		
+		return ROOT;
+	}
+	
+	private static class StatusExtenstion {
+		private String name;
+		private Class cls;
+		public StatusExtenstion(String name, Class cls) {
+			super();
+			this.name = name;
+			this.cls = cls;
+		}
+		public String getName() {
+			return name;
+		}
+		public Class getCls() {
+			return cls;
+		}
 	}
 }
 

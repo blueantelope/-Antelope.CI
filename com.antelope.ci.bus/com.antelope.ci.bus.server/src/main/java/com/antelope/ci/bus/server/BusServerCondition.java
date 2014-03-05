@@ -58,7 +58,6 @@ public class BusServerCondition {
 	public BusServerCondition() {
 		userMap = new HashMap<String, User>();
 		authServiceList = new ArrayList<AuthService>();
-//		shellClassList = new Vector<String>();
 		shellClassMap = new ConcurrentHashMap<String, String>();
 	}
 	

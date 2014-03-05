@@ -17,7 +17,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * 配置文件读取
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-8-1		下午12:02:50 
@@ -30,18 +29,18 @@ public class CfgFileReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String)
 	 */
 	@Override
-	public void addResource(String resource) throws CIBusException {
-		removeResource(resource);
+	public void addConfig(String config) throws CIBusException {
+		removeConfig(config);
 		Properties conf = new Properties();
 		try {
-			conf.load(new FileInputStream(resource));
+			conf.load(new FileInputStream(config));
 		} catch (Exception e) {
 			throw new CIBusException("", e);
 		} 
-		resourceMap.put(resource, conf);
+		configMap.put(config, conf);
 		for (Object key : conf.keySet()) 
 			props.put(key, conf.get(key));
 	}
@@ -49,18 +48,18 @@ public class CfgFileReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, int)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String, int)
 	 */
 	@Override
-	public void addResource(String resource, int start) throws CIBusException {
-		removeResource(resource);
+	public void addConfig(String config, int start) throws CIBusException {
+		removeConfig(config);
 		Properties conf = new Properties();
 		try {
-			conf.load(new FileInputStream(resource));
+			conf.load(new FileInputStream(config));
 		} catch (Exception e) {
 			throw new CIBusException("", e);
 		} 
-		resourceMap.put(resource, conf);
+		configMap.put(config, conf);
 		for (Object key : conf.keySet()) {
 			if (isAdd(key.toString(), start)) {
 				props.put(key, conf.get(key));
@@ -89,7 +88,7 @@ public class CfgFileReader extends BasicConfigrationReader {
 	}
 
 	@Override
-	public void addResource(String resource, ClassLoader classLoader)
+	public void addConfig(String config, ClassLoader classLoader)
 			throws CIBusException {
 		
 		// TODO Auto-generated method stub

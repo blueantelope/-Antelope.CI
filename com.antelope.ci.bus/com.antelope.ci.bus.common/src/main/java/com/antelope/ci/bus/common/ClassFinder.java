@@ -83,9 +83,36 @@ public class ClassFinder {
 		return urlList;
 	}
 	
+	public static List<URL> findPacketResourceUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
+		List<URL> urlList = new ArrayList<URL>();
+		for (String resourceName : findPacketResource(packageName, clsLoader)) {
+			try {
+				urlList.add(classNameToUrl(resourceName, false));
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+
+		return urlList;
+	}
+	
 	public static List<URL> findXmlUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
 		List<URL> urlList = new ArrayList<URL>();
 		for (String resourceName : findResource(packageName, clsLoader)) {
+			try {
+				if (resourceName.endsWith(XML_SUFFIX))
+					urlList.add(classNameToUrl(resourceName, false));
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+
+		return urlList;
+	}
+	
+	public static List<URL> findPacketXmlUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
+		List<URL> urlList = new ArrayList<URL>();
+		for (String resourceName : findPacketResource(packageName, clsLoader)) {
 			try {
 				if (resourceName.endsWith(XML_SUFFIX))
 					urlList.add(classNameToUrl(resourceName, false));
@@ -180,6 +207,10 @@ public class ClassFinder {
 	
 	public static List<String> findResource(String packageName, ClassLoader clsLoader) throws CIBusException {
 		return findClasspath(packageName, clsLoader, true, false);
+	}
+	
+	public static List<String> findPacketResource(String packageName, ClassLoader clsLoader) throws CIBusException {
+		return findClasspath(packageName, clsLoader, false, false);
 	}
 
 	

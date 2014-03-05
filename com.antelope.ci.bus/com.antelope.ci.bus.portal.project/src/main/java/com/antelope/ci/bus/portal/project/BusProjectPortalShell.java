@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.project;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.shell.BusPortalShell;
 import com.antelope.ci.bus.server.shell.Shell;
 
@@ -20,7 +21,8 @@ import com.antelope.ci.bus.server.shell.Shell;
  * @version  0.1
  * @Date	 2014-2-27		下午6:03:13 
  */
-@Shell(commandAdapter="com.antelope.ci.bus.server.shell.command.echo.EchoAdapter")
+@Shell(name="portal.project", commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter", status=BusProjectShellStatus.PROJECT)
+@PortalConfiguration(xml="classpath:portal_project", properties="classpath:portal_project")
 public class BusProjectPortalShell extends BusPortalShell {
 
 	public BusProjectPortalShell() throws CIBusException {
@@ -28,7 +30,7 @@ public class BusProjectPortalShell extends BusPortalShell {
 	}
 
 	@Override
-	protected void init() throws CIBusException {
+	protected void customInit() throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

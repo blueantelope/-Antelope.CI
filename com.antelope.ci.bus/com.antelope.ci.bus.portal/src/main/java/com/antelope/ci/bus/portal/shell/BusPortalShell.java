@@ -16,12 +16,15 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.configuration.LAYOUT;
 import com.antelope.ci.bus.portal.configuration.ORIGIN;
+import com.antelope.ci.bus.portal.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.configuration.xo.Part;
 import com.antelope.ci.bus.portal.configuration.xo.PlacePart;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -34,16 +37,55 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	protected Portal portal_config;
+	private static final String CP_SUFFIX 				= "classpath:";
+	private static final String FILE_SUFFIX 			= "file:";
 
 	public BusPortalShell() throws CIBusException {
 		super();
-		init();
+		customInit();
+		initPortal_Config();
 		if (portal_config == null)
 			throw new CIBusException("", "must set configration of portal");
 	}
 	
-	protected abstract void init() throws CIBusException;
-
+	protected void initPortal_Config() throws CIBusException {
+		portal_config = null;
+		BusPortalConfigurationHelper configHelper = BusPortalConfigurationHelper.getHelper();
+		configHelper.init();
+		Class thisCls = this.getClass();
+		if (thisCls.isAnnotationPresent(PortalConfiguration.class)) {
+			PortalConfiguration pc = (PortalConfiguration) thisCls.getAnnotation(PortalConfiguration.class);
+			boolean isResource = pc.properties().startsWith(CP_SUFFIX) ? true : false;
+			String a_xml = trunckConfig(pc.xml() + ".xml");
+			String a_pro = trunckConfig(pc.properties());
+			if (isResource)
+				a_pro = DealResource(a_pro);
+			portal_config = configHelper.parseExtention(thisCls.getResourceAsStream(a_xml), a_pro, isResource);
+		} else {
+			Shell a_shell = (Shell) thisCls.getAnnotation(Shell.class);
+			portal_config = configHelper.getPortalExtention(a_shell.name());
+		}
+		if (portal_config == null)
+			portal_config = configHelper.getPortal();
+	}
+	
+	protected String trunckConfig(String config) {
+		String new_config = config;
+		if (config.startsWith(CP_SUFFIX))
+			new_config = config.substring(CP_SUFFIX.length());
+		
+		if (new_config.startsWith(FILE_SUFFIX))
+			new_config = config.substring(FILE_SUFFIX.length());
+		
+		return new_config;
+	}
+	
+	protected String DealResource(String res) {
+		if (this.getClass().getResource(res) == null)
+			return this.getClass().getPackage().getName() + "." + res;
+		return res;
+	}
+	
 	protected void layout() throws IOException {
 		Map<String, Map<String, PlacePart>> placeMap = portal_config.getPlaceMap();
 		shiftTop();
@@ -198,4 +240,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected ShellCursor initCursorPosistion() {
 		return new ShellCursor(0, 0);
 	}
+	
+	protected abstract void customInit() throws CIBusException;
 }

@@ -107,7 +107,7 @@ public class JarBusProperty {
 	 */
 	private static JarBusProperty readJarBus(JarResourceReader reader)
 			throws CIBusException {
-		reader.addResource(BUS_PROPS);
+		reader.addConfig(BUS_PROPS);
 		JarBusProperty busProperty = new JarBusProperty();
 		busProperty.setLoad(reader.getString(BusConstants.JAR_LOAD));
 		busProperty.setStartLevel(reader.getInt(BusConstants.JAR_START_LEVEL));

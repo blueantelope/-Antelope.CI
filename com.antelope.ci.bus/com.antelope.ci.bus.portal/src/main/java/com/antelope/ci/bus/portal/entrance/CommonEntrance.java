@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.entrance;
 
+import java.net.URL;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -76,6 +77,14 @@ public abstract class CommonEntrance implements Entrance {
 				DevAssistant.errorln(e);
 			}
 		}
+		
+		// add xml of portal
+		List<URL> url = ClassFinder.findXmlUrl(this.getClass().getPackage().getName(), 
+				BusCommonServerActivator.getClassLoader());
+		
+		// add properties of portal
+		ClassFinder.findResourceUrl(this.getClass().getPackage().getName(), 
+				BusCommonServerActivator.getClassLoader());
 	}
 	
 	private void destroy() {

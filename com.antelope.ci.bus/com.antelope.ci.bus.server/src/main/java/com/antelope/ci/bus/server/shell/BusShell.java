@@ -49,10 +49,16 @@ public abstract class BusShell {
 	protected CommandAdapter commandAdapter;
 	protected int x;
 	protected int y;
+	protected ClassLoader cloader;
+	protected int sort;
 
 	public BusShell(BusShellSession session) {
 		this();
 		this.session = session;
+		this.sort = -1;
+		cloader = CommonBusActivator.getClassLoader() != null 
+						? CommonBusActivator.getClassLoader() 
+						: this.getClass().getClassLoader();
 	}
 
 	public BusShell() {
@@ -62,11 +68,20 @@ public abstract class BusShell {
 		status = BusShellStatus.ROOT;
 		statusSetted = false;
 		shellMap = null;
+		this.sort = -1;
 		init();
 		actionStatus = BusShellStatus.INIT;
 		lastStatus = BusShellStatus.INIT;
 	}
 
+	public void setSort(int sort) {
+		this.sort = sort;
+	}
+	
+	public int getSort() {
+		return sort;
+	}
+	
 	private void init() {
 		Class clazz = this.getClass();
 		for (; commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz = clazz

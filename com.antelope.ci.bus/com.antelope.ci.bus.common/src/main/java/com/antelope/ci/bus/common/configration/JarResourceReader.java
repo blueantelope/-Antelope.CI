@@ -50,18 +50,18 @@ public class JarResourceReader extends BasicConfigrationReader {
 	/**
 	 * 这里的resource指的是jar里的资源文件
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String)
 	 */
 	@Override
-	public void addResource(String resource) throws CIBusException {
-		JarEntry entry = jarFile.getJarEntry(resource);
+	public void addConfig(String config) throws CIBusException {
+		JarEntry entry = jarFile.getJarEntry(config);
 		Properties jarProps = new Properties();
 		try {
 			jarProps.load(jarFile.getInputStream(entry));
 		} catch (IOException e) {
 			throw new CIBusException("", e);
 		}
-		resourceMap.put(resource, jarProps);
+		configMap.put(config, jarProps);
 		for (Object key : jarProps.keySet()) 
 			props.put(key, jarProps.get(key));
 		
@@ -70,10 +70,10 @@ public class JarResourceReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, int)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String, int)
 	 */
 	@Override
-	public void addResource(String resource, int start) throws CIBusException {
+	public void addConfig(String config, int start) throws CIBusException {
 		
 	}
 
@@ -98,7 +98,7 @@ public class JarResourceReader extends BasicConfigrationReader {
 	}
 
 	@Override
-	public void addResource(String resource, ClassLoader classLoader)
+	public void addConfig(String config, ClassLoader classLoader)
 			throws CIBusException {
 		
 		// TODO Auto-generated method stub

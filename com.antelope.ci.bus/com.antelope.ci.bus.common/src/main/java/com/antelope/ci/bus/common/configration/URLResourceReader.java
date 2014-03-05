@@ -22,20 +22,21 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-9-8		下午3:06:39 
  */
 public class URLResourceReader extends BasicConfigrationReader {
+
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String)
 	 */
 	@Override
-	public void addResource(String resource) throws CIBusException {
-		removeResource(resource);
+	public void addConfig(String config) throws CIBusException {
+		removeConfig(config);
 		try {
-			URL url = new URL(resource);
-			resourceMap.put(resource, url);
+			URL url = new URL(config);
 			InputStream input = url.openConnection().getInputStream();
 			Properties res_props= new Properties();
 			res_props.load(input);
+			configMap.put(config, res_props);
 			props.putAll(res_props);
 		} catch (Exception e) {
 			throw new CIBusException("", e);
@@ -45,17 +46,17 @@ public class URLResourceReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, int)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String, int)
 	 */
 	@Override
-	public void addResource(String resource, int start) throws CIBusException {
-		removeResource(resource);
+	public void addConfig(String config, int start) throws CIBusException {
+		removeConfig(config);
 		try {
-			URL url = new URL(resource);
-			resourceMap.put(resource, url);
+			URL url = new URL(config);
 			InputStream input = url.openConnection().getInputStream();
 			Properties res_props= new Properties();
 			res_props.load(input);
+			configMap.put(config, res_props);
 			for (Object k : res_props.keySet()) {
 				String key = (String) k;
 				if (isAdd(key, start)) {
@@ -90,10 +91,10 @@ public class URLResourceReader extends BasicConfigrationReader {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addResource(java.lang.String, java.lang.ClassLoader)
+	 * @see com.antelope.ci.bus.common.configration.BasicConfigrationReader#addConfig(java.lang.String, java.lang.ClassLoader)
 	 */
 	@Override
-	public void addResource(String resource, ClassLoader classLoader) throws CIBusException {
+	public void addConfig(String config, ClassLoader classLoader) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

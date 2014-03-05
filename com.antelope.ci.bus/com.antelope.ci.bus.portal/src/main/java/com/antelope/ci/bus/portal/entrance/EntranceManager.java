@@ -20,7 +20,6 @@ import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.BusServerCondition;
-import com.antelope.ci.bus.server.shell.Shell;
 
 
 /**

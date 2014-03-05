@@ -25,7 +25,7 @@ public class BusDefaultPortalShell extends BusPortalShell {
 	}
 
 	@Override
-	protected void init() throws CIBusException {
+	protected void customInit() throws CIBusException {
 		
 	}
 

@@ -25,7 +25,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-11-22		下午8:30:50 
  */
-@Shell(commandAdapter="com.antelope.ci.bus.server.shell.command.echo.EchoAdapter")
+@Shell(name="base.echo", commandAdapter="com.antelope.ci.bus.server.shell.command.echo.EchoAdapter")
 public abstract class BusBaseEchoShell extends BusShell {
 	protected BusEchoBuffer buffer;
 	private boolean tabPress;
