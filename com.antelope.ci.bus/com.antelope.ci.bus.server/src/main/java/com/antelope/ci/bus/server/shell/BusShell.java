@@ -307,7 +307,7 @@ public abstract class BusShell {
 		io.moveUp(times);
 	}
 	
-	protected void shifDown(int times) throws IOException {
+	protected void shiftDown(int times) throws IOException {
 		io.moveDown(times);
 	}
 
