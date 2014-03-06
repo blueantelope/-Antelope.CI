@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.portal.shell;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -41,10 +40,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected Portal portal_config;
 	private static final String CP_SUFFIX 						= "classpath:";
 	private static final String FILE_SUFFIX 					= "file:";
-	protected static final String[] LAYOUT_ORDER		= new String[] {
-		LAYOUT.NORTH.getName(), LAYOUT.SOUTH.getName(), 
-		LAYOUT.WEST.getName(), LAYOUT.EAST.getName(), 
-		LAYOUT.CENTER.getName()};
+	protected static final LAYOUT[] INNER_LAYOUT_ORDER		= new LAYOUT[] 
+			{LAYOUT.NORTH, LAYOUT.WEST, LAYOUT.EAST, LAYOUT.CENTER, LAYOUT.SOUTH};
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -99,22 +96,56 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected void layoutByTree() throws IOException, CIBusException {
 		Map<String, PlacePartTree> placeTreeMap = portal_config.makePlacePartTreeMap();
 		shiftTop();
+		int north_height = 0;
+		PartCursor cursor = new PartCursor();
 		PlacePartTree northTree = placeTreeMap.get(LAYOUT.NORTH.getName());
 		if (northTree != null) {
 			Map<String, PlacePart> rootMap = northTree.getRootMap();
 			Map<String, Map<String, PlacePart>> childMap = northTree.makeChildMap();
-			for (String layout : LAYOUT_ORDER) {
-				PlacePart rootPart = rootMap.get(layout);
-				if (rootPart != null) {
-					
-					continue;
-				}
-				Map<String, PlacePart> childPartMap = childMap.get(layout);
-				if (childPartMap != null) {
-					layoutInner(childPartMap, getWidth());
+			PartPalette north_palette = new PartPalette();
+			PartPalette west_palette = new PartPalette();
+			PartPalette east_palette = new PartPalette();
+			PartPalette center_palette = new PartPalette();
+			PartPalette south_palette = new PartPalette();
+			for (LAYOUT layout : INNER_LAYOUT_ORDER) {
+				switch (layout) {
+					case NORTH:
+						north_palette = drawPartTree(rootMap, childMap, layout, cursor, getWidth());
+						break;
+					case WEST:
+						west_palette = north_palette = drawPartTree(rootMap, childMap, layout, cursor, getWidth());
+						break;
+					case EAST:
+						east_palette = north_palette = drawPartTree(rootMap, childMap, layout, cursor, getWidth()-west_palette.getWidth());
+						break;
+					case CENTER:
+						center_palette = north_palette = drawPartTree(rootMap, childMap, layout, cursor, getWidth()-west_palette.getWidth()-east_palette.getWidth());
+						break;
+					case SOUTH:
+						south_palette = drawPartTree(rootMap, childMap, layout, cursor, getWidth());
+						break;
 				}
 			}
 		}
+	}
+	
+	protected PartPalette drawPartTree(Map<String, PlacePart> rootMap, Map<String, Map<String, PlacePart>> childMap, 
+												LAYOUT layout, PartCursor cursor, int width) {
+		PlacePart rootPart = rootMap.get(layout.getName());
+		PartPalette palette = new PartPalette();
+		if (rootPart != null) {
+			palette = drawPart(rootPart, width, cursor);
+		} else {
+			Map<String, PlacePart> childPartMap = childMap.get(layout.getName());
+			if (childPartMap != null) {
+				layoutInner(childPartMap, width);
+				int part_width = getPartWdith(childPartMap);
+				part_width = part_width < width ? part_width : width;
+				palette.setShapePoint(part_width, getPartHeight(childPartMap, width));
+			}
+		}
+		
+		return palette;
 	}
 	
 	protected void layout() throws IOException, CIBusException {
@@ -353,6 +384,28 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			DevAssistant.errorln(e);
 		}
 		restoreCursor();
+	}
+	
+	protected PartPalette drawPart(PlacePart part, int width, PartCursor cursor) {
+		PartPalette palette = new PartPalette();
+		storeCursor();
+		try {
+			if (cursor.getPart_x() > 0) shiftRight(x);
+			if (cursor.getPart_y() > 0) shiftDown(y);
+			String pcon = placePartContent(part);
+			String[] lines = StringUtil.toLines(pcon, width);
+			int palette_width = StringUtil.maxLine(pcon);
+			palette_width = palette_width < width ? palette_width : width;
+			int palette_height = lines.length;
+			palette.setShapePoint(palette_width, palette_height);
+			for (String line : lines) {
+				writeLine(cursor, line);
+			}
+		} catch (Exception e) {
+			DevAssistant.errorln(e);
+		}
+		restoreCursor();
+		return palette;
 	}
 	
 	protected void writeLine(PartCursor part_cursor, String line) {
