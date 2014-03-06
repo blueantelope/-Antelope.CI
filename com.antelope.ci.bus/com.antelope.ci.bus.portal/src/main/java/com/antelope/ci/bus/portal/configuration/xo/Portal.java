@@ -208,8 +208,18 @@ public class Portal {
 				for (Place place : layout.getPlaceList()) {
 					String pName = place.getName();
 					if (place.getParts() != null) {
-						if (place.getParts().getPartList() != null && !place.getParts().getPartList().isEmpty()) {
-							placeList.put(pName, place.getParts().getPartList());
+						PlaceParts pps = place.getParts();
+						if (pps.getPartList() != null && !pps.getPartList().isEmpty()) {
+							placeList.put(pName, pps.getPartList());
+						}
+						if (pps.getPlaceList() !=null && !pps.getPlaceList().isEmpty()) {
+							for (Place pplace : pps.getPlaceList()) {
+								String ppName = pplace.getName();
+								if (pplace.getParts() != null) {
+									if (pplace.getParts().getPartList() != null && !pplace.getParts().getPartList().isEmpty())
+										placeList.put(pName+"."+ppName, pplace.getParts().getPartList());
+								}
+							}
 						}
 					}
 				}
@@ -217,6 +227,45 @@ public class Portal {
 		}
 		
 		return placeList;
+	}
+	
+	public Map<String, PlacePartTree> makePlacePartTreeMap() {
+		Map<String, PlacePartTree> treemap = new HashMap<String, PlacePartTree>();
+		List<PlacePartTree> tree = makePlacePartTree();
+		for (PlacePartTree node : tree)
+			treemap.put(node.getName(), node);
+		return treemap;
+	}
+	
+	public List<PlacePartTree> makePlacePartTree() {
+		List<PlacePartTree> tree = new ArrayList<PlacePartTree>();
+		if (layout != null) {
+			if (layout.getPlaceList() != null) {
+				for (Place place : layout.getPlaceList()) {
+					PlacePartTree root = new PlacePartTree();
+					makePlacePartTree(root, place);
+					tree.add(root);
+				}
+			}
+		}
+		
+		return tree;
+	}
+		
+	private void makePlacePartTree(PlacePartTree root, Place place) {
+		root.setName(place.getName());
+		if (place.getParts() != null) {
+			PlaceParts pps = place.getParts();
+			root.setRootList(pps.getPartList());
+			if (pps.getPlaceList() != null) {
+				for (Place childPlace : pps.getPlaceList()) {
+					PlacePartTree child = new PlacePartTree();
+					root.addChild(child);
+					makePlacePartTree(child, childPlace);
+				}
+			}
+		}
+		
 	}
 	
 	public Map<String, Map<String, PlacePart>> getPlaceMap() {

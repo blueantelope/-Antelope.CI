@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.shell;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -22,6 +23,7 @@ import com.antelope.ci.bus.portal.configuration.ORIGIN;
 import com.antelope.ci.bus.portal.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.configuration.xo.Part;
 import com.antelope.ci.bus.portal.configuration.xo.PlacePart;
+import com.antelope.ci.bus.portal.configuration.xo.PlacePartTree;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.Shell;
@@ -37,8 +39,12 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	protected Portal portal_config;
-	private static final String CP_SUFFIX 				= "classpath:";
-	private static final String FILE_SUFFIX 			= "file:";
+	private static final String CP_SUFFIX 						= "classpath:";
+	private static final String FILE_SUFFIX 					= "file:";
+	protected static final String[] LAYOUT_ORDER		= new String[] {
+		LAYOUT.NORTH.getName(), LAYOUT.SOUTH.getName(), 
+		LAYOUT.WEST.getName(), LAYOUT.EAST.getName(), 
+		LAYOUT.CENTER.getName()};
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -90,6 +96,27 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return res;
 	}
 	
+	protected void layoutByTree() throws IOException, CIBusException {
+		Map<String, PlacePartTree> placeTreeMap = portal_config.makePlacePartTreeMap();
+		shiftTop();
+		PlacePartTree northTree = placeTreeMap.get(LAYOUT.NORTH.getName());
+		if (northTree != null) {
+			Map<String, PlacePart> rootMap = northTree.getRootMap();
+			Map<String, Map<String, PlacePart>> childMap = northTree.makeChildMap();
+			for (String layout : LAYOUT_ORDER) {
+				PlacePart rootPart = rootMap.get(layout);
+				if (rootPart != null) {
+					
+					continue;
+				}
+				Map<String, PlacePart> childPartMap = childMap.get(layout);
+				if (childPartMap != null) {
+					layoutInner(childPartMap, getWidth());
+				}
+			}
+		}
+	}
+	
 	protected void layout() throws IOException, CIBusException {
 		Map<String, Map<String, PlacePart>> placeMap = portal_config.getPlaceMap();
 		shiftTop();
@@ -126,7 +153,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 		
 		shiftTop();
-		
 		Map<String, PlacePart> centerMap = placeMap.get(LAYOUT.CENTER.getName());
 		if (centerMap != null) {
 			shiftDown(north_height);
