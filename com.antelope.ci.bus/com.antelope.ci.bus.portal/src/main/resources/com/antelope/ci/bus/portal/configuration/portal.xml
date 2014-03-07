@@ -14,9 +14,9 @@
 				<part name="second.menu" place="west" origin="part" />
 				<place name="center">
 					<parts>
-						<part name="title" place="south" origin="part" />
+						<part name="title" place="north" origin="part" />
 						<part name="content" place="center" origin="part" />
-						<part name="page" place="north" origin="global" />
+						<part name="page" place="south" origin="global" />
 					</parts>
 				</place>
 			</parts>

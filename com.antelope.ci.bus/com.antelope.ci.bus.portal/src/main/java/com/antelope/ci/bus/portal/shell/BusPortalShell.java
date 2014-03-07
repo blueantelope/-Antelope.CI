@@ -9,6 +9,9 @@
 package com.antelope.ci.bus.portal.shell;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -39,9 +42,15 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	protected Portal portal_config;
 	private static final String CP_SUFFIX 						= "classpath:";
-	private static final String FILE_SUFFIX 					= "file:";
+	private static final String FILE_SUFFIX 						= "file:";
 	protected static final LAYOUT[] LAYOUT_ORDER		= new LAYOUT[] 
 			{LAYOUT.NORTH, LAYOUT.SOUTH, LAYOUT.WEST, LAYOUT.EAST, LAYOUT.CENTER};
+	protected final static Map<String, Integer> CONTENT_SCALE = new HashMap<String, Integer>();
+	static {
+		CONTENT_SCALE.put(LAYOUT.WEST.getName(), 2);
+		CONTENT_SCALE.put(LAYOUT.CENTER.getName(), 6);
+		CONTENT_SCALE.put(LAYOUT.EAST.getName(), 2);
+	}
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -95,12 +104,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected void draw() throws IOException, CIBusException {
 		Map<String, PlacePartTree> placeTreeMap = portal_config.makePlacePartTreeMap();
+		Map<String, Integer> contentWidthMap = divideContentWidth(getWidth(), placeTreeMap);
 		shiftTop();
 		
 		PlacePartTree northTree = placeTreeMap.get(LAYOUT.NORTH.getName());
 		LayoutPaletteSet northPaletteSet = new LayoutPaletteSet();
 		if (northTree != null) {
-			northPaletteSet = drawRootTree(northTree, new PartCursor());
+			int north_height = getPartTreeHeight(northTree, LAYOUT.NORTH, getWidth());
+			northPaletteSet = drawRootTree(northTree, getWidth(), north_height);
 		}
 		
 		PlacePartTree southTree = placeTreeMap.get(LAYOUT.SOUTH.getName());
@@ -109,70 +120,137 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			shiftBottom();
 			if (northPaletteSet.getHeight() > 1)
 				shiftUp(northPaletteSet.getHeight()-1);
-			southPaletteSet = drawRootTree(southTree, new PartCursor());
+			int south_height = getPartTreeHeight(southTree, LAYOUT.SOUTH, getWidth());
+			southPaletteSet = drawRootTree(southTree, getWidth(), south_height);
 		}
 		
+		int content_height = getHeight() - northPaletteSet.getHeight() - southPaletteSet.getHeight();
 		PlacePartTree westTree = placeTreeMap.get(LAYOUT.WEST.getName());
 		LayoutPaletteSet westPaletteSet = new LayoutPaletteSet();
 		if (westTree != null) {
 			shiftTop();
 			shiftDown(northPaletteSet.getHeight());
-			westPaletteSet = drawRootTree(westTree, new PartCursor());
+			Integer west_width = contentWidthMap.get(LAYOUT.WEST.getName());
+			if (west_width != null)
+				westPaletteSet = drawRootTree(westTree, west_width, content_height);
 		}
 		
 		PlacePartTree eastTree = placeTreeMap.get(LAYOUT.EAST.getName());
+		LayoutPaletteSet eastPaletteSet = new LayoutPaletteSet();
 		if (eastTree != null) {
 			shiftTop();
 			shiftDown(northPaletteSet.getHeight());
 			shiftRight(getWidth()-westPaletteSet.getWidth());
-			drawRootTree(eastTree, new PartCursor());
+			Integer east_width = contentWidthMap.get(LAYOUT.EAST.getName());
+			if (east_width != null)
+				eastPaletteSet = drawRootTree(eastTree, east_width, content_height);
 		}
 		
 		PlacePartTree centerTree = placeTreeMap.get(LAYOUT.CENTER.getName());
+		LayoutPaletteSet centerPaletteSet = new LayoutPaletteSet();
 		if (centerTree != null) {
 			shiftTop();
 			shiftDown(northPaletteSet.getHeight());
 			shiftRight(westPaletteSet.getWidth());
-			drawRootTree(centerTree, new PartCursor());
+			Integer center_width = contentWidthMap.get(LAYOUT.CENTER.getName());
+			if (center_width != null)
+				centerPaletteSet = drawRootTree(centerTree, center_width, content_height);
 		}
 	}
 	
-	protected LayoutPaletteSet drawRootTree(PlacePartTree partTree, PartCursor cursor) {
+	protected Map<String, Integer> divideTreeWidth(int total_width, PlacePartTree partTree) {
+		List<String> keyList = new ArrayList<String>();
+		List<String> placeList = partTree.genPlaceGroup();
+		for (String place : placeList) {
+			try {
+				LAYOUT l = LAYOUT.toLayout(place);
+				switch (l) {
+					case WEST:
+					case CENTER:
+					case EAST:
+						keyList.add(place);
+						break;
+					default:
+						break;
+				}
+			} catch (CIBusException e) {
+				
+			}
+		}
+		return divideWidth(total_width, keyList.toArray(new String[keyList.size()]), CONTENT_SCALE);
+	}
+	
+	protected Map<String, Integer> divideContentWidth(int total_width, Map<String, PlacePartTree> placeTreeMap) {
+		List<String> keyList = new ArrayList<String>();
+		addContentKey(keyList, placeTreeMap, LAYOUT.WEST);
+		addContentKey(keyList, placeTreeMap, LAYOUT.CENTER);
+		addContentKey(keyList, placeTreeMap, LAYOUT.EAST);
+		return divideWidth(total_width, keyList.toArray(new String[keyList.size()]), CONTENT_SCALE);
+	}
+	
+	protected void addContentKey(List<String> keyList, Map<String, PlacePartTree> placeTreeMap, LAYOUT layout) {
+		PlacePartTree pptree = placeTreeMap.get(layout.getName());
+		Map<String, Part> partMap = portal_config.getPartMap();
+		if (pptree != null && !pptree.isEmpty(partMap))
+			keyList.add(layout.getName());
+	}
+	
+	protected Map<String, Integer> divideWidth(int total_width, String[] keys, Map<String, Integer> scale) {
+		Map<String, Integer> widthMap = new HashMap<String, Integer>();
+		int total = 0;
+		for (String key : keys)
+			total += scale.get(key);
+		for (String key : keys)
+			widthMap.put(key, total_width * scale.get(key) / total);
+		return widthMap;
+	}
+	
+	protected LayoutPaletteSet drawRootTree(PlacePartTree partTree, int width, int height) {
+		Map<String, Integer> widthMap = divideTreeWidth(width, partTree);
 		PartPalette north_palette = new PartPalette();
 		PartPalette south_palette = new PartPalette();
 		PartPalette west_palette = new PartPalette();
 		PartPalette east_palette = new PartPalette();
 		PartPalette center_palette = new PartPalette();
+		PartCursor cursor = new PartCursor();
 		for (LAYOUT layout : LAYOUT_ORDER) {
-			switch (layout) {
-				case NORTH:
-					north_palette = drawPartTree(partTree, layout, cursor, getWidth());
-					break;
-				case SOUTH:
-					try {
-						int south_height = getPartTreeHeight(partTree, layout, getWidth());
-						south_palette = drawPartTree(partTree, layout, cursor, getWidth());
-					} catch (CIBusException e) {
-						DevAssistant.errorln(e);
-						log.error(e);
-					}
-					break;
-				case WEST:
-					west_palette = drawPartTree(partTree, layout, cursor, getWidth());
-					break;
-				case EAST:
-					east_palette = drawPartTree(partTree, layout, cursor, getWidth()-west_palette.getWidth());
-					break;
-				case CENTER:
-					center_palette = drawPartTree(partTree, layout, cursor, getWidth()-west_palette.getWidth()-east_palette.getWidth());
-					break;
+			try {
+				int tree_height = getPartTreeHeight(partTree, layout, width);
+				switch (layout) {
+					case NORTH:
+						north_palette = drawPartTree(partTree, layout, cursor, width, tree_height);
+						break;
+					case SOUTH:
+						cursor.setPart_y(height-tree_height);
+						south_palette = drawPartTree(partTree, layout, cursor, width, tree_height);
+						cursor.setPart_x(north_palette.getHeight());
+						break;
+					case WEST:
+						Integer west_width = widthMap.get(LAYOUT.WEST.getName());
+						if (west_width != null)
+							west_palette = drawPartTree(partTree, layout, cursor, west_width, height-north_palette.getHeight());
+						break;
+					case EAST:
+						Integer east_width = widthMap.get(LAYOUT.EAST.getName());
+						if (east_width != null)
+							east_palette = drawPartTree(partTree, layout, cursor, east_width, height-north_palette.getHeight());
+						break;
+					case CENTER:
+						Integer center_width = widthMap.get(LAYOUT.CENTER.getName());
+						if (center_width != null)
+							center_palette = drawPartTree(partTree, layout, cursor, center_width, height-north_palette.getHeight());
+						break;
+				}
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+				log.error(e);
 			}
 		}
 		
 		return new LayoutPaletteSet(north_palette, south_palette, west_palette, east_palette, center_palette);
 	}
 	
-	protected PartPalette drawPartTree(PlacePartTree partTree, LAYOUT layout, PartCursor cursor, int width) {
+	protected PartPalette drawPartTree(PlacePartTree partTree, LAYOUT layout, PartCursor cursor, int width, int height) {
 		Map<String, PlacePart> rootMap = partTree.getRootMap();
 		Map<String, Map<String, PlacePart>> childMap = partTree.makeChildMap();
 		PlacePart rootPart = rootMap.get(layout.getName());
@@ -182,13 +260,134 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		} else {
 			Map<String, PlacePart> childPartMap = childMap.get(layout.getName());
 			if (childPartMap != null) {
-				layoutInner(childPartMap, width);
+				drawInner(childPartMap, width, height);
 				int part_width = getPartWdith(childPartMap);
 				part_width = part_width < width ? part_width : width;
 				palette.setShapePoint(part_width, getPartHeight(childPartMap, width));
 			}
 		}
 		
+		return palette;
+	}
+	
+	protected void drawInner(Map<String, PlacePart> placeMap, int width, int height) {
+		storeCursor();
+		PartCursor part_cursor = new PartCursor();
+		PlacePart northPart = placeMap.get(LAYOUT.NORTH.getName());
+		int north_height = 0;
+		if (northPart != null) {
+			try {
+				String pcon = placePartContent(northPart);
+				String[] lines = StringUtil.toLines(pcon, width);
+				north_height = lines.length;
+				for (String line : lines) {
+					writeLine(part_cursor, line);
+				}
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		
+		restoreCursor();
+		storeCursor();
+		int south_height = 0;
+		PlacePart southPart = placeMap.get(LAYOUT.SOUTH.getName());
+		if (southPart != null) {
+			try {
+				String pcon = placePartContent(southPart);
+				String[] lines = StringUtil.toLines(pcon, width);
+				south_height = lines.length;
+				shiftDown(height - north_height - south_height);
+				for (String line : lines) {
+					writeLine(part_cursor, line);
+				}
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+				e.printStackTrace();
+			}
+		}
+
+		restoreCursor();
+		storeCursor();
+		int west_width = 0;
+		PlacePart westPart = placeMap.get(LAYOUT.WEST.getName());
+		if (westPart != null) {
+			try {
+				String pcon = placePartContent(westPart);
+				String[] lines = StringUtil.toLines(pcon);
+				for (String line : lines) {
+					writeLine(part_cursor, line);
+				}
+				west_width = StringUtil.maxLine(pcon);
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+
+		restoreCursor();
+		storeCursor();
+		int east_width = 0;
+		PlacePart eastPart = placeMap.get(LAYOUT.EAST.getName());
+		if (eastPart != null) {
+			try {
+				String pcon = placePartContent(eastPart);
+				String[] lines = StringUtil.toLines(pcon);
+				east_width = StringUtil.maxLine(pcon);
+				for (String line : lines) {
+					shiftRight(width - east_width);
+					writeLine(part_cursor, line);
+					part_cursor.setPart_x(width - line.length());
+				}
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+
+		restoreCursor();
+		storeCursor();
+		PlacePart centerPart = placeMap.get(LAYOUT.CENTER.getName());
+		if (centerPart != null) {
+			try {
+				String pcon = placePartContent(centerPart);
+				int center_width = width - west_width - east_width;
+				String[] lines = StringUtil.toLines(pcon, center_width);
+				for (String line : lines) {
+					shiftLeft(east_width);
+					writeLine(part_cursor, line);
+					part_cursor.setPart_x(east_width + part_cursor.getPart_x());
+				}
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		try {
+			if (part_cursor.getPart_y() > 0) shiftUp(part_cursor.getPart_y() - 1);
+			if (part_cursor.getPart_x() > 0) shiftLeft(part_cursor.getPart_x());
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
+		restoreCursor();
+	}
+	
+	protected PartPalette drawPart(PlacePart part, int width, PartCursor cursor) {
+		PartPalette palette = new PartPalette();
+		storeCursor();
+		try {
+			if (cursor.getPart_x() > 0) shiftRight(x);
+			if (cursor.getPart_y() > 0) shiftDown(y);
+			String pcon = placePartContent(part);
+			String[] lines = StringUtil.toLines(pcon, width);
+			int palette_width = StringUtil.maxLine(pcon);
+			palette_width = palette_width < width ? palette_width : width;
+			int palette_height = lines.length;
+			palette.setShapePoint(palette_width, palette_height);
+			for (String line : lines) {
+				writeLine(cursor, line);
+			}
+		} catch (Exception e) {
+			DevAssistant.errorln(e);
+		}
+		restoreCursor();
 		return palette;
 	}
 	
@@ -301,6 +500,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	private int getContentHeight(PlacePart pp, int width) throws CIBusException {
 		try {
 			String pcon = placePartContent(pp);
+			if (pcon == null) return 0;
 			return StringUtil.toLines(pcon, width).length;
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
@@ -445,28 +645,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			DevAssistant.errorln(e);
 		}
 		restoreCursor();
-	}
-	
-	protected PartPalette drawPart(PlacePart part, int width, PartCursor cursor) {
-		PartPalette palette = new PartPalette();
-		storeCursor();
-		try {
-			if (cursor.getPart_x() > 0) shiftRight(x);
-			if (cursor.getPart_y() > 0) shiftDown(y);
-			String pcon = placePartContent(part);
-			String[] lines = StringUtil.toLines(pcon, width);
-			int palette_width = StringUtil.maxLine(pcon);
-			palette_width = palette_width < width ? palette_width : width;
-			int palette_height = lines.length;
-			palette.setShapePoint(palette_width, palette_height);
-			for (String line : lines) {
-				writeLine(cursor, line);
-			}
-		} catch (Exception e) {
-			DevAssistant.errorln(e);
-		}
-		restoreCursor();
-		return palette;
 	}
 	
 	protected void writeLine(PartCursor part_cursor, String line) {

@@ -76,5 +76,41 @@ public class PlacePartTree {
 			childMap.put(child.getName(), child.getRootMap());
 		return childMap;
 	}
+	
+	public List<String> genPlaceGroup() {
+		List<String> pgList = new ArrayList<String>();
+		if (rootList != null)
+			for (PlacePart root : rootList)
+				pgList.add(root.getPlace());
+		if (childList != null)
+			for (PlacePartTree child : childList)
+				pgList.add(child.getName());
+		return pgList;
+	}
+	
+	public boolean isEmpty(Map<String, Part> partMap) {
+		return isEmpty(this, partMap);
+	}
+	
+	public boolean isEmpty(PlacePartTree tree, Map<String, Part> partMap) {
+		List<PlacePart> rList = tree.getRootList();
+		if (rList != null) {
+			for (PlacePart r : rList) {
+				Part p = partMap.get(r.getName());
+				if (p != null)
+					if (!p.contentEmpty())
+						return false;
+			}
+		}
+		
+		List<PlacePartTree> cList = tree.getChildList();
+		if (cList != null) {
+			for (PlacePartTree c : cList)
+				return isEmpty(c, partMap);
+		}
+		
+		return true;
+	}
+	
 }
 

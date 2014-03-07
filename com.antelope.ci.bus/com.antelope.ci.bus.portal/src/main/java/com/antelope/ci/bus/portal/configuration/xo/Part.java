@@ -11,6 +11,7 @@ package com.antelope.ci.bus.portal.configuration.xo;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -33,6 +34,11 @@ public class Part {
 	private Integer sort;
 	private List<Content> contentList;
 	
+	public Part() {
+		super();
+		contentList = new ArrayList<Content>();
+	}
+	
 	@XmlAttribute(name="name")
 	public String getName() {
 		return name;
@@ -49,6 +55,7 @@ public class Part {
 	}
 	public void setContent(Content content) {
 		this.content = content;
+		contentList.add(content);
 	}
 	
 	@XmlAttribute(name="embed")
@@ -90,6 +97,16 @@ public class Part {
 	
 	public List<Content> getContentList() {
 		return contentList;
+	}
+	
+	public boolean contentEmpty() {
+		if (contentList != null) {
+			for (Content c : contentList)
+				if (!StringUtil.empty(c.getValue()))
+					return false;
+		}
+		
+		return true;
 	}
 }
 
