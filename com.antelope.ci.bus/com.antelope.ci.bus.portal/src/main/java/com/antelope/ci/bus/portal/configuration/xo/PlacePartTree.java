@@ -57,8 +57,9 @@ public class PlacePartTree {
 	
 	public Map<String, PlacePart> getRootMap() {
 		Map<String, PlacePart> rootMap = new HashMap<String, PlacePart>();
-		for (PlacePart root : rootList)
-			rootMap.put(root.getPlace(), root);
+		if (rootList != null)
+			for (PlacePart root : rootList)
+				rootMap.put(root.getPlace(), root);
 		return rootMap;
 	}
 	

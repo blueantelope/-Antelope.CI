@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portal>
 	<layout>
+		<place name="north">
+			<parts>
+				<part name="banner" place="north" origin="global" />
+				<part name="first.menu" place="center" origin="part" />
+			</parts>
+		</place>
+		<place name="west">
+		</place>
 		<place name="center">
 			<parts>
+				<part name="second.menu" place="west" origin="part" />
 				<place name="center">
 					<parts>
 						<part name="title" place="south" origin="part" />
@@ -12,5 +21,33 @@
 				</place>
 			</parts>
 		</place>
+		<place name="east">
+		</place>
+		<place name="south">
+			<parts>	
+				<part name="help" place="center" origin="global" />
+			</parts>
+		</place>
 	</layout>
+
+	<parts>
+		<part name="banner">
+			<content><![CDATA[${banner.title}]]></content>
+		</part>
+		<part name="page">
+			<content><![CDATA[${page.total}#{page.total}${page.line} #{page.current}/#{page.total} ${page.per}:#{page.per}]]></content>
+		</part>
+		<part name="help">
+			<content><![CDATA[/p:${help.page} /s:${help.search}]]></content>
+		</part>
+	</parts>
+	
+	<extensions>
+		<extension point="base">
+		</extension>
+		<extension point="layout">
+		</extension>
+		<extension point="parts">
+		</extension>
+	</extensions>
 </portal>

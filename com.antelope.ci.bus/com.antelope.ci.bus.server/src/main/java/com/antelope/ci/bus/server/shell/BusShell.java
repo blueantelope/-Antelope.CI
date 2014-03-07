@@ -17,6 +17,7 @@ import org.apache.sshd.server.Environment;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
@@ -317,6 +318,11 @@ public abstract class BusShell {
 	
 	protected void shiftLeft(int times) throws IOException {
 		io.moveLeft(times);
+	}
+	
+	protected void shiftNext(String str) throws IOException {
+		io.moveLeft(StringUtil.getWordCount(str));
+		io.moveDown(1);
 	}
 	
 	private void environment() throws CIBusException {
