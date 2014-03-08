@@ -69,7 +69,7 @@ public class DevAssistant {
 	}
 	
 	public static void errorln(Exception e) {
-		println(System.err, e.getMessage());
+		e.printStackTrace();
 	}
 	
 	private static void println(PrintStream ps, String message) {

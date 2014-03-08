@@ -15,6 +15,7 @@ import java.util.Map;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.common.xml.BusXmlHelper.SetterGetterPair;
@@ -143,7 +144,7 @@ public class Portal {
 					break;
 				case APPEND:
 					if (p != null) {
-						p.getParts().addParts(pp_ext.getPartList());
+						p.getParts().addPartList(pp_ext.getPartList());
 					} else {
 						p = new Place();
 						p.setParts(pp_ext);
@@ -310,6 +311,43 @@ public class Portal {
 		}
 		
 		return null;
+	}
+	
+	public Portal clonePortal() throws CIBusException {
+		try {
+			return (Portal) super.clone();
+		} catch (CloneNotSupportedException e) {
+			new CIBusException("", e);
+		}
+		
+		return null;
+	}
+	
+	public Map<String, PlaceParts> makePlacePartsMap() {
+		Map<String, PlaceParts> ppsMap = new HashMap<String, PlaceParts>();
+		if (layout != null) {
+			List<Place> placeList = layout.getPlaceList();
+			if (placeList != null)
+				for (Place place : placeList)
+					putPlacePartsMap(ppsMap, place, "");
+		}
+		return ppsMap;
+	}
+	
+	private void putPlacePartsMap(Map<String, PlaceParts> ppsMap, Place place, String parentKey) {
+		String key;
+		if (StringUtil.empty(parentKey))
+			key = place.getName();
+		else
+			key = parentKey + "." + place.getName();
+		PlaceParts pps = place.getParts();
+		ppsMap.put(key,  pps);
+		List<Place> placeList = pps.getPlaceList();
+		if (placeList != null) {
+			for (Place p : placeList) {
+				putPlacePartsMap(ppsMap, p, key);
+			}
+		}
 	}
 }
 

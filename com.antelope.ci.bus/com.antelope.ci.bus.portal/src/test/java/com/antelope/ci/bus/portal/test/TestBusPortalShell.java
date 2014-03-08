@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.shell.BusPortalShell;
 import com.antelope.ci.bus.server.shell.Shell;
 
@@ -21,6 +22,7 @@ import com.antelope.ci.bus.server.shell.Shell;
  * @Date	 2014-2-8		下午2:13:43 
  */
 @Shell(name="portal.test", commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
+@PortalConfiguration(xml="classpath:/com/antelope/ci/bus/portal/test/portal_test", properties="classpath:com.antelope.ci.bus.portal.test.portal_test")
 public class TestBusPortalShell extends BusPortalShell {
 	
 	

@@ -70,9 +70,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			boolean isResource = pc.properties().startsWith(CP_SUFFIX) ? true : false;
 			String a_xml = trunckConfig(pc.xml() + ".xml");
 			String a_pro = trunckConfig(pc.properties());
-			if (isResource)
-				a_pro = DealResource(a_pro);
-			portal_config = configHelper.parseExtention(thisCls.getResourceAsStream(a_xml), a_pro, isResource);
+			portal_config = configHelper.parseExtention(thisCls.getResourceAsStream(a_xml), a_pro, isResource, thisCls.getPackage().getName());
 		} else {
 			if (thisCls.isAnnotationPresent(Shell.class)) {
 				Shell a_shell = (Shell) thisCls.getAnnotation(Shell.class);
@@ -94,12 +92,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			new_config = config.substring(FILE_SUFFIX.length());
 		
 		return new_config;
-	}
-	
-	protected String DealResource(String res) {
-		if (this.getClass().getResource(res) == null)
-			return this.getClass().getPackage().getName() + "." + res;
-		return res;
 	}
 	
 	protected void draw() throws IOException, CIBusException {
@@ -278,10 +270,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (northPart != null) {
 			try {
 				String pcon = placePartContent(northPart);
-				String[] lines = StringUtil.toLines(pcon, width);
-				north_height = lines.length;
-				for (String line : lines) {
-					writeLine(part_cursor, line);
+				if (pcon != null) {
+					String[] lines = StringUtil.toLines(pcon, width);
+					north_height = lines.length;
+					for (String line : lines) {
+						writeLine(part_cursor, line);
+					}
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -349,12 +343,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (centerPart != null) {
 			try {
 				String pcon = placePartContent(centerPart);
-				int center_width = width - west_width - east_width;
-				String[] lines = StringUtil.toLines(pcon, center_width);
-				for (String line : lines) {
-					shiftLeft(east_width);
-					writeLine(part_cursor, line);
-					part_cursor.setPart_x(east_width + part_cursor.getPart_x());
+				if (pcon != null) {
+					int center_width = width - west_width - east_width;
+					String[] lines = StringUtil.toLines(pcon, center_width);
+					for (String line : lines) {
+						shiftLeft(east_width);
+						writeLine(part_cursor, line);
+						part_cursor.setPart_x(east_width + part_cursor.getPart_x());
+					}
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -376,13 +372,15 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			if (cursor.getPart_x() > 0) shiftRight(x);
 			if (cursor.getPart_y() > 0) shiftDown(y);
 			String pcon = placePartContent(part);
-			String[] lines = StringUtil.toLines(pcon, width);
-			int palette_width = StringUtil.maxLine(pcon);
-			palette_width = palette_width < width ? palette_width : width;
-			int palette_height = lines.length;
-			palette.setShapePoint(palette_width, palette_height);
-			for (String line : lines) {
-				writeLine(cursor, line);
+			if (pcon != null) {
+				String[] lines = StringUtil.toLines(pcon, width);
+				int palette_width = StringUtil.maxLine(pcon);
+				palette_width = palette_width < width ? palette_width : width;
+				int palette_height = lines.length;
+				palette.setShapePoint(palette_width, palette_height);
+				for (String line : lines) {
+					writeLine(cursor, line);
+				}
 			}
 		} catch (Exception e) {
 			DevAssistant.errorln(e);

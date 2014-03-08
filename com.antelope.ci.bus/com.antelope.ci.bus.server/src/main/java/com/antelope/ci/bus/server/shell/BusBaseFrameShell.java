@@ -91,8 +91,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 				}
 			} 
 		} catch (Exception e) {
-			DevAssistant.errorln(e);
-			e.printStackTrace();
+			DevAssistant.assert_exception(e);
 			throw new CIBusException("", e);
 		}
 	}

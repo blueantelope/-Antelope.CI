@@ -101,9 +101,58 @@ public class PlaceParts {
 		partList.add(part);
 	}
 	
-	public void addParts(List<PlacePart> addList) {
+	public void addPartList(List<PlacePart> addList) {
 		if (partList == null) partList = new ArrayList<PlacePart>();
 		partList.addAll(addList);
 	}
+	
+	public void addPlace(Place addPlace) {
+		if (placeList == null) placeList = new ArrayList<Place>();
+		placeList.add(addPlace);
+	}
+	
+	public void appendParts(PlaceParts aParts) {
+		appendParts(this, aParts);
+	}
+	
+	private void appendParts(PlaceParts parts, PlaceParts aParts) {
+		if (aParts.getPartList() != null) {
+			for (PlacePart aPart : aParts.getPartList()) {
+				if (parts.getPartList() != null) {
+					for (PlacePart part : parts.getPartList()) {
+						if (part.getPlace().equals(aPart.getPlace())) {
+							part =  aPart;
+							break;
+						}
+					}
+				} else {
+					addPart(aPart);
+				}
+			}
+		}
+		
+		if (aParts.getPlaceList() != null) {
+			for (Place aPlace : aParts.getPlaceList()) {
+				if (parts.getPlaceList() != null) {
+					for (Place place : parts.getPlaceList()) {
+						if (place.getName().equals(aPlace.getName())) {
+							PlaceParts ps = place.getParts();
+							PlaceParts aps = aPlace.getParts();
+							if (aps == null)
+								break;
+							if (ps == null) 
+								place.setParts(aps);
+							else
+								appendParts(ps, aps);
+							break;
+						}
+					}
+				} else {
+					addPlace(aPlace);
+				}
+			}
+		}
+	}
+	
 }
 

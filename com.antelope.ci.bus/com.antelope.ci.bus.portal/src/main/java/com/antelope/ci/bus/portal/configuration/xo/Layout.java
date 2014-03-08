@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -31,6 +32,11 @@ public class Layout {
 	}
 	public void setPlaceList(List<Place> placeList) {
 		this.placeList = placeList;
+	}
+	
+	public void addPlace(Place place) {
+		if (placeList == null) placeList = new ArrayList<Place>();
+		placeList.add(place);
 	}
 	
 	public Place getPlace(String name) {
