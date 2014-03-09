@@ -6,7 +6,7 @@
  * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.configuration;
+package com.antelope.ci.bus.portal.configuration.xo;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -18,12 +18,12 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2014-2-3		下午11:26:20 
  */
-public enum ORIGIN {
+public enum EU_ORIGIN {
 	GLOBAL("global"),
 	PART("part");
 	
 	private String name;
-	private ORIGIN(String name) {
+	private EU_ORIGIN(String name) {
 		this.name = name;
 	}
 	public String getName() {
@@ -33,8 +33,8 @@ public enum ORIGIN {
 		return name;
 	}
 	
-	public static ORIGIN toOrigin(String name) throws CIBusException {
-		for (ORIGIN origin : ORIGIN.values()) {
+	public static EU_ORIGIN toOrigin(String name) throws CIBusException {
+		for (EU_ORIGIN origin : EU_ORIGIN.values()) {
 			if (origin.getName().equalsIgnoreCase(name)) 
 				return origin;
 		}

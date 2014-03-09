@@ -58,7 +58,7 @@ public class Extension {
 	public List<PlaceParts> getPlacePartList() {
 		return placePartList;
 	}
-	public void setPalcePartList(List<PlaceParts> placePartList) {
+	public void setPlacePartList(List<PlaceParts> placePartList) {
 		this.placePartList = placePartList;
 	}
 	

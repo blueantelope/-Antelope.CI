@@ -38,6 +38,7 @@ import com.antelope.ci.bus.portal.configuration.xo.Extension;
 import com.antelope.ci.bus.portal.configuration.xo.Extensions;
 import com.antelope.ci.bus.portal.configuration.xo.Layout;
 import com.antelope.ci.bus.portal.configuration.xo.Part;
+import com.antelope.ci.bus.portal.configuration.xo.Parts;
 import com.antelope.ci.bus.portal.configuration.xo.Place;
 import com.antelope.ci.bus.portal.configuration.xo.PlaceParts;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
@@ -58,7 +59,7 @@ public class BusPortalConfigurationHelper {
 	
 	private static final String LABLE_START = "${";
 	private static final String LABLE_END = "}";
-	private static final String PORTAL_XML= "portal.xml";
+	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/configuration/portal.xml";
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.configuration.portal";
 	private static Logger log;
 	private Portal portal;
@@ -76,6 +77,11 @@ public class BusPortalConfigurationHelper {
 			DevAssistant.errorln(e);
 		} 
 		configPairMap = new HashMap<String, PortalPair>();
+	}
+	
+	public void addConfigPair(String name, String props_name, String xml_name) {
+		PortalPair pair = new PortalPair(props_name, xml_name);
+		configPairMap.put(name, pair);
 	}
 	
 	public void setClassLoader(ClassLoader classLoader) {
@@ -150,16 +156,11 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private Portal transfer(Portal portal_ext, BasicConfigrationReader reader_ext) throws CIBusException {
-		if (portal_ext != null && reader_ext != null) {
+		if (portal_ext != null && reader_ext != null)
 			convert(portal_ext, reader_ext);
-		}
 		
-		if (portal_ext != null && portal != null) {
-			portal_ext.setBase(portal.getBase());
-			portal_ext.setLayout(portal.getLayout());
-			portal_ext.setParts(portal.getParts());
-			portal_ext.attachExtensions();
-		}
+		if (portal_ext != null)
+			portal_ext = extend(portal_ext);
 		
 		return portal_ext;
 	}
@@ -186,7 +187,7 @@ public class BusPortalConfigurationHelper {
 		return r;
 	}
 	
-	private Portal append(Portal extPortal) throws CIBusException {
+	private Portal extend(Portal extPortal) throws CIBusException {
 		Portal new_portal = extPortal;
 		try {
 			new_portal = portal.clonePortal();
@@ -199,54 +200,59 @@ public class BusPortalConfigurationHelper {
 						EU_Point eup = ext.getPoint();
 						switch (eup) {
 							case BASE:
-								Base extBase = ext.getBase();
-								if (extBase != null)
-									appendBase(extBase, new_portal.getBase());
+								extendBase(ext, new_portal);
 								break;
 							case LAYOUT:
-								appendLayout(ext, new_portal);
+								extendLayout(ext, new_portal);
 								break;
 							case PARTS:
-								
+								extendParts(ext, new_portal);
 								break;
 						}
 					}
 				}
 			}
 		} catch (Exception e) {
-			DevAssistant.assert_exception(e);
+			DevAssistant.errorln(e);
 		}
 		
 		return new_portal;
 	}
 	
 	
-	private void appendBase(Base extBase, Base base) throws CIBusException {
+	private void extendBase(Extension ext, Portal new_portal) throws CIBusException {
+		Base extBase = ext.getBase();
+		if (extBase == null) 
+			return;
+		
+		Base base = new_portal.getBase();
 		if (base == null) {
 			base = extBase;
-			return;
+		} else {
+			switch (extBase.getEmbed()) {
+				case REPLACE:
+					base = extBase;
+					break;
+				case APPEND:
+					List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
+					findReplace(replaceList, base);
+					for (PortalReplace pr : replaceList) {
+						try {
+							ProxyUtil.invoke(base, pr.getSetter(), new Object[]{pr.getValue()});
+						} catch (CIBusException e) {
+							DevAssistant.assert_exception(e);
+						}
+					}
+					break;
+			}
 		}
 		
-		switch (extBase.getEmbed()) {
-			case REPLACE:
-				base = extBase;
-				break;
-			case APPEND:
-				List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
-				findReplace(replaceList, base);
-				for (PortalReplace pr : replaceList) {
-					try {
-						ProxyUtil.invoke(base, pr.getSetter(), new Object[]{pr.getValue()});
-					} catch (CIBusException e) {
-						DevAssistant.assert_exception(e);
-					}
-				}
-				break;
-		}
+		new_portal.setBase(base);
 	}
 	
-	private void appendLayout(Extension ext, Portal new_portal) throws CIBusException {
+	private void extendLayout(Extension ext, Portal new_portal) throws CIBusException {
 		List<PlaceParts> partsList = ext.getPlacePartList();
+		if (partsList == null) return;
 		Collections.sort(partsList, new Comparator<PlaceParts>() {
 			@Override
 			public int compare(PlaceParts p1, PlaceParts p2) {
@@ -318,6 +324,20 @@ public class BusPortalConfigurationHelper {
 				
 			}
 			new_portal.setLayout(n_layout);
+		}
+	}
+	
+	private void extendParts(Extension ext, Portal new_portal) {
+		Parts newParts = new_portal.getParts();
+		for (Part part : ext.getPartList()) {
+			switch (part.getEmbed()) {
+				case REPLACE:
+					newParts.addPart(part);
+					break;
+				case APPEND:
+					newParts.addPart(part);
+					break;
+			}
 		}
 	}
 	

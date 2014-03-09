@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,28 @@ public class Parts {
 		}
 		
 		return partMap;
+	}
+	
+	public void addPart(Part addPart) {
+		int index = -1;
+		if (partList != null) {
+			int n = 0;
+			for (Part part : partList) {
+				if (part.getName().equals(addPart.getName())) {
+					index = n;
+					break;
+				}
+				n++;
+			}
+			if (index != -1)
+				partList.remove(index);
+		} else {
+			partList = new ArrayList<Part>();
+		}
+		if (index != -1)
+			partList.add(index, addPart);
+		else
+			partList.add(addPart);
 	}
 }
 

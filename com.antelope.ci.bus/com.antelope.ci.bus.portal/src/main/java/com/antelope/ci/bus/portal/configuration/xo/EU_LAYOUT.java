@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.configuration;
+package com.antelope.ci.bus.portal.configuration.xo;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 
@@ -17,7 +17,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2013-12-17		下午12:39:06 
  */
-public enum LAYOUT {
+public enum EU_LAYOUT {
 	NORTH("north"),
 	SOUTH("south"),
 	CENTER("center"),
@@ -25,7 +25,7 @@ public enum LAYOUT {
 	EAST("east");
 	
 	private String name;
-	private LAYOUT(String name) {
+	private EU_LAYOUT(String name) {
 		this.name = name;
 	}
 	public String getName() {
@@ -35,8 +35,8 @@ public enum LAYOUT {
 		return name;
 	}
 	
-	public static LAYOUT toLayout(String name) throws CIBusException {
-		for (LAYOUT layout : LAYOUT.values()) {
+	public static EU_LAYOUT toLayout(String name) throws CIBusException {
+		for (EU_LAYOUT layout : EU_LAYOUT.values()) {
 			if (layout.getName().equalsIgnoreCase(name)) 
 				return layout;
 		}

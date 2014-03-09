@@ -16,6 +16,8 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.configuration.PortalConfiguration;
 import com.antelope.ci.bus.server.BusCommonServerActivator;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
@@ -66,11 +68,15 @@ public abstract class CommonEntrance implements Entrance {
 		for (String cls : classList) {
 			try {
 				Class clz = Class.forName(cls, false, BusCommonServerActivator.getClassLoader());
-				if (clz.isAnnotationPresent(Shell.class)) {
+				if (clz.isAnnotationPresent(Shell.class))
 					if (server_condition != null)
 						server_condition.addShellClass(clz.getName());
-					continue;
+				
+				if (clz.isAnnotationPresent(PortalConfiguration.class)) {
+					PortalConfiguration pc = (PortalConfiguration) clz.getAnnotation(PortalConfiguration.class);
+					BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), pc.properties(), pc.xml());
 				}
+				
 				if (clz.isAnnotationPresent(StatusClass.class))
 					BusShellStatus.addStatusClass(clz);
 			} catch (ClassNotFoundException e) {

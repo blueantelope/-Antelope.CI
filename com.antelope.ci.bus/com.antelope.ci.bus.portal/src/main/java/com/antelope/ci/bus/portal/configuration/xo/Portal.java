@@ -31,7 +31,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		上午11:25:05 
  */
 @XmlEntity(name="portal")
-public class Portal {
+public class Portal implements Cloneable {
 	private Base base;
 	private Layout layout;
 	private Parts parts;

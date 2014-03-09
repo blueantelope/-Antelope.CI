@@ -2,7 +2,7 @@
 <portal>
 	<extensions>
 		<extension point="base" >
-			<base order="1" embed="replace">
+			<base name="test" order="1" embed="replace">
 			</base>
 		</extension>
 		<extension point="layout">
@@ -18,8 +18,8 @@
 			</parts>
 		</extension>
 		<extension point="parts">
-			<part name="top.memu.name" embed="append" sort="1">
-				<content><![CDATA[${top.memu.name}]]></content>
+			<part name="first.menu" embed="append" sort="1">
+				<content><![CDATA[${first.menu}]]></content>
 			</part>
 		</extension>
 	</extensions>
