@@ -166,4 +166,11 @@ public class StringUtil {
 		String[] ss = value.split(deco);
 		return ss[ss.length-1];
 	}
+	
+	public static boolean endsWithIgnoreCase(String value, String suffix) {
+		value = value.trim();
+		if (value.length() < suffix.length())
+				return false;
+		return value.substring(value.length()-suffix.length()).equalsIgnoreCase(suffix);
+	}
 }

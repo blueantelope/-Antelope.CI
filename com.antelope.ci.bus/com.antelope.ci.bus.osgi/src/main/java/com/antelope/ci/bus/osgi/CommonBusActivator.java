@@ -429,21 +429,21 @@ public abstract class CommonBusActivator implements BundleActivator {
 	/*
 	 * 取得配置文件中的整形数参数
 	 */
-	protected int getIntProp(String key, int default_prop) {
+	public static int getIntProp(String key, int default_prop) {
 		return PropertiesUtil.getInt(properties, key, default_prop);
 	}
 
 	/*
 	 * 取得配置文件中的字符串参数
 	 */
-	protected String getStringProp(String key, String default_prop) {
+	public static String getStringProp(String key, String default_prop) {
 		return PropertiesUtil.getString(properties, key, default_prop);
 	}
 
 	/*
 	 * 取得配置文件中的布尔型参数
 	 */
-	protected boolean getBooleanProp(String key, boolean default_prop) {
+	public static boolean getBooleanProp(String key, boolean default_prop) {
 		return PropertiesUtil.getBoolean(properties, key, default_prop);
 	}
 	

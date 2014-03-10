@@ -8,16 +8,18 @@
 
 package com.antelope.ci.bus.portal.configuration;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
@@ -43,7 +45,6 @@ import com.antelope.ci.bus.portal.configuration.xo.Place;
 import com.antelope.ci.bus.portal.configuration.xo.PlaceParts;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
 
-
 /**
  * configraiton reader for portal (include main and part)
  * @author   blueantelope
@@ -57,18 +58,25 @@ public class BusPortalConfigurationHelper {
 		return helper;
 	}
 	
+	private static final String CP_SUFFIX 							= "classpath:";
+	private static final String FILE_SUFFIX 						= "file:";
 	private static final String LABLE_START = "${";
 	private static final String LABLE_END = "}";
 	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/configuration/portal.xml";
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.configuration.portal";
 	private static Logger log;
 	private Portal portal;
+	private Portal usablePortal;					// 配置文件转换后
 	private ResourceReader reader;
 	private ClassLoader classLoader;
 	private Map<String, PortalPair> configPairMap;
 	private Map<String, Portal> portalExtMap;
 	private static int null_name_index;
 	private boolean inited = false;
+	private EU_ParseType parseType;
+	private final static String PARSETYPE_KEY								= "bus.portal.parse";	
+	private final static String DEFAULT_PARSETYPEVALUE				= "static";
+	private final static EU_ParseType DEFAULT_PARSETYPE 			= EU_ParseType.STATICAL;
 	
 	private BusPortalConfigurationHelper() {
 		try {
@@ -76,7 +84,17 @@ public class BusPortalConfigurationHelper {
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		} 
-		configPairMap = new HashMap<String, PortalPair>();
+		try {
+			String parTypeValue = CommonBusActivator.getStringProp(PARSETYPE_KEY, DEFAULT_PARSETYPEVALUE);
+			parseType = EU_ParseType.toType(parTypeValue);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+			parseType = DEFAULT_PARSETYPE;
+		} 
+		configPairMap = new ConcurrentHashMap<String, PortalPair>();
+		classLoader = this.getClass().getClassLoader();
+		null_name_index = 0;
+		portalExtMap = new ConcurrentHashMap<String, Portal>();
 	}
 	
 	public void addConfigPair(String name, String props_name, String xml_name) {
@@ -88,14 +106,93 @@ public class BusPortalConfigurationHelper {
 		this.classLoader = classLoader;
 	}
 	
+	public Portal parse(String shellClass) throws CIBusException {
+		switch (parseType) {
+			case DYNAMICAL:
+				return parseDynamic(shellClass);
+			case STATICAL:
+			default:
+				return parseStatic(shellClass);
+		}
+	}
+	
+	private Portal parseDynamic(String shellClass) throws CIBusException {
+		Portal global_portal = parsePortal(PORTAL_XML);
+		ResourceReader global_reader = parseProperties(PORTAL_RESOURCE, classLoader);
+		
+		return global_portal;
+	}
+	
+	private Portal parseStatic(String shellClass) throws CIBusException {
+		for (String ck : configPairMap.keySet()) {
+			if (portalExtMap.get(ck) != null) continue;
+			try {
+				InputStream xml_in = getXmlStream(configPairMap.get(ck).getXml_name());
+				portalExtMap.put(ck, parsePortal(xml_in));
+			} catch (Exception e) {
+				DevAssistant.assert_exception(e);
+			}
+		}
+		List<String> sortList = sortPortalExtension(portalExtMap);
+		
+		Portal majorExt = portalExtMap.get(shellClass);
+		majorExt = extend(majorExt);
+		
+		
+		return majorExt;
+		
+		/*
+		PortalPair pp = configPairMap.get(shellClass);
+		if (pp == null)
+			return usablePortal;
+		boolean isResource = pp.getProps_name().startsWith(CP_SUFFIX) ? true : false;
+		String a_xml = trunckConfig(pp.getXml_name() + ".xml");
+		String a_pro = trunckConfig(pp.getProps_name());
+		try {
+			Class thisCls = Class.forName(shellClass, false, classLoader);
+			String package_name = thisCls.getPackage().getName();
+			return parseExtention(thisCls.getResourceAsStream(a_xml), a_pro, isResource, package_name);
+		} catch (ClassNotFoundException e) {
+			return usablePortal;
+		}
+		*/
+	}
+	
+	private List<String> sortPortalExtension(Map<String, Portal> extMap) {
+		List<String> resutlList = new ArrayList<String>();
+		Map<String, Integer> sortMap = new TreeMap<String, Integer>();
+		List<String> unsortList = new ArrayList<String>();
+		for (String ck : extMap.keySet()) {
+			Portal ext = extMap.get(ck);
+			if (ext.getBase() != null) {
+				if (ext.getBase().getOrder() != 0) {
+					sortMap.put(ck, ext.getBase().getOrder());
+					continue;
+				}
+			}
+			unsortList.add(ck);
+		}
+
+		List<Map.Entry<String, Integer>> sortList = new ArrayList<Map.Entry<String, Integer>>(sortMap.entrySet());
+		Collections.sort(sortList, new Comparator<Map.Entry<String,Integer>>() {
+			@Override
+			public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+				return o1.getValue() - o2.getValue();
+			}
+		});
+		
+		for (Map.Entry<String, Integer> entry : sortList)
+			resutlList.add(entry.getKey());
+		resutlList.addAll(unsortList);
+		return resutlList;
+	}
+	
 	public synchronized void init() throws CIBusException {
-		if (!inited) {
-			portal = parseXml(PORTAL_XML);
+		if (!inited && parseType == EU_ParseType.STATICAL) {
+			portal = parsePortal(PORTAL_XML);
 			reader = parseProperties(PORTAL_RESOURCE, classLoader);
-			convert(portal, reader);
-			initConfigurationPair();
-			portalExtMap = new LinkedHashMap<String, Portal>();
-			null_name_index = 0;
+			usablePortal = portal.clonePortal();
+			convert(usablePortal, reader);
 			inited = true;
 		}
 	}
@@ -104,6 +201,14 @@ public class BusPortalConfigurationHelper {
 		return portalExtMap.get(name);
 	}
 	
+	private void addExtention(String name, Portal portalExt) {
+		for (String key : portalExtMap.keySet())
+			if (name.equalsIgnoreCase(key))
+				return;
+		portalExtMap.put(name, portalExt);
+	}
+	
+	@Deprecated
 	public void addExtention(String package_path) throws CIBusException {
 		Portal portalExt = parseExtention(package_path);
 		synchronized(this) {
@@ -121,7 +226,7 @@ public class BusPortalConfigurationHelper {
 			if (isPortalResource(url.getFile(), "/")) {
 				String xml_path = "/" + package_path.replace(".", "/");
 				xml_path += "/" + StringUtil.getLastName(url.getFile(), "/");
-				portal_ext = parseXml(xml_path);
+				portal_ext = parsePortal(xml_path);
 				break;
 			}
 		}
@@ -155,6 +260,33 @@ public class BusPortalConfigurationHelper {
 		return transfer(portal_ext, reader_ext);
 	}
 	
+	private InputStream getXmlStream(String xpath) throws Exception {
+		if (!StringUtil.endsWithIgnoreCase(xpath, ".xml"))
+			xpath += ".xml";
+		if (xpath.startsWith(CP_SUFFIX)) {
+			String n_xpath = xpath.substring(CP_SUFFIX.length());
+			return BusPortalConfigurationHelper.class.getResourceAsStream(n_xpath);
+		}
+		
+		if (xpath.startsWith(FILE_SUFFIX)) {
+			String n_xpath = xpath.substring(FILE_SUFFIX.length());
+			return new FileInputStream(n_xpath);
+		}
+		
+		return new URL(xpath).openStream();
+	}
+	
+	private String trunckConfig(String config) {
+		String new_config = config;
+		if (config.startsWith(CP_SUFFIX))
+			new_config = config.substring(CP_SUFFIX.length());
+		
+		if (new_config.startsWith(FILE_SUFFIX))
+			new_config = config.substring(FILE_SUFFIX.length());
+		
+		return new_config;
+	}
+	
 	private Portal transfer(Portal portal_ext, BasicConfigrationReader reader_ext) throws CIBusException {
 		if (portal_ext != null && reader_ext != null)
 			convert(portal_ext, reader_ext);
@@ -171,9 +303,13 @@ public class BusPortalConfigurationHelper {
 		return false;
 	}
 	
-	private Portal parseXml(String xml_path) throws CIBusException {
+	private Portal parsePortal(String xml_path) throws CIBusException {
 		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
 		return (Portal) BusXmlHelper.parse(Portal.class, in);
+	}
+
+	private Portal parsePortal(InputStream xml_in) throws CIBusException {
+		return (Portal) BusXmlHelper.parse(Portal.class, xml_in);
 	}
 	
 	private ResourceReader parseProperties(String resource_path, ClassLoader cl) throws CIBusException {
@@ -187,10 +323,10 @@ public class BusPortalConfigurationHelper {
 		return r;
 	}
 	
-	private Portal extend(Portal extPortal) throws CIBusException {
+	private Portal exend(Portal globalPortal, Portal extPortal) throws CIBusException {
 		Portal new_portal = extPortal;
 		try {
-			new_portal = portal.clonePortal();
+			new_portal = globalPortal.clonePortal();
 			Extensions exts = extPortal.getExtensions();
 			new_portal.getPlacePartMap(	);
 			if (exts != null) {
@@ -217,6 +353,10 @@ public class BusPortalConfigurationHelper {
 		}
 		
 		return new_portal;
+	}
+	
+	private Portal extend(Portal extPortal) throws CIBusException {
+		return exend(portal, extPortal);
 	}
 	
 	
@@ -418,11 +558,6 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	
-	private void initConfigurationPair() {
-		
-	}
-
 	public Portal getPortal() {
 		return portal;
 	}

@@ -48,8 +48,6 @@ public abstract class BusShell {
 	protected String lastStatus;
 	protected Map<String, BusShell> shellMap;
 	protected CommandAdapter commandAdapter;
-	protected int x;
-	protected int y;
 	protected ClassLoader cloader;
 	protected int sort;
 
@@ -197,18 +195,20 @@ public abstract class BusShell {
 	
 	protected void storeCursor() {
 		try {
-			io.storeCursor();
+//			io.storeCursor();
+			io.homeCursor();
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		}
 	}
 	
 	protected void restoreCursor() {
-		try {
-			io.restoreCursor();
-		} catch (IOException e) {
-			DevAssistant.errorln(e);
-		}
+//		try {
+//			io.restoreCursor();
+//			io.homeCursor();
+//		} catch (IOException e) {
+//			DevAssistant.errorln(e);
+//		}
 	}
 
 	protected void waitForWake() {

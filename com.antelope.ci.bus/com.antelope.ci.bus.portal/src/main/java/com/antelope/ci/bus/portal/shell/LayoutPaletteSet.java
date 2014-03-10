@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.portal.shell;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
+
 
 /**
  * TODO 描述
@@ -100,18 +103,24 @@ public class LayoutPaletteSet {
 	}
 	
 	public int getWidth() {
-		return max(north_palette.getWidth(), south_palette.getWidth(), 
-				west_palette.getWidth()+east_palette.getWidth()+center_palette.getWidth());
+		int w = 0;
+		try {
+			w = BusPortalShellUtil.max(north_palette.getWidth(), south_palette.getWidth(), 
+					west_palette.getWidth()+east_palette.getWidth()+center_palette.getWidth());
+		} catch (CIBusException e) {
+			DevAssistant.assert_exception(e);
+		}
+		return w;
 	}
 	
 	private int contentHeight() {
-		return max(west_palette.getHeight(), east_palette.getHeight(), center_palette.getHeight());
-	}
-	
-	private int max(int a, int b, int c) {
-		int m = a > b ? a : b;
-		m = m > c ? m : c;
-		return m;
+		int h = 0;
+		try {
+			h = BusPortalShellUtil.max(west_palette.getHeight(), east_palette.getHeight(), center_palette.getHeight());
+		} catch (CIBusException e) {
+			DevAssistant.assert_exception(e);
+		}
+		return h;
 	}
 }
 

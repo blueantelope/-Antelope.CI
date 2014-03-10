@@ -55,7 +55,7 @@ public class PlacePartTree {
 		childList.add(child);
 	}
 	
-	public Map<String, PlacePart> getRootMap() {
+	public Map<String, PlacePart> makeRootMap() {
 		Map<String, PlacePart> rootMap = new HashMap<String, PlacePart>();
 		if (rootList != null)
 			for (PlacePart root : rootList)
@@ -70,10 +70,17 @@ public class PlacePartTree {
 		return childMap;
 	}
 	
-	public Map<String, Map<String, PlacePart>> makeChildMap() {
+	public Map<String, Map<String, PlacePart>> makeChildPartMap() {
 		Map<String, Map<String, PlacePart>> childMap = new HashMap<String, Map<String, PlacePart>>();
 		for (PlacePartTree child : childList)
-			childMap.put(child.getName(), child.getRootMap());
+			childMap.put(child.getName(), child.makeRootMap());
+		return childMap;
+	}
+	
+	public Map<String, PlacePartTree> makeChildMap() {
+		Map<String, PlacePartTree> childMap = new HashMap<String, PlacePartTree>();
+		for (PlacePartTree child : childList)
+			childMap.put(child.getName(), child);
 		return childMap;
 	}
 	

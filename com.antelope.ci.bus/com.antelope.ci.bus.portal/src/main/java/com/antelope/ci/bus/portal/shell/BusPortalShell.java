@@ -28,7 +28,6 @@ import com.antelope.ci.bus.portal.configuration.xo.PlacePart;
 import com.antelope.ci.bus.portal.configuration.xo.PlacePartTree;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
-import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -40,9 +39,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
  */
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
-	protected Portal portal_config;
-	private static final String CP_SUFFIX 						= "classpath:";
-	private static final String FILE_SUFFIX 						= "file:";
+	protected Portal portal;
 	protected static final EU_LAYOUT[] LAYOUT_ORDER		= new EU_LAYOUT[] 
 			{EU_LAYOUT.NORTH, EU_LAYOUT.SOUTH, EU_LAYOUT.WEST, EU_LAYOUT.EAST, EU_LAYOUT.CENTER};
 	protected final static Map<String, Integer> CONTENT_SCALE = new HashMap<String, Integer>();
@@ -55,98 +52,85 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	public BusPortalShell() throws CIBusException {
 		super();
 		customInit();
-		initPortal_Config();
-		if (portal_config == null)
+		parsePortal();
+		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
 	}
 	
-	protected void initPortal_Config() throws CIBusException {
-		portal_config = null;
-		BusPortalConfigurationHelper configHelper = BusPortalConfigurationHelper.getHelper();
-		configHelper.init();
+	protected void parsePortal() throws CIBusException {
+		portal = null;
 		Class thisCls = this.getClass();
+		BusPortalConfigurationHelper configHelper = BusPortalConfigurationHelper.getHelper();
 		if (thisCls.isAnnotationPresent(PortalConfiguration.class)) {
 			PortalConfiguration pc = (PortalConfiguration) thisCls.getAnnotation(PortalConfiguration.class);
-			boolean isResource = pc.properties().startsWith(CP_SUFFIX) ? true : false;
-			String a_xml = trunckConfig(pc.xml() + ".xml");
-			String a_pro = trunckConfig(pc.properties());
-			portal_config = configHelper.parseExtention(thisCls.getResourceAsStream(a_xml), a_pro, isResource, thisCls.getPackage().getName());
-		} else {
-			if (thisCls.isAnnotationPresent(Shell.class)) {
-				Shell a_shell = (Shell) thisCls.getAnnotation(Shell.class);
-				portal_config = configHelper.getPortalExtention(a_shell.name());
-			} else {
-				portal_config = configHelper.getPortal();			// default configuration
-			}
-		}
-		if (portal_config == null)
-			portal_config = configHelper.getPortal();
-	}
-	
-	protected String trunckConfig(String config) {
-		String new_config = config;
-		if (config.startsWith(CP_SUFFIX))
-			new_config = config.substring(CP_SUFFIX.length());
-		
-		if (new_config.startsWith(FILE_SUFFIX))
-			new_config = config.substring(FILE_SUFFIX.length());
-		
-		return new_config;
+			configHelper.addConfigPair(thisCls.getName(), pc.properties(), pc.xml());
+		} 
+		portal = configHelper.parse(this.getClass().getName());
 	}
 	
 	protected void draw() throws IOException, CIBusException {
-		Map<String, PlacePartTree> placeTreeMap = portal_config.makePlacePartTreeMap();
+		Map<String, PlacePartTree> placeTreeMap = portal.makePlacePartTreeMap();
 		Map<String, Integer> contentWidthMap = divideContentWidth(getWidth(), placeTreeMap);
 		shiftTop();
 		
 		PlacePartTree northTree = placeTreeMap.get(EU_LAYOUT.NORTH.getName());
 		LayoutPaletteSet northPaletteSet = new LayoutPaletteSet();
+		int x = 0;
+		int y = 0;
 		if (northTree != null) {
-			int north_height = getPartTreeHeight(northTree, EU_LAYOUT.NORTH, getWidth());
-			northPaletteSet = drawRootTree(northTree, getWidth(), north_height);
+			int north_height = calculateTreeRootHeight(northTree, getWidth());
+			northPaletteSet = drawRootTree(northTree, x, y, getWidth(), north_height);
 		}
 		
 		PlacePartTree southTree = placeTreeMap.get(EU_LAYOUT.SOUTH.getName());
 		LayoutPaletteSet southPaletteSet = new LayoutPaletteSet();
 		if (southTree != null) {
-			shiftBottom();
-			if (northPaletteSet.getHeight() > 1)
-				shiftUp(northPaletteSet.getHeight()-1);
-			int south_height = getPartTreeHeight(southTree, EU_LAYOUT.SOUTH, getWidth());
-			southPaletteSet = drawRootTree(southTree, getWidth(), south_height);
+//			shiftBottom();
+			int south_height = calculateTreeRootHeight(southTree, getWidth());
+//			if (south_height > 1) 
+//				shiftUp(south_height-1);
+			x = 0;
+			y = getHeight() - south_height;
+			southPaletteSet = drawRootTree(southTree, x, y, getWidth(), south_height);
 		}
 		
 		int content_height = getHeight() - northPaletteSet.getHeight() - southPaletteSet.getHeight();
 		PlacePartTree westTree = placeTreeMap.get(EU_LAYOUT.WEST.getName());
 		LayoutPaletteSet westPaletteSet = new LayoutPaletteSet();
 		if (westTree != null) {
-			shiftTop();
-			shiftDown(northPaletteSet.getHeight());
+//			shiftTop();
+//			shiftDown(northPaletteSet.getHeight());
 			Integer west_width = contentWidthMap.get(EU_LAYOUT.WEST.getName());
+			x = 0;
+			y = northPaletteSet.getHeight();
 			if (west_width != null)
-				westPaletteSet = drawRootTree(westTree, west_width, content_height);
+				westPaletteSet = drawRootTree(westTree, x, y, west_width, content_height);
 		}
 		
 		PlacePartTree eastTree = placeTreeMap.get(EU_LAYOUT.EAST.getName());
 		LayoutPaletteSet eastPaletteSet = new LayoutPaletteSet();
 		if (eastTree != null) {
-			shiftTop();
-			shiftDown(northPaletteSet.getHeight());
-			shiftRight(getWidth()-westPaletteSet.getWidth());
+//			shiftTop();
+//			shiftDown(northPaletteSet.getHeight());
+//			shiftRight(getWidth()-westPaletteSet.getWidth());
 			Integer east_width = contentWidthMap.get(EU_LAYOUT.EAST.getName());
+			x = getWidth()-westPaletteSet.getWidth();
+			y = northPaletteSet.getHeight();
 			if (east_width != null)
-				eastPaletteSet = drawRootTree(eastTree, east_width, content_height);
+				eastPaletteSet = drawRootTree(eastTree, x, y, east_width, content_height);
 		}
 		
 		PlacePartTree centerTree = placeTreeMap.get(EU_LAYOUT.CENTER.getName());
 		LayoutPaletteSet centerPaletteSet = new LayoutPaletteSet();
 		if (centerTree != null) {
-			shiftTop();
-			shiftDown(northPaletteSet.getHeight());
-			shiftRight(westPaletteSet.getWidth());
+//			shiftTop();
+//			shiftDown(northPaletteSet.getHeight());
+//			shiftRight(westPaletteSet.getWidth());
 			Integer center_width = contentWidthMap.get(EU_LAYOUT.CENTER.getName());
+			x = westPaletteSet.getWidth(); 
+			y = northPaletteSet.getHeight();
 			if (center_width != null)
-				centerPaletteSet = drawRootTree(centerTree, center_width, content_height);
+				centerPaletteSet = drawRootTree(centerTree, x, y, center_width, content_height);
 		}
 	}
 	
@@ -182,7 +166,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected void addContentKey(List<String> keyList, Map<String, PlacePartTree> placeTreeMap, EU_LAYOUT layout) {
 		PlacePartTree pptree = placeTreeMap.get(layout.getName());
-		Map<String, Part> partMap = portal_config.getPartMap();
+		Map<String, Part> partMap = portal.getPartMap();
 		if (pptree != null && !pptree.isEmpty(partMap))
 			keyList.add(layout.getName());
 	}
@@ -197,25 +181,28 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return widthMap;
 	}
 	
-	protected LayoutPaletteSet drawRootTree(PlacePartTree partTree, int width, int height) {
+	protected LayoutPaletteSet drawRootTree(PlacePartTree partTree, int x, int y, int width, int height) {
 		Map<String, Integer> widthMap = divideTreeWidth(width, partTree);
 		PartPalette north_palette = new PartPalette();
 		PartPalette south_palette = new PartPalette();
 		PartPalette west_palette = new PartPalette();
 		PartPalette east_palette = new PartPalette();
 		PartPalette center_palette = new PartPalette();
-		PartCursor cursor = new PartCursor();
+		PartCursor cursor = new PartCursor(x, y);
 		for (EU_LAYOUT layout : LAYOUT_ORDER) {
 			try {
 				int tree_height = getPartTreeHeight(partTree, layout, width);
+				if (tree_height == 0) continue;
+				
 				switch (layout) {
 					case NORTH:
 						north_palette = drawPartTree(partTree, layout, cursor, width, tree_height);
 						break;
 					case SOUTH:
-						cursor.setPart_y(height-tree_height);
+						if (height - tree_height > 0)
+							cursor.setPart_y(height-tree_height);
 						south_palette = drawPartTree(partTree, layout, cursor, width, tree_height);
-						cursor.setPart_x(north_palette.getHeight());
+						cursor.setPart_x(north_palette.getWidth());
 						break;
 					case WEST:
 						Integer west_width = widthMap.get(EU_LAYOUT.WEST.getName());
@@ -243,8 +230,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected PartPalette drawPartTree(PlacePartTree partTree, EU_LAYOUT layout, PartCursor cursor, int width, int height) {
-		Map<String, PlacePart> rootMap = partTree.getRootMap();
-		Map<String, Map<String, PlacePart>> childMap = partTree.makeChildMap();
+		Map<String, PlacePart> rootMap = partTree.makeRootMap();
+		Map<String, Map<String, PlacePart>> childMap = partTree.makeChildPartMap();
 		PlacePart rootPart = rootMap.get(layout.getName());
 		PartPalette palette = new PartPalette();
 		if (rootPart != null) {
@@ -252,7 +239,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		} else {
 			Map<String, PlacePart> childPartMap = childMap.get(layout.getName());
 			if (childPartMap != null) {
-				drawInner(childPartMap, width, height);
+				drawInner(childPartMap, cursor, width, height);
 				int part_width = getPartWdith(childPartMap);
 				part_width = part_width < width ? part_width : width;
 				palette.setShapePoint(part_width, getPartHeight(childPartMap, width));
@@ -262,19 +249,19 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return palette;
 	}
 	
-	protected void drawInner(Map<String, PlacePart> placeMap, int width, int height) {
+	protected void drawInner(Map<String, PlacePart> placeMap, PartCursor cursor, int width, int height) {
 		storeCursor();
-		PartCursor part_cursor = new PartCursor();
 		PlacePart northPart = placeMap.get(EU_LAYOUT.NORTH.getName());
 		int north_height = 0;
 		if (northPart != null) {
 			try {
 				String pcon = placePartContent(northPart);
 				if (pcon != null) {
+					shiftDown(cursor.getPart_y());
 					String[] lines = StringUtil.toLines(pcon, width);
 					north_height = lines.length;
 					for (String line : lines) {
-						writeLine(part_cursor, line);
+						writeLine(cursor, line);
 					}
 				}
 			} catch (Exception e) {
@@ -286,14 +273,21 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		storeCursor();
 		int south_height = 0;
 		PlacePart southPart = placeMap.get(EU_LAYOUT.SOUTH.getName());
+		PartCursor keepCursor = null;
 		if (southPart != null) {
 			try {
 				String pcon = placePartContent(southPart);
-				String[] lines = StringUtil.toLines(pcon, width);
-				south_height = lines.length;
-				shiftDown(height - north_height - south_height);
-				for (String line : lines) {
-					writeLine(part_cursor, line);
+				if (pcon != null) {
+					keepCursor = cursor.clone();
+					String[] lines = StringUtil.toLines(pcon, width);
+					south_height = lines.length;
+					shiftDown(cursor.getPart_y());
+					shiftDown(height - north_height - south_height);
+					cursor.setPart_x(0);
+					cursor.setPart_y(cursor.getPart_y() + north_height);
+					for (String line : lines) {
+						writeLine(cursor, line);
+					}
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -308,11 +302,16 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (westPart != null) {
 			try {
 				String pcon = placePartContent(westPart);
-				String[] lines = StringUtil.toLines(pcon);
-				for (String line : lines) {
-					writeLine(part_cursor, line);
+				if (pcon != null) {
+					if (keepCursor != null)
+						cursor = keepCursor;
+					shiftDown(cursor.getPart_y());
+					String[] lines = StringUtil.toLines(pcon);
+					for (String line : lines) {
+						writeLine(cursor, line);
+					}
+					west_width = StringUtil.maxLine(pcon);
 				}
-				west_width = StringUtil.maxLine(pcon);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -325,12 +324,16 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (eastPart != null) {
 			try {
 				String pcon = placePartContent(eastPart);
-				String[] lines = StringUtil.toLines(pcon);
-				east_width = StringUtil.maxLine(pcon);
-				for (String line : lines) {
-					shiftRight(width - east_width);
-					writeLine(part_cursor, line);
-					part_cursor.setPart_x(width - line.length());
+				if (pcon != null) {
+					shiftDown(cursor.getPart_y());
+					shiftRight(west_width);
+					String[] lines = StringUtil.toLines(pcon);
+					east_width = StringUtil.maxLine(pcon);
+					for (String line : lines) {
+						shiftRight(width - east_width);
+						writeLine(cursor, line);
+						cursor.setPart_x(width - line.length());
+					}
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -344,33 +347,27 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			try {
 				String pcon = placePartContent(centerPart);
 				if (pcon != null) {
+					shiftDown(cursor.getPart_y());
 					int center_width = width - west_width - east_width;
 					String[] lines = StringUtil.toLines(pcon, center_width);
 					for (String line : lines) {
 						shiftLeft(east_width);
-						writeLine(part_cursor, line);
-						part_cursor.setPart_x(east_width + part_cursor.getPart_x());
+						writeLine(cursor, line);
+						cursor.setPart_x(east_width + cursor.getPart_x());
 					}
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
 		}
-		try {
-			if (part_cursor.getPart_y() > 0) shiftUp(part_cursor.getPart_y() - 1);
-			if (part_cursor.getPart_x() > 0) shiftLeft(part_cursor.getPart_x());
-		} catch (IOException e) {
-			DevAssistant.errorln(e);
-		}
-		restoreCursor();
 	}
 	
 	protected PartPalette drawPart(PlacePart part, int width, PartCursor cursor) {
 		PartPalette palette = new PartPalette();
 		storeCursor();
 		try {
-			if (cursor.getPart_x() > 0) shiftRight(x);
-			if (cursor.getPart_y() > 0) shiftDown(y);
+			if (cursor.getPart_y() > 0) 
+				shiftDown(cursor.getPart_y());
 			String pcon = placePartContent(part);
 			if (pcon != null) {
 				String[] lines = StringUtil.toLines(pcon, width);
@@ -389,9 +386,65 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return palette;
 	}
 	
+	protected int calculateTreeRootHeight(PlacePartTree partTree, int width) {
+		int height = 0;
+		try {
+			height = calculateTreeHeight(partTree, width, height);
+		} catch (CIBusException e) {
+			DevAssistant.assert_exception(e);
+		}
+		return height;
+	}
+	
+	protected int calculateTreeHeight(PlacePartTree partTree, int width, int height) throws CIBusException {
+		Map<String, PlacePart> rootMap = partTree.makeRootMap();
+		Map<String, PlacePartTree> childMap = partTree.makeChildMap();
+		if (!rootMap.isEmpty())
+			height += getPartHeight(rootMap, width);
+		if (childMap.isEmpty()) {
+			int north_height = 0;
+			int south_height = 0;
+			int west_height = 0;
+			int east_height = 0;
+			int center_height = 0;
+			int content_height = 0;
+			Map<String, Integer> widthMap = divideContentWidth(width, childMap);
+			
+			PlacePartTree northTree = childMap.get(EU_LAYOUT.NORTH.getName());
+			if (northTree != null)
+				calculateTreeHeight(northTree, width, north_height);
+			
+			PlacePartTree southTree = childMap.get(EU_LAYOUT.SOUTH.getName());
+			if (southTree != null)
+				calculateTreeHeight(southTree, width, south_height);
+			
+			PlacePartTree westTree = childMap.get(EU_LAYOUT.WEST.getName());
+			if (westTree != null)
+				calculateTreeHeight(westTree, widthMap.get(EU_LAYOUT.WEST.getName()), west_height);
+			
+			PlacePartTree eastTree = childMap.get(EU_LAYOUT.EAST.getName());
+			if (eastTree != null)
+				calculateTreeHeight(eastTree, widthMap.get(EU_LAYOUT.EAST.getName()), east_height);
+			
+			PlacePartTree centerTree = childMap.get(EU_LAYOUT.CENTER.getName());
+			if (centerTree != null)
+				calculateTreeHeight(centerTree, widthMap.get(EU_LAYOUT.CENTER.getName()), center_height);
+			
+			try {
+				content_height = BusPortalShellUtil.max(west_height, east_height, center_height);
+			} catch (CIBusException e) {
+				DevAssistant.assert_exception(e);
+			}
+			
+			height += north_height + south_height + content_height;
+		}
+		
+		return height;
+	}
+	
 	protected int getPartTreeHeight(PlacePartTree partTree, EU_LAYOUT layout, int width) throws CIBusException {
-		Map<String, PlacePart> rootMap = partTree.getRootMap();
-		Map<String, Map<String, PlacePart>> childMap = partTree.makeChildMap();
+		Map<String, PlacePart> rootMap = partTree.makeRootMap();
+		Map<String, Map<String, PlacePart>> childMap = partTree.makeChildPartMap();
 		PlacePart rootPart = rootMap.get(layout.getName());
 		int height = 0;
 		if (rootPart != null) {
@@ -407,7 +460,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	
 	protected void layout() throws IOException, CIBusException {
-		Map<String, Map<String, PlacePart>> placeMap = portal_config.getPlaceMap();
+		Map<String, Map<String, PlacePart>> placeMap = portal.getPlaceMap();
 		shiftTop();
 		int north_height = 0;
 		Map<String, PlacePart> northMap = placeMap.get(EU_LAYOUT.NORTH.getName());
@@ -454,36 +507,40 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected int getPartHeight(Map<String, PlacePart> placeMap, int width) {
-		int part_height = 0;
-		int pc_height = 0;
+		int north_height = 0;
+		int south_height = 0;
+		int west_height = 0;
+		int east_height = 0;
+		int center_height = 0;
 		int west_width = 0;
 		int east_width = 0;
 		
 		try {
-			pc_height = getContentHeight(placeMap, EU_LAYOUT.NORTH, width);
-			part_height = pc_height > part_height ? pc_height : part_height;
+			north_height = getContentHeight(placeMap, EU_LAYOUT.NORTH, width);
 		} catch (CIBusException e) {}
 		try {
-			pc_height = getContentHeight(placeMap, EU_LAYOUT.SOUTH, width);
-			part_height = pc_height > part_height ? pc_height : part_height;
+			south_height = getContentHeight(placeMap, EU_LAYOUT.SOUTH, width);
 		} catch (CIBusException e) {}
 		try {
 			west_width = getContentWidth(placeMap, EU_LAYOUT.WEST);
-			pc_height = getContentHeight(placeMap, EU_LAYOUT.WEST, width);
-			part_height = pc_height > part_height ? pc_height : part_height;
+			west_height = getContentHeight(placeMap, EU_LAYOUT.WEST, width);
 		} catch (CIBusException e) {}
 		try {
 			east_width = getContentWidth(placeMap, EU_LAYOUT.EAST);
-			pc_height = getContentHeight(placeMap, EU_LAYOUT.EAST, width-west_width);
-			part_height = pc_height > part_height ? pc_height : part_height;
+			east_height = getContentHeight(placeMap, EU_LAYOUT.EAST, width-west_width);
 		} catch (CIBusException e) {}
 		
 		try {
-			pc_height = getContentHeight(placeMap, EU_LAYOUT.CENTER, width-west_width-east_width);
-			part_height = pc_height > part_height ? pc_height : part_height;
+			center_height = getContentHeight(placeMap, EU_LAYOUT.CENTER, width-west_width-east_width);
 		} catch (CIBusException e) {}
 		
-		return part_height;
+		int content_height = 0;
+		try {
+			content_height = BusPortalShellUtil.max(west_height, east_height, center_height);
+		} catch (CIBusException e) {
+			DevAssistant.assert_exception(e);
+		}
+		return north_height + south_height + content_height;
 	}
 	
 	private int getContentHeight(Map<String, PlacePart> placeMap, EU_LAYOUT layout, int width) throws CIBusException {
@@ -662,12 +719,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		Part part;
 		switch (origin) {
 			case GLOBAL:
-				part = portal_config.getPartMap().get(placePart.getName());
+				part = portal.getPartMap().get(placePart.getName());
 				if (part != null)
 					return part.getContent().getValue();
 				break;
 			case PART:
-				part = portal_config.getPartMap().get(placePart.getName());
+				part = portal.getPartMap().get(placePart.getName());
 				if (part != null)
 					return part.getContent().getValue();
 				break;

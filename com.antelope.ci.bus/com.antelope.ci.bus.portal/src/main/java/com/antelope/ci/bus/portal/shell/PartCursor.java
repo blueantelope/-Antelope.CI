@@ -46,5 +46,9 @@ public class PartCursor {
 	public void addPart_y(int times) {
 		this.part_y += times;
 	}
+	
+	public PartCursor clone() {
+		return new PartCursor(part_x, part_y);
+	}
 }
 

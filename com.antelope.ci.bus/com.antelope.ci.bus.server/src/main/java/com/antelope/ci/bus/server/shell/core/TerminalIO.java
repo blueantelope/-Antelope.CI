@@ -268,11 +268,21 @@ public class TerminalIO {
 	}
 
 	public synchronized void storeCursor() throws IOException {
-		m_io.write(m_Terminal.getSpecialSequence(STORECURSOR));
+		byte[] sequence = new byte[3];
+		sequence[0] = Terminal.ESC;
+		sequence[1] = Terminal.LSB;
+		sequence[2] = 's';
+		m_io.write(sequence);
+//		m_io.write(m_Terminal.getSpecialSequence(STORECURSOR));
 	}// store Cursor
 
 	public synchronized void restoreCursor() throws IOException {
-		m_io.write(m_Terminal.getSpecialSequence(RESTORECURSOR));
+		byte[] sequence = new byte[3];
+		sequence[0] = Terminal.ESC;
+		sequence[1] = Terminal.LSB;
+		sequence[2] = 'u';
+		m_io.write(sequence);
+//		m_io.write(m_Terminal.getSpecialSequence(RESTORECURSOR));
 	}// restore Cursor
 
 	/*** End of cursor related methods **************************************/

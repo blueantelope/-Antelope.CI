@@ -75,6 +75,13 @@ public abstract class CommonEntrance implements Entrance {
 				if (clz.isAnnotationPresent(PortalConfiguration.class)) {
 					PortalConfiguration pc = (PortalConfiguration) clz.getAnnotation(PortalConfiguration.class);
 					BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), pc.properties(), pc.xml());
+				} else {
+					List<URL> xml_url = ClassFinder.findXmlUrl(this.getClass().getPackage().getName(), 
+							BusCommonServerActivator.getClassLoader());
+					List<URL> props_url =ClassFinder.findResourceUrl(this.getClass().getPackage().getName(), 
+							BusCommonServerActivator.getClassLoader());
+					if (!xml_url.isEmpty() && !props_url.isEmpty())
+						BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), xml_url.get(0).toString(), props_url.get(0).toString());
 				}
 				
 				if (clz.isAnnotationPresent(StatusClass.class))
@@ -84,13 +91,7 @@ public abstract class CommonEntrance implements Entrance {
 			}
 		}
 		
-		// add xml of portal
-		List<URL> url = ClassFinder.findXmlUrl(this.getClass().getPackage().getName(), 
-				BusCommonServerActivator.getClassLoader());
 		
-		// add properties of portal
-		ClassFinder.findResourceUrl(this.getClass().getPackage().getName(), 
-				BusCommonServerActivator.getClassLoader());
 	}
 	
 	private void destroy() {
