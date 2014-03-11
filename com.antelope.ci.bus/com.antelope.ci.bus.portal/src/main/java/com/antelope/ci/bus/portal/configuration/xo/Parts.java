@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		上午11:28:04 
  */
 @XmlEntity(name="parts")
-public class Parts {
+public class Parts implements Serializable {
 	private List<Part> partList;
 
 	@XmlElement(name="part", isList=true, listClass=Part.class)

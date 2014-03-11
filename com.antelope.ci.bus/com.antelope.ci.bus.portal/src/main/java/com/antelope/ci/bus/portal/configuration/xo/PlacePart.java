@@ -8,7 +8,10 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
+
 import com.antelope.ci.bus.common.xml.XmlAttribute;
+import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 
 
@@ -20,10 +23,11 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		下午7:56:11 
  */
 @XmlEntity(name="part")
-public class PlacePart {
+public class PlacePart implements Serializable {
 	private String name;
 	private String place;
 	private String origin;
+	private Render render;
 	
 	@XmlAttribute(name="name")
 	public String getName() {
@@ -47,6 +51,14 @@ public class PlacePart {
 	}
 	public void setOrigin(String origin) {
 		this.origin = origin;
+	}
+	
+	@XmlElement(name="render")
+	public Render getRender() {
+		return render;
+	}
+	public void setRender(Render render) {
+		this.render = render;
 	}
 }
 

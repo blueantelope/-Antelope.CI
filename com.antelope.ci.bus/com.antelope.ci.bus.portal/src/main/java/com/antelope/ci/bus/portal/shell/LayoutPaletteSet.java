@@ -20,25 +20,25 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2014-3-7		上午11:17:37 
  */
 public class LayoutPaletteSet {
-	private PartPalette north_palette;
-	private PartPalette west_palette;
-	private PartPalette east_palette;
-	private PartPalette center_palette;
-	private PartPalette south_palette;
+	private ShellPalette north_palette;
+	private ShellPalette west_palette;
+	private ShellPalette east_palette;
+	private ShellPalette center_palette;
+	private ShellPalette south_palette;
 	
 	public LayoutPaletteSet() {
 		super();
-		north_palette = new PartPalette();
-		west_palette = new PartPalette();
-		east_palette = new PartPalette();
-		center_palette = new PartPalette();
-		south_palette = new PartPalette();
+		north_palette = new ShellPalette();
+		west_palette = new ShellPalette();
+		east_palette = new ShellPalette();
+		center_palette = new ShellPalette();
+		south_palette = new ShellPalette();
 	}
 	
 
-	public LayoutPaletteSet(PartPalette north_palette,
-			PartPalette west_palette, PartPalette east_palette,
-			PartPalette center_palette, PartPalette south_palette) {
+	public LayoutPaletteSet(ShellPalette north_palette,
+			ShellPalette west_palette, ShellPalette east_palette,
+			ShellPalette center_palette, ShellPalette south_palette) {
 		super();
 		this.north_palette = north_palette;
 		this.west_palette = west_palette;
@@ -49,48 +49,48 @@ public class LayoutPaletteSet {
 
 
 
-	public PartPalette getNorth_palette() {
+	public ShellPalette getNorth_palette() {
 		return north_palette;
 	}
 
-	public void setNorth_palette(PartPalette north_palette) {
+	public void setNorth_palette(ShellPalette north_palette) {
 		this.north_palette = north_palette;
 	}
 
-	public PartPalette getWest_palette() {
+	public ShellPalette getWest_palette() {
 		return west_palette;
 	}
 
-	public void setWest_palette(PartPalette west_palette) {
+	public void setWest_palette(ShellPalette west_palette) {
 		this.west_palette = west_palette;
 	}
 
-	public PartPalette getEast_palette() {
+	public ShellPalette getEast_palette() {
 		return east_palette;
 	}
 
-	public void setEast_palette(PartPalette east_palette) {
+	public void setEast_palette(ShellPalette east_palette) {
 		this.east_palette = east_palette;
 	}
 
-	public PartPalette getCenter_palette() {
+	public ShellPalette getCenter_palette() {
 		return center_palette;
 	}
 
-	public void setCenter_palette(PartPalette center_palette) {
+	public void setCenter_palette(ShellPalette center_palette) {
 		this.center_palette = center_palette;
 	}
 
-	public PartPalette getSouth_palette() {
+	public ShellPalette getSouth_palette() {
 		return south_palette;
 	}
 
-	public void setSouth_palette(PartPalette south_palette) {
+	public void setSouth_palette(ShellPalette south_palette) {
 		this.south_palette = south_palette;
 	}
 	
-	public void setAll(PartPalette north_palette, PartPalette south_palette, 
-								PartPalette west_palette, PartPalette east_palette, PartPalette center_palette) {
+	public void setAll(ShellPalette north_palette, ShellPalette south_palette, 
+								ShellPalette west_palette, ShellPalette east_palette, ShellPalette center_palette) {
 		this.north_palette = north_palette;
 		this.south_palette = south_palette;
 		this.west_palette = west_palette;

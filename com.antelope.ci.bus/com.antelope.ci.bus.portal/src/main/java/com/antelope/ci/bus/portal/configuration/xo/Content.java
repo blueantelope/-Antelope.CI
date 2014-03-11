@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
+
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 
@@ -20,7 +22,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		下午8:03:52 
  */
 @XmlEntity(name="content")
-public class Content {
+public class Content implements Serializable {
 	private String value;
 
 	@XmlCdata

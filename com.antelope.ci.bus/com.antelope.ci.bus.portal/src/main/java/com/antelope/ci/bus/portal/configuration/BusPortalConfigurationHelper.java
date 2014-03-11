@@ -136,7 +136,11 @@ public class BusPortalConfigurationHelper {
 		List<String> sortList = sortPortalExtension(portalExtMap);
 		
 		Portal majorExt = portalExtMap.get(shellClass);
-		majorExt = extend(majorExt);
+		if (majorExt != null) {
+			majorExt = extend(majorExt);
+		} else {
+			majorExt = usablePortal;
+		}
 		
 		
 		return majorExt;

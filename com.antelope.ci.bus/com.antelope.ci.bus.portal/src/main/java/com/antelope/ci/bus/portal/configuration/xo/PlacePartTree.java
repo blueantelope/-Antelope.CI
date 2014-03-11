@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @version  0.1
  * @Date	 2014-3-6		上午10:59:12 
  */
-public class PlacePartTree {
+public class PlacePartTree implements Serializable {
 	private String name;
 	private List<PlacePart> rootList;
 	private List<PlacePartTree> childList;

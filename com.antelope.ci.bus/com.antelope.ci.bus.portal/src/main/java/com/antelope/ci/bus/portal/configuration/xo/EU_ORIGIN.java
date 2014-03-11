@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -18,7 +20,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2014-2-3		下午11:26:20 
  */
-public enum EU_ORIGIN {
+public enum EU_ORIGIN implements Serializable {
 	GLOBAL("global"),
 	PART("part");
 	

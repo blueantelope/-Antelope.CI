@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -17,7 +19,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2013-12-17		下午12:39:06 
  */
-public enum EU_LAYOUT {
+public enum EU_LAYOUT implements Serializable {
 	NORTH("north"),
 	SOUTH("south"),
 	CENTER("center"),

@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.common;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -418,5 +420,31 @@ public class ProxyUtil {
 		} catch (Exception e) {
 			throw new CIBusException("", e);
 		} 
+	}
+	
+	public static Object deepClone(Object o) throws CIBusException {
+		ObjectOutputStream oos = null;
+		ObjectInputStream ois = null;
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			oos = new ObjectOutputStream(bos);
+			oos.writeObject(o);
+			ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+			return ois.readObject();
+		} catch (Exception e) {
+			DevAssistant.errorln(e);
+			throw new CIBusException("" , e);
+		} finally {
+			if (oos != null)
+				try {
+					oos.close();
+				} catch (IOException e) {
+				}
+			if (ois != null)
+				try {
+					ois.close();
+				} catch (IOException e) {
+				}
+		}
 	}
 }

@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.server.shell.buffer;
 
 
+
 /**
  * TODO 描述
  *
@@ -19,10 +20,24 @@ package com.antelope.ci.bus.server.shell.buffer;
 public class ShellCursor {
 	private int x;
 	private int y;
+	
+	public ShellCursor() {
+		super();
+		this.x = 0;
+		this.y = 0;
+	}
 
 	public ShellCursor(int x, int y) {
 		super();
 		this.x = x;
+		this.y = y;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public void setY(int y) {
 		this.y = y;
 	}
 
@@ -58,6 +73,14 @@ public class ShellCursor {
 	public void lastEndline(int width) {
 		x = width;
 		y -= 0;
+	}
+	
+	public void addY(int times) {
+		this.y += times;
+	}
+	
+	public ShellCursor clone() {
+		return new ShellCursor(x, y);
 	}
 }
 

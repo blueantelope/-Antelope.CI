@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		上午11:25:05 
  */
 @XmlEntity(name="portal")
-public class Portal implements Cloneable {
+public class Portal implements Serializable {
 	private Base base;
 	private Layout layout;
 	private Parts parts;
@@ -314,13 +315,7 @@ public class Portal implements Cloneable {
 	}
 	
 	public Portal clonePortal() throws CIBusException {
-		try {
-			return (Portal) super.clone();
-		} catch (CloneNotSupportedException e) {
-			new CIBusException("", e);
-		}
-		
-		return null;
+		return (Portal) ProxyUtil.deepClone(this);
 	}
 	
 	public Map<String, PlaceParts> makePlacePartsMap() {

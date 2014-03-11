@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
+
 
 /**
  * TODO 描述
@@ -16,7 +18,7 @@ package com.antelope.ci.bus.portal.configuration.xo;
  * @version  0.1
  * @Date	 2014-3-8		上午12:35:23 
  */
-public class PlacePartNode {
+public class PlacePartNode implements Serializable {
 	private PlacePart placePart;
 	private Part part;
 	

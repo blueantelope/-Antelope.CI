@@ -15,7 +15,7 @@ package com.antelope.ci.bus.portal.shell;
  * @version  0.1
  * @Date	 2014-3-6		下午3:27:03 
  */
-public class PartPalette {
+public class ShellPalette {
 	private int x;
 	private int y;
 	private int width;

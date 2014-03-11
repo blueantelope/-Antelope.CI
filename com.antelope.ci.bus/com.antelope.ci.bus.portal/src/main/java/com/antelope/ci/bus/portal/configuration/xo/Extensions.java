@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -21,7 +22,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-17		下午4:29:20 
  */
 @XmlEntity(name="extensions")
-public class Extensions {
+public class Extensions implements Serializable {
 	private List<Extension> extentionList;
 
 	@XmlElement(name="extension", isList=true, listClass=Extension.class)

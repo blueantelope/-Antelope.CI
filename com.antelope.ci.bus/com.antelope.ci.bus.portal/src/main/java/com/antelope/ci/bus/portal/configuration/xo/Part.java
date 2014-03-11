@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		下午8:02:13 
  */
 @XmlEntity(name="part")
-public class Part {
+public class Part implements Serializable {
 	private String name;
 	private Content content;
 	private EU_Embed embed;

@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.configuration.xo.Point.java
+// com.antelope.ci.bus.portal.configuration.xo.EU_Margin.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -14,37 +14,36 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * xml extention point 
+ * TODO 描述
+ *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-2-17		下午4:31:43 
+ * @Date	 2014-3-11		下午5:40:14 
  */
-public enum EU_Point implements Serializable {
-	BASE("base"),
-	LAYOUT("layout"),
-	PARTS("parts");
+public enum EU_Margin implements Serializable {
+	BEFORE("before"),
+	AFTER("after");
 	
 	private String name;
-	private EU_Point(String name) {
+	private EU_Margin(String name) {
 		this.name = name;
 	}
 	
 	public String getName() {
-		return this.name;
+		return name;
 	}
 	
 	@Override
 	public String toString() {
-		return this.name;
+		return name;
 	}
 	
-	public static EU_Point toPoint(String name) throws CIBusException {
-		for (EU_Point p : EU_Point.values()) {
-			if (p.getName().equalsIgnoreCase(name))
-				return p;
-		}
+	public static EU_Margin toMargin(String name) throws CIBusException {
+		for (EU_Margin m : EU_Margin.values())
+			if (m.getName().equalsIgnoreCase(name))
+				return m;
 		
-		throw new CIBusException("", "unknow point name");
+		throw new CIBusException("", "unknown margin");
 	}
 }
 

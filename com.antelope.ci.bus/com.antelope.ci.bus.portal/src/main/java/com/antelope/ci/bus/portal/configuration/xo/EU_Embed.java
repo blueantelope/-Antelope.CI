@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -17,7 +19,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2014-2-17		下午5:02:52 
  */
-public enum EU_Embed {
+public enum EU_Embed implements Serializable {
 	REPLACE("replace"),
 	APPEND("append");
 	

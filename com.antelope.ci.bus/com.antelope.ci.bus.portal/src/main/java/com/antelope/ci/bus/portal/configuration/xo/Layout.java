@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		上午11:27:45 
  */
 @XmlEntity(name="layout")
-public class Layout {
+public class Layout implements Serializable {
 	private List<Place> placeList;
 
 	@XmlElement(name="place", isList=true, listClass=Place.class)
@@ -48,6 +49,27 @@ public class Layout {
 		}
 		
 		return null;
+	}
+	
+	public void appendPlaceParts(String name, PlaceParts parts) {
+		if (name.contains(".")) {
+			String[] ns = name.split(".");
+			int m = 0;
+			Place beforePlace;
+			
+			for (String n : ns) {
+				if (m % 1 == 0) {
+					Place p = getPlace(n);
+					if (p == null)
+				} else {
+					
+				}
+				m++;
+			}
+		} else {
+			Place p = getPlace(name);
+			p.setParts(parts);
+		}
 	}
 }
 

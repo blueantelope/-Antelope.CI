@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -23,7 +24,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-17		下午4:29:55 
  */
 @XmlEntity(name="extension")
-public class Extension {
+public class Extension implements Serializable {
 	private String point_exp;
 	private EU_Point point;
 	private Base base;

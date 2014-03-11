@@ -8,6 +8,10 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
@@ -21,7 +25,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @Date	 2014-2-2		上午11:30:22 
  */
 @XmlEntity(name="place")
-public class Place {
+public class Place implements Serializable {
 	private String name;
 	private PlaceParts parts;
 	
