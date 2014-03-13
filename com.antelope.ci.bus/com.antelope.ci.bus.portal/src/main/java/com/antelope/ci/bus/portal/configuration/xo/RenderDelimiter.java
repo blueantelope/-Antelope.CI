@@ -11,6 +11,7 @@ package com.antelope.ci.bus.portal.configuration.xo;
 import java.io.Serializable;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlEntity;
@@ -58,14 +59,7 @@ public class RenderDelimiter implements Serializable {
 	}
 	
 	public EU_Position getEU_Position() {
-		if (position == null)
-			return null;
-		try {
-			return EU_Position.toPosition(position);
-		} catch (CIBusException e) {
-			DevAssistant.assert_exception(e);
-			return null;
-		}
+		return EU_Position.toPosition(position);
 	}
 }
 

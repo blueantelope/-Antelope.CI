@@ -296,6 +296,18 @@ public class Portal implements Serializable {
 		return partMap;
 	}
 	
+	public Map<String, PlacePart> getPalcePartRenderMap() {
+		Map<String, PlacePart> renderMap = new HashMap<String, PlacePart>();
+		Map<String, PlacePart> ppMap = getPlacePartMap();
+		for (String ppName : ppMap.keySet()) {
+			PlacePart pp = ppMap.get(ppName);
+			if (pp.toEU_Display() == EU_Display.JOINT)
+				renderMap.put(ppName, pp);
+		}
+		
+		return renderMap;
+	}
+	
 	public Map<String, Part> getPartMap() {
 		Map<String, Part> partMap = new HashMap<String, Part>();
 		if (parts != null) {
@@ -303,6 +315,17 @@ public class Portal implements Serializable {
 		}
 		
 		return partMap;
+	}
+	
+	public Part getPart(String partName) {
+		if (parts != null) {
+			List<Part> partList = parts.getPartList();
+			for (Part part : partList) {
+				if (part.getName().equalsIgnoreCase(partName))
+					return part;
+			}
+		}
+		return null;
 	}
 	
 	public PlacePart getPlacePart(String lplaceName, String lpartName) {

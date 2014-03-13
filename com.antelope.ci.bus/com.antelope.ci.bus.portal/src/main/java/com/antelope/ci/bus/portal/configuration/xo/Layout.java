@@ -55,17 +55,34 @@ public class Layout implements Serializable {
 		if (name.contains(".")) {
 			String[] ns = name.split(".");
 			int m = 0;
-			Place beforePlace;
-			
+			Place trackPlace = null;
+			PlaceParts trackParts = null;
 			for (String n : ns) {
 				if (m % 1 == 0) {
-					Place p = getPlace(n);
-					if (p == null)
+					if (m == 0) {
+						trackPlace = getPlace(n);
+						if (trackPlace == null) {
+							trackPlace = new Place();
+							addPlace(trackPlace);
+						}
+					} else {
+						if (trackParts == null) break;
+						trackPlace = trackParts.getPlace(n);
+						if (trackPlace == null) {
+							trackPlace = new Place();
+							trackParts.addPlace(trackPlace);
+						}
+					}
 				} else {
-					
+					trackParts = trackPlace.getParts();
+					if (trackParts == null) {
+						trackParts = new PlaceParts();
+						trackPlace.setParts(trackParts);
+					}
 				}
 				m++;
 			}
+			trackPlace.setParts(parts);
 		} else {
 			Place p = getPlace(name);
 			p.setParts(parts);

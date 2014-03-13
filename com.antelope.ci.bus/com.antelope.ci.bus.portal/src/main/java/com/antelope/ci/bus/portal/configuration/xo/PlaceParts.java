@@ -97,6 +97,10 @@ public class PlaceParts implements Serializable {
 		return ppMap;
 	}
 	
+	public Place getPlace(String name) {
+		return getPlaceMap().get(name);
+	}
+	
 	public void addPart(PlacePart part) {
 		if (partList == null) partList = new ArrayList<PlacePart>();
 		partList.add(part);

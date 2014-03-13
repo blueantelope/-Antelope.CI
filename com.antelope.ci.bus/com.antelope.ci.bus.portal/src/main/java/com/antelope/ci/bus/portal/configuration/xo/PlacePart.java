@@ -28,6 +28,7 @@ public class PlacePart implements Serializable {
 	private String place;
 	private String origin;
 	private Render render;
+	private String display;
 	
 	@XmlAttribute(name="name")
 	public String getName() {
@@ -59,6 +60,18 @@ public class PlacePart implements Serializable {
 	}
 	public void setRender(Render render) {
 		this.render = render;
+	}
+	
+	@XmlElement(name="display")
+	public String getDisplay() {
+		return display;
+	}
+	public void setDisplay(String display) {
+		this.display = display;
+	}
+	
+	public EU_Display toEU_Display() {
+		return EU_Display.toDisplay(display);
 	}
 }
 

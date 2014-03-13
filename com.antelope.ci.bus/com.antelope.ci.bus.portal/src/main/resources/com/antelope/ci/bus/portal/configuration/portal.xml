@@ -4,7 +4,7 @@
 		<place name="north">
 			<parts>
 				<part name="banner" place="north" origin="global" />
-				<part name="first.menu" place="center" origin="part">
+				<part name="first.menu" place="center" origin="part" display="joint">
 					<render align="center">
 						<delimiter value="\" position="middle" margin="before:1,after:1" />
 					</render>

@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.configuration.xo.EU_Position.java
+// com.antelope.ci.bus.portal.configuration.xo.EU_Display.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -11,7 +11,6 @@ package com.antelope.ci.bus.portal.configuration.xo;
 import java.io.Serializable;
 
 import com.antelope.ci.bus.common.StringUtil;
-import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -19,15 +18,14 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-3-11		下午5:09:33 
+ * @Date	 2014-3-12		下午12:29:26 
  */
-public enum EU_Position implements Serializable {
-	START("start"),
-	MIDDLE("middle"),
-	END("end");
+public enum EU_Display implements Serializable {
+	SINGLE("single"),
+	JOINT("joint");
 	
 	private String name;
-	private EU_Position(String name) {
+	private EU_Display(String name) {
 		this.name = name;
 	}
 	
@@ -40,15 +38,14 @@ public enum EU_Position implements Serializable {
 		return name;
 	}
 	
-	public static EU_Position toPosition(String name) {
+	public static EU_Display toDisplay(String name) {
 		if (StringUtil.empty(name))
-			return EU_Position.MIDDLE;
+			return SINGLE;
+		for (EU_Display d : EU_Display.values())
+			if (d.getName().equalsIgnoreCase(name))
+				return d;
 		
-		for (EU_Position p : EU_Position.values())
-			if (p.getName().equalsIgnoreCase(name))
-				return p;
-		
-		return EU_Position.MIDDLE;
+		return SINGLE;
 	}
 }
 

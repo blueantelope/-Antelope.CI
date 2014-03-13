@@ -35,15 +35,20 @@ import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.configuration.xo.Base;
+import com.antelope.ci.bus.portal.configuration.xo.Content;
 import com.antelope.ci.bus.portal.configuration.xo.EU_Point;
+import com.antelope.ci.bus.portal.configuration.xo.EU_Position;
 import com.antelope.ci.bus.portal.configuration.xo.Extension;
 import com.antelope.ci.bus.portal.configuration.xo.Extensions;
 import com.antelope.ci.bus.portal.configuration.xo.Layout;
+import com.antelope.ci.bus.portal.configuration.xo.Margin;
 import com.antelope.ci.bus.portal.configuration.xo.Part;
 import com.antelope.ci.bus.portal.configuration.xo.Parts;
 import com.antelope.ci.bus.portal.configuration.xo.Place;
+import com.antelope.ci.bus.portal.configuration.xo.PlacePart;
 import com.antelope.ci.bus.portal.configuration.xo.PlaceParts;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
+import com.antelope.ci.bus.portal.configuration.xo.RenderDelimiter;
 
 /**
  * configraiton reader for portal (include main and part)
@@ -125,7 +130,7 @@ public class BusPortalConfigurationHelper {
 	
 	private Portal parseStatic(String shellClass) throws CIBusException {
 		for (String ck : configPairMap.keySet()) {
-			if (portalExtMap.get(ck) != null) continue;
+			if (ck.equals(shellClass) || !portalExtMap.containsKey(ck)) continue;
 			try {
 				InputStream xml_in = getXmlStream(configPairMap.get(ck).getXml_name());
 				portalExtMap.put(ck, parsePortal(xml_in));
@@ -142,6 +147,42 @@ public class BusPortalConfigurationHelper {
 			majorExt = usablePortal;
 		}
 		
+		convert(majorExt, reader);
+		convert()
+		
+		Map<String, PlacePart> renderMap = majorExt.getPalcePartRenderMap();
+		for (String rname : renderMap.keySet()) {
+			PlacePart pp =  renderMap.get(rname);
+			RenderDelimiter delimiter = pp.getRender().getDelimiter();
+			String del_value = " ";
+			EU_Position del_position = EU_Position.MIDDLE;
+			Margin del_margin = null;
+			if (delimiter != null) {
+				del_value = delimiter.getValue();
+				del_position = delimiter.getEU_Position();
+				del_margin = delimiter.getMarginObject();
+			}
+			
+			Part major_part = majorExt.getPart(rname);
+			if (major_part == null) {
+				major_part = new Part();
+				major_part.setName(rname);
+				Content content = new Content();
+				content.setValue("");
+				major_part.setContent(content);
+				majorExt.addPart(major_part);
+			}
+			
+			if (del_position == EU_Position.START)
+				major_part.addForeValue(del_value);
+			
+			for (String extName : sortList) {
+				Portal ext = portalExtMap.get(extName);
+				if (ext.getPart(rname))
+				if (del_position == EU_Position.MIDDLE)
+					major_part.addAfterValue(del_value + ext.getPart(partName));
+			}
+		}
 		
 		return majorExt;
 		
@@ -416,11 +457,11 @@ public class BusPortalConfigurationHelper {
 				switch (parts.getEmbed()) {
 					case REPLACE:
 						if (pps != null)
-							pps = parts;
+							layout.appendPlaceParts(pname, parts);
 						break;
 					case APPEND:
 						if (pps != null) {
-							pps.appendParts(parts);
+							layout.appendPlaceParts(pname, parts);
 						} else {
 							int index = pname.lastIndexOf(".");
 							if (index == -1) break;
@@ -462,6 +503,8 @@ public class BusPortalConfigurationHelper {
 							} else {
 								find_pps.appendParts(parts);
 							}
+							if (find_pps != null)
+								layout.appendPlaceParts(pname, find_pps);
 						}
 						break;
 				}

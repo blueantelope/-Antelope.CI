@@ -109,5 +109,27 @@ public class Part implements Serializable {
 		
 		return true;
 	}
+	
+	public String getValue() {
+		if (content == null || StringUtil.empty(content.getValue()))
+			return "";
+		return content.getValue();
+	}
+	
+	public void addAfterValue(String s) {
+		if (content == null || StringUtil.empty(content.getValue()))
+			content = new Content();
+		if (StringUtil.empty(content.getValue()))
+			content.setValue("");
+		content.setValue(content.getValue() + s);
+	}
+	
+	public void addForeValue(String s) {
+		if (content == null || StringUtil.empty(content.getValue()))
+			content = new Content();
+		if (StringUtil.empty(content.getValue()))
+			content.setValue("");
+		content.setValue(s + content.getValue());
+	}
 }
 
