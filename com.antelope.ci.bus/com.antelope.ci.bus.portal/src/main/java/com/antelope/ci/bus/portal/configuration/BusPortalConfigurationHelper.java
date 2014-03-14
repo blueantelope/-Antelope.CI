@@ -36,6 +36,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.configuration.xo.Base;
 import com.antelope.ci.bus.portal.configuration.xo.Content;
+import com.antelope.ci.bus.portal.configuration.xo.EU_ORIGIN;
 import com.antelope.ci.bus.portal.configuration.xo.EU_Point;
 import com.antelope.ci.bus.portal.configuration.xo.EU_Position;
 import com.antelope.ci.bus.portal.configuration.xo.Extension;
@@ -123,16 +124,22 @@ public class BusPortalConfigurationHelper {
 	
 	private Portal parseDynamic(String shellClass) throws CIBusException {
 		Portal global_portal = parsePortal(PORTAL_XML);
-		ResourceReader global_reader = parseProperties(PORTAL_RESOURCE, classLoader);
+		ResourceReader global_reader = parseResource(PORTAL_RESOURCE, classLoader);
 		
 		return global_portal;
 	}
 	
 	private Portal parseStatic(String shellClass) throws CIBusException {
+		Portal majorExt = null;
+		BasicConfigrationReader majorExt_reader = null;
 		for (String ck : configPairMap.keySet()) {
-			if (ck.equals(shellClass) || !portalExtMap.containsKey(ck)) continue;
 			try {
 				InputStream xml_in = getXmlStream(configPairMap.get(ck).getXml_name());
+				if (ck.equals(shellClass)) {
+					majorExt = parsePortal(xml_in);
+					majorExt_reader = parseProperties(configPairMap.get(ck).getProps_name(), ck, classLoader);
+					continue;
+				}
 				portalExtMap.put(ck, parsePortal(xml_in));
 			} catch (Exception e) {
 				DevAssistant.assert_exception(e);
@@ -140,15 +147,28 @@ public class BusPortalConfigurationHelper {
 		}
 		List<String> sortList = sortPortalExtension(portalExtMap);
 		
-		Portal majorExt = portalExtMap.get(shellClass);
 		if (majorExt != null) {
 			majorExt = extend(majorExt);
 		} else {
 			majorExt = usablePortal;
 		}
 		
-		convert(majorExt, reader);
-		convert()
+		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
+		findReplace(replaceList, majorExt);
+		for (PortalReplace pr : replaceList) {
+			String new_value = "";
+			switch (pr.getOrigin()) {
+				case GLOBAL:
+					new_value = replaceLable((String) pr.getValue(), reader);
+					break;
+				case PART:
+					if (majorExt_reader != null)
+						new_value = replaceLable((String) pr.getValue(), majorExt_reader);
+					break;
+			}
+			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
+		}
+		
 		
 		Map<String, PlacePart> renderMap = majorExt.getPalcePartRenderMap();
 		for (String rname : renderMap.keySet()) {
@@ -178,29 +198,12 @@ public class BusPortalConfigurationHelper {
 			
 			for (String extName : sortList) {
 				Portal ext = portalExtMap.get(extName);
-				if (ext.getPart(rname))
 				if (del_position == EU_Position.MIDDLE)
-					major_part.addAfterValue(del_value + ext.getPart(partName));
+					major_part.addAfterValue(del_value + ext.getPart(extName));
 			}
 		}
 		
 		return majorExt;
-		
-		/*
-		PortalPair pp = configPairMap.get(shellClass);
-		if (pp == null)
-			return usablePortal;
-		boolean isResource = pp.getProps_name().startsWith(CP_SUFFIX) ? true : false;
-		String a_xml = trunckConfig(pp.getXml_name() + ".xml");
-		String a_pro = trunckConfig(pp.getProps_name());
-		try {
-			Class thisCls = Class.forName(shellClass, false, classLoader);
-			String package_name = thisCls.getPackage().getName();
-			return parseExtention(thisCls.getResourceAsStream(a_xml), a_pro, isResource, package_name);
-		} catch (ClassNotFoundException e) {
-			return usablePortal;
-		}
-		*/
 	}
 	
 	private List<String> sortPortalExtension(Map<String, Portal> extMap) {
@@ -235,7 +238,7 @@ public class BusPortalConfigurationHelper {
 	public synchronized void init() throws CIBusException {
 		if (!inited && parseType == EU_ParseType.STATICAL) {
 			portal = parsePortal(PORTAL_XML);
-			reader = parseProperties(PORTAL_RESOURCE, classLoader);
+			reader = parseResource(PORTAL_RESOURCE, classLoader);
 			usablePortal = portal.clonePortal();
 			convert(usablePortal, reader);
 			inited = true;
@@ -279,7 +282,7 @@ public class BusPortalConfigurationHelper {
 		List<String> resList = ClassFinder.getPropsResource(package_path, cl);
 		for (String res : resList) {
 			if (isPortalResource(res, "\\.")) {
-				reader_ext = parseProperties(res, cl);
+				reader_ext = parseResource(res, cl);
 				break;
 			}
 		}
@@ -293,9 +296,9 @@ public class BusPortalConfigurationHelper {
 		BasicConfigrationReader reader_ext;
 		if (isResource) {
 			try {
-				reader_ext = parseProperties(config, cl);
+				reader_ext = parseResource(config, cl);
 			} catch (CIBusException e) {
-				reader_ext = parseProperties(packageName+"."+config, cl);
+				reader_ext = parseResource(packageName+"."+config, cl);
 			}
 		} else {
 			reader_ext = new CfgFileReader();
@@ -357,7 +360,24 @@ public class BusPortalConfigurationHelper {
 		return (Portal) BusXmlHelper.parse(Portal.class, xml_in);
 	}
 	
-	private ResourceReader parseProperties(String resource_path, ClassLoader cl) throws CIBusException {
+	private BasicConfigrationReader parseProperties(String path, String packageName, ClassLoader cl) throws CIBusException {
+		String rPath = trunckConfig(path);
+		BasicConfigrationReader r;
+		if (path.contains("classpath:")) {
+			try {
+				r = parseResource(rPath, cl);
+			} catch (CIBusException e) {
+				r = parseResource(packageName+"."+path, cl);
+			}
+		} else {
+			r = new CfgFileReader();
+			r.addConfig(path);
+		}
+		
+		return r;
+	}
+	
+	private ResourceReader parseResource(String resource_path, ClassLoader cl) throws CIBusException {
 		ResourceReader r = new ResourceReader();
 		if (cl != null) {
 			r.addConfig(resource_path, cl);
@@ -598,6 +618,15 @@ public class BusPortalConfigurationHelper {
 			Method setMethod = root.getClass().getMethod(setter, String.class);
 			if (setMethod != null) {
 				PortalReplace pr = new PortalReplace(root, setter, o);
+				String orgin = "";
+				try {
+					orgin = (String) ProxyUtil.invokeRet(root, "getOrigin");
+				} catch (CIBusException e) {
+					orgin = EU_ORIGIN.GLOBAL.getName();
+				}
+				if (!StringUtil.empty(orgin) && orgin.equalsIgnoreCase(EU_ORIGIN.PART.getName()))
+					pr.setPartForOrigin();
+					
 				replaceList.add(pr);
 			}
 		} catch (Exception e) {
@@ -625,11 +654,13 @@ public class BusPortalConfigurationHelper {
 		private Object parent;
 		private String setter;
 		private Object value;
+		private EU_ORIGIN origin;
 		public PortalReplace(Object parent, String setter, Object value) {
 			super();
 			this.parent = parent;
 			this.setter = setter;
 			this.value = value;
+			this.origin = EU_ORIGIN.GLOBAL;
 		}
 		public Object getParent() {
 			return parent;
@@ -639,6 +670,12 @@ public class BusPortalConfigurationHelper {
 		}
 		public Object getValue() {
 			return value;
+		}
+		public EU_ORIGIN getOrigin() {
+			return origin;
+		}
+		public void setPartForOrigin() {
+			this.origin = EU_ORIGIN.PART;
 		}
 	}
 	
