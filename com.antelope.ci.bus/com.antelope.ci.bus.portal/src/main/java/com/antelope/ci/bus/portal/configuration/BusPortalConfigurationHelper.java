@@ -64,8 +64,8 @@ public class BusPortalConfigurationHelper {
 		return helper;
 	}
 	
-	private static final String CP_SUFFIX 							= "classpath:";
-	private static final String FILE_SUFFIX 						= "file:";
+	private static final String CP_SUFFIX 										= "classpath:";
+	private static final String FILE_SUFFIX 										= "file:";
 	private static final String LABLE_START = "${";
 	private static final String LABLE_END = "}";
 	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/configuration/portal.xml";
@@ -80,7 +80,7 @@ public class BusPortalConfigurationHelper {
 	private static int null_name_index;
 	private boolean inited = false;
 	private EU_ParseType parseType;
-	private final static String PARSETYPE_KEY								= "bus.portal.parse";	
+	private final static String PARSETYPE_KEY									= "bus.portal.parse";	
 	private final static String DEFAULT_PARSETYPEVALUE				= "static";
 	private final static EU_ParseType DEFAULT_PARSETYPE 			= EU_ParseType.STATICAL;
 	
@@ -153,8 +153,9 @@ public class BusPortalConfigurationHelper {
 			majorExt = usablePortal;
 		}
 		
-		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
-		findReplace(replaceList, majorExt);
+//		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
+//		findReplace(replaceList, majorExt);
+		List<PortalReplace> replaceList = genPortalReplaceList(majorExt);
 		for (PortalReplace pr : replaceList) {
 			String new_value = "";
 			switch (pr.getOrigin()) {
@@ -166,7 +167,8 @@ public class BusPortalConfigurationHelper {
 						new_value = replaceLable((String) pr.getValue(), majorExt_reader);
 					break;
 			}
-			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
+			if (!StringUtil.empty(new_value))
+				ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
 		}
 		
 		
@@ -563,10 +565,8 @@ public class BusPortalConfigurationHelper {
 		int index = 0;
 		while (index < len) {
 			int start = value.indexOf(LABLE_START, index);
-			if (start == -1) {
-				buf.append(value.substring(index, len));
+			if (start == -1)
 				break;
-			}
 			int end = value.indexOf(LABLE_END, start);
 			String key = value.substring(start+2, end);
 			String v = r.getString(key);
@@ -578,8 +578,102 @@ public class BusPortalConfigurationHelper {
 		return buf.toString();
 	}
 	
+	private List<PortalReplace> genPortalReplaceList(Portal root) {
+		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
+		PortalReplaceTree tree = genPortalReplaceTree(root);
+		genPortalReplaceList(replaceList, tree);
+		return replaceList;
+	}
+	
+	private void genPortalReplaceList(List<PortalReplace> replaceList, PortalReplaceTree tree) {
+		if (tree.hasValue())
+			replaceList.add(tree.getValue());
+		
+		for (PortalReplaceTree child : tree.getChildren())
+			genPortalReplaceList(replaceList, child);
+	}
+	
+	private PortalReplaceTree genPortalReplaceTree(Portal root) {
+		PortalReplaceTree tree = new PortalReplaceTree();
+		tree.isRoot();
+		genPortalReplaceTree(tree, root, EU_ORIGIN.GLOBAL);
+		return tree;
+	}
+	
+	private void genPortalReplaceTree(PortalReplaceTree tree, Object root, EU_ORIGIN origin) {
+		List<PortalReplaceTree> deepList = new ArrayList<PortalReplaceTree>();
+		EU_ORIGIN child_origin = origin;
+		
+		try {
+			Method originMethod = root.getClass().getMethod("getOrigin");
+			if (originMethod != null) {
+				String origin_str = "";
+				try {
+					origin_str = (String) ProxyUtil.invokeRet(root, "getOrigin");
+					child_origin = EU_ORIGIN.toOrigin(origin_str);
+				} catch (CIBusException e) { }
+			}
+		} catch (Exception e) {
+			DevAssistant.assert_exception(e);
+		}
+		
+		for (Method method : root.getClass().getMethods()) {
+			if (method.getName().startsWith("get") && !method.getName().startsWith("getClass") 
+					&& !method.getName().startsWith("getOrigin")) {
+				try {
+					Object o = ProxyUtil.invokeRet(method, root);
+					if (o == null)
+						continue;
+					if (List.class.isAssignableFrom(o.getClass())) {
+						PortalReplace child_pr = new PortalReplace(root, "", o, child_origin);
+						PortalReplaceTree child = new PortalReplaceTree();
+						child.setValue(child_pr);
+						tree.addChild(child);
+						tree.isList();
+						deepList.add(tree);
+					} else {
+						String setter = "set" + method.getName().substring(3);
+						Method setMethod = null;
+						for (Method m : root.getClass().getMethods()) {
+							if (m.getName().equals(setter)) {
+								setMethod = m;
+								break;
+							}
+						}
+						if (setMethod != null) {
+							boolean isStringValue = method.getReturnType() == String.class;
+							PortalReplace child_pr = new PortalReplace(root, setter, o, child_origin);
+							PortalReplaceTree child = new PortalReplaceTree();
+							child.setValue(child_pr);
+							if (isStringValue)
+								child.isStringValue();
+							tree.addChild(child);
+							deepList.add(tree);
+						}
+					}
+				} catch (Exception e) {
+					DevAssistant.assert_exception(e);
+				}
+			}
+		}
+		for (PortalReplaceTree deep : deepList) {
+			if (deep.isList) {
+				List list =(List) deep.getValue().getValue();
+				for (Object o : list)
+					if (deep.getValue() != null)
+						genPortalReplaceTree(deep, o, deep.getValue().getOrigin());
+			} else {
+				if (deep.getValue() != null)
+					genPortalReplaceTree(deep, deep.getValue().getValue(), deep.getValue().getOrigin());
+			}
+		}
+	}
+	
+	@Deprecated
+	/* genPortalReplaceList */
 	private void findReplace(List<PortalReplace> replaceList, Object root, Class... replaceClasses) throws CIBusException {
 		List<Object> deepList = new ArrayList<Object>();
+		
 		for (Method method : root.getClass().getMethods()) {
 			if (method.getName().startsWith("get") && !method.getName().startsWith("getClass")) {
 				try {
@@ -650,6 +744,50 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
+	private static class PortalReplaceTree {
+		private boolean isRoot;
+		private PortalReplace value;
+		private List<PortalReplaceTree> children;
+		private boolean isList;
+		private boolean stringValue;
+		
+		public PortalReplaceTree() {
+			super();
+			children = new ArrayList<PortalReplaceTree>();
+			isRoot = false;
+			isList = false;
+			stringValue = false;
+		}
+		public void isRoot() {
+			this.isRoot = true;
+		}
+		public void isList() {
+			this.isList = true;
+		}
+		public void isStringValue() {
+			this.stringValue = true;
+		}
+		public boolean hasValue() {
+			return !isRoot && !isList && stringValue;
+		}
+		public PortalReplace getValue() {
+			return value;
+		}
+		public void setValue(PortalReplace value) {
+			this.value = value;
+		}
+		public List<PortalReplaceTree> getChildren() {
+			return children;
+		}
+		public void setChildren(List<PortalReplaceTree> children) {
+			this.children = children;
+		}
+		
+		public void addChild(PortalReplaceTree child) {
+			children.add(child);
+		}
+	}
+	
 	private static class PortalReplace {
 		private Object parent;
 		private String setter;
@@ -661,6 +799,13 @@ public class BusPortalConfigurationHelper {
 			this.setter = setter;
 			this.value = value;
 			this.origin = EU_ORIGIN.GLOBAL;
+		}
+		public PortalReplace(Object parent, String setter, Object value, EU_ORIGIN origin) {
+			super();
+			this.parent = parent;
+			this.setter = setter;
+			this.value = value;
+			this.origin = origin;
 		}
 		public Object getParent() {
 			return parent;
