@@ -55,7 +55,7 @@ public class RenderDelimiter implements Serializable {
 	}
 	
 	public Margin getMarginObject() {
-		return Margin.parse(value);
+		return Margin.parse(margin);
 	}
 	
 	public EU_Position getEU_Position() {

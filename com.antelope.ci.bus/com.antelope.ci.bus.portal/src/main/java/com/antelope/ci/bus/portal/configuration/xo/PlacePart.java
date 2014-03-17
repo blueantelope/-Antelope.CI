@@ -54,6 +54,14 @@ public class PlacePart implements Serializable {
 		this.origin = origin;
 	}
 	
+	@XmlAttribute(name="display")
+	public String getDisplay() {
+		return display;
+	}
+	public void setDisplay(String display) {
+		this.display = display;
+	}
+	
 	@XmlElement(name="render")
 	public Render getRender() {
 		return render;
@@ -62,16 +70,14 @@ public class PlacePart implements Serializable {
 		this.render = render;
 	}
 	
-	@XmlElement(name="display")
-	public String getDisplay() {
-		return display;
-	}
-	public void setDisplay(String display) {
-		this.display = display;
-	}
-	
 	public EU_Display toEU_Display() {
 		return EU_Display.toDisplay(display);
+	}
+	
+	public boolean existRender() {
+		if (render != null && render.getAlign() != null && toEU_Display() == EU_Display.JOINT)
+			return true;
+		return false;
 	}
 }
 

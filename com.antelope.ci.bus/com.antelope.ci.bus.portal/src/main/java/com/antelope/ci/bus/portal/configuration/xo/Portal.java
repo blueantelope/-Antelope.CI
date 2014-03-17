@@ -301,7 +301,7 @@ public class Portal implements Serializable {
 		Map<String, PlacePart> ppMap = getPlacePartMap();
 		for (String ppName : ppMap.keySet()) {
 			PlacePart pp = ppMap.get(ppName);
-			if (pp.toEU_Display() == EU_Display.JOINT)
+			if (pp.existRender())
 				renderMap.put(ppName, pp);
 		}
 		
@@ -366,6 +366,29 @@ public class Portal implements Serializable {
 				putPlacePartsMap(ppsMap, p, key);
 			}
 		}
+	}
+	
+	public PlacePart getPlacePart(String name) {
+		if (layout != null) {
+			List<Place> placeList = layout.getPlaceList();
+			if (placeList != null) {
+				for (Place place : placeList) {
+					PlaceParts parts = place.getParts();
+					if (parts != null) {
+						List<PlacePart> partList = parts.getPartList();
+						if (partList != null) {
+							for (PlacePart part : partList) {
+								if (part.getName().equalsIgnoreCase(name))
+									return part;
+							}
+						}
+					}
+				}
+			}
+			
+		}
+		
+		return null;
 	}
 }
 

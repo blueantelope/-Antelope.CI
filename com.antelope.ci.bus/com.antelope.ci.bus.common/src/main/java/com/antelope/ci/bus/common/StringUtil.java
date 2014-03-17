@@ -173,4 +173,14 @@ public class StringUtil {
 				return false;
 		return value.substring(value.length()-suffix.length()).equalsIgnoreCase(suffix);
 	}
+	
+	public static String repeatString(String repeat, int times) {
+		StringBuffer result = new StringBuffer();
+		while (times > 0) {
+			result.append(repeat);
+			times--;
+		}
+		
+		return result.toString();
+	}
 }
