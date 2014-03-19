@@ -202,6 +202,7 @@ public abstract class BusShell {
 		}
 	}
 	
+	@Deprecated
 	protected void restoreCursor() {
 //		try {
 //			io.restoreCursor();
@@ -284,6 +285,10 @@ public abstract class BusShell {
 		ShellUtil.shift(io, x, y, getConsoleWidth(), getConsoleHeight());
 	}
 	
+	protected void move(int x, int y) throws IOException {
+		ShellUtil.move(io, x, y);
+	}
+	
 	protected void shiftTop() throws IOException {
 		ShellUtil.shiftTop(io);
 	}
@@ -324,6 +329,7 @@ public abstract class BusShell {
 		io.moveLeft(StringUtil.getWordCount(str));
 		io.moveDown(1);
 	}
+	
 	
 	private void environment() throws CIBusException {
 		in = session.getIn();

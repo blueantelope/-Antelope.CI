@@ -119,12 +119,12 @@ public class StringUtil {
 		return lineList.toArray(new String[lineList.size()]);
 	}
 
-	public static String[] toLines(String str, int width) throws IOException {
+	public static String[] toStringLines(String str, int width) throws IOException {
 		BufferedReader reader = new BufferedReader(new StringReader(str));
 		List<String> lineList = new ArrayList<String>();
 		String line;
 		while ((line = reader.readLine()) != null) {
-			int len = line.length();
+			int len = getWordCount(line);
 			if (len < width) {
 				lineList.add(line);
 			} else {
@@ -135,6 +135,42 @@ public class StringUtil {
 					start += width;
 				}
 			}
+		}
+		return lineList.toArray(new String[lineList.size()]);
+	}
+	
+	public static String[] toLines(String str, int width) throws IOException {
+		BufferedReader reader = new BufferedReader(new StringReader(str));
+		List<String> lineList = new ArrayList<String>();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			int len = 0;
+			int last_size = 0;
+			int s_start = 0;
+			int index = 0;
+			for (index = 0; index < line.length(); index++) {
+				if (len == width) {
+					lineList.add(line.substring(s_start, index));
+					s_start = index;
+					len  = 0;
+				} else if (len > width) {
+					lineList.add(line.substring(s_start, index-1));
+					s_start = index - 1;
+					len  = last_size;
+				}
+				
+				int codePoint = Character.codePointAt(line, index);
+				if (codePoint >= 0 && codePoint <= 255) {
+					len += 1;
+					last_size = 1;
+				} else {
+					len += 2;
+					last_size = 2;
+				}
+			}
+			
+			if (index > s_start)
+				lineList.add(line.substring(s_start, index));
 		}
 		return lineList.toArray(new String[lineList.size()]);
 	}

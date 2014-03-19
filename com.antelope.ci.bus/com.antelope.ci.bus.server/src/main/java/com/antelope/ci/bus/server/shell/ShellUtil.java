@@ -59,8 +59,18 @@ public class ShellUtil {
 		io.homeCursor();
 		int cx = x > width ? width : x;
 		int cy = y > height ? height : y;
-		io.moveLeft(cx);
-		io.moveDown(cy);
+		if (cx != 0) {
+			if (cx > 0)
+				io.moveLeft(cx);
+			else
+				io.moveRight(-cx);
+		}
+		if (cy != 0) {
+			if (cy > 0)
+				io.moveDown(cy);
+			else
+				io.moveUp(-cy);
+		}
 	}
 	
 	public static void writeHeader(TerminalIO io, String str) throws IOException {
@@ -81,6 +91,21 @@ public class ShellUtil {
 		io.moveUp(distance);
 		for (String s : ss) {
 			io.println(s);
+		}
+	}
+	
+	public static void move(TerminalIO io, int x, int y) throws IOException {
+		if (x != 0) {
+			if (x > 0)
+				io.moveLeft(x);
+			else
+				io.moveRight(-x);
+		}
+		if (y != 0) {
+			if (y > 0)
+				io.moveDown(y);
+			else
+				io.moveUp(-y);
 		}
 	}
 }

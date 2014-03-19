@@ -75,12 +75,21 @@ public class ShellCursor {
 		y -= 0;
 	}
 	
+	public void addX(int times) {
+		this.x += times;
+	}
+	
 	public void addY(int times) {
 		this.y += times;
 	}
 	
 	public ShellCursor clone() {
 		return new ShellCursor(x, y);
+	}
+	
+	public void setCursor(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 }
 
