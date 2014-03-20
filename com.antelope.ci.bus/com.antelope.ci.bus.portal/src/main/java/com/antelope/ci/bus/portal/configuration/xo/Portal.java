@@ -373,19 +373,36 @@ public class Portal implements Serializable {
 			List<Place> placeList = layout.getPlaceList();
 			if (placeList != null) {
 				for (Place place : placeList) {
-					PlaceParts parts = place.getParts();
-					if (parts != null) {
-						List<PlacePart> partList = parts.getPartList();
-						if (partList != null) {
-							for (PlacePart part : partList) {
-								if (part.getName().equalsIgnoreCase(name))
-									return part;
-							}
-						}
-					}
+					PlacePart part  = getPlacePart(place, name);
+					if (part != null)
+						return part;
 				}
 			}
-			
+		}
+		
+		return null;
+	}
+	
+	public PlacePart getPlacePart(Place place, String name) {
+		PlaceParts parts = place.getParts();
+		if (parts != null) {
+			List<PlacePart> partList = parts.getPartList();
+			if (partList != null) {
+				for (PlacePart part : partList) {
+					if (part.getName().equalsIgnoreCase(name))
+						return part;
+				}
+				 List<Place> placeList = parts.getPlaceList();
+				 if (placeList != null) {
+					 for (Place childP : placeList) {
+						 if (childP != null) {
+							 PlacePart pp = getPlacePart(childP, name);
+							 if (pp != null)
+								 return pp;
+						 }
+					 }
+				 }
+			}
 		}
 		
 		return null;

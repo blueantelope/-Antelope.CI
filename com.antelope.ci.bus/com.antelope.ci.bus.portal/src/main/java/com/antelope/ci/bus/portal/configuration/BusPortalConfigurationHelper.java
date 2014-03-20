@@ -626,8 +626,18 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private void genPortalReplaceList(List<PortalReplace> replaceList, PortalReplaceTree tree) {
-		if (tree.hasValue())
-			replaceList.add(tree.getValue());
+		if (tree.hasValue()) {
+			PortalReplace pr = tree.getValue();
+			boolean added = true;
+			for (PortalReplace existPr : replaceList) {
+				if (pr.exist(existPr)) {
+					added = false;
+					break;
+				}
+			}
+			if (added)
+				replaceList.add(pr);
+		}
 		
 		for (PortalReplaceTree child : tree.getChildren())
 			genPortalReplaceList(replaceList, child);
@@ -636,17 +646,17 @@ public class BusPortalConfigurationHelper {
 	private PortalReplaceTree genPortalReplaceTree(Portal root) {
 		PortalReplaceTree tree = new PortalReplaceTree();
 		tree.isRoot();
-		genPortalReplaceTree(portal, tree, root, EU_ORIGIN.GLOBAL);
+		genPortalReplaceTree(root, tree, root, EU_ORIGIN.GLOBAL);
 		return tree;
 	}
 	
-	private void genPortalReplaceTree(Portal portal, PortalReplaceTree tree, Object root, EU_ORIGIN origin) {
+	private void genPortalReplaceTree(Portal replacePortal, PortalReplaceTree tree, Object root, EU_ORIGIN origin) {
 		List<PortalReplaceTree> deepList = new ArrayList<PortalReplaceTree>();
 		EU_ORIGIN child_origin = origin;
 		
 		if (root instanceof Part) {
 			Part p = (Part) root;
-			PlacePart placePart = portal.getPlacePart(p.getName());
+			PlacePart placePart = replacePortal.getPlacePart(p.getName());
 			if (placePart != null) {
 				try {
 					child_origin =  EU_ORIGIN.toOrigin(placePart.getOrigin());
@@ -711,10 +721,10 @@ public class BusPortalConfigurationHelper {
 				List list =(List) deep.getValue().getValue();
 				for (Object o : list)
 					if (deep.getValue() != null)
-						genPortalReplaceTree(portal, deep, o, deep.getValue().getOrigin());
+						genPortalReplaceTree(replacePortal, deep, o, deep.getValue().getOrigin());
 			} else {
 				if (deep.getValue() != null)
-					genPortalReplaceTree(portal, deep, deep.getValue().getValue(), deep.getValue().getOrigin());
+					genPortalReplaceTree(replacePortal, deep, deep.getValue().getValue(), deep.getValue().getOrigin());
 			}
 		}
 	}
@@ -871,6 +881,13 @@ public class BusPortalConfigurationHelper {
 		}
 		public void setPartForOrigin() {
 			this.origin = EU_ORIGIN.PART;
+		}
+		
+		public boolean exist(PortalReplace comPr) {
+			if (parent == comPr.getParent() && setter == comPr.getSetter() 
+					&& value == comPr.getValue() && origin == comPr.getOrigin())
+				return true;
+			return false;
 		}
 	}
 	
