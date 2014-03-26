@@ -307,7 +307,7 @@ public class ProxyUtil {
 		try {
 			ret = Class.forName(className).newInstance();
 		} catch (Exception e) {
-			DevAssistant.errorln(e);
+			DevAssistant.assert_exception(e);
 		} finally {
 			return ret;
 		}
@@ -319,7 +319,7 @@ public class ProxyUtil {
 		try {
 			ret = loader.loadClass(className).newInstance();
 		} catch (Exception e) {
-			DevAssistant.errorln(e);
+			DevAssistant.assert_exception(e);
 		} finally {
 			return ret;
 		}
@@ -422,14 +422,14 @@ public class ProxyUtil {
 		} 
 	}
 	
-	public static Object deepClone(Object o) throws CIBusException {
+	public static Object deepClone(Object o, ClassLoader cl) throws CIBusException {
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			oos = new ObjectOutputStream(bos);
 			oos.writeObject(o);
-			ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
+			ois = new BusObjectInputStream(new ByteArrayInputStream(bos.toByteArray()), cl);
 			return ois.readObject();
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
@@ -446,5 +446,12 @@ public class ProxyUtil {
 				} catch (IOException e) {
 				}
 		}
+	}
+	
+	public static boolean hasArguments(Method m) {
+		Class<?>[] as = m.getParameterTypes();
+		if (as != null && as.length > 0)
+			return true;
+		return false;
 	}
 }

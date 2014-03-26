@@ -664,7 +664,11 @@ public class BusPortalConfigurationHelper {
 			}
 		} else {
 			try {
-				Method originMethod = root.getClass().getMethod("getOrigin");
+				Method originMethod = null;
+				try {
+					originMethod = root.getClass().getMethod("getOrigin");
+				} catch (Exception e) {}
+				
 				if (originMethod != null) {
 					String origin_str = "";
 					try {
@@ -678,8 +682,10 @@ public class BusPortalConfigurationHelper {
 		}
 		
 		for (Method method : root.getClass().getMethods()) {
-			if (method.getName().startsWith("get") && !method.getName().startsWith("getClass") 
-					&& !method.getName().startsWith("getOrigin")) {
+			if (method.getName().startsWith("get") 
+					&& !method.getName().startsWith("getClass") 
+					&& !method.getName().startsWith("getOrigin") 
+					&& !ProxyUtil.hasArguments(method)) {
 				try {
 					Object o = ProxyUtil.invokeRet(method, root);
 					if (o == null)
@@ -735,7 +741,9 @@ public class BusPortalConfigurationHelper {
 		List<Object> deepList = new ArrayList<Object>();
 		
 		for (Method method : root.getClass().getMethods()) {
-			if (method.getName().startsWith("get") && !method.getName().startsWith("getClass")) {
+			if (method.getName().startsWith("get") 
+					&& !method.getName().startsWith("getClass") 
+					&& !ProxyUtil.hasArguments(method)) {
 				try {
 					Object o = ProxyUtil.invokeRet(method, root);
 					if (o == null)

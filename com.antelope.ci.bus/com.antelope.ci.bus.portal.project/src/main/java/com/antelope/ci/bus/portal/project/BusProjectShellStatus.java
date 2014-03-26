@@ -20,7 +20,7 @@ import com.antelope.ci.bus.server.shell.StatusClass;
  */
 @StatusClass
 public class BusProjectShellStatus {
-	@Status(code=6, name="command.status.project")
+	@Status(code=7, name="command.status.project")
 	public static final String PROJECT 			= "command.status.project";
 }
 

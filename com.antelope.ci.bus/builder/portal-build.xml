@@ -12,6 +12,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.target.compile" />
@@ -31,6 +32,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.target.compile.notest" />
@@ -105,6 +107,7 @@
 		
 		<copy todir="${app.portal.bundle.part}">
 			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.portal.dashboard-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.portal.project-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.portal.usecase-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.portal.target-${bus.version}.jar" />

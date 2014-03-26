@@ -199,6 +199,28 @@
 		</exec>
 	</target>
 	
+	<target name="portal.dashboard.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.dashboard.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	
+	<target name="portal.dashboard.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.dashboard.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="portal.dashboard.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.dashboard.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
 	<target name="portal.project.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.project.pom}" />
@@ -347,7 +369,6 @@
 			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
-
 
 	<target name="clean" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">

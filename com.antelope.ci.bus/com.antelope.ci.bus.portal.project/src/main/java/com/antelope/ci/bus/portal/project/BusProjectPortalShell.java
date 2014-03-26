@@ -22,7 +22,7 @@ import com.antelope.ci.bus.server.shell.Shell;
  * @Date	 2014-2-27		下午6:03:13 
  */
 @Shell(name="portal.project", commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter", status=BusProjectShellStatus.PROJECT)
-@PortalConfiguration(xml="classpath:portal_project", properties="classpath:portal_project")
+@PortalConfiguration(xml="classpath:/com/antelope/ci/bus/portal/project/portal_project", properties="classpath:com.antelope.ci.bus.portal.project.portal_project")
 public class BusProjectPortalShell extends BusPortalShell {
 
 	public BusProjectPortalShell() throws CIBusException {

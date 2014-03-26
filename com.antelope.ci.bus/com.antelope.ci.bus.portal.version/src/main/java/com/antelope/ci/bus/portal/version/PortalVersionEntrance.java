@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.version;
 
+import org.apache.log4j.Logger;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.entrance.CommonEntrance;
 import com.antelope.ci.bus.portal.entrance.PortalEntrance;
@@ -21,34 +23,28 @@ import com.antelope.ci.bus.portal.entrance.PortalEntrance;
  */
 @PortalEntrance
 public class PortalVersionEntrance extends CommonEntrance {
+	private static final Logger log = Logger.getLogger(PortalVersionEntrance.class);
 
 	@Override
 	protected void beforeMount() throws CIBusException {
-		
-		// TODO Auto-generated method stub
+		log.debug("before mount of version portal");
 		
 	}
 
 	@Override
 	protected void afterMount() throws CIBusException {
-		
-		// TODO Auto-generated method stub
+		log.debug("after mount of version portal");
 		
 	}
 
 	@Override
 	protected void beforeUnmount() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		log.debug("before unmount of version portal");
 	}
 
 	@Override
 	protected void afterUnmount() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		log.debug("after unmount of version portal");
 	}
-
 }
 

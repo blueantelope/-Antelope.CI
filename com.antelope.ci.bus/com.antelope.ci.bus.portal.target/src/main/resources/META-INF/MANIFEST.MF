@@ -5,3 +5,7 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.portal.target
 Fragment-Host: com.antelope.ci.bus.portal; bundle-version="0.1.0"
 Bundle-Vendor: blueantelope@gmail.com
+Import-Package: com.antelope.ci.bus.server.shell.command.hit
+Export-Package: com.antelope.ci.bus.portal.target; version="0.1.0",
+ com.antelope.ci.bus.portal.project.target; version="0.1.0"
+ 

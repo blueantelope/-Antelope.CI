@@ -14,6 +14,8 @@ import java.util.Hashtable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.wiring.BundleWiring;
 
+import com.antelope.ci.bus.common.DevAssistant;
+
 
 /**
  * util of bus osgi
@@ -24,7 +26,12 @@ import org.osgi.framework.wiring.BundleWiring;
 public class BusOsgiUtil {
 	
 	public static ClassLoader getBundleClassLoader(BundleContext m_context) {
-		return m_context.getBundle().adapt(BundleWiring.class).getClassLoader();
+		try { 
+			return m_context.getBundle().adapt(BundleWiring.class).getClassLoader();
+		} catch (Exception e) {
+			DevAssistant.errorln(e);
+			return null;
+		}
 	}
 	
 	public static void addServiceToContext(BundleContext m_context, Object service, String serviceName, ServiceProperty... others) {

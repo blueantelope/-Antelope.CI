@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portal>
+	<extensions>
+		<extension point="base" >
+			<base name="version" order="4" embed="replace">
+			</base>
+		</extension>
+		<extension point="layout">
+			<parts name="center" embed="replace">
+					<part name="second.menu" place="west" origin="part" />
+					<place name="center">
+						<parts>
+							<part name="title" place="north" origin="part" />
+							<part name="content" place="center" origin="part" />
+							<part name="page" place="south" origin="global" />
+						</parts>
+					</place>
+			</parts>
+		</extension>
+		<extension point="parts">
+			<part name="first.menu" embed="append" sort="4">
+				<content><![CDATA[${first.menu}]]></content>
+			</part>
+			
+			<part name="second.menu" embed="replace">
+				<content><![CDATA[${second.menu1}
+${second.menu2}
+${second.menu3}
+${second.menu4}
+				]]></content>
+			</part>
+			
+			<part name="title" embed="replace">
+				<content><![CDATA[${title}]]></content>
+			</part>
+			
+			<part name="content" embed="replace">
+				<content><![CDATA[${content.line1}
+${content.line2}
+${content.line3}
+				]]></content>
+			</part>
+			
+		</extension>
+	</extensions>
+</portal>

@@ -22,6 +22,7 @@ import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.common.xml.BusXmlHelper.SetterGetterPair;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
 /**
@@ -320,9 +321,11 @@ public class Portal implements Serializable {
 	public Part getPart(String partName) {
 		if (parts != null) {
 			List<Part> partList = parts.getPartList();
-			for (Part part : partList) {
-				if (part.getName().equalsIgnoreCase(partName))
-					return part;
+			if (partList != null) {
+				for (Part part : partList) {
+					if (part.getName().equalsIgnoreCase(partName))
+						return part;
+				}
 			}
 		}
 		return null;
@@ -338,7 +341,7 @@ public class Portal implements Serializable {
 	}
 	
 	public Portal clonePortal() throws CIBusException {
-		return (Portal) ProxyUtil.deepClone(this);
+		return (Portal) ProxyUtil.deepClone(this, CommonBusActivator.getClassLoader());
 	}
 	
 	public Map<String, PlaceParts> makePlacePartsMap() {

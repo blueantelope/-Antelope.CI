@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<portal-configuration>
-	<menu postion="left">
-		<entry name="second.menu.version" sort="0"  />
-		<entry name="second.menu.cvs" sort="1"  />
-	</menu>
-
-</portal-configuration>
