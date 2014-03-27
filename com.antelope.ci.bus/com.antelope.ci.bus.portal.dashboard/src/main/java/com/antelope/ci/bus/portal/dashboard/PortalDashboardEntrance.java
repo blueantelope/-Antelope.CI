@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.entrance.CommonEntrance;
+import com.antelope.ci.bus.portal.entrance.PortalEntrance;
 
 
 /**
@@ -21,19 +22,18 @@ import com.antelope.ci.bus.portal.entrance.CommonEntrance;
  * @version  0.1
  * @Date	 2014-3-26		下午3:09:59 
  */
+@PortalEntrance
 public class PortalDashboardEntrance extends CommonEntrance {
 	private static final Logger log = Logger.getLogger(PortalDashboardEntrance.class);
 	
 	@Override
 	protected void beforeMount() throws CIBusException {
 		log.debug("before mount of dashboard portal");
-		
 	}
 
 	@Override
 	protected void afterMount() throws CIBusException {
 		log.debug("after mount of dashboard portal");
-		
 	}
 
 	@Override

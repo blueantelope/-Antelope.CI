@@ -38,18 +38,22 @@ public class BusShellContainerLauncher extends BusShellLauncher {
 		BusShellSession session = createShellSession();
 		BusShell startShell = null;
 		Map<String, BusShell> shellMap = new HashMap<String, BusShell>();
-		for (String status : container.getShellClassMap().keySet()) {
+		Map<String, String> scmap = container.getShellClassMap();
+		for (String status : scmap.keySet()) {
 			BusShell shell = container.createShell(status);
 			shell.attatchSession(session);
 			shellMap.put(status, shell);
-			if (shell.getSort() == -1) {
-				if (startShell == null || status.equals(BusShellStatus.ROOT))
-					startShell =shell;
-			} else {
-				if (shell.getSort() < startShell.getSort())
-					startShell =shell;
-			}
 			
+			if (startShell == null) {
+				startShell =shell;
+				continue;
+			}
+			if (shell.getSort() == -1 && status.equals(BusShellStatus.ROOT)) {
+				startShell =shell;
+				continue;
+			} 
+			if (shell.getSort() < startShell.getSort())
+				startShell =shell;
 		}
 		
 		if (shellMap.size() > 1) {

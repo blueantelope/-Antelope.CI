@@ -322,12 +322,37 @@ public class Portal implements Serializable {
 		if (parts != null) {
 			List<Part> partList = parts.getPartList();
 			if (partList != null) {
-				for (Part part : partList) {
-					if (part.getName().equalsIgnoreCase(partName))
-						return part;
-				}
+				Part part = getPart(partList, partName);
+				if (part != null)
+					return part;
 			}
 		}
+		return null;
+	}
+	
+	public String getPartValue(String partName) {
+		Part p = getPart(partName);
+		if (p != null) {
+			String v = getPartValue(p);
+			if (v != null)
+				return v;
+		}
+		
+		return "";
+	}
+	
+	private Part getPart(List<Part> partList, String partName) {
+		for (Part part : partList) {
+			if (part.getName().equalsIgnoreCase(partName))
+				return part;
+		}
+		return null;
+	}
+	
+	private String getPartValue(Part p) {
+		if (p.getContent() != null)
+			return p.getContent().getValue();
+		
 		return null;
 	}
 	
@@ -409,6 +434,38 @@ public class Portal implements Serializable {
 		}
 		
 		return null;
+	}
+	
+	public Part getExtPart(String name) {
+		if (extensions != null) {
+			List<Extension> extentionList = extensions.getExtentionList();
+			if (extentionList != null) {
+				for (Extension e : extentionList) {
+					if (e != null) {
+						if (e.getPoint() == EU_Point.PARTS) {
+							List<Part> partList = e.getPartList();
+							if (partList != null) {
+								Part part = getPart(partList, name);
+								if (part != null)
+									return part;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	public String getExtPartValue(String name) {
+		Part part = getExtPart(name);
+		if (part != null) {
+			String v = getPartValue(part);
+			return v == null ? "" : v;
+		}
+		
+		return "";
 	}
 }
 

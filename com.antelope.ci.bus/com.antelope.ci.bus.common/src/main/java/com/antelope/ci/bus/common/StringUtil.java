@@ -15,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 字符中通用工具类
@@ -218,5 +220,14 @@ public class StringUtil {
 		}
 		
 		return result.toString();
+	}
+	
+	public static boolean contain(String str, String prefix, String suffix) {
+		String reg = "(" + prefix + ".+" + suffix + "){1,}";
+		Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(str);
+        if (matcher.find())
+        	return true;
+        return false;
 	}
 }

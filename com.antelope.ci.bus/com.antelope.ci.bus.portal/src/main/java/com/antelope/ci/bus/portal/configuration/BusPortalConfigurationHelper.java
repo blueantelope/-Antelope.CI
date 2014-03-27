@@ -65,7 +65,7 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private static final String CP_SUFFIX 										= "classpath:";
-	private static final String FILE_SUFFIX 										= "file:";
+	private static final String FILE_SUFFIX 									= "file:";
 	private static final String LABLE_START = "${";
 	private static final String LABLE_END = "}";
 	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/configuration/portal.xml";
@@ -81,8 +81,8 @@ public class BusPortalConfigurationHelper {
 	private boolean inited = false;
 	private EU_ParseType parseType;
 	private final static String PARSETYPE_KEY									= "bus.portal.parse";	
-	private final static String DEFAULT_PARSETYPEVALUE				= "static";
-	private final static EU_ParseType DEFAULT_PARSETYPE 			= EU_ParseType.STATICAL;
+	private final static String DEFAULT_PARSETYPEVALUE					= "static";
+	private final static EU_ParseType DEFAULT_PARSETYPE 				= EU_ParseType.STATICAL;
 	
 	private BusPortalConfigurationHelper() {
 		try {
@@ -158,7 +158,9 @@ public class BusPortalConfigurationHelper {
 			String new_value = "";
 			switch (pr.getOrigin()) {
 				case GLOBAL:
-					new_value = replaceLable((String) pr.getValue(), reader);
+					new_value = (String) pr.getValue();
+					if (needReplace(new_value))
+						new_value = replaceLable(new_value, reader);
 					break;
 				case PART:
 					if (majorExt_reader != null)
@@ -195,10 +197,32 @@ public class BusPortalConfigurationHelper {
 			if (del_position == EU_Position.START)
 				rendStartPart(major_part, del_value, del_margin);
 			
+			List<PartWithPortalClass> extPwpcList =  new ArrayList<PartWithPortalClass>();
 			for (String extName : sortList) {
 				Portal ext = portalExtMap.get(extName);
+				Part extPart = ext.getExtPart(pp.getName());
+				if (extPart != null)
+					extPwpcList.add(new PartWithPortalClass(extName, extPart));
+			}
+			
+			Collections.sort(extPwpcList, new Comparator<PartWithPortalClass>() {
+				@Override
+				public int compare(PartWithPortalClass p1, PartWithPortalClass p2) {
+					return p1.getPart().getSort() - p2.getPart().getSort();
+				}
+			});
+			
+			for (PartWithPortalClass extPwpc : extPwpcList) {
+				String extName = extPwpc.getPortalClass();
+				Part extPart = extPwpc.getPart();
 				if (del_position == EU_Position.MIDDLE)
-					major_part.addAfterValue(del_value + ext.getPart(extName));
+					major_part.addAfterValue(del_value);
+				String extValue = extPart.getValue();
+				if (needReplace(extValue))
+					extValue = replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
+				if (needReplace(extValue))
+					extValue = replaceLable(extValue, reader);
+				major_part.addAfterValue(extValue);
 			}
 			
 			if (del_position == EU_Position.END)
@@ -206,6 +230,21 @@ public class BusPortalConfigurationHelper {
 		}
 		
 		return majorExt;
+	}
+	
+	private static class PartWithPortalClass {
+		private String portalClass;
+		private Part part;
+		public PartWithPortalClass(String portalClass, Part part) {
+			this.portalClass = portalClass;
+			this.part = part;
+		}
+		public String getPortalClass() {
+			return portalClass;
+		}
+		public Part getPart() {
+			return part;
+		}
 	}
 	
 	private void rendStartPart(Part part, String dec, Margin margin) {
@@ -591,9 +630,17 @@ public class BusPortalConfigurationHelper {
 		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
 		findReplace(replaceList, p);
 		for (PortalReplace pr : replaceList) {
-			String new_value = replaceLable((String) pr.getValue(), r);
+			String new_value = (String) pr.getValue();
+			if (needReplace(new_value))
+				new_value = replaceLable(new_value, r);
 			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
 		}
+	}
+	
+	private boolean needReplace(String value) {
+		String prefix = "\\$\\{";
+		String suffix = "\\}";
+		return StringUtil.contain(value, prefix, suffix);
 	}
 	
 	private String replaceLable(String value, BasicConfigrationReader r) {

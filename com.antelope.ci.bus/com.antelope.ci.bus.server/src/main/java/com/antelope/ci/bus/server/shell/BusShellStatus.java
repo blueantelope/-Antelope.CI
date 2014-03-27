@@ -134,8 +134,11 @@ public class BusShellStatus {
 	}
 	
 	public static int code(String name) {
-		Status sta = statusMap.get(name);
-		if (sta !=null) return sta.code();
+		for (Map.Entry<String, Status> entry : statusMap.entrySet()) {
+			Status sta = entry.getValue();
+			if (name.equalsIgnoreCase(sta.name()))
+				return sta.code();
+		}
 		return -1;
 	}
 	

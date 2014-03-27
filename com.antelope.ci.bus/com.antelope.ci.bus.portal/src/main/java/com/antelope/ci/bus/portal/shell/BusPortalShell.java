@@ -28,6 +28,8 @@ import com.antelope.ci.bus.portal.configuration.xo.PlacePart;
 import com.antelope.ci.bus.portal.configuration.xo.PlacePartTree;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -50,6 +52,11 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 
 	public BusPortalShell() throws CIBusException {
 		super();
+		Class thisCls = this.getClass();
+		if (thisCls.isAnnotationPresent(Shell.class)) {
+			Shell sa = (Shell) thisCls.getAnnotation(Shell.class);
+			this.sort = BusShellStatus.code(sa.status());
+		} 
 		customInit();
 		parsePortal();
 		if (portal == null)
@@ -65,6 +72,11 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			configHelper.addConfigPair(thisCls.getName(), pc.properties(), pc.xml());
 		} 
 		portal = configHelper.parse(this.getClass().getName());
+	}
+	
+	@Override
+	public void setSort(int sort) {
+		// nothing
 	}
 	
 	protected void draw() throws IOException, CIBusException {
