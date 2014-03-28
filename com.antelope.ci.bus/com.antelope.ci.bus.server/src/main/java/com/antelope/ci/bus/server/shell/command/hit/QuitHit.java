@@ -20,7 +20,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-6		下午9:44:40 
  */
-@Command(name="quit", commands="q, Q", status=BusShellStatus.ROOT, type=CommandType.HIT)
+@Command(name="quit", commands="q, Q", status=BusShellStatus.GLOBAL, type=CommandType.HIT)
 public class QuitHit extends Hit {
 
 	@Override

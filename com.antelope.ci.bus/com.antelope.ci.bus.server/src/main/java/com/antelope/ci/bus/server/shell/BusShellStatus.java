@@ -27,18 +27,20 @@ public class BusShellStatus {
 	public enum BaseStatus {
 		@Status(code=-1, name="command.status.none")
 		NONE(-1, "command.status.none"),
-		@Status(code=0, name="command.status.init")
-		INIT(0, "command.status.init"),
-		@Status(code=1, name="command.status.root")
-		ROOT(1, "command.status.root"),
-		@Status(code=2, name="command.status.help")
-		HELP(2, "command.status.help"),
-		@Status(code=3, name="command.status.quit")
-		QUIT(3, "command.status.quit"),
-		@Status(code=4, name="command.status.last")
-		LAST(4, "command.status.last"),
-		@Status(code=5, name="command.status.keep")
-		KEEP(5, "command.status.keep");
+		@Status(code=0, name="command.status.global")
+		GLOBAL(0, "command.status.global"),
+		@Status(code=1, name="command.status.init")
+		INIT(1, "command.status.init"),
+		@Status(code=2, name="command.status.root")
+		ROOT(2, "command.status.root"),
+		@Status(code=3, name="command.status.help")
+		HELP(3, "command.status.help"),
+		@Status(code=4, name="command.status.quit")
+		QUIT(4, "command.status.quit"),
+		@Status(code=5, name="command.status.last")
+		LAST(5, "command.status.last"),
+		@Status(code=6, name="command.status.keep")
+		KEEP(6, "command.status.keep");
 		
 		private int code;
 		private String name;
@@ -57,7 +59,7 @@ public class BusShellStatus {
 		
 		public static BaseStatus toStatus(String name) {
 			for (BaseStatus es : BaseStatus.values()) {
-				if (es.name().equalsIgnoreCase(name))
+				if (es.getName().equalsIgnoreCase(name))
 					return es;
 			}
 			
@@ -74,6 +76,7 @@ public class BusShellStatus {
 		}
 	}
 	
+	public static final String GLOBAL 			= "command.status.global";
 	public static final String INIT					= "command.status.init";
 	public static final String ROOT 				= "command.status.root";
 	public static final String HELP				= "command.status.help";

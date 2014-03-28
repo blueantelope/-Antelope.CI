@@ -11,9 +11,9 @@ package com.antelope.ci.bus.server.shell.command;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
@@ -21,6 +21,7 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -34,12 +35,14 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 public abstract class CommandAdapter {
 	protected static final String DOT = ".";
 	protected Map<String, ICommand> commandMap;
+	protected Map<String, ICommand> globalCommandMap;
 	protected CommandType cType;
 	protected boolean isQuit;
 	
 	public CommandAdapter(CommandType cType) {
 		this.cType = cType;
-		commandMap = new HashMap<String, ICommand>();
+		globalCommandMap = new ConcurrentHashMap<String, ICommand>();
+		commandMap = new ConcurrentHashMap<String, ICommand>();
 		isQuit = false;
 		init();
 	}
@@ -48,8 +51,12 @@ public abstract class CommandAdapter {
 		if (command.getClass().isAnnotationPresent(Command.class)) {
 			Command cmd = command.getClass().getAnnotation(Command.class);
 			if (cmd.type() == cType) {
+				BaseStatus bs = BaseStatus.toStatus(cmd.status());
 				String key = cmd.status() + DOT + cmd.name();
-				commandMap.put(key, command);
+				if (bs == BaseStatus.GLOBAL)
+					globalCommandMap.put(key, command);
+				else
+					commandMap.put(key, command);
 			}
 		}
 	}
@@ -109,22 +116,37 @@ public abstract class CommandAdapter {
 	}
 	
 	public String execute(String status, boolean refresh, String cmd, TerminalIO io, Object... args) throws CIBusException {
+		for (String key : globalCommandMap.keySet()) {
+			String rs = execute(key, globalCommandMap, status, refresh, cmd, io, args);
+			if (rs != null)
+				return rs;
+		}
+		
 		for (String key : commandMap.keySet()) {
 			if (key.contains(status)) {
-				ICommand command = commandMap.get(key);
-				if (match(command, cmd)) {
-					String actionStatus = command.execute(refresh, io, args);
-					afterExecute(command, status, io, args);
-					return actionStatus;
-				}
+				String rs = execute(key, commandMap, status, refresh, cmd, io, args);
+				if (rs != null)
+					return rs;
 			}
 		}
 		return BusShellStatus.KEEP;
 	}
 	
+	protected String execute(String key, Map<String, ICommand> currentCmdMap, String status, boolean refresh, String cmd, TerminalIO io, Object... args) throws CIBusException {
+		ICommand command = currentCmdMap.get(key);
+		if (match(command, cmd)) {
+			String actionStatus = command.execute(refresh, io, args);
+			afterExecute(command, status, io, args);
+			return actionStatus;
+		}
+		
+		return null;
+	}
+	
 	protected boolean match(ICommand command, String cmdStr) {
 		Command cmd = command.getClass().getAnnotation(Command.class);
 		for (String scmd : cmd.commands().split(",")) {
+			if (StringUtil.empty(scmd)) continue;
 			if (cmdStr.equalsIgnoreCase(scmd.trim()))
 				return true;
 		}

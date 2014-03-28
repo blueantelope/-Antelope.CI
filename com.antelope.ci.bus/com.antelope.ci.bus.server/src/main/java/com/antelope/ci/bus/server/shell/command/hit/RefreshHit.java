@@ -24,7 +24,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-9		下午5:21:43 
  */
-@Command(name="quit", commands="r, R", status=BusShellStatus.HELP, type=CommandType.HIT)
+@Command(name="refresh", commands="r, R", status=BusShellStatus.GLOBAL, type=CommandType.HIT)
 public class RefreshHit extends Hit {
 
 	@Override

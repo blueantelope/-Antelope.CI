@@ -32,7 +32,7 @@ public class HitAdapter extends CommandAdapter {
 	protected void init() {
 		addCommand(new HelpHit());
 		addCommand(new QuitHit());
-		addCommand(new QuitOnHelpHit());
+		addCommand(new RefreshHit());
 	}
 
 	@Override
