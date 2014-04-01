@@ -205,6 +205,13 @@ public class StringUtil {
 		return ss[ss.length-1];
 	}
 	
+	public static boolean startsWithIgnoreCase(String value, String prefix) {
+		value = value.trim();
+		if (value.length() < prefix.length())
+				return false;
+		return value.substring(0, prefix.length()).equalsIgnoreCase(prefix);
+	}
+	
 	public static boolean endsWithIgnoreCase(String value, String suffix) {
 		value = value.trim();
 		if (value.length() < suffix.length())

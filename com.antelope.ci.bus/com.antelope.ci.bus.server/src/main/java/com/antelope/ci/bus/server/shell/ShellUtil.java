@@ -108,5 +108,63 @@ public class ShellUtil {
 				io.moveUp(-y);
 		}
 	}
+	
+	public static void printFormatText(TerminalIO io, String str) throws IOException {
+		print(io, ShellText.toShellText(str));
+	}
+	
+	public static void print(TerminalIO io, ShellText text) throws IOException {
+		int style = text.getFont_style();
+		switch (style) {
+			case 1:
+			default:
+				break;
+			case 2:
+				io.setBold(true);
+				break;
+			case 3:
+				io.setItalic(true);
+				break;
+		}
+		
+		int mark = text.getFont_mark();
+		switch (mark) {
+			case 1:
+			default:
+				break;
+			case 2:
+				io.setUnderlined(true);
+				break;
+			case 3:
+				io.setReverse(true);
+				break;
+		}
+		
+		io.write(text.getText());
+		
+		switch (style) {
+			case 1:
+			default:
+				break;
+			case 2:
+				io.setBold(false);
+				break;
+			case 3:
+				io.setItalic(false);
+				break;
+		}
+		
+		switch (mark) {
+			case 1:
+			default:
+				break;
+			case 2:
+				io.setUnderlined(false);
+				break;
+			case 3:
+				io.setReverse(false);
+				break;
+		}
+	}
 }
 

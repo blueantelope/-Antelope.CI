@@ -401,6 +401,22 @@ public abstract class BusShell {
 		io.write(TerminalIO.CRLF);
 		return strBuf.toString();
 	}
+	
+	protected void print(ShellText text) {
+		try {
+			ShellUtil.print(io, text);
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	protected void printFormatText(String str) {
+		try {
+			ShellUtil.printFormatText(io, str);
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
+	}
 
 	protected int getConsoleWidth() {
 		return setting.getTerminalColumns();

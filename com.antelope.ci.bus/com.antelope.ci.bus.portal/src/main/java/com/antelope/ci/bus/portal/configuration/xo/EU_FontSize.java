@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.configuration.xo.EU_Position.java
+// com.antelope.ci.bus.portal.configuration.xo.EU_FontSize.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -18,15 +18,15 @@ import com.antelope.ci.bus.common.StringUtil;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-3-11		下午5:09:33 
+ * @Date	 2014-3-31		下午5:17:36 
  */
-public enum EU_Position implements Serializable {
-	START("start"),
-	MIDDLE("middle"),
-	END("end");
+public enum EU_FontSize implements Serializable {
+	SMALL("small"),
+	MEDIUM("medium"),
+	LARGE("large");
 	
 	private String name;
-	private EU_Position(String name) {
+	private EU_FontSize(String name) {
 		this.name = name;
 	}
 	
@@ -34,20 +34,18 @@ public enum EU_Position implements Serializable {
 		return name;
 	}
 	
-	@Override
 	public String toString() {
 		return name;
 	}
 	
-	public static EU_Position toPosition(String name) {
+	public static EU_FontSize toSize(String name) {
 		if (StringUtil.empty(name))
-			return EU_Position.MIDDLE;
+			return MEDIUM;
+		for (EU_FontSize fs : EU_FontSize.values())
+			if (fs.getName().equalsIgnoreCase(name.trim()))
+				return fs;
 		
-		for (EU_Position p : EU_Position.values())
-			if (p.getName().equalsIgnoreCase(name))
-				return p;
-		
-		return EU_Position.MIDDLE;
+		return MEDIUM;
 	}
 }
 
