@@ -21,13 +21,19 @@ import com.antelope.ci.bus.common.StringUtil;
  * @Date	 2014-3-31		下午5:17:36 
  */
 public enum EU_FontSize implements Serializable {
-	SMALL("small"),
-	MEDIUM("medium"),
-	LARGE("large");
+	SMALL(1, "small"),
+	MEDIUM(2, "medium"),
+	LARGE(3, "large");
 	
+	private int code;
 	private String name;
-	private EU_FontSize(String name) {
+	private EU_FontSize(int code, String name) {
+		this.code = code;
 		this.name = name;
+	}
+	
+	public int getCode() {
+		return code;
 	}
 	
 	public String getName() {
@@ -43,6 +49,14 @@ public enum EU_FontSize implements Serializable {
 			return MEDIUM;
 		for (EU_FontSize fs : EU_FontSize.values())
 			if (fs.getName().equalsIgnoreCase(name.trim()))
+				return fs;
+		
+		return MEDIUM;
+	}
+	
+	public static EU_FontSize toSize(int code) {
+		for (EU_FontSize fs : EU_FontSize.values())
+			if (fs.getCode() == code)
 				return fs;
 		
 		return MEDIUM;

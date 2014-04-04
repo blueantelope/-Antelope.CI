@@ -410,9 +410,25 @@ public abstract class BusShell {
 		}
 	}
 	
-	protected void printFormatText(String str) {
+	protected void println(ShellText text) {
 		try {
-			ShellUtil.printFormatText(io, str);
+			ShellUtil.println(io, text);
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	protected void printFormat(String str) {
+		try {
+			ShellUtil.printFormat(io, str);
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	protected void printlnFormat(String str) {
+		try {
+			ShellUtil.printlnFormat(io, str);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		}

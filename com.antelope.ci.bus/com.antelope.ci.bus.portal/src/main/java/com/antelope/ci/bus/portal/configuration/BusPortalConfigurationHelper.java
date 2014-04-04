@@ -50,6 +50,8 @@ import com.antelope.ci.bus.portal.configuration.xo.PlacePart;
 import com.antelope.ci.bus.portal.configuration.xo.PlaceParts;
 import com.antelope.ci.bus.portal.configuration.xo.Portal;
 import com.antelope.ci.bus.portal.configuration.xo.RenderDelimiter;
+import com.antelope.ci.bus.portal.configuration.xo.RenderFont;
+import com.antelope.ci.bus.server.shell.ShellText;
 
 /**
  * configraiton reader for portal (include main and part)
@@ -175,6 +177,7 @@ public class BusPortalConfigurationHelper {
 		for (String rname : renderMap.keySet()) {
 			PlacePart pp =  renderMap.get(rname);
 			RenderDelimiter delimiter = pp.getRender().getDelimiter();
+			RenderFont font = pp.getRender().getFont();
 			String del_value = " ";
 			EU_Position del_position = EU_Position.MIDDLE;
 			Margin del_margin = null;
@@ -230,6 +233,19 @@ public class BusPortalConfigurationHelper {
 		}
 		
 		return majorExt;
+	}
+	
+	private void rendPartFont(Part part, RenderFont font) {
+		if (font != null) {
+			String v = part.getContent().getValue();
+			if (font == null) return;
+			ShellText text = new ShellText();
+			text.setFont_mark(font.toEU_Mark().getCode());
+			text.setFont_size(font.toEU_Size().getCode());
+			text.setFont_style(font.toEU_Style().getCode());
+			text.setText(v);
+			part.getContent().addValue(text);
+		}
 	}
 	
 	private static class PartWithPortalClass {

@@ -14,6 +14,7 @@ import java.util.List;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -87,11 +88,14 @@ public class TestFrameShell extends BusBaseFrameShell {
 
 		// 打印标题,注意列宽度调整（通过空格进行控制）
 		storeCursor();
-		restoreCursor();
-		io.setBold(true);
-		String header = "[N]设备名称                [I]IP地址            [M]设备型号";
+//		io.setBold(true);
+		ShellText header = new ShellText();
+		String text = "[N]设备名称                [I]IP地址            [M]设备型号";
+		header.setText(text);
+		header.setFont_style(3);
+		header.setFont_mark(3);
 		println(header);
-		headerLength = header.getBytes().length / pageColumn;
+		headerLength = text.getBytes().length / pageColumn;
 		dataLine = dataLine + headerLength;
 		pageSize = pageSize - headerLength;
 	}
@@ -99,6 +103,9 @@ public class TestFrameShell extends BusBaseFrameShell {
 	private void showBody() throws IOException {
 		io.println(toRowString(new String[] { "test1", "192.168.1.1", "dms" }));
 		io.println(toRowString(new String[] { "test2", "192.168.1.2", "DNSys" }));
+		String text = toRowString(new String[] { "test3", "192.168.1.3", "FlowExport" });
+		String ft = "<text font-size=\"1\" font-style=\"2\" font-mark=\"2\">" + text + "</text>";
+		printlnFormat(ft);
 	}
 
 	private String toRowString(String[] rowData) {

@@ -25,6 +25,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 public class RenderFont implements Serializable {
 	private String style;
 	private String size;
+	private String mark;
 
 	@XmlAttribute(name="style")
 	public String getStyle() {
@@ -44,6 +45,19 @@ public class RenderFont implements Serializable {
 		this.size = size;
 	}
 
+	@XmlAttribute(name="mark")
+	public String getMark() {
+		return mark;
+	}
+
+	public void setMark(String mark) {
+		this.mark = mark;
+	}
+
+	public EU_FontMark toEU_Mark() {
+		return EU_FontMark.toMark(mark);
+	}
+	
 	public EU_FontStyle toEU_Style() {
 		return EU_FontStyle.toStyle(style);
 	}

@@ -30,6 +30,7 @@ import com.antelope.ci.bus.portal.configuration.xo.Portal;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.Shell;
+import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -696,16 +697,53 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
+	protected void writeLine(ShellCursor cursor, Object[] lines) {
+		int default_x = cursor.getX();
+		boolean first = true;
+		for (Object line : lines) {
+			try {
+				if (first)
+					first = false;
+				else
+					shiftDown(1);
+				if (line instanceof String) {
+					String v = (String) line;
+					if (ShellText.isShellText(v)) {
+						ShellText text = writeFormat(cursor, v);
+						if (text != null)
+							shiftLeft(StringUtil.getWordCount(text.getText()));
+					} else {
+						write(cursor, v);
+						shiftLeft(StringUtil.getWordCount(v));
+					}
+				}
+				
+				if (line instanceof ShellText) {
+					ShellText text = (ShellText) line;
+					write(cursor, text);
+					if (text != null)
+						shiftLeft(StringUtil.getWordCount(text.getText()));
+				}
+				
+				cursor.setX(default_x);
+				cursor.addY(1);
+			} catch (IOException e) {
+				DevAssistant.errorln(e);
+			}
+		}
+	}
+	
+	/*
 	protected void writeLine(ShellCursor cursor, String[] lines) {
 		int default_x = cursor.getX();
 		boolean first = true;
 		for (String line : lines) {
 			try {
-				if (first) {
+				if (first)
 					first = false;
-				} else {
+				else
 					shiftDown(1);
-				}
+				
 				write(cursor, line);
 				shiftLeft(StringUtil.getWordCount(line));
 				cursor.setX(default_x);
@@ -715,6 +753,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			}
 		}
 	}
+	*/
 	
 	protected void write(ShellCursor cursor, String[] lines) {
 		int default_x = cursor.getX();
@@ -742,6 +781,18 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected void write(ShellCursor cursor, String value) throws IOException {
 		print(value);
 		cursor.addX(StringUtil.getWordCount(value));
+	}
+	
+	protected void write(ShellCursor cursor, ShellText text) throws IOException {
+		print(text);
+		cursor.addX(StringUtil.getWordCount(text.getText()));
+	}
+	
+	protected ShellText writeFormat(ShellCursor cursor, String value) throws IOException {
+		ShellText text = ShellText.toShellText(value);
+		if (text != null)
+			write(cursor, text);
+		return text;
 	}
 
 	protected String placePartContent(PlacePart placePart) throws CIBusException {

@@ -131,5 +131,9 @@ public class Part implements Serializable {
 			content.setValue("");
 		content.setValue(s + content.getValue());
 	}
+	
+	public String[] toLine() {
+		
+	}
 }
 

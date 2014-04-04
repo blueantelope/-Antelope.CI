@@ -24,7 +24,12 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 @XmlEntity(name="content")
 public class Content implements Serializable {
 	private String value;
+	private ContentFont font;
 
+	public Content() {
+		super();
+	}
+	
 	@XmlCdata
 	public String getValue() {
 		return value;
@@ -32,6 +37,14 @@ public class Content implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public ContentFont getFont() {
+		return font;
+	}
+
+	public void setFont(ContentFont font) {
+		this.font = font;
 	}
 }
 

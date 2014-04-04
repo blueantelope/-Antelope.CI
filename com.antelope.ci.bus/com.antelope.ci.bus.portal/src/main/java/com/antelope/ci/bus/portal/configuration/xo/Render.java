@@ -27,6 +27,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 @XmlEntity(name="render")
 public class Render implements Serializable {
 	private RenderDelimiter delimiter;
+	private RenderFont font;
 	private String align;
 	
 	@XmlElement(name="delimiter")
@@ -37,6 +38,13 @@ public class Render implements Serializable {
 		this.delimiter = delimiter;
 	}
 	
+	@XmlElement(name="font")
+	public RenderFont getFont() {
+		return font;
+	}
+	public void setFont(RenderFont font) {
+		this.font = font;
+	}
 	@XmlAttribute(name="align")
 	public String getAlign() {
 		return align;

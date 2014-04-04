@@ -174,7 +174,6 @@ public class BusXmlHelper {
 		
 	}
 	
-	
 	/*
 	 * xml子节点解析
 	 */

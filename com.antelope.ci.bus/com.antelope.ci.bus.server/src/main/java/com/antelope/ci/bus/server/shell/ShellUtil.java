@@ -109,11 +109,23 @@ public class ShellUtil {
 		}
 	}
 	
-	public static void printFormatText(TerminalIO io, String str) throws IOException {
-		print(io, ShellText.toShellText(str));
+	public static void printFormat(TerminalIO io, String str) throws IOException {
+		print(io, ShellText.toShellText(str), false);
+	}
+	
+	public static void printlnFormat(TerminalIO io, String str) throws IOException {
+		print(io, ShellText.toShellText(str), true);
 	}
 	
 	public static void print(TerminalIO io, ShellText text) throws IOException {
+		print(io, text, false);
+	}
+	
+	public static void println(TerminalIO io, ShellText text) throws IOException {
+		print(io, text, true);
+	}
+	
+	private static void print(TerminalIO io, ShellText text, boolean br) throws IOException {
 		int style = text.getFont_style();
 		switch (style) {
 			case 1:
@@ -140,7 +152,10 @@ public class ShellUtil {
 				break;
 		}
 		
-		io.write(text.getText());
+		if (br)
+			io.println(text.getText());
+		else
+			io.write(text.getText());
 		
 		switch (style) {
 			case 1:
