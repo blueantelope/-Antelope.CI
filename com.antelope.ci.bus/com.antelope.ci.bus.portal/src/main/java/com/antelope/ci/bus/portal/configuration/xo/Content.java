@@ -10,8 +10,10 @@ package com.antelope.ci.bus.portal.configuration.xo;
 
 import java.io.Serializable;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -45,6 +47,24 @@ public class Content implements Serializable {
 
 	public void setFont(ContentFont font) {
 		this.font = font;
+	}
+	
+	public boolean isShellText() {
+		if (StringUtil.empty(value))
+			return false;
+		String str = value.trim();
+		if (StringUtil.startsWithIgnoreCase(str, "<font"))
+			return true;
+		return false;
+	}
+	
+	public String getShellValue() {
+		if (isShellText()) {
+			ShellText text = ShellText.toShellText(value.trim());
+			return text.getText();
+		}
+		
+		return value;
 	}
 }
 

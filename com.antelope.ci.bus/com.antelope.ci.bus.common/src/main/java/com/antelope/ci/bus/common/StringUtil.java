@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+
 /**
  * 字符中通用工具类
  * 
@@ -175,6 +177,41 @@ public class StringUtil {
 				lineList.add(line.substring(s_start, index));
 		}
 		return lineList.toArray(new String[lineList.size()]);
+	}
+	
+	public static String subString(String str, int start) {
+		return subString(str, start, getWordCount(str));
+	}
+	
+	public static String subString(String str, int start, int end) throws CIBusException {
+		if (start < 0 || end < 0 || end < start || end > getWordCount(str))
+			throw new CIBusException("", "subString exception occur, index not fit rule");
+		
+		boolean started = false;
+		boolean ended = false;
+		int str_start = 0;
+		int str_end = 0;
+		int length = 0;
+		for (int i = 0; i < str.length(); i++) {
+			int codePoint = Character.codePointAt(str, i);
+			if (length >= start && !started) {
+				str_start = i;
+				started = true;
+			}
+			if (length >= end) {
+				str_end = i;
+				ended = true;
+				break;
+			}
+			if (codePoint >= 0 && codePoint <= 255)
+				length++;
+			else
+				length+= 2;
+		}
+		if (!ended)
+			str_end = length;
+		
+		return subString(str, str_start, str_end);
 	}
 
 	public static int maxLine(String str) throws IOException {

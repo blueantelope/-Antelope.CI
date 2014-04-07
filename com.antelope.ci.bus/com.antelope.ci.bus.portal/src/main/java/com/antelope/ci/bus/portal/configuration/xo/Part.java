@@ -8,15 +8,20 @@
 
 package com.antelope.ci.bus.portal.configuration.xo;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -132,8 +137,75 @@ public class Part implements Serializable {
 		content.setValue(s + content.getValue());
 	}
 	
-	public String[] toLine() {
+	public List<List<String>> reListContent(int width) {
+		List<List<String>> conList = new ArrayList<List<String>>();
+		List<String> innerList = new ArrayList<String>();
+		int line_position = 0;
+		if (contentList != null && !contentList.isEmpty()) {
+			for (Content con : contentList) {
+				try {
+					addInnerContent(conList, innerList, con, line_position, width);
+				} catch (Exception e) {
+					DevAssistant.assert_exception(e);
+				}
+			}
+			if (!innerList.isEmpty())
+				conList.add(innerList);
+		} else {
+			try {
+				addInnerContent(conList, innerList, content, line_position, width);
+				if (!innerList.isEmpty())
+					conList.add(innerList);
+			} catch (Exception e) {
+				DevAssistant.assert_exception(e);
+			}
+		}
 		
+		return conList;
+	} 
+
+	private void addInnerContent(List<List<String>> conList, List<String> innerList, 
+			Content con, int line_position, int width) throws Exception {
+		BufferedReader reader = new BufferedReader(new StringReader(con.getShellValue()));
+		boolean isShellText = con.isShellText();
+		String line = null;
+		int n = 0;
+		while ((line = reader.readLine()) != null) {
+			if (n > 0) {
+				conList.add(innerList);
+				innerList = new ArrayList<String>();
+			}
+			int con_count = StringUtil.getWordCount(line);
+			int line_total = line_position + con_count;
+			if (line_total > width) {
+				int l_len = width - line_position;
+				String up_value = StringUtil.subString(line, 0, l_len);
+				String down_value = StringUtil.subString(line, l_len);
+				if (isShellText) {
+					up_value = ShellText.toShellText(line, up_value);
+					down_value = ShellText.toShellText(line, down_value);
+				}
+				innerList.add(up_value);
+				conList.add(innerList);
+				innerList = new ArrayList<String>();
+				innerList.add(down_value);
+			} else {
+				innerList.add(con.getValue());
+				line_position += con_count;
+			}
+			n++;
+		}
+	}
+	
+	public String[] toLine(int width) throws IOException {
+		if (contentList != null && !contentList.isEmpty()) {
+			StringBuffer buf = new StringBuffer();
+			for (Content con : contentList) 
+				buf.append(con.getShellValue());
+			return StringUtil.toLines(buf.toString());
+		}
+		
+		return StringUtil.toLines(content.getShellValue());
 	}
 }
 

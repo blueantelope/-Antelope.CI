@@ -794,8 +794,27 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			write(cursor, text);
 		return text;
 	}
+	
+	protected List<List<String>> placePartContent(PlacePart placePart, int width) throws CIBusException {
+		EU_ORIGIN origin = EU_ORIGIN.toOrigin(placePart.getOrigin());
+		Part part;
+		switch (origin) {
+			case GLOBAL:
+				part = portal.getPartMap().get(placePart.getName());
+				if (part != null)
+					return part.reListContent(width);
+				break;
+			case PART:
+				part = portal.getPartMap().get(placePart.getName());
+				if (part != null)
+					return part.reListContent(width);
+				break;
+		}
 
-	protected String placePartContent(PlacePart placePart) throws CIBusException {
+		return null;
+	}
+
+	@Deprecated protected String placePartContent(PlacePart placePart) throws CIBusException {
 		EU_ORIGIN origin = EU_ORIGIN.toOrigin(placePart.getOrigin());
 		Part part;
 		switch (origin) {
