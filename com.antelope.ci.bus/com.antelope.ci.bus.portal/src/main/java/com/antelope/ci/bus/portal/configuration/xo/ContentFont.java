@@ -41,5 +41,14 @@ public class ContentFont implements Serializable {
 	public void setMark(EU_FontMark mark) {
 		this.mark = mark;
 	}
+	
+	public static ContentFont fromRender(RenderFont render) {
+		ContentFont font = new ContentFont();
+		font.setMark(render.toEU_Mark());
+		font.setSize(render.toEU_Size());
+		font.setSytle(render.toEU_Style());
+		
+		return font;
+	}
 }
 

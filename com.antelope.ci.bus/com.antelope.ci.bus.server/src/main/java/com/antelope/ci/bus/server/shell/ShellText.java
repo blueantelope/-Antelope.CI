@@ -79,6 +79,11 @@ public class ShellText {
 		return toShellText(this);
 	}
 	
+	public static int length(String str) {
+		ShellText st = toShellText(str);
+		return StringUtil.getWordCount(st.getText());
+	}
+	
 	public static String toShellText(ShellText text) {
 		StringBuffer buf = new StringBuffer();
 		buf.append("<text font-size=\"").append(text.getFont_size()).append("\"").

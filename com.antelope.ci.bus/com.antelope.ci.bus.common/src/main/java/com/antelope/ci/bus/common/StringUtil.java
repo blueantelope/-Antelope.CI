@@ -179,7 +179,7 @@ public class StringUtil {
 		return lineList.toArray(new String[lineList.size()]);
 	}
 	
-	public static String subString(String str, int start) {
+	public static String subString(String str, int start) throws CIBusException {
 		return subString(str, start, getWordCount(str));
 	}
 	
@@ -198,20 +198,20 @@ public class StringUtil {
 				str_start = i;
 				started = true;
 			}
-			if (length >= end) {
-				str_end = i;
-				ended = true;
-				break;
-			}
 			if (codePoint >= 0 && codePoint <= 255)
 				length++;
 			else
 				length+= 2;
+			if (length >= end) {
+				str_end = i + 1;
+				ended = true;
+				break;
+			}
 		}
 		if (!ended)
 			str_end = length;
 		
-		return subString(str, str_start, str_end);
+		return str.substring(str_start, str_end);
 	}
 
 	public static int maxLine(String str) throws IOException {

@@ -27,6 +27,11 @@ import com.antelope.ci.bus.server.shell.ShellText;
 public class Content implements Serializable {
 	private String value;
 	private ContentFont font;
+	
+	public Content(String value) {
+		super();
+		this.value = value;
+	}
 
 	public Content() {
 		super();

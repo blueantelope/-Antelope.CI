@@ -183,9 +183,9 @@ public class Portal implements Serializable {
 						}
 					} else {
 						if (p_ext.getSort() == null)
-							p.addContet(p_ext.getContent());
+							p.addContent(p_ext.getContent());
 						else
-							p.addContet(p_ext.getSort(), p_ext.getContent());
+							p.addContent(p_ext.getSort(), p_ext.getContent());
 					}
 					break;
 			}

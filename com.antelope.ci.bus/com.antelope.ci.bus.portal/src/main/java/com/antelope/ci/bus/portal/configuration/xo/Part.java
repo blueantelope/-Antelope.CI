@@ -26,7 +26,6 @@ import com.antelope.ci.bus.server.shell.ShellText;
 
 /**
  * TODO 描述
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-2-2		下午8:02:13 
@@ -89,12 +88,12 @@ public class Part implements Serializable {
 		this.sort = sort;
 	}
 	
-	public void addContet(Content content) {
+	public void addContent(Content content) {
 		if (contentList == null) contentList = new ArrayList<Content>();
 		contentList.add(content);
 	}
 	
-	public void addContet(int index, Content content) {
+	public void addContent(int index, Content content) {
 		if (contentList == null) contentList = new ArrayList<Content>();
 		int lLen = contentList.size();
 		if (index > (lLen -1)) index = lLen;
@@ -139,23 +138,18 @@ public class Part implements Serializable {
 	
 	public List<List<String>> reListContent(int width) {
 		List<List<String>> conList = new ArrayList<List<String>>();
-		List<String> innerList = new ArrayList<String>();
 		int line_position = 0;
 		if (contentList != null && !contentList.isEmpty()) {
 			for (Content con : contentList) {
 				try {
-					addInnerContent(conList, innerList, con, line_position, width);
+					addInnerContent(conList, con, width);
 				} catch (Exception e) {
 					DevAssistant.assert_exception(e);
 				}
 			}
-			if (!innerList.isEmpty())
-				conList.add(innerList);
 		} else {
 			try {
-				addInnerContent(conList, innerList, content, line_position, width);
-				if (!innerList.isEmpty())
-					conList.add(innerList);
+				addInnerContent(conList, content, width);
 			} catch (Exception e) {
 				DevAssistant.assert_exception(e);
 			}
@@ -164,8 +158,8 @@ public class Part implements Serializable {
 		return conList;
 	} 
 
-	private void addInnerContent(List<List<String>> conList, List<String> innerList, 
-			Content con, int line_position, int width) throws Exception {
+	private void addInnerContent(List<List<String>> conList, Content con, int width) throws Exception {
+		List<String> innerList = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new StringReader(con.getShellValue()));
 		boolean isShellText = con.isShellText();
 		String line = null;
@@ -175,26 +169,33 @@ public class Part implements Serializable {
 				conList.add(innerList);
 				innerList = new ArrayList<String>();
 			}
-			int con_count = StringUtil.getWordCount(line);
-			int line_total = line_position + con_count;
-			if (line_total > width) {
-				int l_len = width - line_position;
-				String up_value = StringUtil.subString(line, 0, l_len);
-				String down_value = StringUtil.subString(line, l_len);
-				if (isShellText) {
-					up_value = ShellText.toShellText(line, up_value);
-					down_value = ShellText.toShellText(line, down_value);
+			int line_count = StringUtil.getWordCount(line);
+			if (line_count > width) {
+				int m = 0;
+				int position = 0;
+				while (position < line_count) {
+					int start = position;
+					position  = (m + 1) * width;
+					position = position < line_count ? position : line_count;
+					int end = position;
+					start = (start == 0) ? 0 : start - 1;
+					end = (end == line_count) ? end : end - 1;
+					String line_value = StringUtil.subString(line, start, end);
+					if (isShellText)
+						line_value = ShellText.toShellText(line, line_value);
+					innerList.add(line_value);
+					conList.add(innerList);
+					innerList = new ArrayList<String>();
+					m++;
 				}
-				innerList.add(up_value);
-				conList.add(innerList);
-				innerList = new ArrayList<String>();
-				innerList.add(down_value);
 			} else {
-				innerList.add(con.getValue());
-				line_position += con_count;
+				innerList.add(line);
 			}
 			n++;
 		}
+		
+		if (!innerList.isEmpty())
+			conList.add(innerList);
 	}
 	
 	public String[] toLine(int width) throws IOException {
@@ -206,6 +207,42 @@ public class Part implements Serializable {
 		}
 		
 		return StringUtil.toLines(content.getShellValue());
+	}
+	
+	public void addContent(String desc, String div, Margin margin, EU_Position postion) {
+		if (contentList == null)
+			addContent(content);
+		int index = contentList.size();
+		Content add_content = new Content(desc);
+		switch (postion) {
+		case START:
+			addContent(index-1, add_content);
+			if (margin != null) {
+				Content b_con = new Content(StringUtil.repeatString(" ", margin.getBefore()));
+				addContent(index-1, b_con);
+			}
+			break;
+		case END:
+			addContent(add_content);
+			if (margin != null) {
+				Content e_con = new Content(StringUtil.repeatString(" ", margin.getBefore()));
+				addContent(e_con);
+			}
+			break;
+		case MIDDLE:
+		default:
+			if (margin != null) {
+				Content e_con = new Content(StringUtil.repeatString(" ", margin.getBefore()));
+				addContent(e_con);
+			}
+			addContent(add_content);
+			addContent(new Content(div));
+			if (margin != null) {
+				Content e_con = new Content(StringUtil.repeatString(" ", margin.getBefore()));
+				addContent(e_con);
+			}
+			break;
+		}
 	}
 }
 

@@ -36,6 +36,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.configuration.xo.Base;
 import com.antelope.ci.bus.portal.configuration.xo.Content;
+import com.antelope.ci.bus.portal.configuration.xo.ContentFont;
 import com.antelope.ci.bus.portal.configuration.xo.EU_ORIGIN;
 import com.antelope.ci.bus.portal.configuration.xo.EU_Point;
 import com.antelope.ci.bus.portal.configuration.xo.EU_Position;
@@ -198,7 +199,8 @@ public class BusPortalConfigurationHelper {
 			}
 			
 			if (del_position == EU_Position.START)
-				rendStartPart(major_part, del_value, del_margin);
+//				rendStartPart(major_part, del_value, del_margin);
+				major_part.addContent(del_value, "", del_margin, EU_Position.START);
 			
 			List<PartWithPortalClass> extPwpcList =  new ArrayList<PartWithPortalClass>();
 			for (String extName : sortList) {
@@ -219,33 +221,30 @@ public class BusPortalConfigurationHelper {
 				String extName = extPwpc.getPortalClass();
 				Part extPart = extPwpc.getPart();
 				if (del_position == EU_Position.MIDDLE)
-					major_part.addAfterValue(del_value);
+//					major_part.addAfterValue(del_value);
+					major_part.addContent(del_value, "", del_margin, EU_Position.END);
 				String extValue = extPart.getValue();
 				if (needReplace(extValue))
 					extValue = replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
 				if (needReplace(extValue))
 					extValue = replaceLable(extValue, reader);
+				Content content = new Content(extValue);
+				boolean isSt = ShellText.isShellText(extValue);
+				if (font != null && !isSt) {
+					content.setFont(ContentFont.fromRender(font));
+					isSt = true;
+				}
+				if (isSt)
+					extValue = content.getShellValue();
 				major_part.addAfterValue(extValue);
 			}
 			
 			if (del_position == EU_Position.END)
-				rendEndPart(major_part, del_value, del_margin);
+//				rendEndPart(major_part, del_value, del_margin);
+				major_part.addContent(del_value, "", del_margin, EU_Position.END);
 		}
 		
 		return majorExt;
-	}
-	
-	private void rendPartFont(Part part, RenderFont font) {
-		if (font != null) {
-			String v = part.getContent().getValue();
-			if (font == null) return;
-			ShellText text = new ShellText();
-			text.setFont_mark(font.toEU_Mark().getCode());
-			text.setFont_size(font.toEU_Size().getCode());
-			text.setFont_style(font.toEU_Style().getCode());
-			text.setText(v);
-			part.getContent().addValue(text);
-		}
 	}
 	
 	private static class PartWithPortalClass {
