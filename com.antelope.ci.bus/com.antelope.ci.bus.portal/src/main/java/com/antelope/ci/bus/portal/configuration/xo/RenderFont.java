@@ -65,5 +65,13 @@ public class RenderFont implements Serializable {
 	public EU_FontSize toEU_Size() {
 		return EU_FontSize.toSize(size);
 	}
+	
+	public ContentFont toContentFont() {
+		ContentFont cf = new ContentFont();
+		cf.setMark(toEU_Mark());
+		cf.setSize(toEU_Size());
+		cf.setSytle(toEU_Style());
+		return cf;
+	}
 }
 

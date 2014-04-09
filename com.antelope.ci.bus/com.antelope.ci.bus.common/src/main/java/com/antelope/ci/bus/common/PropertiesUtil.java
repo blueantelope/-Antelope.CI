@@ -42,6 +42,20 @@ public class PropertiesUtil {
 		return value;
 	}
 	
+	public static long getLong(Properties props, String key, long def) {
+		long value = def;
+		if (props != null) {
+			try {
+				String v = props.getProperty(key, String.valueOf(def));
+				value = Long.valueOf(v);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return value;
+	}
+	
 	/**
 	 * 得到属性中的string型参数
 	 * 如果属性集为空或不存在相应的参数，就取默认值

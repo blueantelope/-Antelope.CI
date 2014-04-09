@@ -48,6 +48,7 @@ public abstract class BusServer {
 	protected BusServerConfig config;							// server配置项
 	protected BusServerCondition condition;
 	private static final long waitForInit = 3 * 1000;		// 3 seconds
+	protected long waitForStart = 0;
 	protected BundleContext m_context;
 	
 	public BusServer() throws CIBusException {
@@ -55,6 +56,10 @@ public abstract class BusServer {
 		customInit();
 	}
 	
+	public void setWaitForStart(long waitForStart) {
+		this.waitForStart = waitForStart;
+	}
+
 	public BusServer(BundleContext m_context) throws CIBusException {
 		this.m_context = m_context;
 		init();
@@ -174,6 +179,11 @@ public abstract class BusServer {
 					break;
 			}
 		}
+		if (waitForStart != 0)
+			try {
+				Thread.sleep(waitForStart * 1000);
+			} catch (InterruptedException e) {
+			}
 		try {
 			sshServer.start();
 		} catch (IOException e) {

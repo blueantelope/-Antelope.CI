@@ -22,6 +22,9 @@ import com.antelope.ci.bus.server.BusCommonServerActivator;
  * @Date	 2013-10-21		下午12:10:23 
  */
 public class BusPortalActivator extends BusCommonServerActivator {
+	protected final static String WAITFORSTART_KEY = "bus.portal.start.wait";
+	protected final static long WAITFORSTART_DEFAULT = 0;
+	
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -31,6 +34,8 @@ public class BusPortalActivator extends BusCommonServerActivator {
 	protected void run() throws CIBusException {
 		log4j.info("启动portal");
 		server = new BusPortalServer(m_context);
+		long waitForStart = getLongProp(WAITFORSTART_KEY, WAITFORSTART_DEFAULT);
+		server.setWaitForStart(waitForStart);
 		server.start();
 		EntranceManager.monitor(m_context, server.getCondition());
 		try {

@@ -36,7 +36,6 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.configuration.xo.Base;
 import com.antelope.ci.bus.portal.configuration.xo.Content;
-import com.antelope.ci.bus.portal.configuration.xo.ContentFont;
 import com.antelope.ci.bus.portal.configuration.xo.EU_ORIGIN;
 import com.antelope.ci.bus.portal.configuration.xo.EU_Point;
 import com.antelope.ci.bus.portal.configuration.xo.EU_Position;
@@ -197,10 +196,11 @@ public class BusPortalConfigurationHelper {
 				major_part.setContent(content);
 				majorExt.addPart(major_part);
 			}
+			major_part.getContent().setValue(toShellText(major_part.getContent().getValue(), font));
+			major_part.getContentList().clear();
 			
 			if (del_position == EU_Position.START)
-//				rendStartPart(major_part, del_value, del_margin);
-				major_part.addContent(del_value, "", del_margin, EU_Position.START);
+				major_part.addContent(del_value, "", del_margin, EU_Position.START, false);
 			
 			List<PartWithPortalClass> extPwpcList =  new ArrayList<PartWithPortalClass>();
 			for (String extName : sortList) {
@@ -216,35 +216,39 @@ public class BusPortalConfigurationHelper {
 					return p1.getPart().getSort() - p2.getPart().getSort();
 				}
 			});
-			
+		
+			int extList_count = 0;
+			boolean tail = false;
 			for (PartWithPortalClass extPwpc : extPwpcList) {
+				extList_count++;
 				String extName = extPwpc.getPortalClass();
 				Part extPart = extPwpc.getPart();
-				if (del_position == EU_Position.MIDDLE)
-//					major_part.addAfterValue(del_value);
-					major_part.addContent(del_value, "", del_margin, EU_Position.END);
 				String extValue = extPart.getValue();
 				if (needReplace(extValue))
 					extValue = replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
 				if (needReplace(extValue))
 					extValue = replaceLable(extValue, reader);
-				Content content = new Content(extValue);
-				boolean isSt = ShellText.isShellText(extValue);
-				if (font != null && !isSt) {
-					content.setFont(ContentFont.fromRender(font));
-					isSt = true;
-				}
-				if (isSt)
-					extValue = content.getShellValue();
-				major_part.addAfterValue(extValue);
+				extValue = toShellText(extValue, font);
+				if (extList_count == extPwpcList.size())
+					tail = true;
+				major_part.addContent(extValue, del_value, del_margin, del_position, tail);
 			}
 			
 			if (del_position == EU_Position.END)
-//				rendEndPart(major_part, del_value, del_margin);
-				major_part.addContent(del_value, "", del_margin, EU_Position.END);
+				major_part.addContent(del_value, "", del_margin, EU_Position.END, false);
 		}
 		
 		return majorExt;
+	}
+	
+	private String toShellText(String value, RenderFont font) {
+		Content content = new Content(value);
+		if (ShellText.isShellText(value)) {
+			return content.getShellValue();
+		} else {
+			content.setFont(font.toContentFont());
+			return content.toShellText().toString();
+		}
 	}
 	
 	private static class PartWithPortalClass {

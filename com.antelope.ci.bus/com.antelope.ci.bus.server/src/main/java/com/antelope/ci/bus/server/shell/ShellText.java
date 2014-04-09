@@ -32,7 +32,7 @@ public class ShellText {
 	protected String text;
 	protected int font_size = 2;			// 1,small 2,medium 3,large
 	protected int font_style = 1;			// 1,normal 2,bold 3, italic 
-	protected int font_mark = 1;		// 1,normal, 2,line-through 3,shade
+	protected int font_mark = 1;			// 1,normal, 2,line-through 3,shade
 	
 	@XmlCdata
 	public String getText() {
@@ -87,8 +87,8 @@ public class ShellText {
 	public static String toShellText(ShellText text) {
 		StringBuffer buf = new StringBuffer();
 		buf.append("<text font-size=\"").append(text.getFont_size()).append("\"").
-		 		append("font-style=\"").append(text.getFont_style()).append("\"").
-		 		append("font-mark=\"").append(text.getFont_mark()).append("\">").
+		 		append(" font-style=\"").append(text.getFont_style()).append("\"").
+		 		append(" font-mark=\"").append(text.getFont_mark()).append("\">").
 		 		append(text.getText()).append("</text>");
 		return buf.toString();
 	}

@@ -192,20 +192,27 @@ public class StringUtil {
 		int str_start = 0;
 		int str_end = 0;
 		int length = 0;
-		for (int i = 0; i < str.length(); i++) {
-			int codePoint = Character.codePointAt(str, i);
-			if (length >= start && !started) {
-				str_start = i;
-				started = true;
+		int str_len = str.length();
+		for (int i = 0; i <= str_len; i++) {
+			if (length >= end && started) {
+				str_end = i;
+				if (length > end)
+					str_end -= 1;
+				ended = true;
+				break;
 			}
+			
+			int codePoint = Character.codePointAt(str, i);
 			if (codePoint >= 0 && codePoint <= 255)
 				length++;
 			else
 				length+= 2;
-			if (length >= end) {
-				str_end = i + 1;
-				ended = true;
-				break;
+			
+			if (length >= start && !started) {
+				str_start = i;
+				if (length > start && str_start > 0)
+					str_start -= 1;
+				started = true;
 			}
 		}
 		if (!ended)

@@ -816,16 +816,19 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					first = false;
 				else
 					shiftDown(1);
+				int count = 0;
 				for (String c : content) {
 					if (ShellText.isShellText(c)) {
 						ShellText text = writeFormat(cursor, c);
 						if (text != null)
-							shiftLeft(StringUtil.getWordCount(text.getText()));
+							count += StringUtil.getWordCount(text.getText());
 					} else {
 						write(cursor, c);
-						shiftLeft(StringUtil.getWordCount(c));
+						count = StringUtil.getWordCount(c);
 					}
 				}
+				if (count != 0)
+					shiftLeft(count);
 				cursor.setX(default_x);
 				cursor.addY(1);
 			} catch (IOException e) {

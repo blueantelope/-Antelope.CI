@@ -54,11 +54,27 @@ public class Content implements Serializable {
 		this.font = font;
 	}
 	
+	@Override public String toString() {
+		if (font != null)
+			return toShellText().toString();
+		return value;
+	}
+	
+	public ShellText toShellText() {
+		ShellText text = new ShellText();
+		text.setText(value);
+		text.setFont_mark(font.getMark().getCode());
+		text.setFont_size(font.getSize().getCode());
+		text.setFont_style(font.getSytle().getCode());
+		
+		return text;
+	}
+	
 	public boolean isShellText() {
 		if (StringUtil.empty(value))
 			return false;
 		String str = value.trim();
-		if (StringUtil.startsWithIgnoreCase(str, "<font"))
+		if (StringUtil.startsWithIgnoreCase(str, "<text"))
 			return true;
 		return false;
 	}

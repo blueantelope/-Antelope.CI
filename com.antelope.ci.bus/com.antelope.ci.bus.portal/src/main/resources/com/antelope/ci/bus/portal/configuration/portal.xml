@@ -6,8 +6,8 @@
 				<part name="banner" place="north" origin="global" />
 				<part name="first.menu" place="center" origin="part" display="joint">
 					<render align="center">
-						<font style="shade" size="medium" />
-						<delimiter value="|" position="middle" margin="before:10,after:10" />
+						<font style="normal" mark="shade" size="medium" />
+						<delimiter value="|" position="middle" margin="before:3,after:3" />
 					</render>
 				</part>
 			</parts>

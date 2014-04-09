@@ -432,6 +432,13 @@ public abstract class CommonBusActivator implements BundleActivator {
 	public static int getIntProp(String key, int default_prop) {
 		return PropertiesUtil.getInt(properties, key, default_prop);
 	}
+	
+	/*
+	 * 取得配置文件中的长整形数参数
+	 */
+	public static long getLongProp(String key, long default_prop) {
+		return PropertiesUtil.getLong(properties, key, default_prop);
+	}
 
 	/*
 	 * 取得配置文件中的字符串参数
