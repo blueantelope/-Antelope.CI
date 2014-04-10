@@ -177,7 +177,10 @@ public class BusPortalConfigurationHelper {
 		for (String rname : renderMap.keySet()) {
 			PlacePart pp =  renderMap.get(rname);
 			RenderDelimiter delimiter = pp.getRender().getDelimiter();
-			RenderFont font = pp.getRender().getFont();
+			RenderFont ext_font = pp.getRender().getFont();
+			RenderFont hit_font = majorExt.getHitFont();
+			if (hit_font == null)
+				hit_font = ext_font;
 			String del_value = " ";
 			EU_Position del_position = EU_Position.MIDDLE;
 			Margin del_margin = null;
@@ -196,21 +199,27 @@ public class BusPortalConfigurationHelper {
 				major_part.setContent(content);
 				majorExt.addPart(major_part);
 			}
-			major_part.getContent().setValue(toShellText(major_part.getContent().getValue(), font));
+			major_part.getContent().setValue(toShellText(major_part.getContent().getValue(), hit_font));
 			major_part.getContentList().clear();
 			
 			if (del_position == EU_Position.START)
-				major_part.addContent(del_value, "", del_margin, EU_Position.START, false);
+				major_part.addContent(del_value, "", del_margin, EU_Position.START, 1);
 			
-			List<PartWithPortalClass> extPwpcList =  new ArrayList<PartWithPortalClass>();
+			List<PartWithPortalClass> pwpcList =  new ArrayList<PartWithPortalClass>();
+			int major_order = majorExt.getBase().getOrder();
 			for (String extName : sortList) {
 				Portal ext = portalExtMap.get(extName);
+				int ext_order = ext.getBase().getOrder();
+				if (major_order != -1 && major_order <= ext_order) {
+					pwpcList.add(new PartWithPortalClass("", major_part));
+					major_order = -1;
+				}
 				Part extPart = ext.getExtPart(pp.getName());
 				if (extPart != null)
-					extPwpcList.add(new PartWithPortalClass(extName, extPart));
+					pwpcList.add(new PartWithPortalClass(extName, extPart));
 			}
 			
-			Collections.sort(extPwpcList, new Comparator<PartWithPortalClass>() {
+			Collections.sort(pwpcList, new Comparator<PartWithPortalClass>() {
 				@Override
 				public int compare(PartWithPortalClass p1, PartWithPortalClass p2) {
 					return p1.getPart().getSort() - p2.getPart().getSort();
@@ -218,24 +227,28 @@ public class BusPortalConfigurationHelper {
 			});
 		
 			int extList_count = 0;
-			boolean tail = false;
-			for (PartWithPortalClass extPwpc : extPwpcList) {
+			int type = 0;
+			for (PartWithPortalClass extPwpc : pwpcList) {
 				extList_count++;
 				String extName = extPwpc.getPortalClass();
 				Part extPart = extPwpc.getPart();
 				String extValue = extPart.getValue();
-				if (needReplace(extValue))
-					extValue = replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
-				if (needReplace(extValue))
-					extValue = replaceLable(extValue, reader);
-				extValue = toShellText(extValue, font);
-				if (extList_count == extPwpcList.size())
-					tail = true;
-				major_part.addContent(extValue, del_value, del_margin, del_position, tail);
+				if (!"".equals(extName)) {
+					if (needReplace(extValue))
+						extValue = replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
+					if (needReplace(extValue))
+						extValue = replaceLable(extValue, reader);
+					extValue = toShellText(extValue, ext_font);
+				}
+				if (extList_count == pwpcList.size())
+					type = -1;
+				major_part.addContent(extValue, del_value, del_margin, del_position, type);
+				if (type == 0)
+					type = 1;
 			}
 			
 			if (del_position == EU_Position.END)
-				major_part.addContent(del_value, "", del_margin, EU_Position.END, false);
+				major_part.addContent(del_value, "", del_margin, EU_Position.END, 1);
 		}
 		
 		return majorExt;

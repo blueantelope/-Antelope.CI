@@ -104,8 +104,6 @@ public class Part implements Serializable {
 	private void initContentList() {
 		if (contentList == null) 
 			contentList = new Vector<Content>();
-		if (contentList.isEmpty())
-			contentList.add(content);
 	}
 	
 	private void initContentList(String div, Margin margin) {
@@ -317,8 +315,8 @@ public class Part implements Serializable {
 		return StringUtil.toLines(content.getShellValue());
 	}
 	
-	public void addContent(String desc, String div, Margin margin, EU_Position position, boolean tail) {
-		initContentList(div, margin);				// first content
+	// type 0: head 1: common -1: tail
+	public void addContent(String desc, String div, Margin margin, EU_Position position, int type) {
 		Content add_content = new Content(desc);
 		switch (position) {
 			case START:
@@ -331,11 +329,24 @@ public class Part implements Serializable {
 				break;
 			case MIDDLE:
 			default:
-				addBeforeContent(margin);
-				addContent(add_content);
-				if (!tail) {
-					addAfterContent(margin);
-					addContent(new Content(div));
+				switch (type) {
+					case 0:		// head
+						addContent(add_content);
+						addAfterContent(margin);
+						addContent(new Content(div));
+						break;
+					case -1:		// tail
+						addBeforeContent(margin);
+						addContent(add_content);
+						break;
+					case 1:		// common
+					default:
+						addBeforeContent(margin);
+						addContent(add_content);
+						addAfterContent(margin);
+						addContent(new Content(div));
+						break;
+					
 				}
 				break;
 		}

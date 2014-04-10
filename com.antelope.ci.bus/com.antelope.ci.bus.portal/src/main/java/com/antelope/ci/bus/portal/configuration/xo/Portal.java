@@ -38,6 +38,7 @@ public class Portal implements Serializable {
 	private Layout layout;
 	private Parts parts;
 	private Extensions extensions;
+	private Action action;
 	
 	public String getName() {
 		String name = "null";
@@ -78,6 +79,15 @@ public class Portal implements Serializable {
 		this.extensions = extensions;
 	}
 	
+	@XmlElement(name="action")
+	public Action getAction() {
+		return action;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+	}
+
 	public void attachExtensions() {
 		if (extensions != null) {
 			if (extensions.getExtentionList() != null) {
@@ -466,6 +476,16 @@ public class Portal implements Serializable {
 		}
 		
 		return "";
+	}
+	
+	public RenderFont getHitFont() {
+		if (action != null) {
+			Hit hit = action.getHit();
+			if (hit != null) 
+				return hit.getFont();
+		}
+		
+		return null;
 	}
 }
 

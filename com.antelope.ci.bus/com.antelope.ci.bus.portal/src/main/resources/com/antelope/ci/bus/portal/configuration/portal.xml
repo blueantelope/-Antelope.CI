@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portal>
+	<!-- base -->
+	<base />
+	
+	<!-- action -->
+	<action>
+		<hit>
+			<font style="bold" mark="lt" size="medium" />
+		</hit>
+	</action>
+	
+	<!-- layout -->
 	<layout>
 		<place name="north">
 			<parts>
@@ -35,6 +46,7 @@
 		</place>
 	</layout>
 
+	<!-- part -->
 	<parts>
 		<part name="banner">
 			<content><![CDATA[${banner.title}]]></content>
@@ -47,6 +59,7 @@
 		</part>
 	</parts>
 	
+	<!-- extension -->
 	<extensions>
 		<extension point="base">
 		</extension>
