@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,7 +68,7 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private static final String CP_SUFFIX 										= "classpath:";
-	private static final String FILE_SUFFIX 									= "file:";
+	private static final String FILE_SUFFIX 										= "file:";
 	private static final String LABLE_START = "${";
 	private static final String LABLE_END = "}";
 	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/configuration/portal.xml";
@@ -132,22 +133,27 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private Portal parseStatic(String shellClass) throws CIBusException {
+		Map<String, Portal> minorPortalMap = new HashMap<String, Portal>();
 		Portal majorExt = null;
 		BasicConfigrationReader majorExt_reader = null;
 		for (String ck : configPairMap.keySet()) {
 			try {
 				InputStream xml_in = getXmlStream(configPairMap.get(ck).getXml_name());
+				Portal extPortal;
 				if (ck.equals(shellClass)) {
 					majorExt = parsePortal(xml_in);
 					majorExt_reader = parseProperties(configPairMap.get(ck).getProps_name(), ck, classLoader);
-					continue;
+					extPortal = majorExt;
+				} else {
+					extPortal = parsePortal(xml_in);
+					minorPortalMap.put(ck, extPortal);
 				}
-				portalExtMap.put(ck, parsePortal(xml_in));
+				portalExtMap.put(ck, extPortal);
 			} catch (Exception e) {
 				DevAssistant.assert_exception(e);
 			}
 		}
-		List<String> sortList = sortPortalExtension(portalExtMap);
+		List<String> sortList = sortPortalExtension(minorPortalMap);
 		
 		if (majorExt != null) {
 			majorExt = extend(majorExt);
@@ -208,7 +214,7 @@ public class BusPortalConfigurationHelper {
 			List<PartWithPortalClass> pwpcList =  new ArrayList<PartWithPortalClass>();
 			int major_order = majorExt.getBase().getOrder();
 			for (String extName : sortList) {
-				Portal ext = portalExtMap.get(extName);
+				Portal ext = minorPortalMap.get(extName);
 				int ext_order = ext.getBase().getOrder();
 				if (major_order != -1 && major_order <= ext_order) {
 					pwpcList.add(new PartWithPortalClass("", major_part));

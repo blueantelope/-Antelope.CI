@@ -2,7 +2,7 @@
 <portal>
 	<extensions>
 		<extension point="base" >
-			<base name="version" order="4" embed="replace">
+			<base name="version" order="3" embed="replace">
 			</base>
 		</extension>
 		<extension point="layout">
@@ -18,7 +18,7 @@
 			</parts>
 		</extension>
 		<extension point="parts">
-			<part name="first.menu" embed="append" sort="4">
+			<part name="first.menu" embed="append" sort="3">
 				<content><![CDATA[${first.menu}]]></content>
 			</part>
 			
