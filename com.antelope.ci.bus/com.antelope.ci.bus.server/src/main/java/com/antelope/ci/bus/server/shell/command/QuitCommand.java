@@ -23,10 +23,10 @@ public class QuitCommand implements ICommand {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(boolean, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(boolean refresh, TerminalIO io, Object... args) {
+	public String execute(boolean refresh, TerminalIO io, String status, Object... args) {
 		return BusShellStatus.LAST;
 	}
 }

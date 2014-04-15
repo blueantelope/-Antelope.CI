@@ -33,12 +33,9 @@ public class HelpEcho extends Echo {
 	}
 	
 	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.Object[])
 	 */
 	@Override
-	public String execute(TerminalIO io, Object... args) {
+	public String execute(TerminalIO io, String status, Object... args) {
 		try {
 			io.println(HelpContent.getContent().getEchoContent(BusShellStatus.HELP));
 		} catch (IOException e) {

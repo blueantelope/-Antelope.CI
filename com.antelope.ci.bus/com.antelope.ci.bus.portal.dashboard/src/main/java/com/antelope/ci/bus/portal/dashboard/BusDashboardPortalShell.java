@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.Shell;
  * @version  0.1
  * @Date	 2014-3-26		下午3:06:40 
  */
-@Shell(name="portal.dashboard", commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter", status=BusDashboardShellStatus.DAHSBOARD)
+@Shell(name="portal.dashboard", commandAdapter="com.antelope.ci.bus.portal.shell.command.PortalCommandAdapter", status=BusDashboardShellStatus.DAHSBOARD)
 @PortalConfiguration(xml="classpath:/com/antelope/ci/bus/portal/dashboard/portal_dashboard", properties="classpath:com.antelope.ci.bus.portal.dashboard.portal_dashboard")
 public class BusDashboardPortalShell extends BusPortalShell {
 

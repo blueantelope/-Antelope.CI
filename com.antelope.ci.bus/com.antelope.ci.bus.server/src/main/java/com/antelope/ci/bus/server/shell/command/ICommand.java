@@ -18,6 +18,6 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-3		上午9:40:01 
  */
 public interface ICommand {
-	public String execute(boolean refresh, TerminalIO io, Object... args);
+	public String execute(boolean refresh, TerminalIO io, String status, Object... args);
 }
 

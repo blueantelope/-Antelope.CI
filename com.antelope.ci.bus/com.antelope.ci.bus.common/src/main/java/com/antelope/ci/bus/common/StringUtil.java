@@ -281,4 +281,21 @@ public class StringUtil {
         	return true;
         return false;
 	}
+	
+	public static boolean equalsIgnoreCase(String vtStr, String baseStr) {
+		if (vtStr.length() > 1 || baseStr.length() > 1) 		return vtStr.equalsIgnoreCase(baseStr);
+		else																return equalsIgnoreCaseWithChar(vtStr, baseStr);
+	}
+	
+	public static boolean equalsIgnoreCaseWithChar(String vtStr, String baseStr) {
+		if (vtStr.length() == 1 && baseStr.length() == 1) {
+			char vs = vtStr.toLowerCase().charAt(0);
+			char bc = baseStr.toLowerCase().charAt(0);
+			EU_NetVTKey nv = EU_NetVTKey.fromVtkey((int) vs);
+			if (nv != null)		vs = nv.getC();
+			return vs == bc ? true : false;
+		}
+		
+		return false;
+	}
 }

@@ -34,5 +34,16 @@ public class Extensions implements Serializable {
 		this.extentionList = extentionList;
 	}
 	
+	public Base getBase() {
+		if (extentionList != null && extentionList.isEmpty()) {
+			for (Extension ext : extentionList) {
+				if (ext.getPoint() == EU_Point.BASE)
+					return ext.getBase();
+			}
+		}
+		
+		return null;
+	}
+	
 }
 

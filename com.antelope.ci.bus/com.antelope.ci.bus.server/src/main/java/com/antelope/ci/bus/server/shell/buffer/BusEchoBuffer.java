@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -472,7 +473,7 @@ public class BusEchoBuffer extends BusBuffer {
 		String tipStr = tip;
 		int tipSize = tip.length();
 		while (tipSize < tipWidth) {
-			tipStr += (char) TerminalIO.SPACE;
+			tipStr += (char) NetVTKey.SPACE;
 			tipSize++;
 		}
 		return tipStr;
@@ -485,7 +486,7 @@ public class BusEchoBuffer extends BusBuffer {
 			tips.append(tip);
 			int tipSize = tip.length();
 			while (tipSize < tipWidth) {
-				tips.append((char) TerminalIO.SPACE);
+				tips.append((char) NetVTKey.SPACE);
 				tipSize++;
 			}
 			position++;
@@ -556,7 +557,7 @@ public class BusEchoBuffer extends BusBuffer {
 			tips.append(tip);
 			int tipSize = tip.length();
 			while (tipSize < tipWidth) {
-				tips.append((char) TerminalIO.SPACE);
+				tips.append((char) NetVTKey.SPACE);
 				tipSize++;
 			}
 			tipCursor += tipWidth;
@@ -622,7 +623,7 @@ public class BusEchoBuffer extends BusBuffer {
 	@Override
 	public void space() throws CIBusException {
 		try {
-			put((char) TerminalIO.SPACE);
+			put((char) NetVTKey.SPACE);
 			addSpace();
 		} catch(IOException e) {
 			new CIBusException("", e);

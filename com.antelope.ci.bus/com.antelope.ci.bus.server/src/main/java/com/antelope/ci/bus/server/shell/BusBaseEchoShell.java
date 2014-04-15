@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.buffer.BusEchoBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -58,28 +58,28 @@ public abstract class BusBaseEchoShell extends BusShell {
 				if (keyBell)
 					io.bell();
 				switch (c) {
-					case TerminalIO.LEFT:
+					case NetVTKey.LEFT:
 						buffer.left();
 						break;
-					case TerminalIO.RIGHT:
+					case NetVTKey.RIGHT:
 						buffer.right();
 						break;
-					case TerminalIO.UP:
+					case NetVTKey.UP:
 						buffer.up();
 						break;
-					case TerminalIO.DOWN:
+					case NetVTKey.DOWN:
 						buffer.down();
 						break;
-					case TerminalIO.DELETE:
+					case NetVTKey.DELETE:
 						buffer.delete();
 						break;
-					case TerminalIO.BACKSPACE:
+					case NetVTKey.BACKSPACE:
 						buffer.backspace();
 						break;
-					case TerminalIO.SPACE:
+					case NetVTKey.SPACE:
 						buffer.space();
 						break;
-					case TerminalIO.TABULATOR:
+					case NetVTKey.TABULATOR:
 						if (!buffer.inCmdTab()) {
 							matchCommand();
 							if (tabPress) {
@@ -90,7 +90,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 								tabPress = true;
 						}
 						break;
-					case TerminalIO.ENTER:
+					case NetVTKey.ENTER:
 						ShellCommandArg cmdArg = buffer.enter();
 						if (cmdArg != null) {
 							execute(cmdArg);

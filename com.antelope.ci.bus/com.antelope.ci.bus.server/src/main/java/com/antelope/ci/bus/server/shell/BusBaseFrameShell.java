@@ -9,12 +9,12 @@
 package com.antelope.ci.bus.server.shell;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 import com.antelope.ci.bus.server.shell.buffer.ShellScreen;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -53,42 +53,43 @@ public abstract class BusBaseFrameShell extends BusShell {
 				if (keyBell)
 					io.bell();
 				switch (c) {
-					case TerminalIO.LEFT:
+					case NetVTKey.LEFT:
 						buffer.left();
 						break;
-					case TerminalIO.RIGHT:
+					case NetVTKey.RIGHT:
 						buffer.right();
 						break;
-					case TerminalIO.UP:
+					case NetVTKey.UP:
 						buffer.up();
 						break;
-					case TerminalIO.DOWN:
+					case NetVTKey.DOWN:
 						buffer.down();
 						break;
-					case TerminalIO.DELETE:
+					case NetVTKey.DELETE:
 						buffer.delete();
 						break;
-					case TerminalIO.BACKSPACE:
+					case NetVTKey.BACKSPACE:
 						buffer.backspace();
 						break;
-					case TerminalIO.SPACE:
+					case NetVTKey.SPACE:
 						buffer.space();
 						break;
-					case TerminalIO.TABULATOR:
+					case NetVTKey.TABULATOR:
 						buffer.tab();
 						break;
-					case TerminalIO.ENTER:
+					case NetVTKey.ENTER:
 						cmdArg = buffer.enter();
 						execute(cmdArg);
 						buffer.reset();
 						break;
 					default:
-						buffer.put((char) c);
-						cmdArg = buffer.toCommand();
-						execute(cmdArg);
-						buffer.reset();
 						break;
 				}
+				
+				buffer.put((char) c);
+				cmdArg = buffer.toCommand();
+				execute(cmdArg);
+				buffer.reset();
 			} 
 		} catch (Exception e) {
 			DevAssistant.assert_exception(e);

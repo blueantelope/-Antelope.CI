@@ -14,8 +14,6 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.ICommand;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
-
-
 /**
  * portal命令适配器
  * 所有portal 命令调用由此适配器进入

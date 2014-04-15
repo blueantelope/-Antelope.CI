@@ -28,7 +28,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 public class RefreshHit extends Hit {
 
 	@Override
-	public String execute(TerminalIO io, Object... args) {
+	public String execute(TerminalIO io, String status, Object... args) {
 		try {
 			ShellUtil.clear(io);
 		} catch (CIBusException e) {

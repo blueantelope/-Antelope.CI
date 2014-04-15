@@ -8,6 +8,34 @@
 
 package com.antelope.ci.bus.server.shell.core;
 
+import static com.antelope.ci.bus.common.NetVTKey.BCOLOR;
+import static com.antelope.ci.bus.common.NetVTKey.BEL;
+import static com.antelope.ci.bus.common.NetVTKey.BLINK;
+import static com.antelope.ci.bus.common.NetVTKey.BLINK_OFF;
+import static com.antelope.ci.bus.common.NetVTKey.BOLD;
+import static com.antelope.ci.bus.common.NetVTKey.BOLD_OFF;
+import static com.antelope.ci.bus.common.NetVTKey.COLORINIT;
+import static com.antelope.ci.bus.common.NetVTKey.CRLF;
+import static com.antelope.ci.bus.common.NetVTKey.DEVICERESET;
+import static com.antelope.ci.bus.common.NetVTKey.DOWN;
+import static com.antelope.ci.bus.common.NetVTKey.ESCAPE;
+import static com.antelope.ci.bus.common.NetVTKey.FCOLOR;
+import static com.antelope.ci.bus.common.NetVTKey.ITALIC;
+import static com.antelope.ci.bus.common.NetVTKey.ITALIC_OFF;
+import static com.antelope.ci.bus.common.NetVTKey.LEFT;
+import static com.antelope.ci.bus.common.NetVTKey.LINEWRAP;
+import static com.antelope.ci.bus.common.NetVTKey.LOGOUTREQUEST;
+import static com.antelope.ci.bus.common.NetVTKey.NOLINEWRAP;
+import static com.antelope.ci.bus.common.NetVTKey.RED;
+import static com.antelope.ci.bus.common.NetVTKey.RESET;
+import static com.antelope.ci.bus.common.NetVTKey.REVERSE;
+import static com.antelope.ci.bus.common.NetVTKey.REVERSE_OFF;
+import static com.antelope.ci.bus.common.NetVTKey.RIGHT;
+import static com.antelope.ci.bus.common.NetVTKey.STYLE;
+import static com.antelope.ci.bus.common.NetVTKey.UNDERLINED;
+import static com.antelope.ci.bus.common.NetVTKey.UNDERLINED_OFF;
+import static com.antelope.ci.bus.common.NetVTKey.UP;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -602,8 +630,6 @@ public class TerminalIO {
 	public static final int EBOS = 1105; // erase to beginning of screen
 	public static final int EES = 1106; // erase entire screen
 
-	public static final int// Escape Sequence-ing 12xx
-	ESCAPE = 1200; // Escape
 	public static final int BYTEMISSING = 1201; // another byte needed
 	public static final int UNRECOGNIZED = 1202; // escape match missed
 
@@ -619,134 +645,4 @@ public class TerminalIO {
 	 * Internal BufferType Constants
 	 */
 	public static final int EditBuffer = 575, LineEditBuffer = 576;
-
-	/**
-	 * Network Virtual Terminal Specific Keys Thats what we have to offer at
-	 * least.
-	 */
-	public static final int BEL = 7;
-	public static final int BS = 8;
-	public static final int DEL = 127;
-	public static final int CR = 13;
-	public static final int LF = 10;
-
-	public static final int FCOLOR = 10001;
-	public static final int BCOLOR = 10002;
-	public static final int STYLE = 10003;
-	public static final int RESET = 10004;
-	public static final int BOLD = 1;
-	public static final int BOLD_OFF = 22;
-	public static final int ITALIC = 3;
-	public static final int ITALIC_OFF = 23;
-	public static final int BLINK = 5;
-	public static final int BLINK_OFF = 25;
-	public static final int UNDERLINED = 4;
-	public static final int UNDERLINED_OFF = 24;
-	public static final int REVERSE = 7;
-	public static final int REVERSE_OFF = 27;
-	public static final int DEVICERESET = 10005;
-	public static final int LINEWRAP = 10006;
-	public static final int NOLINEWRAP = 10007;
-
-	// Constants
-	
-	/**
-	 * blank
-	 */
-	public static final int SPACE = 32;
-
-	/**
-	 * Left (defining a direction on the terminal)
-	 */
-	public static final int UP = 1001;
-
-	/**
-	 * Right (defining a direction on the terminal)
-	 */
-	public static final int DOWN = 1002;
-
-	/**
-	 * Up (defining a direction on the terminal)
-	 */
-	public static final int RIGHT = 1003;
-
-	/**
-	 * Down (defining a direction on the terminal)
-	 */
-	public static final int LEFT = 1004;
-
-	/**
-	 * Tabulator (defining the tab key)
-	 */
-	public static final int TABULATOR = 1301;
-
-	/**
-	 * Delete (defining the del key)
-	 */
-	public static final int DELETE = 1302;
-
-	/**
-	 * Backspace (defining the backspace key)
-	 */
-	public static final int BACKSPACE = 1303;
-
-	/**
-	 * Enter (defining the return or enter key)
-	 */
-	public static final int ENTER = 10;
-
-	/**
-	 * Color init (defining ctrl-a atm)
-	 */
-	public static final int COLORINIT = 1304;
-
-	/**
-	 * Logout request (defining ctrl-d atm)
-	 */
-	public static final int LOGOUTREQUEST = 1306;
-
-	/**
-	 * Black
-	 */
-	public static final int BLACK = 30;
-
-	/**
-	 * Red
-	 */
-	public static final int RED = 31;
-
-	/**
-	 * Green
-	 */
-	public static final int GREEN = 32;
-
-	/**
-	 * Yellow
-	 */
-	public static final int YELLOW = 33;
-
-	/**
-	 * Blue
-	 */
-	public static final int BLUE = 34;
-
-	/**
-	 * Magenta
-	 */
-	public static final int MAGENTA = 35;
-
-	/**
-	 * Cyan
-	 */
-	public static final int CYAN = 36;
-
-	/**
-	 * White
-	 */
-	public static final int WHITE = 37;
-
-	/**
-	 * CRLF (defining carriage+linebreak which is obligation)
-	 */
-	public static final String CRLF = "\r\n";
 }

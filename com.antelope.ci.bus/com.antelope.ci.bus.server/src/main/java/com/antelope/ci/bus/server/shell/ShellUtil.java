@@ -10,8 +10,11 @@ package com.antelope.ci.bus.server.shell;
 
 import java.io.IOException;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -180,6 +183,24 @@ public class ShellUtil {
 				io.setReverse(false);
 				break;
 		}
+	}
+	
+	public static Class getShellClass(String shellClassName) throws CIBusException {
+		Class shellClass;
+		try {
+			shellClass = ProxyUtil.loadClass(shellClassName);
+		} catch (CIBusException e) {
+			DevAssistant.assert_exception(e);
+			shellClass = ProxyUtil.loadClass(shellClassName, CommonBusActivator.getClassLoader());
+		}
+		return shellClass;
+	}
+	
+	public static String getStatus(String shellClassName) throws CIBusException {
+		Class shellClass = getShellClass(shellClassName);
+		if (shellClass.isAnnotationPresent(Shell.class))
+			return ((Shell) shellClass.getAnnotation(Shell.class)).status();
+		return null;
 	}
 }
 

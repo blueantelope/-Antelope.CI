@@ -16,12 +16,13 @@ import java.util.Map;
 import org.apache.sshd.server.Environment;
 
 import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.ProxyUtil;
+import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
+import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
 import com.antelope.ci.bus.server.shell.core.ConnectionData;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -93,11 +94,7 @@ public abstract class BusShell {
 		if (clazz.isAnnotationPresent(Shell.class)) {
 			Shell sa = (Shell) clazz.getAnnotation(Shell.class);
 			String caCls = sa.commandAdapter();
-			Object o = ProxyUtil.newObject(caCls);
-			if (o == null)
-				o = ProxyUtil.newObject(caCls,
-						CommonBusActivator.getClassLoader());
-			commandAdapter = (CommandAdapter) o;
+			commandAdapter = CommandAdapterFactory.getAdapter(caCls);
 			status = sa.status();
 		}
 	}
@@ -165,23 +162,26 @@ public abstract class BusShell {
 			if (multiShell()) {
 				if (actionStatus.equals(lastStatus)) {
 					BusShell lastShell = shellMap.get(actionStatus);
-					lastShell.notify();
-					lastShell.refresh();
-					waitForWake();
-					continue;
+					synchronized (lastShell) {
+						lastShell.notify();
+						lastShell.refresh();
+						waitForWake();
+						continue;
+					}
 				}
 				if (!actionStatus.equals(status)) {
 					BusShell wakeShell = shellMap.get(actionStatus);
-					wakeShell.setLastStatus(status);
-					wakeShell.notify();
-					if (wakeShell.getSession() == null)
-						wakeShell.attatchSession(session);
-					if (wakeShell.isOpened())
-						wakeShell.refresh();
-					else
-						wakeShell.open();
-					waitForWake();
-					continue;
+					synchronized (wakeShell) {
+						wakeShell.notify();
+						if (wakeShell.getSession() == null)
+							wakeShell.attatchSession(session);
+						if (wakeShell.isOpened())
+							wakeShell.refresh();
+						else
+							wakeShell.open();
+						waitForWake();
+						continue;
+					}
 				}
 			} else {
 				if (lastStatus != BusShellStatus.INIT) {
@@ -244,7 +244,7 @@ public abstract class BusShell {
 						lastStatus = status;
 					break;
 			}
-			status = actionStatus;
+//			status = actionStatus;
 		}
 	}
 
@@ -381,8 +381,8 @@ public abstract class BusShell {
 	protected String readInput(boolean mark) throws IOException {
 		int in = io.read();
 		StringBuffer strBuf = new StringBuffer();
-		while (in != TerminalIO.ENTER) {
-			if (in == TerminalIO.DELETE || in == TerminalIO.BACKSPACE) {
+		while (in != NetVTKey.ENTER) {
+			if (in == NetVTKey.DELETE || in == NetVTKey.BACKSPACE) {
 				if (strBuf.length() > 0) {
 					ShellUtil.backspace(io);
 					strBuf.deleteCharAt(strBuf.length() - 1);
@@ -398,7 +398,7 @@ public abstract class BusShell {
 			}
 			in = io.read();
 		}
-		io.write(TerminalIO.CRLF);
+		io.write(NetVTKey.CRLF);
 		return strBuf.toString();
 	}
 	

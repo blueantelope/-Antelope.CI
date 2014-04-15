@@ -454,4 +454,46 @@ public class ProxyUtil {
 			return true;
 		return false;
 	}
+	
+	public static Class loadClass(String className) throws CIBusException {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static Class loadClass(String className, ClassLoader loader) throws CIBusException {
+		try {
+			return Class.forName(className, false, loader);
+		} catch (ClassNotFoundException e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static Object InvokeStatic(String className, String function, Object[] args) throws CIBusException {
+		Object ret = null;
+		try {
+			Class clazz = loadClass(className);
+			Method method = getMethod(clazz, function, args);
+			ret = method.invoke(null, null);
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+		
+		return ret;
+	}
+	
+	public static Object InvokeStatic(String className, ClassLoader loader, String function, Object[] args) throws CIBusException {
+		Object ret = null;
+		try {
+			Class clazz = loadClass(className, loader);
+			Method method = getMethod(clazz, function, args);
+			ret = method.invoke(null, null);
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+		
+		return ret;
+	}
 }

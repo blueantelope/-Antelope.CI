@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
@@ -65,11 +66,7 @@ public abstract class CommandAdapter {
 		List<String>  classList = ClassFinder.findClasspath(packpath, CommonBusActivator.getClassLoader());
 		for (String clsname : classList) {
 			try {
-				Class cls = Class.forName(clsname);
-				if (cls.isAssignableFrom(ICommand.class)) {
-					ICommand command = (ICommand) cls.newInstance();
-					addCommand(command);
-				}
+				addCommand(clsname);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -79,14 +76,29 @@ public abstract class CommandAdapter {
 	public void addCommands(String packpath, String status) throws CIBusException {
 		List<String>  classList = ClassFinder.findClasspath(packpath, CommonBusActivator.getClassLoader());
 		for (String clsname : classList) {
+			addCommand(clsname);
 			try {
-				Class cls = Class.forName(clsname);
-				if (cls.isAssignableFrom(ICommand.class)) {
-					ICommand command = (ICommand) cls.newInstance();
-					addCommand(command);
-				}
+				addCommand(clsname);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
+			}
+		}
+	}
+	
+	public void addCommand(String clsname) throws CIBusException {
+		Class cls;
+		try {
+			cls = ProxyUtil.loadClass(clsname);
+		} catch (CIBusException e) {
+			cls = ProxyUtil.loadClass(clsname, CommonBusActivator.getClassLoader());
+		}
+		
+		if (ICommand.class.isAssignableFrom(cls)) {
+			try {
+				ICommand command = (ICommand) cls.newInstance();
+				addCommand(command);
+			} catch (Exception e) {
+				throw new CIBusException("", e);
 			}
 		}
 	}
@@ -135,7 +147,7 @@ public abstract class CommandAdapter {
 	protected String execute(String key, Map<String, ICommand> currentCmdMap, String status, boolean refresh, String cmd, TerminalIO io, Object... args) throws CIBusException {
 		ICommand command = currentCmdMap.get(key);
 		if (match(command, cmd)) {
-			String actionStatus = command.execute(refresh, io, args);
+			String actionStatus = command.execute(refresh, io, status, args);
 			afterExecute(command, status, io, args);
 			return actionStatus;
 		}
@@ -147,7 +159,8 @@ public abstract class CommandAdapter {
 		Command cmd = command.getClass().getAnnotation(Command.class);
 		for (String scmd : cmd.commands().split(",")) {
 			if (StringUtil.empty(scmd)) continue;
-			if (cmdStr.equalsIgnoreCase(scmd.trim()))
+			if (scmd.length() > 1) 		scmd = scmd.trim();
+			if (StringUtil.equalsIgnoreCase(cmdStr, scmd))
 				return true;
 		}
 		

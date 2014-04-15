@@ -18,11 +18,14 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.configuration.PortalConfiguration;
+import com.antelope.ci.bus.portal.shell.command.PortalCommandAdapter;
 import com.antelope.ci.bus.server.BusCommonServerActivator;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.command.CommandAdapter;
+import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
 
 
 /**
@@ -34,6 +37,7 @@ import com.antelope.ci.bus.server.shell.StatusClass;
 public abstract class CommonEntrance implements Entrance {
 	private static final Logger log = Logger.getLogger(CommonEntrance.class);
 	protected BusServerCondition server_condition = null;
+	private static final CommandAdapter cmdAdapter = CommandAdapterFactory.getAdapter(PortalCommandAdapter.class.getName());
 	
 	@Override
 	public void init(Object... args) throws CIBusException {
@@ -65,9 +69,9 @@ public abstract class CommonEntrance implements Entrance {
 		// mount shell status class
 		List<String> classList = ClassFinder.findClasspath(this.getClass().getPackage().getName(), 
 				BusCommonServerActivator.getClassLoader());
-		for (String cls : classList) {
+		for (String clsname : classList) {
 			try {
-				Class clz = Class.forName(cls, false, BusCommonServerActivator.getClassLoader());
+				Class clz = Class.forName(clsname, false, BusCommonServerActivator.getClassLoader());
 				if (clz.isAnnotationPresent(Shell.class))
 					if (server_condition != null)
 						server_condition.addShellClass(clz.getName());
@@ -86,6 +90,8 @@ public abstract class CommonEntrance implements Entrance {
 				
 				if (clz.isAnnotationPresent(StatusClass.class))
 					BusShellStatus.addStatusClass(clz);
+				
+				cmdAdapter.addCommand(clsname);
 			} catch (ClassNotFoundException e) {
 				DevAssistant.errorln(e);
 			}

@@ -26,7 +26,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 public class NewProjectHit extends Hit {
 
 	@Override
-	protected String execute(TerminalIO io, Object... args) {
+	protected String execute(TerminalIO io, String status, Object... args) {
 		
 		// TODO Auto-generated method stub
 		return null;

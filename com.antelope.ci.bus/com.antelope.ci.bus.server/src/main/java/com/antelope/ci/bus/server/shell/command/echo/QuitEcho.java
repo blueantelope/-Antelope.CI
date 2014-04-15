@@ -25,10 +25,10 @@ public class QuitEcho extends Echo {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(TerminalIO io, Object... args) {
+	public String execute(TerminalIO io, String status, Object... args) {
 		return BusShellStatus.QUIT;
 	}
 	

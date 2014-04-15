@@ -39,6 +39,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
  * @version 0.1
  * @Date 2013-10-29 下午9:15:32
  */
+@Shell(name="base.frame", commandAdapter="com.antelope.ci.bus.portal.shell.command.PortalCommandAdapter")
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	protected Portal portal;

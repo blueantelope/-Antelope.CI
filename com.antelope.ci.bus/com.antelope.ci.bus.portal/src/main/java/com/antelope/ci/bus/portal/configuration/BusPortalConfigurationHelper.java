@@ -153,7 +153,7 @@ public class BusPortalConfigurationHelper {
 				DevAssistant.assert_exception(e);
 			}
 		}
-		List<String> sortList = sortPortalExtension(minorPortalMap);
+		List<String> sortList = sortPortalMap(minorPortalMap);
 		
 		if (majorExt != null) {
 			majorExt = extend(majorExt);
@@ -322,12 +322,12 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	private List<String> sortPortalExtension(Map<String, Portal> extMap) {
+	private List<String> sortPortalMap(Map<String, Portal> portalMap) {
 		List<String> resutlList = new ArrayList<String>();
 		Map<String, Integer> sortMap = new TreeMap<String, Integer>();
 		List<String> unsortList = new ArrayList<String>();
-		for (String ck : extMap.keySet()) {
-			Portal ext = extMap.get(ck);
+		for (String ck : portalMap.keySet()) {
+			Portal ext = portalMap.get(ck);
 			if (ext.getBase() != null) {
 				if (ext.getBase().getOrder() != 0) {
 					sortMap.put(ck, ext.getBase().getOrder());
@@ -351,6 +351,10 @@ public class BusPortalConfigurationHelper {
 		return resutlList;
 	}
 	
+	public List<String> sortPortalShell() {
+		return sortPortalMap(portalExtMap);
+	}
+	
 	public synchronized void init() throws CIBusException {
 		if (!inited && parseType == EU_ParseType.STATICAL) {
 			portal = parsePortal(PORTAL_XML);
@@ -359,6 +363,10 @@ public class BusPortalConfigurationHelper {
 			convert(usablePortal, reader);
 			inited = true;
 		}
+	}
+	
+	public Map<String, Portal> getPortalExtMap() {
+		return portalExtMap;
 	}
 	
 	public Portal getPortalExtention(String name) {

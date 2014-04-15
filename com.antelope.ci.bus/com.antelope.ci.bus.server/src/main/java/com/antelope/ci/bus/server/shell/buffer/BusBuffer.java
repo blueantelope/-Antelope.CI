@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.CharBuffer;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -128,7 +129,7 @@ public abstract class BusBuffer {
 	
 	public ShellCommandArg enter() throws CIBusException {
 		try {
-			io.write((char) TerminalIO.ENTER);
+			io.write((char) NetVTKey.ENTER);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		}

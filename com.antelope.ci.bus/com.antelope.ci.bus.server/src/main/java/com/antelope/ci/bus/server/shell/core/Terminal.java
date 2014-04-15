@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.server.shell.core;
 
+import com.antelope.ci.bus.common.NetVTKey;
+
 /**
  * TODO 描述
  * 
@@ -31,17 +33,17 @@ public class Terminal {
 
 		switch (c) {
 		case DEL:
-			return TerminalIO.DELETE;
+			return NetVTKey.DELETE;
 		case BS:
-			return TerminalIO.BACKSPACE;
+			return NetVTKey.BACKSPACE;
 		case HT:
-			return TerminalIO.TABULATOR;
+			return NetVTKey.TABULATOR;
 		case ESC:
-			return TerminalIO.ESCAPE;
+			return NetVTKey.ESCAPE;
 		case SGR:
-			return TerminalIO.COLORINIT;
+			return NetVTKey.COLORINIT;
 		case EOT:
-			return TerminalIO.LOGOUTREQUEST;
+			return NetVTKey.LOGOUTREQUEST;
 		default:
 			return c;
 		}
@@ -52,13 +54,13 @@ public class Terminal {
 			if (buffer[0] == LSB) {
 				switch (buffer[1]) {
 				case A:
-					return TerminalIO.UP;
+					return NetVTKey.UP;
 				case B:
-					return TerminalIO.DOWN;
+					return NetVTKey.DOWN;
 				case C:
-					return TerminalIO.RIGHT;
+					return NetVTKey.RIGHT;
 				case D:
-					return TerminalIO.LEFT;
+					return NetVTKey.LEFT;
 				default:
 					break;
 				}
@@ -84,16 +86,16 @@ public class Terminal {
 			sequence[g] = ESC;
 			sequence[g + 1] = LSB;
 			switch (direction) {
-			case TerminalIO.UP:
+			case NetVTKey.UP:
 				sequence[g + 2] = A;
 				break;
-			case TerminalIO.DOWN:
+			case NetVTKey.DOWN:
 				sequence[g + 2] = B;
 				break;
-			case TerminalIO.RIGHT:
+			case NetVTKey.RIGHT:
 				sequence[g + 2] = C;
 				break;
-			case TerminalIO.LEFT:
+			case NetVTKey.LEFT:
 				sequence[g + 2] = D;
 				break;
 			default:
@@ -204,19 +206,19 @@ public class Terminal {
 			sequence[0] = ESC;
 			sequence[1] = 56; // Ascii Code of 8
 			break;
-		case TerminalIO.DEVICERESET:
+		case NetVTKey.DEVICERESET:
 			sequence = new byte[2];
 			sequence[0] = ESC;
 			sequence[1] = 99; // Ascii Code of c
 			break;
-		case TerminalIO.LINEWRAP:
+		case NetVTKey.LINEWRAP:
 			sequence = new byte[4];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
 			sequence[2] = 55; // Ascii code of 7
 			sequence[3] = 104; // Ascii code of h
 			break;
-		case TerminalIO.NOLINEWRAP:
+		case NetVTKey.NOLINEWRAP:
 			sequence = new byte[4];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
@@ -233,8 +235,8 @@ public class Terminal {
 		int offset = 0;
 
 		switch (type) {
-		case TerminalIO.FCOLOR:
-		case TerminalIO.BCOLOR:
+		case NetVTKey.FCOLOR:
+		case NetVTKey.BCOLOR:
 			byte[] color = translateIntToDigitCodes(param);
 			sequence = new byte[3 + color.length];
 
@@ -247,7 +249,7 @@ public class Terminal {
 			sequence[offset] = 109; // ASCII Code of m
 			break;
 
-		case TerminalIO.STYLE:
+		case NetVTKey.STYLE:
 			byte[] style = translateIntToDigitCodes(param);
 			sequence = new byte[3 + style.length];
 
@@ -260,7 +262,7 @@ public class Terminal {
 			sequence[offset] = 109; // ASCII Code of m
 			break;
 
-		case TerminalIO.RESET:
+		case NetVTKey.RESET:
 			sequence = new byte[5];
 			sequence[0] = ESC;
 			sequence[1] = LSB;

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -121,7 +122,7 @@ public class BusEditBuffer extends BusScreenBuffer {
 	@Override
 	public void space() throws CIBusException {
 		try {
-			put((char) TerminalIO.SPACE);
+			put((char) NetVTKey.SPACE);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 			new CIBusException("", e);
@@ -152,7 +153,7 @@ public class BusEditBuffer extends BusScreenBuffer {
 	@Override
 	public ShellCommandArg enter() throws CIBusException {
 		try {
-			put((char) TerminalIO.ENTER);
+			put((char) NetVTKey.ENTER);
 			lines++;
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
@@ -187,7 +188,7 @@ public class BusEditBuffer extends BusScreenBuffer {
 		List<String> lineList = new ArrayList<String>();
 		CharBuffer cb = CharBuffer.allocate(1024);
 		for (char c : s.toCharArray()) {
-			if (c == TerminalIO.ENTER) {
+			if (c == NetVTKey.ENTER) {
 				lineList.add(read(cb));
 				cb.clear();
 			}

@@ -20,7 +20,13 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-13		下午6:33:41 
  */
 public abstract class BaseCommand implements ICommand {
-	public String execute(boolean refresh, TerminalIO io, Object... args) {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(boolean, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 */
+	@Override
+	public String execute(boolean refresh, TerminalIO io, String status, Object... args) {
 		if (this.getClass().isAnnotationPresent(Command.class)) {
 			Command command = this.getClass().getAnnotation(Command.class);
 			if (refresh && command.beforeClear()) {
@@ -32,9 +38,9 @@ public abstract class BaseCommand implements ICommand {
 			}
 		}
 		
-		return execute(io, args);
+		return execute(io, status, args);
 	}
 	
-	protected abstract String execute(TerminalIO io, Object... args);
+	protected abstract String execute(TerminalIO io, String status, Object... args);
 }
 
