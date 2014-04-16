@@ -21,6 +21,7 @@ import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -127,16 +128,16 @@ public abstract class CommandAdapter {
 		return cmdList;
 	}
 	
-	public String execute(String status, boolean refresh, String cmd, TerminalIO io, Object... args) throws CIBusException {
+	public String execute(String status, boolean refresh, String cmd, BusShell shell, TerminalIO io, Object... args) throws CIBusException {
 		for (String key : globalCommandMap.keySet()) {
-			String rs = execute(key, globalCommandMap, status, refresh, cmd, io, args);
+			String rs = execute(key, globalCommandMap, status, refresh, cmd, shell, io, args);
 			if (rs != null)
 				return rs;
 		}
 		
 		for (String key : commandMap.keySet()) {
 			if (key.contains(status)) {
-				String rs = execute(key, commandMap, status, refresh, cmd, io, args);
+				String rs = execute(key, commandMap, status, refresh, cmd, shell, io, args);
 				if (rs != null)
 					return rs;
 			}
@@ -144,10 +145,11 @@ public abstract class CommandAdapter {
 		return BusShellStatus.KEEP;
 	}
 	
-	protected String execute(String key, Map<String, ICommand> currentCmdMap, String status, boolean refresh, String cmd, TerminalIO io, Object... args) throws CIBusException {
+	protected String execute(String key, Map<String, ICommand> currentCmdMap, String status, 
+			boolean refresh, String cmd, BusShell shell, TerminalIO io, Object... args) throws CIBusException {
 		ICommand command = currentCmdMap.get(key);
 		if (match(command, cmd)) {
-			String actionStatus = command.execute(refresh, io, status, args);
+			String actionStatus = command.execute(refresh, shell, io, status, args);
 			afterExecute(command, status, io, args);
 			return actionStatus;
 		}

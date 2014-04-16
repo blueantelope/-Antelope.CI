@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.BusServerCondition;
@@ -94,7 +95,12 @@ public class EntranceManager {
 		private void mount(List<String> classList) {
 			for (String cls : classList) {
 				try {
-					Class clazz = Class.forName(cls);
+					Class clazz;
+					try {
+						clazz = ProxyUtil.loadClass(cls);
+					} catch (CIBusException e) {
+						clazz = ProxyUtil.loadClass(cls, BusOsgiUtil.getBundleClassLoader(m_context));
+					}
 					if (Entrance.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(PortalEntrance.class)) {
 						if (entranceMap.get(cls) == null) {
 							final Entrance entrance = (Entrance) clazz.newInstance();

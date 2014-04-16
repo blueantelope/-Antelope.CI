@@ -103,7 +103,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 	 * @see com.antelope.ci.bus.server.shell.BusShell#mainView()
 	 */
 	@Override
-	protected void mainView() throws CIBusException {
+	public void mainView() throws CIBusException {
 		view();
 		ShellCursor cursor = initCursorPosistion();
 		buffer = new BusHitBuffer(io, cursor, new ShellScreen(session.getWidth(), session.getHeigth()));

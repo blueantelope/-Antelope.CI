@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.portal.project.command;
 
+import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -24,9 +25,13 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  */
 @Command(name="new_project", commands="n, N", status=BusShellStatus.ROOT, type=CommandType.HIT, beforeClear=true)
 public class NewProjectHit extends Hit {
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 */
 	@Override
-	protected String execute(TerminalIO io, String status, Object... args) {
+	protected String execute(BusShell shell, TerminalIO io, String status, Object... args) {
 		
 		// TODO Auto-generated method stub
 		return null;

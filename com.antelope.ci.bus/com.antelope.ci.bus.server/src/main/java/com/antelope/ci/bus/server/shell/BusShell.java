@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.sshd.server.Environment;
 
 import com.antelope.ci.bus.common.DevAssistant;
@@ -34,6 +35,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date 2013-10-14 下午1:06:49
  */
 public abstract class BusShell {
+	private static final Logger log = Logger.getLogger(BusShell.class);
 	protected BusShellSession session;
 	protected TerminalIO io;
 	protected ConnectionData setting;
@@ -154,7 +156,9 @@ public abstract class BusShell {
 
 	private void loopAction() throws CIBusException {
 		while (true) {
+			log.debug("action start");
 			action();
+			log.debug("action end");
 			if (quit) {
 				close();
 				break;
@@ -165,9 +169,10 @@ public abstract class BusShell {
 					synchronized (lastShell) {
 						lastShell.notify();
 						lastShell.refresh();
+						lastShell.loopAction();
 						waitForWake();
 						continue;
-					}
+					}	
 				}
 				if (!actionStatus.equals(status)) {
 					BusShell wakeShell = shellMap.get(actionStatus);
@@ -175,10 +180,12 @@ public abstract class BusShell {
 						wakeShell.notify();
 						if (wakeShell.getSession() == null)
 							wakeShell.attatchSession(session);
-						if (wakeShell.isOpened())
+						if (wakeShell.isOpened()) {
 							wakeShell.refresh();
-						else
+							wakeShell.loopAction();
+						} else {
 							wakeShell.open();
+						}
 						waitForWake();
 						continue;
 					}
@@ -225,7 +232,7 @@ public abstract class BusShell {
 		if (cmdArg != null && cmdArg.exist()) {
 			try {
 				actionStatus = commandAdapter.execute(status, !multiShell(),
-						cmdArg.getCommand(), io, cmdArg.getArgs());
+						cmdArg.getCommand(), this, io, cmdArg.getArgs());
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
@@ -335,9 +342,8 @@ public abstract class BusShell {
 		in = session.getIn();
 		out = session.getOut();
 		err = session.getErr();
-		setting = new ConnectionData();
-		setting.setNegotiatedTerminalType("vt100");
-		io = new TerminalIO(in, out, setting);
+		setting = session.getSetting();
+		io = session.getIo();
 		custom();
 	}
 
@@ -460,7 +466,7 @@ public abstract class BusShell {
 
 	protected abstract void custom() throws CIBusException;
 
-	protected abstract void mainView() throws CIBusException;
+	public abstract void mainView() throws CIBusException;
 
 	protected abstract void action() throws CIBusException;
 

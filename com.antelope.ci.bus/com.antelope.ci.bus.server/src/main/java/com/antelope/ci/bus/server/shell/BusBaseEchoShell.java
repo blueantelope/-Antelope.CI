@@ -122,7 +122,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	 * @see com.antelope.ci.bus.server.shell.BusShell#mainView()
 	 */
 	@Override
-	protected void mainView() throws CIBusException {
+	public void mainView() throws CIBusException {
 		try {
 			buffer = new BusEchoBuffer(io, prompt().length());
 			if (!StringUtil.empty(header()))

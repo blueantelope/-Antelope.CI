@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.server.shell.echo.test;
 
+import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -27,10 +28,10 @@ public class HEcho extends Echo {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(TerminalIO io, String status, Object... args) {
+	public String execute(BusShell shell, TerminalIO io, String status, Object... args) {
 		return BusShellStatus.KEEP;
 	}
 

@@ -14,6 +14,9 @@ import java.io.OutputStream;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 
+import com.antelope.ci.bus.server.shell.core.ConnectionData;
+import com.antelope.ci.bus.server.shell.core.TerminalIO;
+
 
 /**
  * TODO 描述
@@ -27,9 +30,11 @@ public class BusShellSession {
 	private OutputStream err;
 	private ExitCallback callback;
 	private Environment env;
+	private TerminalIO io;
+	private ConnectionData setting;
 	
 	public BusShellSession() {
-		
+	
 	}
 	
 	public BusShellSession(InputStream in, OutputStream out, OutputStream err) {
@@ -37,6 +42,7 @@ public class BusShellSession {
 		this.in = in;
 		this.out = out;
 		this.err = err;
+		init();
 	}
 	
 	public BusShellSession(InputStream in, OutputStream out, OutputStream err, ExitCallback callback, Environment env) {
@@ -46,6 +52,14 @@ public class BusShellSession {
 		this.err = err;
 		this.callback = callback;
 		this.env = env;
+		init();
+	}
+	
+	private void init() {
+		setting = new ConnectionData();
+		setting.setNegotiatedTerminalType("vt100");
+		if (in != null && out != null)
+			io = new TerminalIO(in, out, setting);
 	}
 	
 	// getter and setter
@@ -79,7 +93,19 @@ public class BusShellSession {
 	public void setEnv(Environment env) {
 		this.env = env;
 	}
-	
+	public TerminalIO getIo() {
+		return io;
+	}
+	public void setIo(TerminalIO io) {
+		this.io = io;
+	}
+	public ConnectionData getSetting() {
+		return setting;
+	}
+	public void setSetting(ConnectionData setting) {
+		this.setting = setting;
+	}
+
 	public int getWidth() {
 		return Integer.valueOf(env.getEnv().get(Environment.ENV_COLUMNS));
 	}

@@ -487,5 +487,17 @@ public class Portal implements Serializable {
 		
 		return null;
 	}
+	
+	public int getOrder() {
+		int order = -1;
+		if (base == null || base.getOrder() == 0) {
+			if (extensions != null)
+				order = extensions.getOrder();
+		} else {
+			order = base.getOrder();
+		}
+		
+		return order;
+	}
 }
 

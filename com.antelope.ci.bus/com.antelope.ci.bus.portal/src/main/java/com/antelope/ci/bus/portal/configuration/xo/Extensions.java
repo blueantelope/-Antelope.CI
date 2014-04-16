@@ -35,7 +35,7 @@ public class Extensions implements Serializable {
 	}
 	
 	public Base getBase() {
-		if (extentionList != null && extentionList.isEmpty()) {
+		if (extentionList != null && !extentionList.isEmpty()) {
 			for (Extension ext : extentionList) {
 				if (ext.getPoint() == EU_Point.BASE)
 					return ext.getBase();
@@ -43,6 +43,12 @@ public class Extensions implements Serializable {
 		}
 		
 		return null;
+	}
+	
+	public int getOrder() {
+		Base b = getBase();
+		if (b != null)		return b.getOrder();
+		else					return -1;
 	}
 	
 }

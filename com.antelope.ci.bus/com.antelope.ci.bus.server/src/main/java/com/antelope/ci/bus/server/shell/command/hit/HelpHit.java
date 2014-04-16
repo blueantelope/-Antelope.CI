@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell.command.hit;
 import java.io.IOException;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -26,9 +27,13 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  */
 @Command(name="help", commands="h, H", status=BusShellStatus.ROOT, type=CommandType.HIT, beforeClear=true)
 public class HelpHit extends Hit {
-
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 */
 	@Override
-	public String execute(TerminalIO io, String status, Object... args) {
+	public String execute(BusShell shell, TerminalIO io, String status, Object... args) {
 		try {
 			io.println(HelpContent.getContent().getHitContent(BusShellStatus.HELP));
 		} catch (IOException e) {

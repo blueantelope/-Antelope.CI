@@ -212,18 +212,21 @@ public class BusPortalConfigurationHelper {
 				major_part.addContent(del_value, "", del_margin, EU_Position.START, 1);
 			
 			List<PartWithPortalClass> pwpcList =  new ArrayList<PartWithPortalClass>();
-			int major_order = majorExt.getBase().getOrder();
+			int major_order = majorExt.getOrder();
+			boolean majorAdded = false;
 			for (String extName : sortList) {
 				Portal ext = minorPortalMap.get(extName);
-				int ext_order = ext.getBase().getOrder();
-				if (major_order != -1 && major_order <= ext_order) {
+				int ext_order = ext.getOrder();
+				if (!majorAdded && major_order != -1 && major_order <= ext_order) {
 					pwpcList.add(new PartWithPortalClass("", major_part));
-					major_order = -1;
+					majorAdded = true;
 				}
 				Part extPart = ext.getExtPart(pp.getName());
 				if (extPart != null)
 					pwpcList.add(new PartWithPortalClass(extName, extPart));
 			}
+			if (!majorAdded)
+				pwpcList.add(new PartWithPortalClass("", major_part));
 			
 			Collections.sort(pwpcList, new Comparator<PartWithPortalClass>() {
 				@Override
@@ -328,11 +331,9 @@ public class BusPortalConfigurationHelper {
 		List<String> unsortList = new ArrayList<String>();
 		for (String ck : portalMap.keySet()) {
 			Portal ext = portalMap.get(ck);
-			if (ext.getBase() != null) {
-				if (ext.getBase().getOrder() != 0) {
-					sortMap.put(ck, ext.getBase().getOrder());
-					continue;
-				}
+			if (ext.getOrder() != -1) {
+				sortMap.put(ck, ext.getOrder());
+				continue;
 			}
 			unsortList.add(ck);
 		}

@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.server.shell.command;
 
+import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -26,7 +27,7 @@ public class QuitCommand implements ICommand {
 	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(boolean, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(boolean refresh, TerminalIO io, String status, Object... args) {
+	public String execute(boolean refresh, BusShell shell, TerminalIO io, String status, Object... args) {
 		return BusShellStatus.LAST;
 	}
 }
