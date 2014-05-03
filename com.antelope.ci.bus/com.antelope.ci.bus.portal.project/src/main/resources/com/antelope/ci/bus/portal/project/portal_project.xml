@@ -23,10 +23,7 @@
 			</part>
 			
 			<part name="second.menu" embed="replace">
-				<content><![CDATA[${second.menu1}
-${second.menu2}
-${second.menu3}
-${second.menu4}
+				<content><![CDATA[${project.menu.new}
 				]]></content>
 			</part>
 			

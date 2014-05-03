@@ -8,8 +8,8 @@
 
 package com.antelope.ci.bus.portal.project.command;
 
+import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShell;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.hit.Hit;
@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2014-2-27		下午6:10:08 
  */
-@Command(name="new_project", commands="n, N", status=BusShellStatus.ROOT, type=CommandType.HIT, beforeClear=true)
+@Command(name="new_project", commands="n, N", status=BusProjectShellStatus.PROJECT, type=CommandType.HIT, beforeClear=true)
 public class NewProjectHit extends Hit {
 	/**
 	 * 
