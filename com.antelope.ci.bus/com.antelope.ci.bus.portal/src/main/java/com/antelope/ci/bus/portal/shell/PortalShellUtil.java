@@ -16,6 +16,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.ShellUtil;
 
 
@@ -62,6 +63,24 @@ public class PortalShellUtil {
 		}
 		
 		return null;
+	}
+	
+	public static int maxLine(List<List<String>> contentList) {
+		int max = 0;
+		for (List<String> content : contentList) {
+			int cw = 0;
+			for (String c : content) {
+				if (ShellText.isShellText(c)) {
+					cw += ShellText.length(c);
+				} else {
+					cw += StringUtil.getWordCount(c);
+				}
+			}
+			
+			max = max > cw ? max : cw;
+		}
+
+		return max;
 	}
 }
 

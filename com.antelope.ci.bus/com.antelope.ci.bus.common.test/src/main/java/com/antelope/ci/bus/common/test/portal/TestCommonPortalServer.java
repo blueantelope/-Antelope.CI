@@ -8,8 +8,20 @@
 
 package com.antelope.ci.bus.common.test.portal;
 
+import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
+import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.model.user.User;
+import com.antelope.ci.bus.model.user.User.AUTH_TYPE;
+import com.antelope.ci.bus.model.user.UserKey;
+import com.antelope.ci.bus.model.user.UserPassword;
 import com.antelope.ci.bus.portal.BusPortalServer;
+import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.server.BusServerCondition;
+import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
+import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.service.auth.PasswordAuthServiceImpl;
+import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
 
 /**
@@ -20,6 +32,9 @@ import com.antelope.ci.bus.portal.BusPortalServer;
  * @Date	 2014-5-1		下午4:44:27 
  */
 public class TestCommonPortalServer extends BusPortalServer {
+	private final static String username = "blueantelope";
+	private final static String password = "blueantelope";
+	
 	private final static String privateKey = 
 			"-----BEGIN RSA PRIVATE KEY-----\n" +
 			"MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCbp1o77lp+fRo4\n" +
@@ -62,10 +77,59 @@ public class TestCommonPortalServer extends BusPortalServer {
 			"1kCrLxlvQcaJvMNYc84F9crZM0Bg3UHkysrQIDAQAB\n" +
 			"---- END SSH2 PUBLIC KEY ----\n"
 	;
+	
+	private String shellClass;
 
-	public TestCommonPortalServer() throws CIBusException {
+	public TestCommonPortalServer(String shellClass) throws CIBusException {
 		super();
+		this.shellClass  = shellClass;
+		attatchCondition(condition);
 	}
-
+	
+	private User createUser() {
+		User user = new User();
+		user.setAuth_type(AUTH_TYPE.PASSWORD.getCode());
+		user.setUsername(username);
+		UserPassword userPassword = new UserPassword();
+		userPassword.setAlgorithm(SYMMETRIC_ALGORITHM._ORIGIN);
+		userPassword.setPassword(password);
+		userPassword.setSeed("seed");
+		userPassword.setOriginPwd(password);
+		user.setPassword(userPassword);
+		UserKey userKey = new UserKey();
+		userKey.setAlgorithm(ASYMMETRIC_ALGORITHM._DSA);
+		userKey.setPrivateKey(privateKey);
+		userKey.setPublicKey(publicKey);
+		
+		return user;
+	}
+	
+	@Override
+	protected void init() throws CIBusException {
+		config = readConfig();
+		condition = new BusServerCondition();
+	}
+	
+	@Override
+	protected void customInit() throws CIBusException {
+		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
+		configurationHelper.init();
+	}
+	
+	@Override
+	protected BusServerConfig readConfig() throws CIBusException {
+		BusServerConfig config = new BusServerConfig();
+		return config;
+	}
+	
+	@Override
+	protected void attatchCondition(BusServerCondition server_condition)
+			throws CIBusException {
+		server_condition.setLauncherType(LAUNCHER_TYPE.PROXY);
+		server_condition.addShellClass(shellClass);
+		server_condition.addUser(createUser());
+		server_condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
+		server_condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));
+	}
 }
 

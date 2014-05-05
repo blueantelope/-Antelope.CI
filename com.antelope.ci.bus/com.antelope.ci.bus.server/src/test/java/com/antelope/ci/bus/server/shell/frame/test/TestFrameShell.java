@@ -150,4 +150,11 @@ public class TestFrameShell extends BusBaseFrameShell {
 	protected ShellCursor initCursorPosistion() {
 		return new ShellCursor(0, 4);
 	}
+
+	@Override
+	public void clearContent() throws IOException {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

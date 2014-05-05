@@ -99,16 +99,12 @@ public class ShellUtil {
 	
 	public static void move(TerminalIO io, int x, int y) throws IOException {
 		if (x != 0) {
-			if (x > 0)
-				io.moveLeft(x);
-			else
-				io.moveRight(-x);
+			if (x > 0) 		io.moveRight(x);
+			else				io.moveLeft(-x);
 		}
 		if (y != 0) {
-			if (y > 0)
-				io.moveDown(y);
-			else
-				io.moveUp(-y);
+			if (y > 0)		io.moveDown(y);
+			else				io.moveUp(-y);
 		}
 	}
 	

@@ -38,13 +38,13 @@ public class LayoutPaletteSet {
 
 	public LayoutPaletteSet(ShellPalette north_palette,
 			ShellPalette west_palette, ShellPalette east_palette,
-			ShellPalette center_palette, ShellPalette south_palette) {
+			ShellPalette south_palette, ShellPalette center_palette) {
 		super();
 		this.north_palette = north_palette;
 		this.west_palette = west_palette;
 		this.east_palette = east_palette;
-		this.center_palette = center_palette;
 		this.south_palette = south_palette;
+		this.center_palette = center_palette;
 	}
 
 

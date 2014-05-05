@@ -12,6 +12,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile" />
@@ -32,6 +33,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile.notest" />

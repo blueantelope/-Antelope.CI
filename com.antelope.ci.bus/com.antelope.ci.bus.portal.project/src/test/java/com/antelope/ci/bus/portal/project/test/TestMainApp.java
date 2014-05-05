@@ -9,7 +9,8 @@
 package com.antelope.ci.bus.portal.project.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.test.TestBusPortalServer;
+import com.antelope.ci.bus.common.test.portal.TestCommonPortalServer;
+import com.antelope.ci.bus.portal.project.BusProjectPortalShell;
 import com.antelope.ci.bus.server.BusServer;
 
 
@@ -22,7 +23,7 @@ import com.antelope.ci.bus.server.BusServer;
  */
 public class TestMainApp {
 	public static void main(String[] args) throws CIBusException {
-		BusServer server = new TestBusPortalServer();
+		BusServer server = new TestCommonPortalServer(BusProjectPortalShell.class.getName());
 		server.start();
 	}
 }

@@ -42,7 +42,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 @Shell(name="base.frame", commandAdapter="com.antelope.ci.bus.portal.shell.command.PortalCommandAdapter")
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	private static final Logger log = Logger.getLogger(BusPortalShell.class);
-	protected Portal portal;
+	
 	protected static final EU_LAYOUT[] LAYOUT_ORDER		= new EU_LAYOUT[] 
 			{EU_LAYOUT.NORTH, EU_LAYOUT.SOUTH, EU_LAYOUT.WEST, EU_LAYOUT.EAST, EU_LAYOUT.CENTER};
 	protected final static Map<String, Integer> CONTENT_SCALE = new HashMap<String, Integer>();
@@ -51,9 +51,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		CONTENT_SCALE.put(EU_LAYOUT.CENTER.getName(), 6);
 		CONTENT_SCALE.put(EU_LAYOUT.EAST.getName(), 2);
 	}
+	
+	private Portal portal;
+	private ShellPalette contentPalette;
 
 	public BusPortalShell() throws CIBusException {
 		super();
+		contentPalette = null;
 		Class thisCls = this.getClass();
 		if (thisCls.isAnnotationPresent(Shell.class)) {
 			Shell sa = (Shell) thisCls.getAnnotation(Shell.class);
@@ -63,6 +67,29 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		parsePortal();
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
+	}
+	
+	@Override public void clearContent() throws IOException {
+		if (contentPalette != null) {
+			int px = contentPalette.getX();
+			int py = contentPalette.getY();
+			int ph = contentPalette.getHeight();
+			int pw = contentPalette.getWidth();
+			int h = 0, w = 0;
+			
+			shiftTop();
+			move(px, py);
+			ShellCursor cursor = new ShellCursor(px, py);
+			String[] lines = new String[ph];
+			String line = "";
+			for (; w < pw; w++)
+				line += " ";
+			while (h < ph)
+				lines[h++] = line;
+			write(cursor, lines);
+			shiftTop();
+			move(px, py);
+		}
 	}
 	
 	protected void parsePortal() throws CIBusException {
@@ -81,7 +108,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		// nothing
 	}
 	
-	protected void draw() throws IOException, CIBusException {
+	private void draw() throws IOException, CIBusException {
 		Map<String, PlacePartTree> placeTreeMap = portal.makePlacePartTreeMap();
 		Map<String, Integer> contentWidthMap = divideContentWidth(getWidth(), placeTreeMap);
 		shiftTop();
@@ -253,6 +280,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		Map<String, Map<String, PlacePart>> childMap = partTree.makeChildPartMap();
 		PlacePart rootPart = rootMap.get(layout.getName());
 		ShellPalette palette = new ShellPalette();
+		palette.setStartPoint(cursor.getX(), cursor.getY());
 		if (rootPart != null) {
 			palette = drawPart(rootPart, width, cursor);
 		} else {
@@ -275,13 +303,9 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		int north_height = 0;
 		if (northPart != null) {
 			try {
-//				String pcon = placePartContent(northPart);
 				List<List<String>> contentList = placePartContent(northPart, width);
 				if (!contentList.isEmpty()) {
 					moveCursor(cursor);
-//					String[] lines = StringUtil.toLines(pcon, width);
-//					north_height = lines.length;
-//					writeLine(cursor, lines);
 					north_height = contentList.size();
 					writeLine(cursor, contentList);
 					content_cursor = cursor.clone();
@@ -296,17 +320,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart southPart = placeMap.get(EU_LAYOUT.SOUTH.getName());
 		if (southPart != null) {
 			try {
-//				String pcon = placePartContent(southPart);
 				List<List<String>> contentList = placePartContent(southPart, width);
 				if (!contentList.isEmpty()) {
 					if (content_cursor == null)
 						content_cursor = cursor.clone();
-//					String[] lines = StringUtil.toLines(pcon, width);
-//					south_height = lines.length;
 					south_height = contentList.size();
 					cursor.addY(height - north_height - south_height);
 					moveCursor(cursor);
-//					writeLine(cursor, lines);
 					writeLine(cursor, contentList);
 				}
 			} catch (Exception e) {
@@ -320,19 +340,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart westPart = placeMap.get(EU_LAYOUT.WEST.getName());
 		if (westPart != null) {
 			try {
-//				String pcon = placePartContent(westPart);
 				List<List<String>> contentList = placePartContent(westPart, width);
-//				if (pcon != null) {
 				if (!contentList.isEmpty()) {
 					if (content_cursor == null)
 						content_cursor = cursor.clone();
 					else
 						cursor = content_cursor.clone();
 					moveCursor(cursor);
-//					String[] lines = StringUtil.toLines(pcon);
-//					writeLine(cursor, lines);
-//					west_width = StringUtil.maxLine(pcon);
-					west_width = maxLine(contentList);
+					west_width = PortalShellUtil.maxLine(contentList);
 					writeLine(cursor, contentList);
 				}
 			} catch (Exception e) {
@@ -345,9 +360,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart eastPart = placeMap.get(EU_LAYOUT.EAST.getName());
 		if (eastPart != null) {
 			try {
-//				String pcon = placePartContent(eastPart);
 				List<List<String>> contentList = placePartContent(eastPart, width);
-//				if (pcon != null) {
 				if (!contentList.isEmpty()) {
 					if (content_cursor == null)
 						content_cursor = cursor.clone();
@@ -355,10 +368,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						cursor = content_cursor.clone();
 					moveCursor(cursor);
 					shiftRight(west_width);
-//					String[] lines = StringUtil.toLines(pcon);
-//					east_width = StringUtil.maxLine(pcon);
-//					writeLine(cursor, lines);
-					east_width = maxLine(contentList);
+					east_width = PortalShellUtil.maxLine(contentList);
 					writeLine(cursor, contentList);
 				}
 			} catch (Exception e) {
@@ -370,20 +380,16 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart centerPart = placeMap.get(EU_LAYOUT.CENTER.getName());
 		if (centerPart != null) {
 			try {
-//				String pcon = placePartContent(centerPart);
 				int center_width = width - west_width - east_width;
 				List<List<String>> contentList = placePartContent(centerPart, center_width);
-//				if (pcon != null) {
 				if (!contentList.isEmpty()) {
 					if (content_cursor == null)
 						content_cursor = cursor.clone();
 					else
 						cursor = content_cursor.clone();
 					moveCursor(cursor);
-//					int center_width = width - west_width - east_width;
-//					String[] lines = StringUtil.toLines(pcon, center_width);
-//					writeLine(cursor, lines);
 					writeLine(cursor, contentList);
+					putContentPalette(centerPart, content_cursor, center_width, contentList.size());
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -391,22 +397,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	private int maxLine(List<List<String>> contentList) {
-		int max = 0;
-		for (List<String> content : contentList) {
-			int cw = 0;
-			for (String c : content) {
-				if (ShellText.isShellText(c)) {
-					cw += ShellText.length(c);
-				} else {
-					cw += StringUtil.getWordCount(c);
-				}
-			}
-			
-			max = max > cw ? max : cw;
+	private void putContentPalette(PlacePart part, ShellCursor cursor, int width, int height) {
+		if ("content".equals(part.getName())) {
+			contentPalette = new ShellPalette();
+			contentPalette.setStartPoint(cursor.getX(), cursor.getY());
+			contentPalette.setShapePoint(width, height);
 		}
-
-		return max;
 	}
 	
 	private void moveCursor(ShellCursor cursor) throws IOException {
@@ -421,18 +417,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		storeCursor();
 		try {
 			moveCursor(cursor);
-//			String pcon = placePartContent(part);
 			List<List<String>> contentList = placePartContent(part, width);
-//			if (pcon != null) {
 			if (!contentList.isEmpty()) {
-//				String[] lines = StringUtil.toLines(pcon, width);
-//				int palette_width = StringUtil.maxLine(pcon);
-				int palette_width = maxLine(contentList);
+				int palette_width = PortalShellUtil.maxLine(contentList);
 				palette_width = palette_width < width ? palette_width : width;
-//				int palette_height = lines.length;
 				int palette_height = contentList.size();
 				palette.setShapePoint(palette_width, palette_height);
-//				writeLine(cursor, lines);
 				writeLine(cursor, contentList);
 			}
 		} catch (Exception e) {
@@ -512,7 +502,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		
 		return height;
 	}
-	
 	
 	protected void layout() throws IOException, CIBusException {
 		Map<String, Map<String, PlacePart>> placeMap = portal.getPlaceMap();
@@ -617,17 +606,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-//	private int getContentHeight(PlacePart pp, int width) throws CIBusException {
-//		try {
-//			String pcon = placePartContent(pp);
-//			if (pcon == null) return 0;
-//			return StringUtil.toLines(pcon, width).length;
-//		} catch (Exception e) {
-//			DevAssistant.errorln(e);
-//			throw new CIBusException("", e);
-//		}
-//	}
-	
 	protected int getPartWdith(Map<String, PlacePart> placeMap, int width) {
 		int part_width = 0;
 		int pc_width = 0;
@@ -691,10 +669,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return 0;
 	}
 	
-	private int getContentWidth(PlacePart pp, int width) throws CIBusException {
+	protected int getContentWidth(PlacePart pp, int width) throws CIBusException {
 		try {
 			List<List<String>> contentList = placePartContent(pp, width);
-			return maxLine(contentList);
+			return PortalShellUtil.maxLine(contentList);
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
@@ -727,9 +705,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart northPart = placeMap.get(EU_LAYOUT.NORTH.getName());
 		if (northPart != null) {
 			try {
-//				String pcon = placePartContent(northPart);
-//				String[] lines = StringUtil.toLines(pcon, width);
-//				writeLine(cursor, lines);
 				List<List<String>> contentList = placePartContent(northPart, width);
 				writeLine(cursor, contentList);
 			} catch (Exception e) {
@@ -741,9 +716,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart southPart = placeMap.get(EU_LAYOUT.SOUTH.getName());
 		if (southPart != null) {
 			try {
-//				String pcon = placePartContent(southPart);
-//				String[] lines = StringUtil.toLines(pcon, width);
-//				writeLine(cursor, lines);
 				List<List<String>> contentList = placePartContent(southPart, width);
 				writeLine(cursor, contentList);
 			} catch (Exception e) {
@@ -756,13 +728,9 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart westPart = placeMap.get(EU_LAYOUT.WEST.getName());
 		if (westPart != null) {
 			try {
-//				String pcon = placePartContent(westPart);
-//				String[] lines = StringUtil.toLines(pcon);
-//				writeLine(cursor, lines);
-//				west_width = StringUtil.maxLine(pcon);
 				List<List<String>> contentList = placePartContent(westPart, width);
 				writeLine(cursor, contentList);
-				west_width = maxLine(contentList);
+				west_width = PortalShellUtil.maxLine(contentList);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -773,12 +741,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart eastPart = placeMap.get(EU_LAYOUT.EAST.getName());
 		if (eastPart != null) {
 			try {
-//				String pcon = placePartContent(eastPart);
-//				String[] lines = StringUtil.toLines(pcon);
-//				east_width = StringUtil.maxLine(pcon);
-//				writeLine(cursor, lines);
 				List<List<String>> contentList = placePartContent(eastPart, width);
-				east_width = maxLine(contentList);
+				east_width = PortalShellUtil.maxLine(contentList);
 				writeLine(cursor, contentList);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -789,10 +753,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		PlacePart centerPart = placeMap.get(EU_LAYOUT.CENTER.getName());
 		if (centerPart != null) {
 			try {
-//				String pcon = placePartContent(centerPart);
-//				int center_width = width - west_width - east_width;
-//				String[] lines = StringUtil.toLines(pcon, center_width);
-//				writeLine(cursor, lines);
 				int center_width = width - west_width - east_width;
 				List<List<String>> contentList = placePartContent(centerPart, center_width);
 				writeLine(cursor, contentList);
@@ -874,28 +834,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	/*
-	protected void writeLine(ShellCursor cursor, String[] lines) {
-		int default_x = cursor.getX();
-		boolean first = true;
-		for (String line : lines) {
-			try {
-				if (first)
-					first = false;
-				else
-					shiftDown(1);
-				
-				write(cursor, line);
-				shiftLeft(StringUtil.getWordCount(line));
-				cursor.setX(default_x);
-				cursor.addY(1);
-			} catch (IOException e) {
-				DevAssistant.errorln(e);
-			}
-		}
-	}
-	*/
-	
 	protected void write(ShellCursor cursor, String[] lines) {
 		int default_x = cursor.getX();
 		boolean first = true;
@@ -960,12 +898,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return null;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#view()
-	 */
-	@Override
-	protected void view() throws CIBusException {
+	@Override protected void view() throws CIBusException {
 		try {
 			draw();
 		} catch (IOException e) {
@@ -973,8 +906,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 
-	@Override
-	protected ShellCursor initCursorPosistion() {
+	@Override protected ShellCursor initCursorPosistion() {
 		return new ShellCursor(0, 0);
 	}
 	

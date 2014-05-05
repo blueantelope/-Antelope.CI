@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.portal.project.command;
 
+import java.io.IOException;
+
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.command.Command;
@@ -23,7 +26,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2014-2-27		下午6:10:08 
  */
-@Command(name="new_project", commands="n, N", status=BusProjectShellStatus.PROJECT, type=CommandType.HIT, beforeClear=true)
+@Command(name="new_project", commands="n, N", status=BusProjectShellStatus.PROJECT, type=CommandType.HIT, beforeClear=false)
 public class NewProjectHit extends Hit {
 	/**
 	 * 
@@ -32,10 +35,13 @@ public class NewProjectHit extends Hit {
 	 */
 	@Override
 	protected String execute(BusShell shell, TerminalIO io, String status, Object... args) {
+		try {
+			shell.clearContent();
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
 		
-		// TODO Auto-generated method stub
-		return null;
-		
+		return BusProjectShellStatus.PROJECT;
 	}
 
 }

@@ -181,6 +181,7 @@ public abstract class BusShell {
 						if (wakeShell.getSession() == null)
 							wakeShell.attatchSession(session);
 						if (wakeShell.isOpened()) {
+							wakeShell.setLastStatus(status);
 							wakeShell.refresh();
 							wakeShell.loopAction();
 						} else {
@@ -251,7 +252,6 @@ public abstract class BusShell {
 						lastStatus = status;
 					break;
 			}
-//			status = actionStatus;
 		}
 	}
 
@@ -471,4 +471,6 @@ public abstract class BusShell {
 	protected abstract void action() throws CIBusException;
 
 	protected abstract void shutdown() throws CIBusException;
+	
+	public abstract void clearContent() throws IOException;
 }
