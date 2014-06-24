@@ -28,5 +28,16 @@ public interface Service {
 	 * @throws
 	 */
 	public void register(BundleContext m_context) throws CIBusException;
+	
+	/**
+	 * 卸载服务
+	 * @param  @param m_context
+	 * @param  @throws CIBusException
+	 * @return void
+	 * @throws
+	 */
+	public void unRegister(BundleContext m_context) throws CIBusException;
+	
+	public ServiceParameters getParameters();
 }
 

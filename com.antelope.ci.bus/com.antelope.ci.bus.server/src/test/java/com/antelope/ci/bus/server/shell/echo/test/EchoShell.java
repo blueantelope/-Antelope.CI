@@ -57,5 +57,12 @@ public class EchoShell extends BusBaseEchoShell {
 		
 	}
 
+	@Override
+	public void writeContent(Object content) throws IOException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 

@@ -157,4 +157,11 @@ public class TestFrameShell extends BusBaseFrameShell {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void writeContent(Object content) throws IOException {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

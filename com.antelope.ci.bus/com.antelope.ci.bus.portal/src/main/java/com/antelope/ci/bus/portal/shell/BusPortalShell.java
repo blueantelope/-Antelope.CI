@@ -69,6 +69,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			throw new CIBusException("", "must set configration of portal");
 	}
 	
+	@Override public void writeContent(Object content) throws IOException {
+		clearContent();
+		if (content instanceof ShellLineContentSet) {
+			ShellLineContentSet contentSet = (ShellLineContentSet) content;
+			this.writeLine(getContentCursor(), contentSet.getContentList());
+		}
+	}
+	
 	@Override public void clearContent() throws IOException {
 		if (contentPalette != null) {
 			int px = contentPalette.getX();
@@ -90,6 +98,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			shiftTop();
 			move(px, py);
 		}
+	}
+	
+	protected ShellCursor getContentCursor() {
+		return new ShellCursor(contentPalette.getX(), contentPalette.getY());
 	}
 	
 	protected void parsePortal() throws CIBusException {
@@ -768,17 +780,17 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	protected void writeLine(ShellCursor cursor, List<List<String>> contentList) {
+	protected void writeLine(ShellCursor cursor, List<List<String>> valueList) {
 		int default_x = cursor.getX();
 		boolean first = true;
-		for (List<String> content : contentList) {
+		for (List<String> value : valueList) {
 			try {
 				if (first)
 					first = false;
 				else
 					shiftDown(1);
 				int count = 0;
-				for (String c : content) {
+				for (String c : value) {
 					if (ShellText.isShellText(c)) {
 						ShellText text = writeFormat(cursor, c);
 						if (text != null)

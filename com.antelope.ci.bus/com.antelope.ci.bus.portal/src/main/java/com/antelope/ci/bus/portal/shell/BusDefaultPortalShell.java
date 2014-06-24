@@ -38,6 +38,5 @@ public class BusDefaultPortalShell extends BusPortalShell {
 	protected void shutdown() throws CIBusException {
 		
 	}
-
 }
 

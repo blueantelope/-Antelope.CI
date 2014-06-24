@@ -12,7 +12,9 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 import com.antelope.ci.bus.common.DevAssistant;
 

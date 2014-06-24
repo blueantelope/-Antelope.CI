@@ -49,7 +49,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 	private static final String BUS_LOAD_SERVICES = "bus.load.services";
 	private static final String DIVISION = ",";
 	protected static BundleContext m_context;
-	protected static Map<String, List<ServiceInfo>> serviceMap;
+	protected static Map<String, List<BusServiceInfo>> serviceMap;
 	protected static Properties properties; // bundle的属性
 	protected List<String> serviceList; // 需要加载的service列表
 	protected static ServiceReference log_ref = null;
@@ -62,7 +62,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 
 	public CommonBusActivator() {
 		super();
-		serviceMap = new HashMap<String, List<ServiceInfo>>();
+		serviceMap = new HashMap<String, List<BusServiceInfo>>();
 		properties = new Properties();
 		serviceList = new ArrayList<String>();
 		trackerList = new ArrayList<ServiceTracker>();
@@ -80,20 +80,20 @@ public abstract class CommonBusActivator implements BundleActivator {
 		return BusOsgiUtil.getBundleClassLoader(m_context);
 	}
 
-	public static Map<String, List<ServiceInfo>> getServiceMap() {
+	public static Map<String, List<BusServiceInfo>> getServiceMap() {
 		return serviceMap;
 	}
-
+	
 	public static ServiceReference getServiceReference(String serviceName, String className) {
-		ServiceInfo info;
-		if ((info=getServiceInfo(serviceName, className)) != null)
+		BusServiceInfo info;
+		if ((info=getBusServiceInfo(serviceName, className)) != null)
 			return info.ref;
 		return null;
 	}
 
 	public static Object getService(String serviceName, String className) {
-		ServiceInfo info;
-		if ((info=getServiceInfo(serviceName, className)) != null)
+		BusServiceInfo info;
+		if ((info=getBusServiceInfo(serviceName, className)) != null)
 			return info.service;
 		return null;
 	}
@@ -102,7 +102,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 		service_readLock.lock();
 		Object service = null;
 		try {
-			List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+			List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
 			if (infoList != null) {
 				service = infoList.get(0).getService();
 			}
@@ -118,10 +118,10 @@ public abstract class CommonBusActivator implements BundleActivator {
 		service_readLock.lock();
 		List<Object> sList = null;
 		try {
-			List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+			List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
 			if (infoList != null) {
 				sList = new ArrayList<Object>();
-				for (ServiceInfo info : infoList) {
+				for (BusServiceInfo info : infoList) {
 					sList.add(info.getService());
 				}
 				
@@ -134,15 +134,15 @@ public abstract class CommonBusActivator implements BundleActivator {
 		}
 	}
 	
-	private static ServiceInfo getServiceInfo(String serviceName, String className) {
+	private static BusServiceInfo getBusServiceInfo(String serviceName, String className) {
 		service_readLock.lock();
-		ServiceInfo serviceInfo = null;
+		BusServiceInfo BusServiceInfo = null;
 		try {
-			List<ServiceInfo> infoList =  serviceMap.get(serviceName);
+			List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
 			if (infoList != null) {
-				for (ServiceInfo info : infoList) {
+				for (BusServiceInfo info : infoList) {
 					if (info.className.equals(className)) {
-						serviceInfo = info;
+						BusServiceInfo = info;
 						break;
 					}
 				}
@@ -151,7 +151,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 			
 		} finally {
 			service_readLock.unlock();
-			return serviceInfo;
+			return BusServiceInfo;
 		}
 	}
 
@@ -322,11 +322,11 @@ public abstract class CommonBusActivator implements BundleActivator {
 		} else {
 			service_writeLock.lock();
 			try {
+				BusServiceInfo info = new BusServiceInfo(service_class_name, service, ref);
 				if (serviceMap.get(service_name) == null) {
-					serviceMap.put(service_name, new ArrayList<ServiceInfo>());
+					serviceMap.put(service_name, new ArrayList<BusServiceInfo>());
 				}
-				List<ServiceInfo> infoList = serviceMap.get(service_name);
-				ServiceInfo info = new ServiceInfo(service_class_name, service, ref);
+				List<BusServiceInfo> infoList = serviceMap.get(service_name);
 				infoList.add(info);
 			} catch (Exception e) {
 				
@@ -350,7 +350,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 			service_writeLock.lock();
 			try {
 				int del_index = -1;
-				for (ServiceInfo info : serviceMap.get(service_name)) {
+				for (BusServiceInfo info : serviceMap.get(service_name)) {
 					if (info.equals(servcie_class_name)) {
 						break;
 					}
@@ -384,9 +384,9 @@ public abstract class CommonBusActivator implements BundleActivator {
 		if (serviceMap.get(LOG_SERVICE_NAME) == null) {
 			DevAssistant.assert_out("加载日志service");
 			service_writeLock.lock();
-			List<ServiceInfo> logServiceList = new ArrayList<ServiceInfo>();
+			List<BusServiceInfo> logServiceList = new ArrayList<BusServiceInfo>();
 			String service_name = (String) log_ref.getProperty(BusOsgiConstants.SERVICE_NAME);
-			ServiceInfo logInfo = new ServiceInfo(service_name, logService, log_ref);
+			BusServiceInfo logInfo = new BusServiceInfo(service_name, logService, log_ref);
 			logServiceList.add(logInfo);
 			serviceMap.put(LOG_SERVICE_NAME, logServiceList);
 			service_writeLock.unlock();
@@ -401,7 +401,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 		try {
 			for (String service_name : serviceMap.keySet()) {
 				if (serviceMap.get(service_name) != null) {
-					for (ServiceInfo info : serviceMap.get(service_name)) {
+					for (BusServiceInfo info : serviceMap.get(service_name)) {
 						if (service_name.equals(LOG_SERVICE_NAME)) {
 							log_ref = null;
 							logService = null;
@@ -526,30 +526,4 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 * @throws
 	 */
 	protected abstract void removeServices() throws CIBusException;
-
-	// osgi service信息
-	private static class ServiceInfo {
-		public String className;
-		public Object service;
-		public ServiceReference ref;
-
-		public ServiceInfo(String className, Object service, ServiceReference ref) {
-			super();
-			this.className = className;
-			this.service = service;
-			this.ref = ref;
-		}
-		
-		public String getClassName() {
-			return className;
-		}
-
-		public Object getService() {
-			return service;
-		}
-
-		public ServiceReference getRef() {
-			return ref;
-		}
-	}
 }

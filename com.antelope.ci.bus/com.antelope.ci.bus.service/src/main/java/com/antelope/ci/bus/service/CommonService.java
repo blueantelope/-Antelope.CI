@@ -15,20 +15,29 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
 /**
- * common service, init log4j
+ * common service, template
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-8		下午12:21:38 
  */
-public abstract class CommonService {
+public abstract class CommonService implements Service {
 	protected static Logger log;
+	protected ServiceParameters parameters;
 	
+	public void setParameters(ServiceParameters parameters) {
+		this.parameters = parameters;
+	}
+
 	public CommonService() {
 		try {
 			log = CommonBusActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override public ServiceParameters getParameters() {
+		return parameters;
 	}
 }
 

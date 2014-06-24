@@ -473,4 +473,6 @@ public abstract class BusShell {
 	protected abstract void shutdown() throws CIBusException;
 	
 	public abstract void clearContent() throws IOException;
+	
+	public abstract void writeContent(Object content) throws IOException;
 }

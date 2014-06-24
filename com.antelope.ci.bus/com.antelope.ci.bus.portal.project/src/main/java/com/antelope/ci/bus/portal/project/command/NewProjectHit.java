@@ -9,9 +9,12 @@
 package com.antelope.ci.bus.portal.project.command;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
+import com.antelope.ci.bus.portal.shell.ShellLineContentSet;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -36,7 +39,11 @@ public class NewProjectHit extends Hit {
 	@Override
 	protected String execute(BusShell shell, TerminalIO io, String status, Object... args) {
 		try {
-			shell.clearContent();
+			ShellLineContentSet contentSet = new ShellLineContentSet();
+			List<String> line = new ArrayList<String>();
+			line.add("test");
+			contentSet.addLine(line);
+			shell.writeContent(contentSet);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		}

@@ -10,11 +10,16 @@ package com.antelope.ci.bus.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 
 
@@ -26,7 +31,7 @@ import com.antelope.ci.bus.osgi.BusOsgiUtil;
  */
 public class ServicePublisher {
 	private static final Logger log = Logger.getLogger(ServicePublisher.class);
-	private static List<String> serviceList = new ArrayList<String>();
+	private static Map<String, Service> serviceMap = new ConcurrentHashMap<String, Service>();
 
 	public static void publish(BundleContext m_context) {
 		new ServicePublishHook(m_context).start();
@@ -42,31 +47,47 @@ public class ServicePublisher {
 			while (true) {
 				String cls_name = "";
 				try {
-					List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.service", 
+					List<String> classList = ClassFinder.findClasspath("com.antelope.ci.bus.service", 
 							BusOsgiUtil.getBundleClassLoader(m_context));
 					List<String> regList = new ArrayList<String>();
 					for (String cls : classList) {
 						cls_name = cls;
-						boolean isReg = true;
-						for (String service : serviceList) {
-							if (cls.equals(service)) {
-								isReg = false;
+						boolean needReg = true;
+						for (String service_cls : serviceMap.keySet()) {
+							if (cls.equals(service_cls)) {
+								needReg = false;
 								break;
 							}
 						}
-						if (isReg) {
+						if (needReg) {
 							Class clazz = Class.forName(cls);
 							if (Service.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(BusService.class)) {
 								BusService bs =  (BusService) clazz.getAnnotation(BusService.class);
 								Service service = (Service) clazz.newInstance();
-								String serviceName = bs.name();
-								BusOsgiUtil.addServiceToContext(m_context, service, serviceName);
-								regList.add(cls);
-								log.info("add service :" + cls_name);
+								Properties props = new Properties();
+								props.load(service.getClass().getResourceAsStream("service.properties"));
+								String alStr = PropertiesUtil.getString(props, "autoload", "on");
+								boolean autoload = false;
+								if ("on".equalsIgnoreCase(alStr.trim()))
+									autoload = true;
+								if (autoload) {
+									String serviceName = bs.name();
+									BusOsgiUtil.addServiceToContext(m_context, service, serviceName);
+									serviceMap.put(cls, service);
+									log.info("add service :" + cls_name);
+								}
+							}
+						} else {
+							Service service = serviceMap.get(cls);
+							ServiceParameters parameters = service.getParameters();
+							if (parameters.needUnload()) {
+								ServiceReference ref = m_context.getServiceReference(cls);
+								m_context.ungetService(ref);
+								serviceMap.remove(cls);
+								log.info("remove service :" + cls_name);
 							}
 						}
 					}
-					serviceList.addAll(regList);
 				} catch (Exception e) {
 					e.printStackTrace();
 					log.warn("problem for add service :" + cls_name);
