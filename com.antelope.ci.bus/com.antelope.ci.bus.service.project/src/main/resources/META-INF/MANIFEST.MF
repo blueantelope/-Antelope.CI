@@ -4,5 +4,6 @@ Bundle-Name: com.antelope.ci.bus.service.project
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.service.project
 Export-Package: com.antelope.ci.bus.service.project
-Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, com.antelope.ci.bus.service
+Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, 
+ com.antelope.ci.bus.service, com.antelope.ci.bus.model.project
 Bundle-Vendor: blueantelope@gmail.com

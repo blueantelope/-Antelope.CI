@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.service.project;
 
+import com.antelope.ci.bus.model.project.Project;
 import com.antelope.ci.bus.service.ServiceOpResult;
 
 
@@ -25,6 +26,6 @@ public interface ProjectService {
 	 * @return ServiceOpResult
 	 * @throws
 	 */
-	public ServiceOpResult addProject(ProjectInfo project);
+	public ServiceOpResult addProject(Project project);
 }
 

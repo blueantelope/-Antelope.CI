@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.antelope.ci.bus</groupId>
-	<artifactId>com.antelope.ci.bus.service.project</artifactId>
+	<artifactId>com.antelope.ci.bus.storage</artifactId>
 	<version>0.1.0</version>
 
 	<dependencies>
@@ -14,16 +14,6 @@
 		<dependency>
 			<groupId>com.antelope.ci.bus</groupId>
 			<artifactId>com.antelope.ci.bus.logger</artifactId>
-			<version>0.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.antelope.ci.bus</groupId>
-			<artifactId>com.antelope.ci.bus.service</artifactId>
-			<version>0.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.antelope.ci.bus</groupId>
-			<artifactId>com.antelope.ci.bus.model.project</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>

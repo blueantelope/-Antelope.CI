@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: com.antelope.ci.bus.model.project
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.model.project
+Bundle-Vendor: blueantelope@gmail.com
