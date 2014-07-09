@@ -8,14 +8,10 @@
 
 package com.antelope.ci.bus.server.service;
 
-import java.util.List;
-import java.util.Vector;
-
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
-import com.antelope.ci.bus.common.ClassFinder;
-import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.osgi.ServicePublishHook;
 
 
 /**
@@ -26,57 +22,27 @@ import com.antelope.ci.bus.osgi.BusOsgiUtil;
  */
 public class ServicePublisher {
 	private static final Logger log = Logger.getLogger(ServicePublisher.class);
-	private static List<String> serviceList = new Vector<String>();
-	private static List<String> scanedList = new Vector<String>();
-
-	public static void publish(BundleContext m_context) {
-		new ServicePublishHook(m_context).start();
-	}
 	
-	private static class ServicePublishHook extends Thread {
-		private BundleContext m_context;
-		private ServicePublishHook(BundleContext m_context) {
-			this.m_context = m_context;
-		}
-		
-		public void run() {
-			while (true) {
-				String cls_name = "";
-				try {
-					List<String>  classList = ClassFinder.findClasspath("com.antelope.ci.bus.server.service", 
-							BusOsgiUtil.getBundleClassLoader(m_context));
-					for (String cls : classList) {
-						cls_name = cls;
-						boolean scaned = false;
-						for (String scanedCls : scanedList) {
-							if (scanedCls.equals(cls)) {
-								scaned = true;
-								break;
-							}
-						}
-						if (!scaned) {
-							scanedList.add(cls);
-							Class clazz = Class.forName(cls, false, BusOsgiUtil.getBundleClassLoader(m_context));
-							if (Service.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(ServerService.class)) {
-								ServerService ss =  (ServerService) clazz.getAnnotation(ServerService.class);
-								Service service = (Service) clazz.newInstance();
-								String serviceName = ss.serviceName();
-								BusOsgiUtil.addServiceToContext(m_context, service, serviceName);
-								serviceList.add(cls);
-								log.info("add service :" + cls_name);
-							}
-						}
+	public static void publish(BundleContext m_context) {
+		new ServicePublishHook(m_context, "com.antelope.ci.bus.server.service") {
+			@Override protected ServicePublishInfo fetchService(Class clazz) {
+				ServicePublishInfo info = new ServicePublishInfo();
+				if (Service.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(ServerService.class)) {
+					try {
+						ServerService ss =  (ServerService) clazz.getAnnotation(ServerService.class);
+						Service service = (Service) clazz.newInstance();
+						String serviceName = ss.serviceName();
+						info.canPublish = true;
+						info.service = service;
+						info.serviceName = serviceName;
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
-					log.warn("problem for add service :" + cls_name);
 				}
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-				}
+				return info;
 			}
-		}
+			
+		}.start();
 	}
 }
 
