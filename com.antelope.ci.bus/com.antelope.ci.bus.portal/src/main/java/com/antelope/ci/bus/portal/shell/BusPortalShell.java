@@ -110,7 +110,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		BusPortalConfigurationHelper configHelper = BusPortalConfigurationHelper.getHelper();
 		if (thisCls.isAnnotationPresent(PortalConfiguration.class)) {
 			PortalConfiguration pc = (PortalConfiguration) thisCls.getAnnotation(PortalConfiguration.class);
-			configHelper.addConfigPair(thisCls.getName(), pc.properties(), pc.xml());
+			configHelper.addConfigPair(thisCls.getName(), pc.properties(), pc.xml(), pc.validate());
 		} 
 		portal = configHelper.parse(this.getClass().getName());
 	}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<style>
+		<font style="normal" mark="shade" size="medium" />
+		<delimiter value="|" position="middle" margin="before:3,after:3" />
+	</style>
+	<content>
+		<group>
+			<textfield name="project.name">
+				<label length="100" row_size="0" column_width="20%" name="${new.project.title}">
+					<style>
+						<font style="normal" mark="shade" size="medium" />
+						<align position="middle" fill="" margin="before:3,after:3" />
+					</style>
+				</label>
+				<value length="100" row_size="0" column_width="80%" value="">
+					<style>
+						<font style="normal" mark="shade" size="medium" />
+						<align position="middle" fill="" margin="before:3,after:3" />
+					</style>
+				</value>
+			</textfield>
+		</group>
+	</content>
+</form>

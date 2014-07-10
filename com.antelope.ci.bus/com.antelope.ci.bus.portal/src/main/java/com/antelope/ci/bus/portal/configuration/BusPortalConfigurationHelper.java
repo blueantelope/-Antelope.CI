@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.configuration;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -71,6 +72,7 @@ public class BusPortalConfigurationHelper {
 	private static final String FILE_SUFFIX 										= "file:";
 	private static final String LABLE_START = "${";
 	private static final String LABLE_END = "}";
+	private static final String PORTAL_XSD= "/com/antelope/ci/bus/portal/configuration/portal.xsd";
 	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/configuration/portal.xml";
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.configuration.portal";
 	private static Logger log;
@@ -83,6 +85,7 @@ public class BusPortalConfigurationHelper {
 	private static int null_name_index;
 	private boolean inited = false;
 	private EU_ParseType parseType;
+	private static InputStream xsd_in = null;
 	private final static String PARSETYPE_KEY									= "bus.portal.parse";	
 	private final static String DEFAULT_PARSETYPEVALUE					= "static";
 	private final static EU_ParseType DEFAULT_PARSETYPE 				= EU_ParseType.STATICAL;
@@ -104,10 +107,15 @@ public class BusPortalConfigurationHelper {
 		classLoader = this.getClass().getClassLoader();
 		null_name_index = 0;
 		portalExtMap = new ConcurrentHashMap<String, Portal>();
+		try {
+			xsd_in = new FileInputStream(PORTAL_XSD);
+		} catch (FileNotFoundException e) {
+			DevAssistant.errorln(e);
+		}
 	}
 	
-	public void addConfigPair(String name, String props_name, String xml_name) {
-		PortalPair pair = new PortalPair(props_name, xml_name);
+	public void addConfigPair(String name, String props_name, String xml_name, boolean validate) {
+		PortalPair pair = new PortalPair(props_name, xml_name, validate);
 		configPairMap.put(name, pair);
 	}
 	
@@ -126,7 +134,16 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private Portal parseDynamic(String shellClass) throws CIBusException {
-		Portal global_portal = parsePortal(PORTAL_XML);
+		PortalPair pp = configPairMap.get(shellClass);
+		Portal global_portal;
+		if (pp != null) {
+			if (pp.isValidate())
+				global_portal = validateAndParsePortal(PORTAL_XML);
+			else
+				throw new CIBusException("", "validate error");
+		}
+		
+		global_portal = parsePortal(PORTAL_XML);
 		ResourceReader global_reader = parseResource(PORTAL_RESOURCE, classLoader);
 		
 		return global_portal;
@@ -136,16 +153,23 @@ public class BusPortalConfigurationHelper {
 		Map<String, Portal> minorPortalMap = new HashMap<String, Portal>();
 		Portal majorExt = null;
 		BasicConfigrationReader majorExt_reader = null;
+		PortalPair portalPair = configPairMap.get(shellClass);
 		for (String ck : configPairMap.keySet()) {
 			try {
 				InputStream xml_in = getXmlStream(configPairMap.get(ck).getXml_name());
 				Portal extPortal;
 				if (ck.equals(shellClass)) {
-					majorExt = parsePortal(xml_in);
+					if (portalPair != null && portalPair.isValidate())
+						majorExt = validateAndParsePortal(xml_in);
+					else 
+						majorExt = parsePortal(xml_in);
 					majorExt_reader = parseProperties(configPairMap.get(ck).getProps_name(), ck, classLoader);
 					extPortal = majorExt;
 				} else {
-					extPortal = parsePortal(xml_in);
+					if (portalPair != null && portalPair.isValidate())
+						extPortal = validateAndParsePortal(xml_in);
+					else 
+						extPortal = parsePortal(xml_in);
 					minorPortalMap.put(ck, extPortal);
 				}
 				portalExtMap.put(ck, extPortal);
@@ -480,9 +504,18 @@ public class BusPortalConfigurationHelper {
 		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
 		return (Portal) BusXmlHelper.parse(Portal.class, in);
 	}
+	
+	private Portal validateAndParsePortal(String xml_path) throws CIBusException {
+		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
+		return (Portal) BusXmlHelper.parse(Portal.class, in, xsd_in);
+	}
 
 	private Portal parsePortal(InputStream xml_in) throws CIBusException {
 		return (Portal) BusXmlHelper.parse(Portal.class, xml_in);
+	}
+	
+	private Portal validateAndParsePortal(InputStream xml_in) throws CIBusException {
+		return (Portal) BusXmlHelper.parse(Portal.class, xml_in, xsd_in);
 	}
 	
 	private BasicConfigrationReader parseProperties(String path, String packageName, ClassLoader cl) throws CIBusException {
@@ -996,16 +1029,21 @@ public class BusPortalConfigurationHelper {
 	private static class PortalPair {
 		private String props_name;
 		private String xml_name;
-		public PortalPair(String props_name, String xml_name) {
+		private boolean validate;
+		public PortalPair(String props_name, String xml_name, boolean validate) {
 			super();
 			this.props_name = props_name;
 			this.xml_name = xml_name;
+			this.validate = validate;
 		}
 		public String getProps_name() {
 			return props_name;
 		}
 		public String getXml_name() {
 			return xml_name;
+		}
+		public boolean isValidate() {
+			return validate;
 		}
 	}
 }

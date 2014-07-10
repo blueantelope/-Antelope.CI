@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	elementFormDefault="qualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+				2014-07-10 Monday
+				blueantelope@gmail.com
+				portal form schema
+		</xs:documentation>
+	</xs:annotation>
+	<xs:element name="form">
+	
+	</xs:element>
+</xs:schema>

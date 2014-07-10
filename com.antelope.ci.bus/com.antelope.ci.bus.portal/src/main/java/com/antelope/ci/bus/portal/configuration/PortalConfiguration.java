@@ -29,5 +29,7 @@ public @interface PortalConfiguration {
 	String xml();
 	
 	String properties();
+	
+	boolean validate() default false;
 }
 

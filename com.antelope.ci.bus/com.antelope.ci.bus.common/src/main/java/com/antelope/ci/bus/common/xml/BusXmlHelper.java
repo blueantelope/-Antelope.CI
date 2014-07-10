@@ -8,11 +8,19 @@
 
 package com.antelope.ci.bus.common.xml;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -31,6 +39,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-11-14		上午11:43:43 
  */
 public class BusXmlHelper {
+	private final static String LANGUAGE = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+	
 	public static SetterGetterPair[] FetchPairOfXml(Class<?> clazz) {
 		List<SetterGetterPair> pairList = new ArrayList<SetterGetterPair>();
 		for (Method getm : fetchGetOfXml(clazz)) {
@@ -74,6 +84,27 @@ public class BusXmlHelper {
 		return mList.toArray(new Method[mList.size()]);
 	}
 	
+	public static Object parse(Class<?> clazz, InputStream input, InputStream xsd_in) throws CIBusException {
+		ValidateInfo val_info = validate(input, xsd_in);
+		if (!val_info.isResult()) {
+			System.out.println(val_info.getError());
+			return null;
+		}
+		Object o = null;
+		if (clazz.isAnnotationPresent(XmlEntity.class)) {
+			Document document = load(input);
+			XmlEntity xmlRoot = (XmlEntity) clazz.getAnnotation(XmlEntity.class);
+			try {
+				o = ProxyUtil.createObject(clazz);
+				if (o != null)
+					parseXml(document, o, "/"+xmlRoot.name(), clazz.getClassLoader());
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+		} 
+		return o;
+	}
+	
 	public static Object parse(Class<?> clazz, InputStream input) throws CIBusException {
 		Object o = null;
 		if (clazz.isAnnotationPresent(XmlEntity.class)) {
@@ -88,6 +119,35 @@ public class BusXmlHelper {
 			} 
 		} 
 		return o;
+	}
+	
+	public static ValidateInfo validate(InputStream xml_in, InputStream xsd_in) {
+		try {
+			SchemaFactory factory = SchemaFactory.newInstance(LANGUAGE);
+			Schema schema = factory.newSchema(new StreamSource(xsd_in));	// schema验证文件
+			Validator validator = schema.newValidator();
+			validator.validate(new StreamSource(xml_in));									// xml被验证文件
+			return new ValidateInfo(true, "");
+		} catch (Exception e) {
+			System.out.println(e);
+			return new ValidateInfo(false, e.getMessage());
+		}
+	}
+	
+	private static class ValidateInfo {
+		public boolean result = false;
+		public String error = "";
+		public ValidateInfo(boolean result, String error) {
+			super();
+			this.result = result;
+			this.error = error;
+		}
+		public boolean isResult() {
+			return result;
+		}
+		public String getError() {
+			return error;
+		}
 	}
 	
 	private static Document load(InputStream input) throws CIBusException {
