@@ -11,7 +11,7 @@ package com.antelope.ci.bus.portal;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.entrance.EntranceManager;
+import com.antelope.ci.bus.portal.core.entrance.EntranceManager;
 import com.antelope.ci.bus.server.BusCommonServerActivator;
 
 

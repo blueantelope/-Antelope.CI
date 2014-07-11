@@ -9,9 +9,9 @@
 package com.antelope.ci.bus.portal.project;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.configuration.PortalConfiguration;
+import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
+import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.project.command.NewProjectHit;
-import com.antelope.ci.bus.portal.shell.BusPortalShell;
 import com.antelope.ci.bus.server.shell.Shell;
 
 

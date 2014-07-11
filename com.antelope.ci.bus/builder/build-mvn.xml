@@ -89,6 +89,94 @@
 		</exec>
 	</target>
 	
+	<target name="storage.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="storage.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="storage.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="storage.database.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.database.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="storage.database.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.database.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="storage.database.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.database.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="storage.flatfile.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.flatfile.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="storage.flatfile.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.flatfile.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="storage.flatfile.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.flatfile.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="storage.ldap.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.ldap.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="storage.ldap.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.ldap.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="storage.ldap.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.storage.ldap.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
 	<target name="model.user.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.model.user.pom}" />
@@ -111,6 +199,28 @@
 		</exec>
 	</target>
 
+	<target name="model.project.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.model.project.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="model.project.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.model.project.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="model.project.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.model.project.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
 	<target name="server.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
@@ -150,6 +260,28 @@
 	<target name="logger.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.logger.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<target name="portal.core.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.core.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+
+	<target name="portal.core.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.core.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+
+	<target name="portal.core.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.core.pom}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>

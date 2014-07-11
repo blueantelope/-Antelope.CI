@@ -16,7 +16,7 @@ import com.antelope.ci.bus.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.model.user.UserKey;
 import com.antelope.ci.bus.model.user.UserPassword;
 import com.antelope.ci.bus.portal.BusPortalServer;
-import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;

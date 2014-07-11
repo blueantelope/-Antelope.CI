@@ -14,8 +14,8 @@ import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
-import com.antelope.ci.bus.portal.configuration.BusPortalConfigurationHelper;
-import com.antelope.ci.bus.portal.shell.BusDefaultPortalShell;
+import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.shell.BusDefaultPortalShell;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;

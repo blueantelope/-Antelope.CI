@@ -1,6 +1,6 @@
-app
-source
-target
+/app
+/source
+/target
 *.class
 *.java
 *.jar

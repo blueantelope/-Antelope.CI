@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.portal.core.shell.ShellLineContentSet;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
-import com.antelope.ci.bus.portal.shell.ShellLineContentSet;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;

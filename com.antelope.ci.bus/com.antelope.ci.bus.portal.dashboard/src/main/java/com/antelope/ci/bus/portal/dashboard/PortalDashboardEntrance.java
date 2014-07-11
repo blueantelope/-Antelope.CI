@@ -11,8 +11,8 @@ package com.antelope.ci.bus.portal.dashboard;
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.entrance.CommonEntrance;
-import com.antelope.ci.bus.portal.entrance.PortalEntrance;
+import com.antelope.ci.bus.portal.core.entrance.CommonEntrance;
+import com.antelope.ci.bus.portal.core.entrance.PortalEntrance;
 
 
 /**

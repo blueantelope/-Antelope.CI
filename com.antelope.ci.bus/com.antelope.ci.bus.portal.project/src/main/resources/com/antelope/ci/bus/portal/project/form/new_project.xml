@@ -2,7 +2,7 @@
 <form>
 	<style>
 		<font style="normal" mark="shade" size="medium" />
-		<delimiter value="|" position="middle" margin="before:3,after:3" />
+		<align position="middle" fill="" margin="before:3,after:3" />
 	</style>
 	<content>
 		<group>
