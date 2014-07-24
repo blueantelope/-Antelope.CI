@@ -16,7 +16,6 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="portal.core.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile" />
@@ -43,7 +42,6 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="service.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="portal.core.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile.notest" />
@@ -138,7 +136,6 @@
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
-				<include name="com.antelope.ci.bus.portal.core-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		
@@ -166,6 +163,7 @@
 		<mkdir dir="${app.portal.service.bundle.service}" />
 		<mkdir dir="${app.portal.bundle}" />
 		<mkdir dir="${app.portal.bundle.lib}" />
+		<mkdir dir="${app.portal.bundle.service}" />
 		<mkdir dir="${app.portal.bundle.part}" />
 		<mkdir dir="${app.portal.lib}" />
 		<mkdir dir="${app.portal.lib.ext}" />

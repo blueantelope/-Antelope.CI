@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.portal.core.configuration;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -107,11 +106,7 @@ public class BusPortalConfigurationHelper {
 		classLoader = this.getClass().getClassLoader();
 		null_name_index = 0;
 		portalExtMap = new ConcurrentHashMap<String, Portal>();
-		try {
-			xsd_in = new FileInputStream(PORTAL_XSD);
-		} catch (FileNotFoundException e) {
-			DevAssistant.errorln(e);
-		}
+		xsd_in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_XSD);
 	}
 	
 	public void addConfigPair(String name, String props_name, String xml_name, boolean validate) {

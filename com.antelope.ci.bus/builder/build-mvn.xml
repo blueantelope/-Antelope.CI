@@ -265,28 +265,6 @@
 		</exec>
 	</target>
 	
-	<target name="portal.core.compile" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.portal.core.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-
-	<target name="portal.core.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.portal.core.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="portal.core.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.portal.core.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-
 	<target name="portal.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.pom}" />

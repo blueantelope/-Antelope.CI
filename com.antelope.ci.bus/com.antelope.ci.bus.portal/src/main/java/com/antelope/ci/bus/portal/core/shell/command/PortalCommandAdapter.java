@@ -31,7 +31,7 @@ public class PortalCommandAdapter extends HitAdapter {
 	}
 	
 	private void init_add() throws CIBusException {
-		addCommands("com.antelope.ci.bus.portal.shell.command");
+		addCommands("com.antelope.ci.bus.portal.core.shell.command");
 	}
 }
 

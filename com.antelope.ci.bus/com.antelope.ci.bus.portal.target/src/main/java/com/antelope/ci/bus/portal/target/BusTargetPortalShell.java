@@ -21,7 +21,7 @@ import com.antelope.ci.bus.server.shell.Shell;
  * @version  0.1
  * @Date	 2014-4-12		下午9:51:03 
  */
-@Shell(name="portal.target", commandAdapter="com.antelope.ci.bus.portal.shell.command.PortalCommandAdapter", status=BusTargetShellStatus.TARGET)
+@Shell(name="portal.target", commandAdapter="com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter", status=BusTargetShellStatus.TARGET)
 @PortalConfiguration(xml="classpath:/com/antelope/ci/bus/portal/target/portal_target", properties="classpath:com.antelope.ci.bus.portal.target.portal_target")
 public class BusTargetPortalShell extends BusPortalShell {
 

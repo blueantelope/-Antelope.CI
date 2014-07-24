@@ -4,6 +4,14 @@ Bundle-Name: com.antelope.ci.bus.portal
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.portal
 Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, 
- com.antelope.ci.bus.server, com.antelope.ci.bus.portal.core.entrance
+ com.antelope.ci.bus.server, com.antelope.ci.bus.server.shell,
+ com.antelope.ci.bus.server.shell.core, com.antelope.ci.bus.server.shell.buffer,
+ com.antelope.ci.bus.server.shell.command, com.antelope.ci.bus.server.shell.command.echo,
+ com.antelope.ci.bus.server.shell.command.hit
+DynamicImport-Package: com.antelope.ci.bus.server.model.*, com.antelope.ci.bus.server.service.*
+Export-Package: com.antelope.ci.bus.portal.core.configuration, com.antelope.ci.bus.portal.core.configuration.xo,
+ com.antelope.ci.bus.portal.core.configuration.xo.form, com.antelope.ci.bus.portal.core.configuration.xo.meta,
+ com.antelope.ci.bus.portal.core.configuration.xo.portal, com.antelope.ci.bus.portal.core.entrance,
+ com.antelope.ci.bus.portal.core.shell, com.antelope.ci.bus.portal.core.shell.command
 Bundle-Activator: com.antelope.ci.bus.portal.BusPortalActivator
 Bundle-Vendor: blueantelope@gmail.com
