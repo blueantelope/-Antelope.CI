@@ -37,5 +37,9 @@ public @interface Command {
 	CommandType type();
 	
 	boolean beforeClear() default false;
+	
+	String form() default "";
+	
+	String property() default "";
 }
 

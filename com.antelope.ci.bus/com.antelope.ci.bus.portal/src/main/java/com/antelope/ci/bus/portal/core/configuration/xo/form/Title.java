@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.configuration.xo.Content.java
+// com.antelope.ci.bus.portal.core.configuration.xo.form.Title.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -6,12 +6,12 @@
  * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.core.configuration.xo.portal;
+package com.antelope.ci.bus.portal.core.configuration.xo.form;
 
 import java.io.Serializable;
 
-import com.antelope.ci.bus.common.StringUtil;
-import com.antelope.ci.bus.common.xml.XmlCdata;
+import com.antelope.ci.bus.common.xml.XmlAttribute;
+import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
 import com.antelope.ci.bus.server.shell.ShellText;
@@ -22,40 +22,31 @@ import com.antelope.ci.bus.server.shell.ShellText;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-2-2		下午8:03:52 
+ * @Date	 2014-7-28		上午9:35:38 
  */
-@XmlEntity(name="content")
-public class Content implements Serializable {
+@XmlEntity(name="title")
+public class Title implements Serializable {
 	private String value;
-	private FontExpression font;
+	private Style style;
 	
-	public Content(String value) {
-		super();
-		this.value = value;
-	}
-
-	public Content() {
-		super();
-	}
-	
-	@XmlCdata
+	@XmlAttribute(name="value")
 	public String getValue() {
 		return value;
 	}
-
 	public void setValue(String value) {
 		this.value = value;
 	}
-
-	public FontExpression getFont() {
-		return font;
+	
+	@XmlElement(name="style")
+	public Style getStyle() {
+		return style;
 	}
-
-	public void setFont(FontExpression font) {
-		this.font = font;
+	public void setStyle(Style style) {
+		this.style = style;
 	}
 	
 	@Override public String toString() {
+		StyleFont font = style.getFont();
 		if (font != null)
 			return toShellText().toString();
 		return value;
@@ -64,24 +55,17 @@ public class Content implements Serializable {
 	public ShellText toShellText() {
 		ShellText text = new ShellText();
 		text.setText(value);
-		text.setFont_mark(font.getMark().getCode());
-		text.setFont_size(font.getSize().getCode());
-		text.setFont_style(font.getSytle().getCode());
+		StyleFont font = style.getFont();
+		FontExpression fontExp = font.toFontExpression();
+		text.setFont_mark(fontExp.getMark().getCode());
+		text.setFont_size(fontExp.getSize().getCode());
+		text.setFont_style(fontExp.getSytle().getCode());
 		
 		return text;
 	}
 	
 	public boolean isShellText() {
 		return ShellText.isShellText(value);
-	}
-	
-	public String getShellValue() {
-		if (isShellText()) {
-			ShellText text = ShellText.toShellText(value.trim());
-			return text.getText();
-		}
-		
-		return value;
 	}
 }
 

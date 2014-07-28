@@ -13,7 +13,6 @@ import java.util.List;
 
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
-import com.antelope.ci.bus.portal.core.configuration.xo.portal.Place;
 
 
 /**
@@ -25,8 +24,17 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.Place;
  */
 @XmlEntity(name="content")
 public class Content implements Serializable {
+	private Title title;
 	private List<Group> groupList;
-
+	
+	@XmlElement(name="title")
+	public Title getTitle() {
+		return title;
+	}
+	public void setTitle(Title title) {
+		this.title = title;
+	}
+	
 	@XmlElement(name="group", isList=true, listClass=Group.class)
 	public List<Group> getGroupList() {
 		return groupList;

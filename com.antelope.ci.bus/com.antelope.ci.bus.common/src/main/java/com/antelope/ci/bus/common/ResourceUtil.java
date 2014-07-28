@@ -9,10 +9,13 @@
 package com.antelope.ci.bus.common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
@@ -23,6 +26,53 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-7-31 下午12:39:34
  */
 public class ResourceUtil {
+	public static final String CP_SUFFIX 										= "classpath:";
+	public static final String FILE_SUFFIX 										= "file:";
+	public static final String LABLE_START 									= "${";
+	public static final String LABLE_END										= "}";
+	
+	public static InputStream getXmlStream(Class cls, String xpath) throws CIBusException {
+		try {
+			if (!StringUtil.endsWithIgnoreCase(xpath, ".xml"))
+				xpath += ".xml";
+			if (xpath.startsWith(CP_SUFFIX)) {
+				String n_xpath = xpath.substring(CP_SUFFIX.length());
+				return cls.getResourceAsStream(n_xpath);
+			}
+			
+			if (xpath.startsWith(FILE_SUFFIX)) {
+				String n_xpath = xpath.substring(FILE_SUFFIX.length());
+				return new FileInputStream(n_xpath);
+			}
+			
+			return new URL(xpath).openStream();
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static String replaceLable(String value, BasicConfigrationReader r) {
+		StringBuffer buf = new StringBuffer();
+		int len = value.length();
+		int index = 0;
+		while (index < len) {
+			int start = value.indexOf(LABLE_START, index);
+			if (start == -1)
+				break;
+			int end = value.indexOf(LABLE_END, start);
+			String key = value.substring(start+2, end);
+			String v = r.getString(key);
+			v = (v == null) ? "" : v;
+			buf.append(value.substring(index, start)).append(v);
+			index = end + 1;
+		}
+		
+		if (index < len)
+			buf.append(value.substring(index));
+		
+		return buf.toString();
+	}
+	
 	/**
 	 * 取得jar所在的上级目录
 	 * 

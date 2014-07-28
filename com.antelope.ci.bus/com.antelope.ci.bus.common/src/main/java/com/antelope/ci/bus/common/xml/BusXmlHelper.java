@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.common.xml;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

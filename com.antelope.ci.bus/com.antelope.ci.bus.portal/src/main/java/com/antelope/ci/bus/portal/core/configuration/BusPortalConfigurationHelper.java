@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.portal.core.configuration;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -27,6 +26,7 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
+import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.configration.CfgFileReader;
@@ -67,10 +67,6 @@ public class BusPortalConfigurationHelper {
 		return helper;
 	}
 	
-	private static final String CP_SUFFIX 											= "classpath:";
-	private static final String FILE_SUFFIX 										= "file:";
-	private static final String LABLE_START = "${";
-	private static final String LABLE_END = "}";
 	private static final String PORTAL_XSD= "/com/antelope/ci/bus/portal/core/configuration/portal.xsd";
 	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/core/configuration/portal.xml";
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.core.configuration.portal";
@@ -187,11 +183,11 @@ public class BusPortalConfigurationHelper {
 				case GLOBAL:
 					new_value = (String) pr.getValue();
 					if (needReplace(new_value))
-						new_value = replaceLable(new_value, reader);
+						new_value = ResourceUtil.replaceLable(new_value, reader);
 					break;
 				case PART:
 					if (majorExt_reader != null)
-						new_value = replaceLable((String) pr.getValue(), majorExt_reader);
+						new_value = ResourceUtil.replaceLable((String) pr.getValue(), majorExt_reader);
 					break;
 			}
 			if (!StringUtil.empty(new_value))
@@ -263,9 +259,9 @@ public class BusPortalConfigurationHelper {
 				String extValue = extPart.getValue();
 				if (!"".equals(extName)) {
 					if (needReplace(extValue))
-						extValue = replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
+						extValue = ResourceUtil.replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
 					if (needReplace(extValue))
-						extValue = replaceLable(extValue, reader);
+						extValue = ResourceUtil.replaceLable(extValue, reader);
 					extValue = toShellText(extValue, ext_font);
 				}
 				if (extList_count == pwpcList.size())
@@ -287,7 +283,7 @@ public class BusPortalConfigurationHelper {
 		if (ShellText.isShellText(value)) {
 			return content.getShellValue();
 		} else {
-			content.setFont(font.toContentFont());
+			content.setFont(font.toFontExpression());
 			return content.toShellText().toString();
 		}
 	}
@@ -453,28 +449,16 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private InputStream getXmlStream(String xpath) throws Exception {
-		if (!StringUtil.endsWithIgnoreCase(xpath, ".xml"))
-			xpath += ".xml";
-		if (xpath.startsWith(CP_SUFFIX)) {
-			String n_xpath = xpath.substring(CP_SUFFIX.length());
-			return BusPortalConfigurationHelper.class.getResourceAsStream(n_xpath);
-		}
-		
-		if (xpath.startsWith(FILE_SUFFIX)) {
-			String n_xpath = xpath.substring(FILE_SUFFIX.length());
-			return new FileInputStream(n_xpath);
-		}
-		
-		return new URL(xpath).openStream();
+		return ResourceUtil.getXmlStream(BusPortalConfigurationHelper.class, xpath);
 	}
 	
 	private String trunckConfig(String config) {
 		String new_config = config;
-		if (config.startsWith(CP_SUFFIX))
-			new_config = config.substring(CP_SUFFIX.length());
+		if (config.startsWith(ResourceUtil.CP_SUFFIX))
+			new_config = config.substring(ResourceUtil.CP_SUFFIX.length());
 		
-		if (new_config.startsWith(FILE_SUFFIX))
-			new_config = config.substring(FILE_SUFFIX.length());
+		if (new_config.startsWith(ResourceUtil.FILE_SUFFIX))
+			new_config = config.substring(ResourceUtil.FILE_SUFFIX.length());
 		
 		return new_config;
 	}
@@ -707,7 +691,7 @@ public class BusPortalConfigurationHelper {
 		for (PortalReplace pr : replaceList) {
 			String new_value = (String) pr.getValue();
 			if (needReplace(new_value))
-				new_value = replaceLable(new_value, r);
+				new_value = ResourceUtil.replaceLable(new_value, r);
 			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
 		}
 	}
@@ -718,38 +702,16 @@ public class BusPortalConfigurationHelper {
 		return StringUtil.contain(value, prefix, suffix);
 	}
 	
-	private String replaceLable(String value, BasicConfigrationReader r) {
-		StringBuffer buf = new StringBuffer();
-		int len = value.length();
-		int index = 0;
-		while (index < len) {
-			int start = value.indexOf(LABLE_START, index);
-			if (start == -1)
-				break;
-			int end = value.indexOf(LABLE_END, start);
-			String key = value.substring(start+2, end);
-			String v = r.getString(key);
-			v = (v == null) ? "" : v;
-			buf.append(value.substring(index, start)).append(v);
-			index = end + 1;
-		}
-		
-		if (index < len)
-			buf.append(value.substring(index));
-		
-		return buf.toString();
-	}
-	
 	private List<PortalReplace> genPortalReplaceList(Portal root) {
 		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
-		PortalReplaceTree tree = genPortalReplaceTree(root);
+		PortalReplaceTree<PortalReplace, PortalReplaceTree> tree = genPortalReplaceTree(root);
 		genPortalReplaceList(replaceList, tree);
 		return replaceList;
 	}
 	
-	private void genPortalReplaceList(List<PortalReplace> replaceList, PortalReplaceTree tree) {
+	private void genPortalReplaceList(List<PortalReplace> replaceList, PortalReplaceTree<PortalReplace, PortalReplaceTree> tree) {
 		if (tree.hasValue()) {
-			PortalReplace pr = tree.getValue();
+			PortalReplace pr = (PortalReplace) tree.getValue();
 			boolean added = true;
 			for (PortalReplace existPr : replaceList) {
 				if (pr.exist(existPr)) {
@@ -761,19 +723,19 @@ public class BusPortalConfigurationHelper {
 				replaceList.add(pr);
 		}
 		
-		for (PortalReplaceTree child : tree.getChildren())
-			genPortalReplaceList(replaceList, child);
+		for (Object child : tree.getChildren())
+			genPortalReplaceList(replaceList, (PortalReplaceTree) child);
 	}
 	
 	private PortalReplaceTree genPortalReplaceTree(Portal root) {
-		PortalReplaceTree tree = new PortalReplaceTree();
+		PortalReplaceTree<PortalReplace, PortalReplaceTree> tree = new PortalReplaceTree<PortalReplace, PortalReplaceTree>();
 		tree.isRoot();
 		genPortalReplaceTree(root, tree, root, EU_ORIGIN.GLOBAL);
 		return tree;
 	}
 	
 	private void genPortalReplaceTree(Portal replacePortal, PortalReplaceTree tree, Object root, EU_ORIGIN origin) {
-		List<PortalReplaceTree> deepList = new ArrayList<PortalReplaceTree>();
+		List<PortalReplaceTree<PortalReplace, PortalReplaceTree>> deepList = new ArrayList<PortalReplaceTree<PortalReplace, PortalReplaceTree>>();
 		EU_ORIGIN child_origin = origin;
 		
 		if (root instanceof Part) {
@@ -849,10 +811,10 @@ public class BusPortalConfigurationHelper {
 				List list =(List) deep.getValue().getValue();
 				for (Object o : list)
 					if (deep.getValue() != null)
-						genPortalReplaceTree(replacePortal, deep, o, deep.getValue().getOrigin());
+						genPortalReplaceTree(replacePortal, deep, o, ((PortalReplace) deep.getValue()).getOrigin());
 			} else {
 				if (deep.getValue() != null)
-					genPortalReplaceTree(replacePortal, deep, deep.getValue().getValue(), deep.getValue().getOrigin());
+					genPortalReplaceTree(replacePortal, deep, deep.getValue().getValue(), ((PortalReplace) deep.getValue()).getOrigin());
 			}
 		}
 	}
@@ -934,81 +896,31 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	private static class PortalReplaceTree {
-		private boolean isRoot;
-		private PortalReplace value;
-		private List<PortalReplaceTree> children;
-		private boolean isList;
-		private boolean stringValue;
-		
+	private static class PortalReplaceTree<R extends PortalReplace, Tree extends PortalReplaceTree> extends XOReplaceTree {
 		public PortalReplaceTree() {
 			super();
-			children = new ArrayList<PortalReplaceTree>();
-			isRoot = false;
-			isList = false;
-			stringValue = false;
-		}
-		public void isRoot() {
-			this.isRoot = true;
-		}
-		public void isList() {
-			this.isList = true;
-		}
-		public void isStringValue() {
-			this.stringValue = true;
-		}
-		public boolean hasValue() {
-			return !isRoot && !isList && stringValue;
-		}
-		public PortalReplace getValue() {
-			return value;
-		}
-		public void setValue(PortalReplace value) {
-			this.value = value;
-		}
-		public List<PortalReplaceTree> getChildren() {
-			return children;
-		}
-		public void setChildren(List<PortalReplaceTree> children) {
-			this.children = children;
-		}
-		
-		public void addChild(PortalReplaceTree child) {
-			children.add(child);
 		}
 	}
 	
-	private static class PortalReplace {
-		private Object parent;
-		private String setter;
-		private Object value;
+	private static class PortalReplace extends XOReplace {
 		private EU_ORIGIN origin;
+		
 		public PortalReplace(Object parent, String setter, Object value) {
-			super();
-			this.parent = parent;
-			this.setter = setter;
-			this.value = value;
+			super(parent, setter, value);
 			this.origin = EU_ORIGIN.GLOBAL;
 		}
 		public PortalReplace(Object parent, String setter, Object value, EU_ORIGIN origin) {
-			super();
-			this.parent = parent;
-			this.setter = setter;
-			this.value = value;
+			super(parent, setter, value);
 			this.origin = origin;
 		}
-		public Object getParent() {
-			return parent;
-		}
-		public String getSetter() {
-			return setter;
-		}
-		public Object getValue() {
-			return value;
-		}
+		
 		public EU_ORIGIN getOrigin() {
 			return origin;
 		}
+		public void setOrigin(EU_ORIGIN origin) {
+			this.origin = origin;
+		}
+		
 		public void setPartForOrigin() {
 			this.origin = EU_ORIGIN.PART;
 		}

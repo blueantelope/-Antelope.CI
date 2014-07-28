@@ -24,6 +24,7 @@ import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Embed;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
 import com.antelope.ci.bus.server.shell.ShellText;
 
 
@@ -235,10 +236,10 @@ public class Part implements Serializable {
 	
 	private void addInner(List<String> innerList, Content con, String inner_value) {
 		Content inner_con = new Content();
-		ContentFont font;
+		FontExpression font;
 		if (con.isShellText()) {
 			ShellText st = ShellText.toShellText(con.getValue());
-			font = ContentFont.fromCode(st.getFont_mark(), st.getFont_size(), st.getFont_style());
+			font = FontExpression.fromCode(st.getFont_mark(), st.getFont_size(), st.getFont_style());
 		} else {
 			font =con.getFont();
 		}

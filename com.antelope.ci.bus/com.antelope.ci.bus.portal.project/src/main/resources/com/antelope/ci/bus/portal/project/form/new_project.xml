@@ -5,6 +5,12 @@
 		<align position="middle" fill="" margin="before:3,after:3" />
 	</style>
 	<content>
+		<title value="${new.project.title}">
+			<style>
+				<font style="normal" mark="shade" size="medium" />
+				<align position="middle" fill="" margin="before:3,after:3" />
+			</style>
+		</title>
 		<group>
 			<textfield name="project.name">
 				<label length="100" row_size="0" column_width="20%" name="${new.project.title}">
@@ -13,12 +19,12 @@
 						<align position="middle" fill="" margin="before:3,after:3" />
 					</style>
 				</label>
-				<value length="100" row_size="0" column_width="80%" value="">
+				<field length="100" row_size="0" column_width="80%" value="">
 					<style>
 						<font style="normal" mark="shade" size="medium" />
 						<align position="middle" fill="" margin="before:3,after:3" />
 					</style>
-				</value>
+				</field>
 			</textfield>
 		</group>
 	</content>

@@ -11,7 +11,6 @@ package com.antelope.ci.bus.portal.core.configuration.xo.meta;
 import java.io.Serializable;
 
 import com.antelope.ci.bus.common.xml.XmlAttribute;
-import com.antelope.ci.bus.portal.core.configuration.xo.portal.ContentFont;
 
 
 /**
@@ -65,12 +64,12 @@ public class Font implements Serializable {
 		return EU_FontSize.toSize(size);
 	}
 	
-	public ContentFont toContentFont() {
-		ContentFont cf = new ContentFont();
-		cf.setMark(toEU_Mark());
-		cf.setSize(toEU_Size());
-		cf.setSytle(toEU_Style());
-		return cf;
+	public FontExpression toFontExpression() {
+		FontExpression exp = new FontExpression();
+		exp.setMark(toEU_Mark());
+		exp.setSize(toEU_Size());
+		exp.setSytle(toEU_Style());
+		return exp;
 	}
 }
 

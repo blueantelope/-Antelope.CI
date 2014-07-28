@@ -10,6 +10,7 @@ package com.antelope.ci.bus.common.configration;
 
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -23,7 +24,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-8-1		上午9:40:42 
  */
 public class ResourceReader extends BasicConfigrationReader {
-	private Locale locale;											// 指定本地化
+	protected Locale locale;											// 指定本地化
 	
 	public ResourceReader() {
 		super();
@@ -110,6 +111,10 @@ public class ResourceReader extends BasicConfigrationReader {
 		configMap.put(resource, bundle);
 		for (String key : bundle.keySet()) 
 			props.put(key, bundle.getObject(key));
+	}
+	
+	public Properties getIsolateProps(String config) {
+		return null;
 	}
 }
 
