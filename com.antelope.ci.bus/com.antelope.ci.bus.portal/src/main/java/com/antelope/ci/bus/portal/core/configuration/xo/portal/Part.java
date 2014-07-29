@@ -25,6 +25,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Embed;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.server.shell.ShellText;
 
 

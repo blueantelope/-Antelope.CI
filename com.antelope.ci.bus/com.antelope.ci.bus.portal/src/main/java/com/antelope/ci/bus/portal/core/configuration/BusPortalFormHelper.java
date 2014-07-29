@@ -9,12 +9,15 @@
 package com.antelope.ci.bus.portal.core.configuration;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.configration.IsolateResourceReader;
 import com.antelope.ci.bus.common.configration.ResourceReader;
@@ -90,14 +93,101 @@ public class BusPortalFormHelper {
 		return (Form) BusXmlHelper.parse(Form.class, form_in);
 	}
 	
-	public static void convert(Form form, Properties props) {
-		
+	public static void convert(Form form, Properties props) throws CIBusException {
+		List<FormReplace> replaceList = genFormReplaceList(form);
+		for (FormReplace fr : replaceList) {
+			String new_value = (String) fr.getValue();
+			if (ResourceUtil.needReplace(new_value))
+				new_value = ResourceUtil.replaceLableForProperties(new_value, props);
+			ProxyUtil.invoke(fr.getParent(), fr.getSetter(), new Object[]{new_value});
+		}
 	}
 	
-	private List<FormReplace> genFormReplaceList(Form form) {
+	private static List<FormReplace> genFormReplaceList(Form form) {
 		List<FormReplace> replaceList = new ArrayList<FormReplace>();
-		
+		FormReplaceTree<FormReplace, FormReplaceTree> tree = genFormReplaceTree(form);
+		genFormReplaceList(replaceList, tree);
 		return replaceList;
+	}
+	
+	private static FormReplaceTree genFormReplaceTree(Form form) {
+		FormReplaceTree<FormReplace, FormReplaceTree> tree = new FormReplaceTree<FormReplace, FormReplaceTree>();
+		tree.isRoot();
+		genFormReplaceTree(tree, form);
+		return tree;
+	}
+	
+	private static void genFormReplaceTree(FormReplaceTree tree, Object root) {
+		List<FormReplaceTree<FormReplace, FormReplaceTree>> deepList = new ArrayList<FormReplaceTree<FormReplace, FormReplaceTree>>();
+		for (Method method : root.getClass().getMethods()) {
+			if (method.getName().startsWith("get") 
+					&& !method.getName().startsWith("getClass") 
+					&& !ProxyUtil.hasArguments(method)) {
+				try {
+					Object o = ProxyUtil.invokeRet(method, root);
+					if (o == null)
+						continue;
+					if (List.class.isAssignableFrom(o.getClass())) {
+						FormReplace child_pr = new FormReplace(root, "", o);
+						FormReplaceTree child = new FormReplaceTree();
+						child.setValue(child_pr);
+						child.isList();
+						tree.addChild(child);
+						deepList.add(child);
+					} else {
+						String setter = "set" + method.getName().substring(3);
+						Method setMethod = null;
+						for (Method m : root.getClass().getMethods()) {
+							if (m.getName().equals(setter)) {
+								setMethod = m;
+								break;
+							}
+						}
+						if (setMethod != null) {
+							boolean isStringValue = method.getReturnType() == String.class;
+							FormReplace child_pr = new FormReplace(root, setter, o);
+							FormReplaceTree child = new FormReplaceTree();
+							child.setValue(child_pr);
+							if (isStringValue)
+								child.isStringValue();
+							tree.addChild(child);
+							deepList.add(child);
+						}
+					}
+				} catch (Exception e) {
+					DevAssistant.assert_exception(e);
+				}
+			}
+		}
+		for (FormReplaceTree deep : deepList) {
+			if (deep.isList) {
+				List list =(List) deep.getValue().getValue();
+				for (Object o : list)
+					if (deep.getValue() != null)
+						genFormReplaceTree(deep, o);
+			} else {
+				if (deep.getValue() != null)
+					genFormReplaceTree(deep, deep.getValue().getValue());
+			}
+		}
+	}
+	
+	private static void genFormReplaceList(List<FormReplace> replaceList, FormReplaceTree<FormReplace, FormReplaceTree> tree) {
+		if (tree.hasValue()) {
+			FormReplace pr = (FormReplace) tree.getValue();
+			boolean added = true;
+			for (FormReplace existPr : replaceList) {
+				if (pr.exist(existPr)) {
+					added = false;
+					break;
+				}
+			}
+			if (added)
+				replaceList.add(pr);
+		}
+		
+		for (Object child : tree.getChildren())
+			genFormReplaceList(replaceList, (FormReplaceTree) child);
 	}
 	
 	private static class FormReplaceTree<R extends FormReplace, Tree extends FormReplaceTree> extends XOReplaceTree {

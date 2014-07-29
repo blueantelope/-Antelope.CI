@@ -16,6 +16,8 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.ShellUtil;
 
@@ -28,8 +30,14 @@ import com.antelope.ci.bus.server.shell.ShellUtil;
  * @Date	 2014-4-14		下午2:56:03 
  */
 public class PortalShellUtil {
+	public static final String LAYOUT_CONTENT = "layout.content";
+	
 	private static final Logger log = Logger.getLogger(ShellUtil.class);
 	private static final BusPortalConfigurationHelper config_helper = BusPortalConfigurationHelper.getHelper();
+	
+	public static ShellPalette getContentPalette(BusShell shell) {
+		return shell.getPalette(LAYOUT_CONTENT);
+	}
 	
 	public static String getNextStatus(String status) {
 		String nextShell = getNextShell(status);

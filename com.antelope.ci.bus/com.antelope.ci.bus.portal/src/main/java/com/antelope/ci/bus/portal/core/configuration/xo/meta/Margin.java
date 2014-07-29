@@ -6,12 +6,11 @@
  * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.core.configuration.xo.portal;
+package com.antelope.ci.bus.portal.core.configuration.xo.meta;
 
 import java.io.Serializable;
 
 import com.antelope.ci.bus.common.StringUtil;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Margin;
 
 
 /**
@@ -24,7 +23,6 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Margin;
 public class Margin implements Serializable {
 	private int before;
 	private int after;
-	
 	
 	public int getBefore() {
 		return before;
@@ -70,4 +68,3 @@ public class Margin implements Serializable {
 		return margin;
 	}
 }
-

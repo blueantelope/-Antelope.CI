@@ -39,12 +39,12 @@ import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ORIGIN;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Content;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extensions;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Layout;
-import com.antelope.ci.bus.portal.core.configuration.xo.portal.Margin;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Part;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Parts;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Place;
@@ -182,12 +182,12 @@ public class BusPortalConfigurationHelper {
 			switch (pr.getOrigin()) {
 				case GLOBAL:
 					new_value = (String) pr.getValue();
-					if (needReplace(new_value))
-						new_value = ResourceUtil.replaceLable(new_value, reader);
+					if (ResourceUtil.needReplace(new_value))
+						new_value = ResourceUtil.replaceLableForReader(new_value, reader);
 					break;
 				case PART:
 					if (majorExt_reader != null)
-						new_value = ResourceUtil.replaceLable((String) pr.getValue(), majorExt_reader);
+						new_value = ResourceUtil.replaceLableForReader((String) pr.getValue(), majorExt_reader);
 					break;
 			}
 			if (!StringUtil.empty(new_value))
@@ -258,10 +258,10 @@ public class BusPortalConfigurationHelper {
 				Part extPart = extPwpc.getPart();
 				String extValue = extPart.getValue();
 				if (!"".equals(extName)) {
-					if (needReplace(extValue))
-						extValue = ResourceUtil.replaceLable(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
-					if (needReplace(extValue))
-						extValue = ResourceUtil.replaceLable(extValue, reader);
+					if (ResourceUtil.needReplace(extValue))
+						extValue = ResourceUtil.replaceLableForReader(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
+					if (ResourceUtil.needReplace(extValue))
+						extValue = ResourceUtil.replaceLableForReader(extValue, reader);
 					extValue = toShellText(extValue, ext_font);
 				}
 				if (extList_count == pwpcList.size())
@@ -690,16 +690,10 @@ public class BusPortalConfigurationHelper {
 		findReplace(replaceList, p);
 		for (PortalReplace pr : replaceList) {
 			String new_value = (String) pr.getValue();
-			if (needReplace(new_value))
-				new_value = ResourceUtil.replaceLable(new_value, r);
+			if (ResourceUtil.needReplace(new_value))
+				new_value = ResourceUtil.replaceLableForReader(new_value, r);
 			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
 		}
-	}
-	
-	private boolean needReplace(String value) {
-		String prefix = "\\$\\{";
-		String suffix = "\\}";
-		return StringUtil.contain(value, prefix, suffix);
 	}
 	
 	private List<PortalReplace> genPortalReplaceList(Portal root) {
@@ -925,9 +919,9 @@ public class BusPortalConfigurationHelper {
 			this.origin = EU_ORIGIN.PART;
 		}
 		
-		public boolean exist(PortalReplace comPr) {
+		@Override public <T extends XOReplace> boolean exist(T comPr) {
 			if (parent == comPr.getParent() && setter == comPr.getSetter() 
-					&& value == comPr.getValue() && origin == comPr.getOrigin())
+					&& value == comPr.getValue() && origin == ((PortalReplace) comPr).getOrigin())
 				return true;
 			return false;
 		}

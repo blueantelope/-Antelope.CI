@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -53,7 +54,8 @@ public abstract class BusShell {
 	protected CommandAdapter commandAdapter;
 	protected ClassLoader cloader;
 	protected int sort;
-
+	protected Map<String, ShellPalette> paletteMap;
+	
 	public BusShell(BusShellSession session) {
 		this();
 		this.session = session;
@@ -74,6 +76,7 @@ public abstract class BusShell {
 		init();
 		actionStatus = BusShellStatus.INIT;
 		lastStatus = BusShellStatus.INIT;
+		paletteMap = new HashMap<String, ShellPalette>();
 	}
 
 	public void setSort(int sort) {
@@ -82,6 +85,14 @@ public abstract class BusShell {
 	
 	public int getSort() {
 		return sort;
+	}
+	
+	public void addPalette(String name, ShellPalette palette) {
+		paletteMap.put(name,  palette);
+	}
+	
+	public ShellPalette getPalette(String name) {
+		return paletteMap.get(name);
 	}
 	
 	private void init() {

@@ -125,6 +125,9 @@ public class ShellUtil {
 	}
 	
 	private static void print(TerminalIO io, ShellText text, boolean br) throws IOException {
+		if (text.getIndent() > 0)
+			io.moveRight(text.getIndent());
+		
 		int style = text.getFont_style();
 		switch (style) {
 			case 1:

@@ -21,6 +21,9 @@ import com.antelope.ci.bus.common.StringUtil;
  * @Date	 2014-3-11		下午5:09:33 
  */
 public enum EU_Position implements Serializable {
+	LEFT("left"),
+	RIGHT("right"),
+	CENTER("center"),
 	START("start"),
 	MIDDLE("middle"),
 	END("end");

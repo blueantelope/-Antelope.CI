@@ -13,7 +13,7 @@ import java.io.Serializable;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
-import com.antelope.ci.bus.portal.core.configuration.xo.portal.Margin;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 
 
 /**

@@ -6,7 +6,7 @@
  * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.core.shell;
+package com.antelope.ci.bus.server.shell;
 
 
 /**

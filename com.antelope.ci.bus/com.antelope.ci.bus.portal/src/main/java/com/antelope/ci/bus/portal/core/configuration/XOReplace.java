@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.core.configuration;
 
 
+
 /**
  * TODO 描述
  *
@@ -50,5 +51,11 @@ public class XOReplace {
 		this.value = value;
 	}
 	
+	public <T extends XOReplace> boolean exist(T comPr) {
+		if (parent == comPr.getParent() && setter == comPr.getSetter() 
+				&& value == comPr.getValue())
+			return true;
+		return false;
+	}
 }
 

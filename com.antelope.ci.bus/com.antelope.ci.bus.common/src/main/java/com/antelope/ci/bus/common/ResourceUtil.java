@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -51,7 +52,15 @@ public class ResourceUtil {
 		}
 	}
 	
-	public static String replaceLable(String value, BasicConfigrationReader r) {
+	public static String replaceLableForProperties(String value, Properties props) {
+		return replaceLable(value, props);
+	}
+	
+	public static String replaceLableForReader(String value, BasicConfigrationReader r) {
+		return replaceLable(value, r);
+	}
+	
+	private static <T> String replaceLable(String value, T params) {
 		StringBuffer buf = new StringBuffer();
 		int len = value.length();
 		int index = 0;
@@ -61,7 +70,11 @@ public class ResourceUtil {
 				break;
 			int end = value.indexOf(LABLE_END, start);
 			String key = value.substring(start+2, end);
-			String v = r.getString(key);
+			String v;
+			if (params instanceof BasicConfigrationReader)
+				v = ((BasicConfigrationReader) params).getString(key);
+			else
+				v = ((Properties) params).getProperty(key);
 			v = (v == null) ? "" : v;
 			buf.append(value.substring(index, start)).append(v);
 			index = end + 1;
@@ -71,6 +84,12 @@ public class ResourceUtil {
 			buf.append(value.substring(index));
 		
 		return buf.toString();
+	}
+	
+	public static boolean needReplace(String value) {
+		String prefix = "\\$\\{";
+		String suffix = "\\}";
+		return StringUtil.contain(value, prefix, suffix);
 	}
 	
 	/**

@@ -10,6 +10,7 @@ package com.antelope.ci.bus.portal.core.shell;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.ShellPalette;
 
 
 /**

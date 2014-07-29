@@ -10,6 +10,7 @@ package com.antelope.ci.bus.portal.core.configuration.xo.meta;
 
 import java.io.Serializable;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -46,4 +47,3 @@ public enum EU_Margin implements Serializable {
 		throw new CIBusException("", "unknown margin");
 	}
 }
-

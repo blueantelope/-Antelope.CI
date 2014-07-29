@@ -30,6 +30,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.Shell;
+import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
@@ -393,6 +394,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (centerPart != null) {
 			try {
 				int center_width = width - west_width - east_width;
+				int center_height = height - north_height - south_height;
 				List<List<String>> contentList = placePartContent(centerPart, center_width);
 				if (!contentList.isEmpty()) {
 					if (content_cursor == null)
@@ -401,7 +403,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						cursor = content_cursor.clone();
 					moveCursor(cursor);
 					writeLine(cursor, contentList);
-					putContentPalette(centerPart, content_cursor, center_width, contentList.size());
+					putContentPalette(centerPart, content_cursor, center_width, center_height);
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -414,6 +416,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			contentPalette = new ShellPalette();
 			contentPalette.setStartPoint(cursor.getX(), cursor.getY());
 			contentPalette.setShapePoint(width, height);
+			super.addPalette(PortalShellUtil.LAYOUT_CONTENT, contentPalette);
 		}
 	}
 	
@@ -881,8 +884,9 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected ShellText writeFormat(ShellCursor cursor, String value) throws IOException {
 		ShellText text = ShellText.toShellText(value);
-		if (text != null)
+		if (text != null) {
 			write(cursor, text);
+		}
 		return text;
 	}
 	
