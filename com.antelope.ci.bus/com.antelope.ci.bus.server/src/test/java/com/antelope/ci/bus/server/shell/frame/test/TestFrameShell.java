@@ -152,14 +152,14 @@ public class TestFrameShell extends BusBaseFrameShell {
 	}
 
 	@Override
-	public void clearContent() throws IOException {
+	public void clearContent() throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void writeContent(Object content) throws IOException {
+	public void writeContent(Object content) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

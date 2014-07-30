@@ -12,7 +12,7 @@
 			</style>
 		</title>
 		<group>
-			<textfield name="project.name">
+			<component type="textfield" name="project.name">
 				<label length="100" row_size="0" column_width="20%" name="${new.project.title}">
 					<style>
 						<font style="normal" mark="shade" size="medium" />
@@ -25,7 +25,7 @@
 						<align position="center" fill=" " margin="before:3,after:3" />
 					</style>
 				</field>
-			</textfield>
+			</component>
 		</group>
 	</content>
 </form>

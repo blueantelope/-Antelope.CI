@@ -8,9 +8,8 @@
 
 package com.antelope.ci.bus.portal.project.command;
 
-import java.io.IOException;
-
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.command.PortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShell;
@@ -44,7 +43,7 @@ public class NewProjectHit extends PortalHit {
 	protected String execute(BusShell shell, TerminalIO io, String status, Object... args) {
 		try {
 			super.draw(shell);
-		} catch (IOException e) {
+		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
 		

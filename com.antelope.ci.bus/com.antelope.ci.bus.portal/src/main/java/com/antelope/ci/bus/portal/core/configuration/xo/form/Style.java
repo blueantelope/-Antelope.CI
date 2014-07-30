@@ -12,6 +12,8 @@ import java.io.Serializable;
 
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
+import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -40,6 +42,18 @@ public class Style implements Serializable {
 	}
 	public void setFont(StyleFont font) {
 		this.font = font;
+	}
+	
+	public static ShellText genShellText(Style style, String value) {
+		ShellText text = new ShellText();
+		text.setText(value);
+		StyleFont sfont = style.getFont();
+		FontExpression fontExp = sfont.toFontExpression();
+		text.setFont_mark(fontExp.getMark().getCode());
+		text.setFont_size(fontExp.getSize().getCode());
+		text.setFont_style(fontExp.getSytle().getCode());
+		
+		return text;
 	}
 }
 

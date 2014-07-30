@@ -70,7 +70,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			throw new CIBusException("", "must set configration of portal");
 	}
 	
-	@Override public void writeContent(Object content) throws IOException {
+	@Override public void writeContent(Object content) throws CIBusException {
 		clearContent();
 		if (content instanceof ShellLineContentSet) {
 			ShellLineContentSet contentSet = (ShellLineContentSet) content;
@@ -78,7 +78,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	@Override public void clearContent() throws IOException {
+	@Override public void clearContent() throws CIBusException {
 		if (contentPalette != null) {
 			int px = contentPalette.getX();
 			int py = contentPalette.getY();
@@ -420,7 +420,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	private void moveCursor(ShellCursor cursor) throws IOException {
+	private void moveCursor(ShellCursor cursor) throws CIBusException {
 		if (cursor.getX() != 0)
 			shiftRight(cursor.getX());
 		if (cursor.getY() != 0)
@@ -778,7 +778,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		try {
 			if (cursor.getY() > 0) shiftUp(cursor.getY() - 1);
 			if (cursor.getX() > 0) shiftLeft(cursor.getX());
-		} catch (IOException e) {
+		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
 	}
@@ -807,7 +807,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					shiftLeft(count);
 				cursor.setX(default_x);
 				cursor.addY(1);
-			} catch (IOException e) {
+			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
 		}
@@ -843,7 +843,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				
 				cursor.setX(default_x);
 				cursor.addY(1);
-			} catch (IOException e) {
+			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
 		}
@@ -866,23 +866,23 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				}
 				lastsize = StringUtil.getWordCount(line);
 				write(cursor, line);
-			} catch (IOException e) {
+			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
 		}
 	}
 	
-	protected void write(ShellCursor cursor, String value) throws IOException {
+	protected void write(ShellCursor cursor, String value) throws CIBusException {
 		print(value);
 		cursor.addX(StringUtil.getWordCount(value));
 	}
 	
-	protected void write(ShellCursor cursor, ShellText text) throws IOException {
+	protected void write(ShellCursor cursor, ShellText text) {
 		print(text);
 		cursor.addX(StringUtil.getWordCount(text.getText()));
 	}
 	
-	protected ShellText writeFormat(ShellCursor cursor, String value) throws IOException {
+	protected ShellText writeFormat(ShellCursor cursor, String value) {
 		ShellText text = ShellText.toShellText(value);
 		if (text != null) {
 			write(cursor, text);

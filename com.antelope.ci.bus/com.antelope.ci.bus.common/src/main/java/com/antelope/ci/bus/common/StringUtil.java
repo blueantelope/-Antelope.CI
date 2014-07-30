@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
@@ -115,13 +114,17 @@ public class StringUtil {
 		return true;
 	}
 
-	public static String[] toLines(String str) throws IOException {
-		BufferedReader reader = new BufferedReader(new StringReader(str));
-		List<String> lineList = new ArrayList<String>();
-		String line;
-		while ((line = reader.readLine()) != null)
-			lineList.add(line);
-		return lineList.toArray(new String[lineList.size()]);
+	public static String[] toLines(String str) throws CIBusException {
+		try {
+			BufferedReader reader = new BufferedReader(new StringReader(str));
+			List<String> lineList = new ArrayList<String>();
+			String line;
+			while ((line = reader.readLine()) != null)
+				lineList.add(line);
+			return lineList.toArray(new String[lineList.size()]);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 
 	public static String[] toStringLines(String str, int width) throws IOException {
@@ -222,7 +225,7 @@ public class StringUtil {
 		return str.substring(str_start, str_end);
 	}
 
-	public static int maxLine(String str) throws IOException {
+	public static int maxLine(String str) throws CIBusException {
 		String[] lines = toLines(str);
 		int maxWidth = 0;
 		for (String line : lines) {

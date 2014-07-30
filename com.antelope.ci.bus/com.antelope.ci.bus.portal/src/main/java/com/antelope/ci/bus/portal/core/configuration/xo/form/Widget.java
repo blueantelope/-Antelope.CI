@@ -9,7 +9,10 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.form;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 
@@ -57,6 +60,30 @@ public class Widget implements Serializable {
 	}
 	public void setStyle(Style style) {
 		this.style = style;
+	}
+	
+	public int percentForWidth() throws CIBusException {
+		if ("%".endsWith(column_width.trim())) {
+			NumberFormat nformat = NumberFormat.getPercentInstance();
+			try {
+				return nformat.parse(column_width.trim()).intValue();
+			} catch (ParseException e) {
+				throw new CIBusException("", e);
+			}
+		}
+		
+		return Integer.parseInt(column_width.trim());
+	}
+	
+	public int getComponetWidth(int width) throws CIBusException {
+		float widthrate = percentForWidth() / 100f;
+		int componet_width = (int) (widthrate * width);
+		int len = Integer.parseInt(length);
+		return componet_width > len ? len : componet_width;
+	}
+	
+	public int getRowSize() {
+		return Integer.parseInt(row_size);
 	}
 }
 

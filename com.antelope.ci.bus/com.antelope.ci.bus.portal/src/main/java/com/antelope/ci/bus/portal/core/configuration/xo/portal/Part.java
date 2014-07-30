@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -308,7 +307,7 @@ public class Part implements Serializable {
 			conList.add(innerList);
 	}
 	
-	public String[] toLine(int width) throws IOException {
+	public String[] toLine(int width) throws CIBusException {
 		if (contentList != null && !contentList.isEmpty()) {
 			StringBuffer buf = new StringBuffer();
 			for (Content con : contentList) 

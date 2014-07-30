@@ -13,13 +13,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalFormHelper;
 import com.antelope.ci.bus.portal.core.configuration.xo.Form;
+import com.antelope.ci.bus.portal.core.configuration.xo.form.Component;
+import com.antelope.ci.bus.portal.core.configuration.xo.form.Content;
+import com.antelope.ci.bus.portal.core.configuration.xo.form.Field;
+import com.antelope.ci.bus.portal.core.configuration.xo.form.Group;
+import com.antelope.ci.bus.portal.core.configuration.xo.form.Label;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.Style;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.StyleAlign;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.Title;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
@@ -39,6 +48,7 @@ import com.antelope.ci.bus.server.shell.command.hit.Hit;
  * @Date	 2014-7-28		上午10:44:48 
  */
 public abstract class PortalHit extends Hit {
+	private final static Logger log = Logger.getLogger(PortalHit.class);
 	protected Form form;
 	protected Properties properties;
 	
@@ -77,75 +87,126 @@ public abstract class PortalHit extends Hit {
 		}
 	}
 	
-	protected void draw(BusShell shell) throws IOException {
+	protected void draw(BusShell shell) throws CIBusException {
 		if (form != null) {
+			Content content = form.getContent();
+			if (content == null)	return;
+			
 			ShellLineContentSet contentSet = new ShellLineContentSet();
+			ShellPalette palette = PortalShellUtil.getContentPalette(shell);
+			int width = getContentWidth(palette);
 			Style formStyle = form.getStyle();
-			// add title to form
-			Title title = form.getContent().getTitle();
+			// title for shell
+			Title title = content.getTitle();
 			if (title != null) {
 				ShellText text = title.toShellText();
-				
-				Style titleStyle = title.getStyle();
-				if (titleStyle == null) {
-					title.setStyle(titleStyle);
-					titleStyle = formStyle;
-				}
-				
-				StyleAlign align = titleStyle.getAlign();
-				ShellPalette palette = PortalShellUtil.getContentPalette(shell);
-				if (palette != null && align != null) {
-					String value = title.getValue();
-					Margin margin = align.getMarginObject();
-					int before = margin.getBefore();
-					int after = margin.getAfter();
-					
-					int width = palette.getWidth();
-					int len = StringUtil.getWordCount(value);
-					
-					EU_Position position = align.getEU_Position();
-					int indent = 0;
-					switch (position) {
-						case CENTER:
-							indent = (width - len) / 2;
-							break;
-						case RIGHT:
-							indent = width - len;
-							break;
-						default:
-							break;
-					}
-					text.setIndent(indent);
-					
-					
-					String fill = align.getFill() != null ? align.getFill() :  " ";
-					int n = 0;
-					if (before > 0) {
-						while (n < before) {
-							value = fill + value;
-							n++;
-						}
-					}
-					
-					if (after > 0) {
-						n = 0;
-						while (n < after) {
-							value += fill;
-							n++;
-						}
-					}
-					
-					text.setText(value);
-				}
-				
-				List<String> line = new ArrayList<String>();
-				line.add(text.toString());
-				contentSet.addLine(line);
+				Style titleStyle = repairStyle(title, formStyle);
+				if (palette != null)
+					renderText(text,  title.getValue(), titleStyle, width);
+				addShellContent(contentSet, text);
 			}
-			// 
+			
+			// group for shell
+			List<Group> groupList = content.getGroupList();
+			for (Group group : groupList) {
+				List<Component> componentList = group.getComponentList();
+				if (componentList != null) {
+					int widthpercent = 0;
+					for (Component component : componentList) {
+						Label label = component.getLabel();
+						Field field = component.getFiled();
+						try {
+							EU_ComponentType ctype = component.toComponentType();
+							switch (ctype) {
+								case textfield:
+									widthpercent += label.percentForWidth();
+									int length = label.getComponetWidth(width);
+									int rowSize = label.getRowSize();
+									if (rowSize > 0) {
+										
+									}
+									
+									widthpercent += field.percentForWidth();
+									break;
+								default:
+									break;
+							}
+						} catch (CIBusException e) {
+							log.error(e);
+						}
+					}
+				}
+			}
 			
 			shell.writeContent(contentSet);
 		}
+	}
+	
+	private void renderText(ShellText text, String value, Style style, int width) {
+		StyleAlign align = style.getAlign();
+		if (align == null) return;
+		
+		Margin margin = align.getMarginObject();
+		int before = margin.getBefore();
+		int after = margin.getAfter();
+		
+		int len = StringUtil.getWordCount(value);
+		
+		EU_Position position = align.getEU_Position();
+		int indent = 0;
+		switch (position) {
+			case CENTER:
+				indent = (width - len) / 2;
+				break;
+			case RIGHT:
+				indent = width - len;
+				break;
+			default:
+				break;
+		}
+		text.setIndent(indent);
+		
+		
+		String fill = align.getFill() != null ? align.getFill() :  " ";
+		int n = 0;
+		if (before > 0) {
+			while (n < before) {
+				value = fill + value;
+				n++;
+			}
+		}
+		
+		if (after > 0) {
+			n = 0;
+			while (n < after) {
+				value += fill;
+				n++;
+			}
+		}
+		
+		text.setText(value);
+	}
+	
+	private Style repairStyle(Object owner, Style formStyle) throws CIBusException {
+		Style curStyle = (Style) ProxyUtil.invokeRet(owner, "getStyle");
+		if (curStyle == null) {
+			ProxyUtil.invoke(owner, "setStyle", new Object[]{formStyle});
+			return formStyle;
+		}
+		return curStyle;
+	}
+	
+	private int getContentWidth(ShellPalette palette) {
+		int width = 0;
+		if (palette != null)	width = palette.getWidth();
+		
+		return width;
+	}
+	
+	private void addShellContent(ShellLineContentSet contentSet, ShellText text) {
+		List<String> line = new ArrayList<String>();
+		line.add(text.toString());
+		contentSet.addLine(line);
 	}
 }
 

@@ -10,8 +10,11 @@ package com.antelope.ci.bus.portal.core.configuration.xo.form;
 
 import java.io.Serializable;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
 
 
 /**
@@ -21,10 +24,12 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @version  0.1
  * @Date	 2014-7-11		下午2:50:55 
  */
-@XmlEntity(name="textfield")
-public class Textfield implements Serializable {
+@XmlEntity(name="component")
+public class Component implements Serializable {
 	private Label label;
 	private Field filed;
+	private String type;
+	private String name;
 	
 	@XmlElement(name="label")
 	public Label getLabel() {
@@ -40,5 +45,25 @@ public class Textfield implements Serializable {
 	}
 	public void setFiled(Field filed) {
 		this.filed = filed;
+	}
+	
+	@XmlAttribute(name="type")
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	@XmlAttribute(name="name")
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public EU_ComponentType toComponentType() throws CIBusException {
+		return EU_ComponentType.fromName(name);
 	}
 }

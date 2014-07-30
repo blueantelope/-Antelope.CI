@@ -10,6 +10,8 @@ package com.antelope.ci.bus.server.shell;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
@@ -25,6 +27,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-9		下午5:23:32 
  */
 public class ShellUtil {
+	private static final Logger log = Logger.getLogger(ShellUtil.class);
 	public enum VER {STATIC, LEFT, RIGHT};
 	public enum HOR{STATIC, UP, DOWN};
 
@@ -44,56 +47,78 @@ public class ShellUtil {
 		io.setReverse(false);
 	}
 	
-	public static void backspace(TerminalIO io) throws IOException {
-		io.moveLeft(1); // 光标左移一位
-		io.eraseToEndOfLine(); // 删除光标到行尾部分的内容
-	}
-	
-	public static void shiftTop(TerminalIO io) throws IOException {
-		io.homeCursor();
-	}
-	
-	public static void shiftBottom(TerminalIO io, int height) throws IOException {
-		io.homeCursor();
-		io.moveDown(height - 1);
-	}
-	
-	public static void shift(TerminalIO io, int x, int y, int width, int height) throws IOException {
-		io.homeCursor();
-		int cx = x > width ? width : x;
-		int cy = y > height ? height : y;
-		if (cx != 0) {
-			if (cx > 0)
-				io.moveLeft(cx);
-			else
-				io.moveRight(-cx);
-		}
-		if (cy != 0) {
-			if (cy > 0)
-				io.moveDown(cy);
-			else
-				io.moveUp(-cy);
+	public static void backspace(TerminalIO io) throws CIBusException {
+		try {
+			io.moveLeft(1); // 光标左移一位
+			io.eraseToEndOfLine(); // 删除光标到行尾部分的内容
+		} catch (IOException e) {
+			throw new CIBusException("", e);
 		}
 	}
 	
-	public static void writeHeader(TerminalIO io, String str) throws IOException {
+	public static void shiftTop(TerminalIO io) throws CIBusException {
+		try {
+			io.homeCursor();
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static void shiftBottom(TerminalIO io, int height) throws CIBusException {
+		try {
+			io.homeCursor();
+			io.moveDown(height - 1);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static void shift(TerminalIO io, int x, int y, int width, int height) throws CIBusException {
+		try {
+			io.homeCursor();
+			int cx = x > width ? width : x;
+			int cy = y > height ? height : y;
+			if (cx != 0) {
+				if (cx > 0)
+					io.moveLeft(cx);
+				else
+					io.moveRight(-cx);
+			}
+			if (cy != 0) {
+				if (cy > 0)
+					io.moveDown(cy);
+				else
+					io.moveUp(-cy);
+			}
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	public static void writeHeader(TerminalIO io, String str) throws CIBusException {
 		shiftTop(io);
 		String[] ss = StringUtil.toLines(str);
 		for (String s : ss) {
-			io.println(s);
+			println(io, s);
 		}
 	}
 	
-	public static void writeTail(TerminalIO io, String str, int width, int height) throws IOException {
+	public static void writeTail(TerminalIO io, String str, int width, int height) throws CIBusException {
 		shiftBottom(io, height);
 		String[] ss = StringUtil.toLines(str);
 		int distance = ss.length;
 		for (String s : ss) {
 			distance += s.length() / width;
 		}
-		io.moveUp(distance);
+	
+		shiftBottom(io, height);
+		try {
+			io.moveUp(distance);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 		for (String s : ss) {
-			io.println(s);
+			println(io, s);
 		}
 	}
 	
@@ -122,6 +147,15 @@ public class ShellUtil {
 	
 	public static void println(TerminalIO io, ShellText text) throws IOException {
 		print(io, text, true);
+	}
+	
+	public static void shiftNext(TerminalIO io, String str) throws CIBusException {
+		try {
+			io.moveLeft(StringUtil.getWordCount(str));
+			io.moveDown(1);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
 	private static void print(TerminalIO io, ShellText text, boolean br) throws IOException {
@@ -200,6 +234,14 @@ public class ShellUtil {
 		if (shellClass.isAnnotationPresent(Shell.class))
 			return ((Shell) shellClass.getAnnotation(Shell.class)).status();
 		return null;
+	}
+	
+	private static void println(TerminalIO io, String s) {
+		try {
+			io.println(s);
+		} catch (IOException e) {
+			log.error(e);
+		}
 	}
 }
 

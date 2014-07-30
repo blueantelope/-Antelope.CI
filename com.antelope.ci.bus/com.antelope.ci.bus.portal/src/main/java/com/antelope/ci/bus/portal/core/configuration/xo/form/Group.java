@@ -24,14 +24,14 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="group")
 public class Group implements Serializable {
-	private List<Textfield> textfieldList;
+	private List<Component> componentList;
 
-	@XmlElement(name="textfield", isList=true, listClass=Textfield.class)
-	public List<Textfield> getTextfieldList() {
-		return textfieldList;
+	@XmlElement(name="component", isList=true, listClass=Component.class)
+	public List<Component> getComponentList() {
+		return componentList;
 	}
-	public void setTextfieldList(List<Textfield> textfieldList) {
-		this.textfieldList = textfieldList;
+	public void setComponentListList(List<Component> componentList) {
+		this.componentList = componentList;
 	}
 }
 

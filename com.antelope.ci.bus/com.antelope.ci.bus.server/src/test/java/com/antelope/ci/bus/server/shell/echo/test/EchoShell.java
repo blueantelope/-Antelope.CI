@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.server.shell.echo.test;
 
-import java.io.IOException;
-
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusBaseEchoShell;
 
@@ -51,14 +49,14 @@ public class EchoShell extends BusBaseEchoShell {
 	}
 
 	@Override
-	public void clearContent() throws IOException {
+	public void clearContent() throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void writeContent(Object content) throws IOException {
+	public void writeContent(Object content) throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

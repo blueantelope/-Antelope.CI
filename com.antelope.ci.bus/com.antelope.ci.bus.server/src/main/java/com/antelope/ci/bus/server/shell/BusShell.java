@@ -19,7 +19,6 @@ import org.apache.sshd.server.Environment;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
-import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
@@ -299,55 +298,77 @@ public abstract class BusShell {
 		mainView();
 	}
 	
-	protected void shift(int x, int y) throws IOException {
+	protected void shift(int x, int y) throws CIBusException {
 		ShellUtil.shift(io, x, y, getConsoleWidth(), getConsoleHeight());
 	}
 	
-	protected void move(int x, int y) throws IOException {
-		ShellUtil.move(io, x, y);
+	protected void move(int x, int y) throws CIBusException {
+		try {
+			ShellUtil.move(io, x, y);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
-	protected void shiftTop() throws IOException {
+	protected void shiftTop() throws CIBusException {
 		ShellUtil.shiftTop(io);
 	}
 	
-	protected void shiftBottom() throws IOException {
+	protected void shiftBottom() throws CIBusException {
 		ShellUtil.shiftBottom(io, getHeight());
 	}
 	
-	protected void writeHeader(String header) throws IOException {
+	protected void writeHeader(String header) throws CIBusException {
 		ShellUtil.writeHeader(io, header);
 	}
 	
-	protected void writeTail(String tail) throws IOException {
+	protected void writeTail(String tail) throws CIBusException {
 		ShellUtil.writeTail(io, tail, getConsoleWidth(), getConsoleHeight());
 	}
 
-	protected void shiftLineEnd() throws IOException {
-		io.moveLeft(getConsoleWidth());
+	protected void shiftLineEnd() throws CIBusException {
+		try {
+			io.moveLeft(getConsoleWidth());
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
-	protected void shiftUp(int times) throws IOException {
-		io.moveUp(times);
+	protected void shiftUp(int times) throws CIBusException {
+		try {
+			io.moveUp(times);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
-	protected void shiftDown(int times) throws IOException {
-		io.moveDown(times);
+	protected void shiftDown(int times) throws CIBusException {
+		try {
+			io.moveDown(times);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 
-	protected void shiftRight(int times) throws IOException {
-		io.moveRight(times);
+	protected void shiftRight(int times) throws CIBusException {
+		try {
+			io.moveRight(times);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
-	protected void shiftLeft(int times) throws IOException {
-		io.moveLeft(times);
+	protected void shiftLeft(int times) throws CIBusException {
+		try {
+			io.moveLeft(times);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 	
-	protected void shiftNext(String str) throws IOException {
-		io.moveLeft(StringUtil.getWordCount(str));
-		io.moveDown(1);
+	protected void shiftNext(String str) throws CIBusException {
+		ShellUtil.shiftNext(io, str);
 	}
-	
 	
 	private void environment() throws CIBusException {
 		in = session.getIn();
@@ -374,48 +395,73 @@ public abstract class BusShell {
 		}
 	}
 
-	protected void print(String text) throws IOException {
-		io.write(text);
+	protected void print(String text) throws CIBusException {
+		try {
+			io.write(text);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 
-	protected void printf(String format, Object... values) throws IOException {
+	protected void printf(String format, Object... values) throws CIBusException {
 		String text = String.format(format, values);
 		print(text);
 	}
 
-	protected void error(String text) throws IOException {
-		io.error(text);
+	protected void error(String text) throws CIBusException {
+		try {
+			io.error(text);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 
-	protected void errorf(String format, Object... args) throws IOException {
+	protected void errorf(String format, Object... args) throws CIBusException {
 		error(String.format(format, args));
 	}
 
-	protected void errorln(String text) throws IOException {
-		io.errorln(text);
+	protected void errorln(String text) throws CIBusException {
+		try {
+			io.errorln(text);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 
-	protected String readInput(boolean mark) throws IOException {
-		int in = io.read();
+	protected String readInput(boolean mark) throws CIBusException {
+		int in;
+		try {
+			in = io.read();
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 		StringBuffer strBuf = new StringBuffer();
 		while (in != NetVTKey.ENTER) {
-			if (in == NetVTKey.DELETE || in == NetVTKey.BACKSPACE) {
-				if (strBuf.length() > 0) {
-					ShellUtil.backspace(io);
-					strBuf.deleteCharAt(strBuf.length() - 1);
-				}
-			} else {
-				if (!mark) {
-					io.write((byte) in);
+			try {
+				if (in == NetVTKey.DELETE || in == NetVTKey.BACKSPACE) {
+					if (strBuf.length() > 0) {
+						ShellUtil.backspace(io);
+						strBuf.deleteCharAt(strBuf.length() - 1);
+					}
 				} else {
-					io.write("*");
+					if (!mark) {
+						io.write((byte) in);
+					} else {
+						io.write("*");
+					}
+	
+					strBuf.append((char) in);
 				}
-
-				strBuf.append((char) in);
+				in = io.read();
+			} catch (IOException e) {
+				throw new CIBusException("", e);
 			}
-			in = io.read();
 		}
-		io.write(NetVTKey.CRLF);
+		try {
+			io.write(NetVTKey.CRLF);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 		return strBuf.toString();
 	}
 	
@@ -483,7 +529,7 @@ public abstract class BusShell {
 
 	protected abstract void shutdown() throws CIBusException;
 	
-	public abstract void clearContent() throws IOException;
+	public abstract void clearContent() throws CIBusException;
 	
-	public abstract void writeContent(Object content) throws IOException;
+	public abstract void writeContent(Object content) throws CIBusException;
 }

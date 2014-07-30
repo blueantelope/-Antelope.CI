@@ -10,6 +10,7 @@ package com.antelope.ci.bus.portal.core.configuration.xo.form;
 
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -30,5 +31,8 @@ public class Field extends Widget {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
+	public ShellText toShellText() {
+		return Style.genShellText(style,  value);
+	}
 }
-

@@ -53,15 +53,7 @@ public class Title implements Serializable {
 	}
 	
 	public ShellText toShellText() {
-		ShellText text = new ShellText();
-		text.setText(value);
-		StyleFont font = style.getFont();
-		FontExpression fontExp = font.toFontExpression();
-		text.setFont_mark(fontExp.getMark().getCode());
-		text.setFont_size(fontExp.getSize().getCode());
-		text.setFont_style(fontExp.getSytle().getCode());
-		
-		return text;
+		return Style.genShellText(style,  value);
 	}
 	
 	public boolean isShellText() {
