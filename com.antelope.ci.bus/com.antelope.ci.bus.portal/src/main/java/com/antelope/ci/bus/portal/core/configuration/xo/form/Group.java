@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.form;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -24,13 +25,13 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="group")
 public class Group implements Serializable {
-	private List<Component> componentList;
+	private List<Component> componentList = new ArrayList<Component>();
 
 	@XmlElement(name="component", isList=true, listClass=Component.class)
 	public List<Component> getComponentList() {
 		return componentList;
 	}
-	public void setComponentListList(List<Component> componentList) {
+	public void setComponentList(List<Component> componentList) {
 		this.componentList = componentList;
 	}
 }

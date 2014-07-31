@@ -10,7 +10,6 @@ package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import java.io.Serializable;
 
-import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;

@@ -23,6 +23,8 @@ import com.antelope.ci.bus.common.configration.IsolateResourceReader;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.Form;
 
 
@@ -62,7 +64,13 @@ public class BusPortalFormHelper {
 	}
 	
 	public static Properties loadProperties(String name) throws CIBusException {
-		reader.addConfig(name);
+		ClassLoader cl = getClassLoader();
+		try {
+			reader.addConfig(name);
+		} catch(Exception e) {
+			DevAssistant.errorln(e);
+			reader.addConfig(name, cl);
+		}
 		Properties properties = reader.getIsolateProps(name);
 		return properties;
 	}
@@ -97,9 +105,10 @@ public class BusPortalFormHelper {
 		List<FormReplace> replaceList = genFormReplaceList(form);
 		for (FormReplace fr : replaceList) {
 			String new_value = (String) fr.getValue();
-			if (ResourceUtil.needReplace(new_value))
+			if (ResourceUtil.needReplace(new_value)) {
 				new_value = ResourceUtil.replaceLableForProperties(new_value, props);
-			ProxyUtil.invoke(fr.getParent(), fr.getSetter(), new Object[]{new_value});
+				ProxyUtil.invoke(fr.getParent(), fr.getSetter(), new Object[]{new_value});
+			}
 		}
 	}
 	
@@ -188,6 +197,15 @@ public class BusPortalFormHelper {
 		
 		for (Object child : tree.getChildren())
 			genFormReplaceList(replaceList, (FormReplaceTree) child);
+	}
+	
+	private static ClassLoader getClassLoader() {
+		try {
+			return CommonBusActivator.getClassLoader();
+		} catch(Exception e) {
+			DevAssistant.errorln(e);
+			return BusPortalFormHelper.class.getClassLoader();
+		}
 	}
 	
 	private static class FormReplaceTree<R extends FormReplace, Tree extends FormReplaceTree> extends XOReplaceTree {

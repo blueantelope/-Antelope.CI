@@ -15,6 +15,7 @@ import java.text.ParseException;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
+import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -63,7 +64,7 @@ public class Widget implements Serializable {
 	}
 	
 	public int percentForWidth() throws CIBusException {
-		if ("%".endsWith(column_width.trim())) {
+		if (column_width.trim().endsWith("%")) {
 			NumberFormat nformat = NumberFormat.getPercentInstance();
 			try {
 				return nformat.parse(column_width.trim()).intValue();
@@ -84,6 +85,10 @@ public class Widget implements Serializable {
 	
 	public int getRowSize() {
 		return Integer.parseInt(row_size);
+	}
+	
+	public ShellText toShellText(String str) {
+		return Style.genShellText(style,  str);
 	}
 }
 

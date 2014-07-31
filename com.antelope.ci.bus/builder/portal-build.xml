@@ -96,32 +96,32 @@
 				<include name="com.antelope.ci.bus.server-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.portal.server.bundle.lib}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.model.user-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.model.project-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.portal.server.bundle.service}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.portal.service.bundle.lib}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.service-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.portal.bundle}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.portal-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.portal.bundle.part}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.portal.dashboard-${bus.version}.jar" />
@@ -131,14 +131,14 @@
 				<include name="com.antelope.ci.bus.portal.version-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.portal.system.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
-		
+
 		<copy todir="${app.portal.etc}">
 			<fileset dir="${prj.bus.etc}" />
 		</copy>

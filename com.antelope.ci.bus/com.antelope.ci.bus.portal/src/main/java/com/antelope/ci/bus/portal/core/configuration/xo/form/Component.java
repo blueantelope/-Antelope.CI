@@ -27,7 +27,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
 @XmlEntity(name="component")
 public class Component implements Serializable {
 	private Label label;
-	private Field filed;
+	private Field field;
 	private String type;
 	private String name;
 	
@@ -40,11 +40,11 @@ public class Component implements Serializable {
 	}
 	
 	@XmlElement(name="field")
-	public Field getFiled() {
-		return filed;
+	public Field getField() {
+		return field;
 	}
-	public void setFiled(Field filed) {
-		this.filed = filed;
+	public void setField(Field field) {
+		this.field = field;
 	}
 	
 	@XmlAttribute(name="type")
@@ -64,6 +64,6 @@ public class Component implements Serializable {
 	}
 	
 	public EU_ComponentType toComponentType() throws CIBusException {
-		return EU_ComponentType.fromName(name);
+		return EU_ComponentType.fromName(type);
 	}
 }

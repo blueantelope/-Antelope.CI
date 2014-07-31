@@ -10,6 +10,8 @@ package com.antelope.ci.bus.server.shell;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
@@ -29,6 +31,10 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="text")
 public class ShellText {
+	private static final String TEXT_PREFIX = "<text";
+	private static final String TEXT_SUFFIX= "</text>";
+	private static final String P_PREFIX = "<p";
+	private static final String P_SUFFIX = "</p>";
 	protected String text;
 	protected int indent = 0; 
 	protected int font_size = 2;			// 1,small 2,medium 3,large
@@ -79,7 +85,16 @@ public class ShellText {
 		if (StringUtil.empty(str))
 			return false;
 		str = str.trim();
-		if (StringUtil.startsWithIgnoreCase(str, "<text") && str.endsWith(">"))
+		if (StringUtil.startsWithIgnoreCase(str, TEXT_PREFIX) && str.endsWith(TEXT_SUFFIX))
+			return true;
+		return false;
+	}
+	
+	public static boolean containP(String str) {
+		if (StringUtil.empty(str))
+			return false;
+		str = str.trim();
+		if (StringUtil.startsWithIgnoreCase(str, P_PREFIX) && str.endsWith(P_SUFFIX))
 			return true;
 		return false;
 	}
@@ -94,12 +109,17 @@ public class ShellText {
 	}
 	
 	public static String toShellText(ShellText text) {
+		return textToStr(text);
+	}
+	
+	public static String toShellText(List<ShellText> textList) {
 		StringBuffer buf = new StringBuffer();
-		buf.append("<text font-size=\"").append(text.getFont_size()).append("\"").
-				append(" indent=\"").append(text.getIndent()).append("\"").
-		 		append(" font-style=\"").append(text.getFont_style()).append("\"").
-		 		append(" font-mark=\"").append(text.getFont_mark()).append("\">").
-		 		append(text.getText()).append("</text>");
+		if (textList != null && !textList.isEmpty()) {
+			buf.append(P_PREFIX);
+			for (ShellText text : textList)
+				buf.append(textToStr(text));
+			buf.append(P_SUFFIX);
+		}
 		return buf.toString();
 	}
 	
@@ -121,44 +141,55 @@ public class ShellText {
 		} catch (CIBusException e) {
 			DevAssistant.assert_exception(e);
 		}
-		/*
-		if (StringUtil.startsWithIgnoreCase(str, "<text") && str.endsWith(">")) {
-			str = str.substring("<text".length(), str.length()-1);
-			String[] ss = str.split(" ");
-			for (String s : ss) {
-				if (StringUtil.empty(s))
-					continue;
-				if (s.contains("=")) {
-					String[] cs = s.split("=");
-					if (cs.length == 2) {
-						String k = cs[0];
-						String v = cs[1];
-						if (StringUtil.empty(k))
-							continue;
-						k = k.trim().toLowerCase();
-						if (k.equals("font-size")) {
-							try {
-								int i = Integer.valueOf(v.trim());
-								text.setFont_size(i);
-							} catch (Exception e) {}
-						} else if (k.equals("font-style")) {
-							try {
-								int i = Integer.valueOf(v.trim());
-								text.setFont_style(i);
-							} catch (Exception e) {}
-						} else if (k.equals("font-mark")) {
-							try {
-								int i = Integer.valueOf(v.trim());
-								text.setFont_mark(i);
-							} catch (Exception e) {}
-						}
-					}
-				}
-			}
-		}
-		*/
 		
 		return text;
+	}
+	
+	public static List<String> splitForP(String str) {
+		List<String> splitList = new ArrayList<String>();
+		splitForP(splitList, str, 0);
+		
+		return splitList;
+	}
+	
+	public int placeholderWidth() {
+		int width = StringUtil.getWordCount(text);
+		if (indent > 0) width+= indent;
+		return width;
+	}
+	
+	private static void splitForP(List<String> splitList, String str, int from_index) {
+		if (from_index > str.length())
+			return;
+		
+		int start_index = str.indexOf(TEXT_PREFIX, from_index);
+		int end_index = str.indexOf(TEXT_SUFFIX, from_index);
+		if (start_index != -1 && end_index > start_index) {
+			if (start_index > from_index) {
+				strToSplitList(splitList, str, from_index, start_index);
+			}
+			splitList.add(str.substring(start_index, end_index+TEXT_SUFFIX.length()));
+			from_index = end_index + TEXT_SUFFIX.length();
+			splitForP(splitList, str, from_index);
+		} else {
+			strToSplitList(splitList, str, from_index, str.length());
+		}
+	}
+	
+	private static void strToSplitList(List<String> splitList, String str, int start, int end) {
+		String s = str.substring(start, end);
+		if (!s.startsWith(P_PREFIX) && !s.endsWith(P_SUFFIX))
+			splitList.add(s);
+	}
+	
+	private static String textToStr(ShellText text) {
+		StringBuffer buf = new StringBuffer();
+		buf.append("<text font-size=\"").append(text.getFont_size()).append("\"").
+				append(" indent=\"").append(text.getIndent()).append("\"").
+		 		append(" font-style=\"").append(text.getFont_style()).append("\"").
+		 		append(" font-mark=\"").append(text.getFont_mark()).append("\">").
+		 		append(text.getText()).append("</text>");
+		return buf.toString();
 	}
 }
 

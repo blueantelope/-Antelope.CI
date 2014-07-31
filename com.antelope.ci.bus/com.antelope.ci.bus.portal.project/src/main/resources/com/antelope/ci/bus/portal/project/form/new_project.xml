@@ -13,16 +13,16 @@
 		</title>
 		<group>
 			<component type="textfield" name="project.name">
-				<label length="100" row_size="0" column_width="20%" name="${new.project.title}">
+				<label length="100" row_size="1" column_width="20%" name="${new.project.name}">
 					<style>
 						<font style="normal" mark="shade" size="medium" />
-						<align position="center" fill=" " margin="before:3,after:3" />
+						<align position="left" fill=" " margin="before:3,after:3" />
 					</style>
 				</label>
-				<field length="100" row_size="0" column_width="80%" value="">
+				<field length="100" row_size="1" column_width="80%" value="${new.project.desc}">
 					<style>
 						<font style="normal" mark="shade" size="medium" />
-						<align position="center" fill=" " margin="before:3,after:3" />
+						<align position="left" fill=" " margin="before:3,after:3" />
 					</style>
 				</field>
 			</component>

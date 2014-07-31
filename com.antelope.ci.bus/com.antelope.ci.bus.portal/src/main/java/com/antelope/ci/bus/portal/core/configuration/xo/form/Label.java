@@ -33,6 +33,6 @@ public class Label extends Widget {
 	}
 	
 	public ShellText toShellText() {
-		return Style.genShellText(style,  name);
+		return super.toShellText(name);
 	}
 }

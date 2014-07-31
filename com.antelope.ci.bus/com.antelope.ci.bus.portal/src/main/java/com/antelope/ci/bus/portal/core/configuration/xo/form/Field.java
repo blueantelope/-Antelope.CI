@@ -20,7 +20,7 @@ import com.antelope.ci.bus.server.shell.ShellText;
  * @version  0.1
  * @Date	 2014-7-11		下午2:52:39 
  */
-@XmlEntity(name="filed")
+@XmlEntity(name="field")
 public class Field extends Widget {
 	private String value;
 
@@ -33,6 +33,6 @@ public class Field extends Widget {
 	}
 	
 	public ShellText toShellText() {
-		return Style.genShellText(style,  value);
+		return super.toShellText(value);
 	}
 }

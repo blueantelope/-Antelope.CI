@@ -41,6 +41,16 @@ public class IsolateResourceReader extends ResourceReader {
 		}
 	}
 	
+	@Override public void addConfig(String config, ClassLoader classLoader) throws CIBusException {
+		if (!propsMap.containsKey(config)) {
+			ResourceBundle bundle = ResourceBundle.getBundle(config, locale, classLoader);
+			Properties props = new Properties();
+			for (String key : bundle.keySet()) 
+				props.put(key, bundle.getObject(key));
+			propsMap.put(config, props);
+		}
+	}
+	
 	@Override public void addConfig(String resource, int start) throws CIBusException {
 		
 	}

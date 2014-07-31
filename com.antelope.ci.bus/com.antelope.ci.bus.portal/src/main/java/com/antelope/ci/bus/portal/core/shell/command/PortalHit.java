@@ -8,13 +8,13 @@
 
 package com.antelope.ci.bus.portal.core.shell.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -28,6 +28,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.form.Label;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.Style;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.StyleAlign;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.Title;
+import com.antelope.ci.bus.portal.core.configuration.xo.form.Widget;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
@@ -66,7 +67,7 @@ public abstract class PortalHit extends Hit {
 					try {
 						properties = BusPortalFormHelper.loadProperties(property);
 					} catch (CIBusException e) {
-						e.printStackTrace();
+						DevAssistant.errorln(e);
 					}
 				}
 			}
@@ -80,7 +81,7 @@ public abstract class PortalHit extends Hit {
 						if (properties != null)
 							BusPortalFormHelper.convert(form, properties);
 					} catch (CIBusException e) {
-						e.printStackTrace();
+						DevAssistant.errorln(e);
 					}
 				}
 			}
@@ -108,35 +109,33 @@ public abstract class PortalHit extends Hit {
 			
 			// group for shell
 			List<Group> groupList = content.getGroupList();
+			List<ShellText> componet_textList = new ArrayList<ShellText>();
+			int widthpercent = 0;
 			for (Group group : groupList) {
+				compoentToContentInProcess(contentSet, componet_textList, widthpercent);
 				List<Component> componentList = group.getComponentList();
 				if (componentList != null) {
-					int widthpercent = 0;
 					for (Component component : componentList) {
 						Label label = component.getLabel();
-						Field field = component.getFiled();
+						Field field = component.getField();
 						try {
 							EU_ComponentType ctype = component.toComponentType();
 							switch (ctype) {
 								case textfield:
-									widthpercent += label.percentForWidth();
-									int length = label.getComponetWidth(width);
-									int rowSize = label.getRowSize();
-									if (rowSize > 0) {
-										
-									}
-									
-									widthpercent += field.percentForWidth();
+									dealWidget(label, contentSet, componet_textList, palette, formStyle, width, label.getName(), widthpercent);
+									dealWidget(field, contentSet, componet_textList, palette, formStyle, width, field.getValue(), widthpercent);
 									break;
 								default:
 									break;
 							}
 						} catch (CIBusException e) {
+							DevAssistant.errorln(e);
 							log.error(e);
 						}
 					}
 				}
 			}
+			compoentToContentInTail(contentSet, componet_textList, widthpercent);
 			
 			shell.writeContent(contentSet);
 		}
@@ -207,6 +206,50 @@ public abstract class PortalHit extends Hit {
 		List<String> line = new ArrayList<String>();
 		line.add(text.toString());
 		contentSet.addLine(line);
+	}
+	
+	private void addShellContent(ShellLineContentSet contentSet, List<ShellText> textList) {
+		List<String> line = new ArrayList<String>();
+		line.add(ShellText.toShellText(textList));
+		contentSet.addLine(line);
+	}
+	
+	private void dealWidget(Widget widget, ShellLineContentSet contentSet, List<ShellText> componet_textList, 
+			ShellPalette palette, Style formStyle, int width, String str, int widthpercent) throws CIBusException {
+		int length = widget.getComponetWidth(width);
+		int rowSize = widget.getRowSize();
+		ShellText text = widget.toShellText(str);
+		Style style = repairStyle(widget, formStyle);
+		if (palette != null)
+			renderText(text,  str, style, length);
+		if (rowSize > 0) {
+			compoentToContentInProcess(contentSet, componet_textList, widthpercent);
+			addShellContent(contentSet, text);
+			widthpercent = 0;
+		} else {
+			widthpercent += widget.percentForWidth();
+			if (widthpercent >= 100) {
+				compoentToContentInProcess(contentSet, componet_textList, widthpercent);
+			} else {
+				componet_textList.add(text);
+			}
+		}
+	}
+	
+	private void compoentToContentInProcess(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
+		compoentToContent(contentSet, componet_textList, widthpercent, false);
+	}
+	
+	private void compoentToContentInTail(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
+		compoentToContent(contentSet, componet_textList, widthpercent, true);
+	}
+	
+	private void compoentToContent(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent, boolean tail) {
+		if (!componet_textList.isEmpty() || tail == true) {
+			addShellContent(contentSet, componet_textList);
+			componet_textList.clear();
+			widthpercent = 0;
+		}
 	}
 }
 

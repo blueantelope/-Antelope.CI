@@ -159,6 +159,9 @@ public class ShellUtil {
 	}
 	
 	private static void print(TerminalIO io, ShellText text, boolean br) throws IOException {
+		if (text.getText() == null)
+			text.setText("");
+		
 		if (text.getIndent() > 0)
 			io.moveRight(text.getIndent());
 		
