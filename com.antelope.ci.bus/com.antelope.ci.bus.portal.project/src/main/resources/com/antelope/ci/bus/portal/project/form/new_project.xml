@@ -11,18 +11,20 @@
 				<align position="center" fill=" " margin="before:3,after:3" />
 			</style>
 		</title>
+		<attribute focus="project.name->field">
+		</attribute>
 		<group>
 			<component type="textfield" name="project.name">
-				<label length="100" row_size="1" column_width="20%" name="${new.project.name}">
+				<label length="100" row_size="0" column_width="20%" name="new.project.name" value="${new.project.name}">
 					<style>
 						<font style="normal" mark="shade" size="medium" />
 						<align position="left" fill=" " margin="before:3,after:3" />
 					</style>
 				</label>
-				<field length="100" row_size="1" column_width="80%" value="${new.project.desc}">
+				<field length="100" row_size="0" column_width="80%" value="_____________________">
 					<style>
-						<font style="normal" mark="shade" size="medium" />
-						<align position="left" fill=" " margin="before:3,after:3" />
+						<font style="normal" mark="normal" size="medium" />
+						<align position="left" fill=" " margin="before:3" />
 					</style>
 				</field>
 			</component>

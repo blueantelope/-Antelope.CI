@@ -30,6 +30,8 @@ public class Widget implements Serializable {
 	protected String row_size;
 	protected String column_width;
 	protected Style style;
+	protected int x;
+	protected int y;
 	
 	@XmlAttribute(name="length")
 	public String getLength() {
@@ -89,6 +91,20 @@ public class Widget implements Serializable {
 	
 	public ShellText toShellText(String str) {
 		return Style.genShellText(style,  str);
+	}
+	
+	public int getX() {
+		return x;
+	}
+	public void setX(int x) {
+		this.x = new Integer(x);
+	}
+	
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = new Integer(y);
 	}
 }
 

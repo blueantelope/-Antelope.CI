@@ -101,6 +101,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
+	@Override public void moveContent() throws CIBusException {
+		if (contentPalette != null) {
+			shiftTop();
+			move(contentPalette.getX(), contentPalette.getY());
+		}
+	}
+	
 	protected ShellCursor getContentCursor() {
 		return new ShellCursor(contentPalette.getX(), contentPalette.getY());
 	}

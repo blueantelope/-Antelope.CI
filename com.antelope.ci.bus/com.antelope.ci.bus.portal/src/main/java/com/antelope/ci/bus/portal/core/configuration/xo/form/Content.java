@@ -9,8 +9,10 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.form;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 
@@ -25,7 +27,8 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 @XmlEntity(name="content")
 public class Content implements Serializable {
 	private Title title;
-	private List<Group> groupList;
+	private Attribute attribute;
+	private List<Group> groupList = new ArrayList<Group>();
 	
 	@XmlElement(name="title")
 	public Title getTitle() {
@@ -35,6 +38,14 @@ public class Content implements Serializable {
 		this.title = title;
 	}
 	
+	@XmlElement(name="attribute")
+	public Attribute getAttribute() {
+		return attribute;
+	}
+	public void setAttribute(Attribute attribute) {
+		this.attribute = attribute;
+	}
+	
 	@XmlElement(name="group", isList=true, listClass=Group.class)
 	public List<Group> getGroupList() {
 		return groupList;
@@ -42,5 +53,34 @@ public class Content implements Serializable {
 	public void setGroupList(List<Group> groupList) {
 		this.groupList = groupList;
 	}
+	
+	public Widget getFocusWidget() {
+		Component first_com = null;
+		if (attribute != null && !StringUtil.empty(attribute.getFocus())) {
+			String focus = attribute.getFocus();
+			if (focus.contains(Attribute.FOCUS_DECOLLATOR)) {
+				String[] fs = focus.split(Attribute.FOCUS_DECOLLATOR);
+				if (fs.length == 2) {
+					String com = fs[0];
+					String wid = fs[1];
+					for (Group group : groupList) {
+						for (Component component : group.getComponentList()) {
+							if (first_com == null)
+								first_com = component;
+							if (com.equalsIgnoreCase(component.getName())) {
+								if ("label".equalsIgnoreCase(wid))
+									return component.getLabel();
+								else
+									return component.getField();
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (first_com != null) return first_com.getField();
+		
+		return null;
+	}
 }
-

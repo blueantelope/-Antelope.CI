@@ -298,11 +298,11 @@ public abstract class BusShell {
 		mainView();
 	}
 	
-	protected void shift(int x, int y) throws CIBusException {
+	public void shift(int x, int y) throws CIBusException {
 		ShellUtil.shift(io, x, y, getConsoleWidth(), getConsoleHeight());
 	}
 	
-	protected void move(int x, int y) throws CIBusException {
+	public void move(int x, int y) throws CIBusException {
 		try {
 			ShellUtil.move(io, x, y);
 		} catch (IOException e) {
@@ -530,6 +530,8 @@ public abstract class BusShell {
 	protected abstract void shutdown() throws CIBusException;
 	
 	public abstract void clearContent() throws CIBusException;
+	
+	public abstract void moveContent() throws CIBusException;
 	
 	public abstract void writeContent(Object content) throws CIBusException;
 }

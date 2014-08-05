@@ -97,13 +97,18 @@ public abstract class PortalHit extends Hit {
 			ShellPalette palette = PortalShellUtil.getContentPalette(shell);
 			int width = getContentWidth(palette);
 			Style formStyle = form.getStyle();
+			int cursor_x = 0;
+			int cursor_y = 0;
 			// title for shell
 			Title title = content.getTitle();
 			if (title != null) {
 				ShellText text = title.toShellText();
 				Style titleStyle = repairStyle(title, formStyle);
-				if (palette != null)
-					renderText(text,  title.getValue(), titleStyle, width);
+				if (palette != null) {
+					XPosition xPosition = renderText(text,  title.getValue(), titleStyle, width);
+					if (xPosition != null)
+						cursor_y += 1 + xPosition.end / width;
+				}
 				addShellContent(contentSet, text);
 			}
 			
@@ -112,7 +117,7 @@ public abstract class PortalHit extends Hit {
 			List<ShellText> componet_textList = new ArrayList<ShellText>();
 			int widthpercent = 0;
 			for (Group group : groupList) {
-				compoentToContentInProcess(contentSet, componet_textList, widthpercent);
+				componentToContentInProcess(contentSet, componet_textList, widthpercent);
 				List<Component> componentList = group.getComponentList();
 				if (componentList != null) {
 					for (Component component : componentList) {
@@ -122,8 +127,8 @@ public abstract class PortalHit extends Hit {
 							EU_ComponentType ctype = component.toComponentType();
 							switch (ctype) {
 								case textfield:
-									dealWidget(label, contentSet, componet_textList, palette, formStyle, width, label.getName(), widthpercent);
-									dealWidget(field, contentSet, componet_textList, palette, formStyle, width, field.getValue(), widthpercent);
+									dealWidget(label, contentSet, componet_textList, palette, formStyle, width, label.getValue(), widthpercent, cursor_x, cursor_y);
+									dealWidget(field, contentSet, componet_textList, palette, formStyle, width, field.getValue(), widthpercent, cursor_x, cursor_y);
 									break;
 								default:
 									break;
@@ -135,15 +140,16 @@ public abstract class PortalHit extends Hit {
 					}
 				}
 			}
-			compoentToContentInTail(contentSet, componet_textList, widthpercent);
+			componentToContentInTail(contentSet, componet_textList, widthpercent);
 			
 			shell.writeContent(contentSet);
+			focus(shell, content);
 		}
 	}
 	
-	private void renderText(ShellText text, String value, Style style, int width) {
+	private XPosition renderText(ShellText text, String value, Style style, int width) {
 		StyleAlign align = style.getAlign();
-		if (align == null) return;
+		if (align == null) return null;
 		
 		Margin margin = align.getMarginObject();
 		int before = margin.getBefore();
@@ -165,7 +171,6 @@ public abstract class PortalHit extends Hit {
 		}
 		text.setIndent(indent);
 		
-		
 		String fill = align.getFill() != null ? align.getFill() :  " ";
 		int n = 0;
 		if (before > 0) {
@@ -184,6 +189,18 @@ public abstract class PortalHit extends Hit {
 		}
 		
 		text.setText(value);
+		
+		return new XPosition(before+indent, indent+StringUtil.getWordCount(value));
+	}
+	
+	private static class XPosition {
+		public int start;
+		public int end;
+		public XPosition(int start, int end) {
+			super();
+			this.start = start;
+			this.end = end;
+		}
 	}
 	
 	private Style repairStyle(Object owner, Style formStyle) throws CIBusException {
@@ -215,32 +232,44 @@ public abstract class PortalHit extends Hit {
 	}
 	
 	private void dealWidget(Widget widget, ShellLineContentSet contentSet, List<ShellText> componet_textList, 
-			ShellPalette palette, Style formStyle, int width, String str, int widthpercent) throws CIBusException {
+			ShellPalette palette, Style formStyle, int width, String str, int widthpercent, int cursor_x, int cursor_y) throws CIBusException {
 		int length = widget.getComponetWidth(width);
 		int rowSize = widget.getRowSize();
 		ShellText text = widget.toShellText(str);
 		Style style = repairStyle(widget, formStyle);
+		XPosition xPosition = null;
 		if (palette != null)
-			renderText(text,  str, style, length);
+			xPosition = renderText(text,  str, style, length);
+		if (xPosition != null) {
+			cursor_x += xPosition.start;
+			widget.setX(cursor_x);
+			cursor_x += xPosition.end - xPosition.start;
+		}
+		widget.setY(cursor_y);
+		
 		if (rowSize > 0) {
-			compoentToContentInProcess(contentSet, componet_textList, widthpercent);
+			componentToContentInProcess(contentSet, componet_textList, widthpercent);
 			addShellContent(contentSet, text);
 			widthpercent = 0;
+			cursor_x = 0;
+			cursor_y += rowSize;
 		} else {
 			widthpercent += widget.percentForWidth();
 			if (widthpercent >= 100) {
-				compoentToContentInProcess(contentSet, componet_textList, widthpercent);
+				componentToContentInProcess(contentSet, componet_textList, widthpercent);
+				cursor_x = 0;
+				cursor_y += 1;
 			} else {
 				componet_textList.add(text);
 			}
 		}
 	}
 	
-	private void compoentToContentInProcess(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
+	private void componentToContentInProcess(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
 		compoentToContent(contentSet, componet_textList, widthpercent, false);
 	}
 	
-	private void compoentToContentInTail(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
+	private void componentToContentInTail(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
 		compoentToContent(contentSet, componet_textList, widthpercent, true);
 	}
 	
@@ -249,6 +278,14 @@ public abstract class PortalHit extends Hit {
 			addShellContent(contentSet, componet_textList);
 			componet_textList.clear();
 			widthpercent = 0;
+		}
+	}
+	
+	private void focus(BusShell shell, Content content) throws CIBusException  {
+		Widget focus_widget = content.getFocusWidget();
+		if (focus_widget != null) {
+			shell.moveContent();
+			shell.move(focus_widget.getX(), focus_widget.getY());
 		}
 	}
 }

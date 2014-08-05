@@ -62,5 +62,12 @@ public class EchoShell extends BusBaseEchoShell {
 		
 	}
 
+	@Override
+	public void moveContent() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 

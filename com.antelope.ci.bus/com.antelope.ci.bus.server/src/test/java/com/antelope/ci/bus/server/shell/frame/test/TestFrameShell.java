@@ -164,4 +164,11 @@ public class TestFrameShell extends BusBaseFrameShell {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void moveContent() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

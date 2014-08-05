@@ -23,6 +23,7 @@ import com.antelope.ci.bus.server.shell.ShellText;
 @XmlEntity(name="label")
 public class Label extends Widget {
 	private String name;
+	private String value;
 
 	@XmlAttribute(name="name")
 	public String getName() {
@@ -30,6 +31,14 @@ public class Label extends Widget {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@XmlAttribute(name="value")
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
 	}
 	
 	public ShellText toShellText() {
