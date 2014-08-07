@@ -23,7 +23,6 @@ import com.antelope.ci.bus.common.configration.IsolateResourceReader;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
-import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.Form;
 
@@ -56,6 +55,7 @@ public class BusPortalFormHelper {
 	public static Form loadForm(String form_xml, Class cls) throws CIBusException {
 		InputStream form_in = ResourceUtil.getXmlStream(cls, form_xml);
 		Form form = parse(form_in);
+		form.redress();
 		return form;
 	}
 	

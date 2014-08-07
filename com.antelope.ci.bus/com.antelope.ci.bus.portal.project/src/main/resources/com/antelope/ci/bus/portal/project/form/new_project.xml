@@ -4,6 +4,14 @@
 		<font style="normal" mark="shade" size="medium" />
 		<align position="center" fill=" " margin="before:3,after:3" />
 	</style>
+	<input type="textfield" widget="field" name="_default">
+		<box>
+			<up active="off"></up>
+			<left active="off"></left>
+			<right active="off"></right>
+			<bottom active="on">_{20}</bottom>
+		</box>
+	</input>
 	<content>
 		<title value="${new.project.title}">
 			<style>
@@ -15,13 +23,29 @@
 		</attribute>
 		<group>
 			<component type="textfield" name="project.name">
-				<label length="100" row_size="0" column_width="20%" name="new.project.name" value="${new.project.name}">
+				<label length="100" row_size="0" column_width="20%" name="new.project.name" value="${new.project.name}" edit="close" focus="off">
 					<style>
-						<font style="normal" mark="shade" size="medium" />
+						<font style="normal" mark="normal" size="medium" />
 						<align position="left" fill=" " margin="before:3,after:3" />
 					</style>
 				</label>
-				<field length="100" row_size="0" column_width="80%" value="_____________________">
+				<field length="100" row_size="0" column_width="80%" value="" edit="open" focus="on">
+					<style>
+						<font style="normal" mark="normal" size="medium" />
+						<align position="left" fill=" " margin="before:3" />
+					</style>
+				</field>
+			</component>
+		</group>
+		<group>
+			<component type="textfield" name="project.desc" input="_default">
+				<label length="100" row_size="0" column_width="20%" name="new.project.desc" value="${new.project.desc}" edit="close">
+					<style>
+						<font style="normal" mark="normal" size="medium" />
+						<align position="left" fill=" " margin="before:3,after:3" />
+					</style>
+				</label>
+				<field length="100" row_size="0" column_width="80%" value="" edit="open">
 					<style>
 						<font style="normal" mark="normal" size="medium" />
 						<align position="left" fill=" " margin="before:3" />

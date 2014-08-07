@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -29,7 +30,12 @@ public class Widget implements Serializable {
 	protected String length;
 	protected String row_size;
 	protected String column_width;
+	protected String edit;
+	protected String value;
+	protected String focus;
+	protected String boxName;
 	protected Style style;
+	protected Box box;
 	protected int x;
 	protected int y;
 	
@@ -57,12 +63,61 @@ public class Widget implements Serializable {
 		this.column_width = column_width;
 	}
 	
+	@XmlAttribute(name="edit")
+	public String getEdit() {
+		return edit;
+	}
+	public void setEdit(String edit) {
+		this.edit = edit;
+	}
+	public boolean editable() {
+		if (!StringUtil.empty(edit) && "open".equalsIgnoreCase(edit.trim()))
+			return true;
+		return false;
+	}
+	
+	@XmlAttribute(name="box")
+	public String getBoxName() {
+		return boxName;
+	}
+	public void setBoxName(String boxName) {
+		this.boxName = boxName;
+	}
+	
+	@XmlAttribute(name="value")
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
+	@XmlAttribute(name="focus")
+	public String getFocus() {
+		return focus;
+	}
+	public void setFocus(String focus) {
+		this.focus = focus;
+	}
+	public boolean onfocus() {
+		if (!StringUtil.empty(focus) && "on".equalsIgnoreCase(focus.trim()))
+			return true;
+		return false;
+	}
+	
 	@XmlElement(name="style")
 	public Style getStyle() {
 		return style;
 	}
 	public void setStyle(Style style) {
 		this.style = style;
+	}
+	
+	public Box getBox() {
+		return box;
+	}
+	public void setBox(Box box) {
+		this.box = box;
 	}
 	
 	public int percentForWidth() throws CIBusException {

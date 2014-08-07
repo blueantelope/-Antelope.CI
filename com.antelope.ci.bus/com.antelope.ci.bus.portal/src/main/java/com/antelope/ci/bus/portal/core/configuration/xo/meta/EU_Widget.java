@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.configuration.OIRGIN.java
+// com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Widget.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.portal.core.configuration.xo.meta;
 
-import java.io.Serializable;
-
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -18,30 +16,33 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-2-3		下午11:26:20 
+ * @Date	 2014-8-7		上午11:57:51 
  */
-public enum EU_ORIGIN implements Serializable {
-	GLOBAL("global"),
-	PART("part");
+public enum EU_Widget {
+	LABEL("label"),
+	FIELD("field");
 	
 	private String name;
-	private EU_ORIGIN(String name) {
-		this.name = name;
+	private EU_Widget(String name) {
+		this.name= name;
 	}
+	
 	public String getName() {
 		return name;
 	}
-	public @Override String toString() {
+	
+	public String toString() {
 		return name;
 	}
 	
-	public static EU_ORIGIN toOrigin(String name) throws CIBusException {
-		for (EU_ORIGIN origin : EU_ORIGIN.values()) {
-			if (origin.getName().equalsIgnoreCase(name)) 
-				return origin;
+	public static EU_Widget fromName(String str) throws CIBusException {
+		for (EU_Widget widget : EU_Widget.values()) {
+			if (widget.getName().equalsIgnoreCase(str))
+				return widget;
 		}
 		
-		throw new CIBusException("unknown origin");
+		throw new CIBusException("unknown widget");
 	}
+	
 }
 

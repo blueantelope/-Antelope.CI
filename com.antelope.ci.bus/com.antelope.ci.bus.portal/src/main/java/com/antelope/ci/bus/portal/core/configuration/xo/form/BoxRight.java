@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.core.configuration.xo.form.Value.java
+// com.antelope.ci.bus.portal.core.configuration.xo.form.BoxRight.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -16,9 +16,10 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-7-11		下午2:52:39 
+ * @Date	 2014-8-6		下午6:23:30 
  */
-@XmlEntity(name="field")
-public class Field extends Widget {
-	
+@XmlEntity(name="right")
+public class BoxRight extends BoxFace {
+
 }
+

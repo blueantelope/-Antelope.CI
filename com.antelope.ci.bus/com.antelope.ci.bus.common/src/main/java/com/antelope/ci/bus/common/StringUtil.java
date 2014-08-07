@@ -302,4 +302,43 @@ public class StringUtil {
 		
 		return false;
 	}
+	
+	public static boolean isNumeric(String str) {
+		if (str.matches("\\d*")) return true;
+		return false;
+	}
+	
+	public static String formatString(String str, String prefix, String suffix) {
+		StringBuffer sb = new StringBuffer();
+		int index = 0;
+		while (true) {
+			int start = str.indexOf(prefix, index);
+			if (start != -1) {
+				int end = str.indexOf(suffix, start);
+				if (end != -1) {
+					String loop = str.substring(start+1, end);
+					if (isNumeric(loop)) {
+						if (start > index) {
+							String loopStr = str.substring(index, start);
+							int l = Integer.parseInt(loop);
+							while (l > 0) {
+								sb.append(loopStr);
+								l--;
+							}
+						}
+						index = end + 1;
+					}
+				} else {
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+		
+		if (index < str.length())
+			sb.append(str.substring(index));
+		
+		return sb.toString();
+	}
 }

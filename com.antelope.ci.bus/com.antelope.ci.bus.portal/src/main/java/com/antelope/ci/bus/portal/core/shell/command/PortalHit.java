@@ -20,6 +20,7 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalFormHelper;
 import com.antelope.ci.bus.portal.core.configuration.xo.Form;
+import com.antelope.ci.bus.portal.core.configuration.xo.form.Box;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.Component;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.Content;
 import com.antelope.ci.bus.portal.core.configuration.xo.form.Field;
@@ -52,6 +53,8 @@ public abstract class PortalHit extends Hit {
 	private final static Logger log = Logger.getLogger(PortalHit.class);
 	protected Form form;
 	protected Properties properties;
+	protected int cursor_x = 0;
+	protected int cursor_y = 0;
 	
 	public PortalHit() {
 		init();
@@ -88,7 +91,13 @@ public abstract class PortalHit extends Hit {
 		}
 	}
 	
+	protected void reset() {
+		cursor_x = 0;
+		cursor_y = 0;
+	}
+	
 	protected void draw(BusShell shell) throws CIBusException {
+		reset();
 		if (form != null) {
 			Content content = form.getContent();
 			if (content == null)	return;
@@ -97,8 +106,6 @@ public abstract class PortalHit extends Hit {
 			ShellPalette palette = PortalShellUtil.getContentPalette(shell);
 			int width = getContentWidth(palette);
 			Style formStyle = form.getStyle();
-			int cursor_x = 0;
-			int cursor_y = 0;
 			// title for shell
 			Title title = content.getTitle();
 			if (title != null) {
@@ -127,8 +134,18 @@ public abstract class PortalHit extends Hit {
 							EU_ComponentType ctype = component.toComponentType();
 							switch (ctype) {
 								case textfield:
-									dealWidget(label, contentSet, componet_textList, palette, formStyle, width, label.getValue(), widthpercent, cursor_x, cursor_y);
-									dealWidget(field, contentSet, componet_textList, palette, formStyle, width, field.getValue(), widthpercent, cursor_x, cursor_y);
+									// label
+									String boxValue = getBoxValue(label);
+									if (!StringUtil.empty(boxValue))
+										dealWidget(field, contentSet, componet_textList, palette, formStyle, width, boxValue, widthpercent);
+									if (!StringUtil.empty(label.getValue()))
+										dealWidget(label, contentSet, componet_textList, palette, formStyle, width, label.getValue(), widthpercent);
+									// field
+									boxValue = getBoxValue(field);
+									if (!StringUtil.empty(boxValue))
+										dealWidget(field, contentSet, componet_textList, palette, formStyle, width, boxValue, widthpercent);
+									if (!StringUtil.empty(field.getValue()))
+										dealWidget(field, contentSet, componet_textList, palette, formStyle, width, field.getValue(), widthpercent);
 									break;
 								default:
 									break;
@@ -145,6 +162,14 @@ public abstract class PortalHit extends Hit {
 			shell.writeContent(contentSet);
 			focus(shell, content);
 		}
+	}
+	
+	private String getBoxValue(Widget widget) {
+		Box box = widget.getBox();
+		if (null != box) {
+			return box.getBottom().getExpression();
+		}
+		return null;
 	}
 	
 	private XPosition renderText(ShellText text, String value, Style style, int width) {
@@ -232,20 +257,20 @@ public abstract class PortalHit extends Hit {
 	}
 	
 	private void dealWidget(Widget widget, ShellLineContentSet contentSet, List<ShellText> componet_textList, 
-			ShellPalette palette, Style formStyle, int width, String str, int widthpercent, int cursor_x, int cursor_y) throws CIBusException {
+			ShellPalette palette, Style formStyle, int width, String str, int widthpercent) throws CIBusException {
 		int length = widget.getComponetWidth(width);
 		int rowSize = widget.getRowSize();
 		ShellText text = widget.toShellText(str);
 		Style style = repairStyle(widget, formStyle);
 		XPosition xPosition = null;
-		if (palette != null)
+		
+		if (!StringUtil.empty(str) && palette != null) {
 			xPosition = renderText(text,  str, style, length);
-		if (xPosition != null) {
 			cursor_x += xPosition.start;
 			widget.setX(cursor_x);
 			cursor_x += xPosition.end - xPosition.start;
+			widget.setY(cursor_y);
 		}
-		widget.setY(cursor_y);
 		
 		if (rowSize > 0) {
 			componentToContentInProcess(contentSet, componet_textList, widthpercent);
