@@ -5,7 +5,7 @@
 	
 	<!-- action -->
 	<action>
-		<hit>
+		<hit name="" key="">
 			<font style="bold" mark="lt" size="medium" />
 		</hit>
 	</action>

@@ -21,6 +21,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
@@ -54,6 +55,9 @@ public abstract class BusShell {
 	protected ClassLoader cloader;
 	protected int sort;
 	protected Map<String, ShellPalette> paletteMap;
+	protected BusBuffer buffer;
+	protected boolean activeMoveAction;
+	protected boolean activeEditAction;
 	
 	public BusShell(BusShellSession session) {
 		this();
@@ -63,7 +67,7 @@ public abstract class BusShell {
 						? CommonBusActivator.getClassLoader() 
 						: this.getClass().getClassLoader();
 	}
-
+	
 	public BusShell() {
 		opened = false;
 		quit = false;
@@ -76,8 +80,34 @@ public abstract class BusShell {
 		actionStatus = BusShellStatus.INIT;
 		lastStatus = BusShellStatus.INIT;
 		paletteMap = new HashMap<String, ShellPalette>();
+		activeMoveAction = false;
+		activeEditAction = false;
+	}
+	
+	public boolean useMoveAction() {
+		return activeMoveAction;
 	}
 
+	public void openMoveAction() {
+		this.activeMoveAction = true;
+	}
+	
+	public void closeMoveAction() {
+		this.activeMoveAction = false;
+	}
+	
+	public boolean useEditAction() {
+		return activeEditAction;
+	}
+
+	public void openEditAction() {
+		this.activeEditAction = true;
+	}
+	
+	public void closeEditAction() {
+		this.activeMoveAction = false;
+	}
+	
 	public void setSort(int sort) {
 		this.sort = sort;
 	}
@@ -519,6 +549,94 @@ public abstract class BusShell {
 
 	protected String getEnv(String key) {
 		return session.getEnv().getEnv().get(key);
+	}
+	
+	protected void left() {
+		buffer.left();
+	}
+	
+	protected void right() {
+		buffer.right();
+	}
+	
+	protected void up() {
+		buffer.up();
+	}
+	
+	protected void down() {
+		buffer.down();
+	}
+	
+	protected void delete() {
+		buffer.delete();
+	}
+	
+	protected void backspace() {
+		buffer.backspace();
+	}
+	
+	protected void space() throws CIBusException {
+		buffer.space();
+	}
+	
+	protected void onKeyVoice() {
+		if (keyBell) {
+			try {
+				io.bell();
+			} catch (IOException e) {
+				DevAssistant.errorln(e);
+			}
+		}
+	}
+	
+	protected boolean defaultAction(int key) {
+		onKeyVoice();
+		if (moveAction(key))	return true;
+		if (editAction(key))		return true;
+		return false;
+	}
+	
+	protected boolean moveAction(int key) {
+		if (activeMoveAction) {
+			switch (key) {
+				case NetVTKey.LEFT:
+					buffer.left();
+					return true;
+				case NetVTKey.RIGHT:
+					buffer.right();
+					return true;
+				case NetVTKey.UP:
+					buffer.up();
+					return true;
+				case NetVTKey.DOWN:
+					buffer.down();
+					return true;
+				default:
+					return false;
+			}
+		}
+		
+		return false;
+	}
+	
+	protected boolean editAction(int key) {
+		if (activeEditAction) {
+			switch (key) {
+				case NetVTKey.DELETE:
+					buffer.delete();
+					return true;
+				case NetVTKey.BACKSPACE:
+					buffer.backspace();
+					return true;
+				case NetVTKey.SPACE:
+					buffer.space();
+					return true;
+				default:
+					return false;
+			}
+		}
+		
+		return false;
 	}
 
 	protected abstract void custom() throws CIBusException;

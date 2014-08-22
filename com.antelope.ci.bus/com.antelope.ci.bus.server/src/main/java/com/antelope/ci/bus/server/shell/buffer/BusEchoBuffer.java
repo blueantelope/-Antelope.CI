@@ -38,7 +38,6 @@ public class BusEchoBuffer extends BusBuffer {
 	private int tipWidth;
 	private int tipTabCol;
 	private int tipTabLine;
-	private boolean inTip;
 	
 	public BusEchoBuffer(TerminalIO io, int cursorStart) {
 		super(io);
@@ -54,10 +53,6 @@ public class BusEchoBuffer extends BusBuffer {
 	
 	public boolean tipShowed() {
 		return tipShowed;
-	}
-	
-	public boolean inCmdTab() {
-		return inTip;
 	}
 	
 	// 增加空格光标位
@@ -86,24 +81,28 @@ public class BusEchoBuffer extends BusBuffer {
 		inTip = false;
 	}
 	
-	public void put(char c) throws IOException {
-		if (inTip)
-			return;
-		if ((cursor-cursorStart) != buffer.position()) {
-			int offset = cursor - cursorStart;
-			int count = buffer.position() - offset;
-			String fillStr = new String(buffer.array(), offset, count);
-			buffer.position(buffer.position() - fillStr.length());
-			buffer.put(c);
-			buffer.put(fillStr);
-			io.eraseToEndOfLine();
-			io.write(c + fillStr);
-			io.moveLeft(fillStr.length());
-			cursor++;
-		} else {
-			buffer.put(c);
-			io.write(c);
-			cursor++;
+	public void put(char c) throws CIBusException {
+		try {
+			if (inTip)
+				return;
+			if ((cursor-cursorStart) != buffer.position()) {
+				int offset = cursor - cursorStart;
+				int count = buffer.position() - offset;
+				String fillStr = new String(buffer.array(), offset, count);
+				buffer.position(buffer.position() - fillStr.length());
+				buffer.put(c);
+				buffer.put(fillStr);
+				io.eraseToEndOfLine();
+				io.write(c + fillStr);
+				io.moveLeft(fillStr.length());
+				cursor++;
+			} else {
+				buffer.put(c);
+				io.write(c);
+				cursor++;
+			}
+		} catch (IOException e) {
+			throw new CIBusException("", e);
 		}
 	}
 	
@@ -614,24 +613,21 @@ public class BusEchoBuffer extends BusBuffer {
 	}
 
 	@Override
-	public void tab() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+	public void tab() {
+		// nothing to do
 	}
 
 	@Override
-	public void space() throws CIBusException {
+	public void space() {
 		try {
 			put((char) NetVTKey.SPACE);
 			addSpace();
-		} catch(IOException e) {
-			new CIBusException("", e);
+		} catch(CIBusException e) {
+			DevAssistant.errorln(e);
 		}
 	}
 
-	@Override
-	public ShellCommandArg enter() throws CIBusException {
+	@Override public ShellCommandArg enter() {
 		if (inTip) {
 			enterTip();
 			clearTips();

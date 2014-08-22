@@ -10,6 +10,7 @@ package com.antelope.ci.bus.server.shell.buffer;
 
 import java.io.IOException;
 import java.nio.CharBuffer;
+import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
@@ -29,6 +30,7 @@ public abstract class BusBuffer {
 	protected int tabSize;
 	protected CharBuffer buffer;
 	protected TerminalIO io;
+	protected boolean inTip;
 	
 	public BusBuffer(TerminalIO io) {
 		this(io, BUF_SIZE);
@@ -58,9 +60,13 @@ public abstract class BusBuffer {
 		return s;
 	}
 	
-	public void put(char c) throws IOException {
+	public void put(char c) throws CIBusException {
 		buffer.put(c);
-		io.moveLeft(1);
+		try {
+			io.moveLeft(1);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
 	}
 
 	public void left(int times) {
@@ -127,13 +133,19 @@ public abstract class BusBuffer {
 	// 向左删除一个字符
 	public abstract boolean backspace();
 	
-	public ShellCommandArg enter() throws CIBusException {
+	public ShellCommandArg enter() {
 		try {
 			io.write((char) NetVTKey.ENTER);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		}
-		return toCommand();
+		try {
+			return toCommand();
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+		
+		return null;
 	}
 
 	public ShellCommandArg toCommand() throws CIBusException {
@@ -153,8 +165,18 @@ public abstract class BusBuffer {
 		return new ShellCommandArg(command, args);
 	}
 	
-	public abstract void tab() throws CIBusException;
+	public boolean inCmdTab() {
+		return inTip;
+	}
 	
-	public abstract void space() throws CIBusException;
+	public abstract void tab();
+	
+	public abstract void space();
+	
+	public abstract void tabTip();
+	
+	public abstract void printTips(List<String> cmdList, int width);
+	
+	public abstract boolean exitSpace();
 }
 

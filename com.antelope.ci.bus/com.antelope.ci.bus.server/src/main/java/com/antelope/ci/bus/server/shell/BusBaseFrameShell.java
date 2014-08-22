@@ -25,7 +25,6 @@ import com.antelope.ci.bus.server.shell.buffer.ShellScreen;
  */
 @Shell(name="base.frame", commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
 public abstract class BusBaseFrameShell extends BusShell {
-	protected BusHitBuffer buffer;
 	protected boolean onHelp;
 	protected String cmd;
 	
@@ -50,40 +49,19 @@ public abstract class BusBaseFrameShell extends BusShell {
 			int c = io.read();
 			ShellCommandArg cmdArg;
 			if (c != -1) {
-				if (keyBell)
-					io.bell();
-				switch (c) {
-					case NetVTKey.LEFT:
-						buffer.left();
-						break;
-					case NetVTKey.RIGHT:
-						buffer.right();
-						break;
-					case NetVTKey.UP:
-						buffer.up();
-						break;
-					case NetVTKey.DOWN:
-						buffer.down();
-						break;
-					case NetVTKey.DELETE:
-						buffer.delete();
-						break;
-					case NetVTKey.BACKSPACE:
-						buffer.backspace();
-						break;
-					case NetVTKey.SPACE:
-						buffer.space();
-						break;
-					case NetVTKey.TABULATOR:
-						buffer.tab();
-						break;
-					case NetVTKey.ENTER:
-						cmdArg = buffer.enter();
-						execute(cmdArg);
-						buffer.reset();
-						break;
-					default:
-						break;
+				if (!super.defaultAction(c)) {
+					switch (c) {
+						case NetVTKey.TABULATOR:
+							buffer.tab();
+							break;
+						case NetVTKey.ENTER:
+							cmdArg = buffer.enter();
+							execute(cmdArg);
+							buffer.reset();
+							break;
+						default:
+							break;
+					}
 				}
 				
 				buffer.put((char) c);

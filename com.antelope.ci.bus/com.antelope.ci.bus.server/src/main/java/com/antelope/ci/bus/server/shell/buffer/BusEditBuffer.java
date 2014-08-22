@@ -59,14 +59,18 @@ public class BusEditBuffer extends BusScreenBuffer {
 		this.cursor = cursorStart;
 	}
 	
-	public void put(char c) throws IOException {
-		buffer.put(c);
-		if (x() < width()) {
-			io.moveLeft(1);
-		} else {
-			io.moveDown(1);
-			io.moveRight(width());
-			cursor.newLine();
+	@Override public void put(char c) throws CIBusException {
+		try {
+			buffer.put(c);
+			if (x() < width()) {
+				io.moveLeft(1);
+			} else {
+				io.moveDown(1);
+				io.moveRight(width());
+				cursor.newLine();
+			}
+		} catch (IOException e) {
+			throw new CIBusException("", e);
 		}
 	}
 
@@ -112,20 +116,17 @@ public class BusEditBuffer extends BusScreenBuffer {
 		return op;
 	}
 
-	@Override
-	public void tab() throws CIBusException {
+	@Override public void tab() {
 		if (position() < size()) {
 			super.tab();
 		}
 	}
 
-	@Override
-	public void space() throws CIBusException {
+	@Override public void space() {
 		try {
 			put((char) NetVTKey.SPACE);
-		} catch (IOException e) {
+		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
-			new CIBusException("", e);
 		}
 	}
 
@@ -151,11 +152,11 @@ public class BusEditBuffer extends BusScreenBuffer {
 	}
 	
 	@Override
-	public ShellCommandArg enter() throws CIBusException {
+	public ShellCommandArg enter() {
 		try {
 			put((char) NetVTKey.ENTER);
 			lines++;
-		} catch (IOException e) {
+		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 			new CIBusException("", e);
 		}
@@ -204,6 +205,21 @@ public class BusEditBuffer extends BusScreenBuffer {
 		cb.position(mark);
 		cb.limit(buffer.capacity());
 		return s;
+	}
+
+	@Override
+	public void tabTip() {
+		// nothing to do
+	}
+
+	@Override
+	public boolean exitSpace() {
+		return false;
+	}
+
+	@Override
+	public void printTips(List<String> cmdList, int width) {
+		// nothing to do
 	}
 }
 

@@ -27,7 +27,6 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
  */
 @Shell(name="base.echo", commandAdapter="com.antelope.ci.bus.server.shell.command.echo.EchoAdapter")
 public abstract class BusBaseEchoShell extends BusShell {
-	protected BusEchoBuffer buffer;
 	private boolean tabPress;
 	
 	public BusBaseEchoShell() {
@@ -55,52 +54,31 @@ public abstract class BusBaseEchoShell extends BusShell {
 		try {
 			int c = io.read();
 			if (c != -1) {
-				if (keyBell)
-					io.bell();
-				switch (c) {
-					case NetVTKey.LEFT:
-						buffer.left();
-						break;
-					case NetVTKey.RIGHT:
-						buffer.right();
-						break;
-					case NetVTKey.UP:
-						buffer.up();
-						break;
-					case NetVTKey.DOWN:
-						buffer.down();
-						break;
-					case NetVTKey.DELETE:
-						buffer.delete();
-						break;
-					case NetVTKey.BACKSPACE:
-						buffer.backspace();
-						break;
-					case NetVTKey.SPACE:
-						buffer.space();
-						break;
-					case NetVTKey.TABULATOR:
-						if (!buffer.inCmdTab()) {
-							matchCommand();
-							if (tabPress) {
-								buffer.tabTip();
-								tabPress = false;
+				if (!super.defaultAction(c)) {
+					switch (c) {
+						case NetVTKey.TABULATOR:
+							if (!buffer.inCmdTab()) {
+								matchCommand();
+								if (tabPress) {
+									buffer.tabTip();
+									tabPress = false;
+								}
+								if (!tabPress)
+									tabPress = true;
 							}
-							if (!tabPress)
-								tabPress = true;
-						}
-						break;
-					case NetVTKey.ENTER:
-						ShellCommandArg cmdArg = buffer.enter();
-						if (cmdArg != null) {
-							execute(cmdArg);
-							resetCommand();
-							io.write(prompt());
-						}
-						break;
-					default:
-						buffer.put((char) c);
-						break;
+							break;
+						case NetVTKey.ENTER:
+							ShellCommandArg cmdArg = buffer.enter();
+							if (cmdArg != null) {
+								execute(cmdArg);
+								resetCommand();
+								io.write(prompt());
+							}
+							break;
+						default:
+							buffer.put((char) c);
+							break;
+					}
 				}
 			}
 		} catch (Exception e) {

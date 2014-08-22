@@ -133,15 +133,13 @@ public abstract class BusScreenBuffer extends BusBuffer {
 		return moved;
 	}
 	
-	@Override
-	public void tab() throws CIBusException {
+	@Override public void tab() {
 		try {
 			int steps = width() - x() > tabSize ? tabSize : width() - x();
 			io.moveRight(steps);
 			cursor.right(steps);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
-			new CIBusException("", e);
 		}
 	}
 	

@@ -341,4 +341,85 @@ public class StringUtil {
 		
 		return sb.toString();
 	}
+	
+	/**
+	 * 将byte数组转换为16进制显示的字符串
+	 * @param  @param buf
+	 * @param  @return
+	 * @return String
+	 * @throws
+	 */
+	public static String toHexString(byte[] buf) {
+		// 16进制包体内容
+		StringBuffer bufInfo = new StringBuffer();
+		int bufIndex = 0;
+		int count = buf.length / 16;
+		if (buf.length % 16 != 0) {
+			count += 1;
+		}
+		int n = 0;
+		while (n < 35) {
+			bufInfo.append("--");
+			n++;
+		}
+		bufInfo.append("\n");
+		while (count > 0) {
+			bufIndex = appendHexLine(bufInfo, buf, bufIndex);	// 每16位取出一行数据
+			count--;
+		}
+		n = 0;
+		while (n < 35) {
+			bufInfo.append("--");
+			n++;
+		}
+		return  bufInfo.toString();
+	}
+	
+	/*
+	 * 取出byte数组中每行数据，16个字节为一行，
+	 * 并将这一行放入buffer中，返回byte数组读
+	 * 取到的下标
+	 */
+	private static int appendHexLine(StringBuffer bufInfo, byte[] buf, int index) {
+		int lineCount = 16;
+		byte[] lineBs = new byte[lineCount];
+		int lineIndex = 0;
+		
+		while (index < buf.length && lineIndex < lineCount) {
+			lineBs[lineIndex] = buf[index];
+			bufInfo.append(toHexString(lineBs[lineIndex])).append((char)32);
+			lineIndex++;
+			index++;
+		}
+		while (lineIndex < lineCount) {
+			bufInfo.append((char)32).append((char)32).append((char)32);
+			lineIndex++;
+		}
+		String lineInfo = new String();
+		for (byte b : lineBs) {
+			if (b >= 32 && b <= 126) {
+				lineInfo += (char) b;
+			} else {
+				lineInfo += '.';
+			}
+			
+		}
+		bufInfo.append("; " + lineInfo + "\n");
+		
+		return index;
+	}
+	
+	/**
+	 * byte转换成16进制字符串
+	 * @param  @param b
+	 * @param  @return
+	 * @return String
+	 * @throws
+	 */
+	private static String toHexString(byte b) {
+		char[] buffer = new char[2];
+        buffer[0] = Character.forDigit((b >>> 4) & 0x0F, 16);
+        buffer[1] = Character.forDigit(b & 0x0F, 16);
+        return new String(buffer);
+    }
 }

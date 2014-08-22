@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.server.shell.buffer;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -50,7 +51,7 @@ public class BusHitBuffer extends BusScreenBuffer {
 		cursor = cursorStart;
 	}
 
-	public void put(char c) throws IOException {
+	@Override public void put(char c) {
 		buffer.put(c);
 	}
 
@@ -65,15 +66,32 @@ public class BusHitBuffer extends BusScreenBuffer {
 		return false;
 	}
 
+	@Override public void space() {
+		// nothing to do
+	}
+	
+	@Override public ShellCommandArg enter() {
+		try {
+			return super.toCommand();
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+		
+		return null;
+	}
+
 	@Override
-	public void space() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+	public void tabTip() {
+		// nothing to do
 	}
 	
 	@Override
-	public ShellCommandArg enter() throws CIBusException {
-		return super.toCommand();
+	public boolean exitSpace() {
+		return false;
+	}
+	
+	@Override
+	public void printTips(List<String> cmdList, int width) {
+		// nothing to do
 	}
 }
