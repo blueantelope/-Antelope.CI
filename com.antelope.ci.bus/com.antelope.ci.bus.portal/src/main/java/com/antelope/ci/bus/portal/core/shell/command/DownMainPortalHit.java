@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.shell.command.SwitchShellHit.java
+// com.antelope.ci.bus.portal.core.shell.command.DownMainPortalHit.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -9,23 +9,22 @@
 package com.antelope.ci.bus.portal.core.shell.command;
 
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
-import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
+import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-3-28		下午5:37:11 
+ * @Date	 2014-8-26		上午11:28:31 
  */
-@Command(name="switch_portal", commands="\t", status=BusShellStatus.GLOBAL, type=CommandType.HIT, beforeClear=true)
-public class SwitchPortalHit extends MainCommonPortalHit {
+@Command(name="switch_portal", commands=CommandAdapter.downCommand, status=BusShellStatus.ROOT, type=CommandType.HIT, mode=BusShellMode.MAIN)
+public class DownMainPortalHit extends MainCommonPortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -33,6 +32,9 @@ public class SwitchPortalHit extends MainCommonPortalHit {
 	 */
 	@Override protected String executeOnMain(BusPortalShell shell, TerminalIO io,
 			String status, Object... args) {
-		return PortalShellUtil.getNextStatus(status);
+		down(shell);
+		return BusShellStatus.KEEP;
 	}
+
 }
+

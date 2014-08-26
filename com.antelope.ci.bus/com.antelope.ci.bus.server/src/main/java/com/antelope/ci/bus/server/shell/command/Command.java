@@ -14,6 +14,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 
 
@@ -41,5 +42,7 @@ public @interface Command {
 	String form() default "";
 	
 	String property() default "";
+	
+	String mode() default BusShellMode.MAIN;
 }
 

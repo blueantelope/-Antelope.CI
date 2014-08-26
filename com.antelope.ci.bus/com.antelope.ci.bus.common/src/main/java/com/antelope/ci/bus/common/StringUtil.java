@@ -186,6 +186,19 @@ public class StringUtil {
 	public static String subString(String str, int start) throws CIBusException {
 		return subString(str, start, getWordCount(str));
 	}
+
+	public static boolean signString(String str, String suffix, String prefix) {
+		if (str.startsWith(suffix) && str.endsWith(prefix))
+			return true;
+		return false;
+	}
+	
+	public static String truncate(String str, String suffix, String prefix) {
+		if (str.startsWith(suffix) && str.endsWith(prefix))
+			return str.substring(suffix.length(), str.length()-prefix.length());
+		
+		return str;
+	}
 	
 	public static String subString(String str, int start, int end) throws CIBusException {
 		if (start < 0 || end < 0 || end < start || end > getWordCount(str))

@@ -17,9 +17,11 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.ShellUtil;
+import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 
 
 /**
@@ -89,6 +91,18 @@ public class PortalShellUtil {
 		}
 
 		return max;
+	}
+	
+	public static boolean isMainMode(BusPortalShell shell) {
+		return BusShellMode.isMain(shell.getBlock().getMode());
+	}
+	
+	public static boolean isInputMode(BusPortalShell shell) {
+		return BusShellMode.isInput(shell.getBlock().getMode());
+	}
+	
+	public static BaseMode getPortalMode(BusPortalShell shell) throws CIBusException {
+		return BaseMode.toMode(shell.getBlock().getMode());
 	}
 }
 

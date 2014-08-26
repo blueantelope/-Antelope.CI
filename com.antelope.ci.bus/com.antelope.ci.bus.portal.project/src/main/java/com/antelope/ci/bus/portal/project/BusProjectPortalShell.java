@@ -11,6 +11,7 @@ package com.antelope.ci.bus.portal.project;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
+import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.portal.project.command.NewProjectHit;
 import com.antelope.ci.bus.server.shell.Shell;
 
@@ -48,6 +49,14 @@ public class BusProjectPortalShell extends BusPortalShell {
 		
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected PortalBlock loadBlock() {
+		PortalBlock block = new PortalBlock();
+		
+		
+		return block;
 	}
 
 }

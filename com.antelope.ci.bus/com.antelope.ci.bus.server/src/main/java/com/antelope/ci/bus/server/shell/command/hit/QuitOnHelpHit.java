@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.server.shell.command.hit;
 
 import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -21,7 +22,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-6		下午9:49:33 
  */
-@Command(name="quit", commands="q, Q", status=BusShellStatus.HELP, type=CommandType.HIT)
+@Command(name="quit", commands="q, Q", status=BusShellStatus.HELP, type=CommandType.HIT, mode="+<"+BusShellMode.MAIN+">")
 public class QuitOnHelpHit extends Hit {
 	/**
 	 * 

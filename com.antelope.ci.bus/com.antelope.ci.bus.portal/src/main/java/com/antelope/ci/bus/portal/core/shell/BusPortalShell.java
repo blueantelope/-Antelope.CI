@@ -53,8 +53,9 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		CONTENT_SCALE.put(EU_LAYOUT.EAST.getName(), 2);
 	}
 	
-	private Portal portal;
-	private ShellPalette contentPalette;
+	protected Portal portal;
+	protected ShellPalette contentPalette;
+	protected PortalBlock block;
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -66,6 +67,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		} 
 		customInit();
 		parsePortal();
+		this.block = loadBlock();
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
 	}
@@ -106,6 +108,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			shiftTop();
 			move(contentPalette.getX(), contentPalette.getY());
 		}
+	}
+	
+	public PortalBlock getBlock() {
+		return block;
+	}
+	
+	public void updateBlock(PortalBlock block) {
+		this.block = block;
 	}
 	
 	protected ShellCursor getContentCursor() {
@@ -946,4 +956,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected abstract void customInit() throws CIBusException;
+	
+	protected abstract PortalBlock loadBlock();
 }

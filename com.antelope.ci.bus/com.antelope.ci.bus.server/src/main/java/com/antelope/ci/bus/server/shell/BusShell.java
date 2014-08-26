@@ -58,6 +58,7 @@ public abstract class BusShell {
 	protected BusBuffer buffer;
 	protected boolean activeMoveAction;
 	protected boolean activeEditAction;
+	protected String mode;
 	
 	public BusShell(BusShellSession session) {
 		this();
@@ -82,6 +83,7 @@ public abstract class BusShell {
 		paletteMap = new HashMap<String, ShellPalette>();
 		activeMoveAction = false;
 		activeEditAction = false;
+		mode = BusShellMode.MAIN;
 	}
 	
 	public boolean useMoveAction() {

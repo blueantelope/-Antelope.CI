@@ -5,7 +5,7 @@
 	
 	<!-- action -->
 	<action>
-		<hit name="" key="">
+		<hit name="switch_portal">
 			<font style="bold" mark="lt" size="medium" />
 		</hit>
 	</action>
