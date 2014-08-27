@@ -24,7 +24,12 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2014-8-26		上午11:32:58 
  */
-@Command(name="switch_portal", commands=CommandAdapter.leftCommand, status=BusShellStatus.ROOT, type=CommandType.HIT, mode=BusShellMode.MAIN)
+@Command(
+		name="left_main", 
+		commands=CommandAdapter.leftCommand, 
+		status=BusShellStatus.GLOBAL, 
+		type=CommandType.HIT, 
+		mode=BusShellMode.MAIN)
 public class LeftMainPortalHit extends MainCommonPortalHit {
 	/**
 	 * 

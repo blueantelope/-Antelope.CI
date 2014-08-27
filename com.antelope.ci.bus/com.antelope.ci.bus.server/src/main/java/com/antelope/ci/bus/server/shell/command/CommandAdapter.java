@@ -60,7 +60,8 @@ public abstract class CommandAdapter {
 	}
 
 	public enum COMMAND_SIGN {
-		NUMBER("number", command_sign_map.get("number")._prefix, command_sign_map.get("number")._suffix);
+		STRING("string", null, null),
+		NUMBER("number", command_sign_map.get("number")._suffix, command_sign_map.get("number")._prefix);
 		
 		private String name;
 		private String _suffix;
@@ -68,7 +69,7 @@ public abstract class CommandAdapter {
 		COMMAND_SIGN(String name, String _suffix, String _prefix) {
 			this.name = name;
 			this._suffix = _suffix;
-			this._suffix = _suffix;
+			this._prefix = _prefix;
 		}
 		
 		public String getName() {
@@ -90,19 +91,18 @@ public abstract class CommandAdapter {
 		
 		public static COMMAND_SIGN toSign(String command) {
 			for (String name : command_sign_map.keySet()) {
-				String prefix = command_sign_map.get(name)._prefix;
 				String suffix = command_sign_map.get(name)._suffix;
+				String prefix = command_sign_map.get(name)._prefix;
 				if (StringUtil.signString(command, suffix, prefix)) {
 					try {
-						COMMAND_SIGN csign = fromName(name);
+						return fromName(name);
 					} catch (CIBusException e) {
 						DevAssistant.errorln(e);
-						return null;
 					}
 				}
 			}
 			
-			return null;
+			return STRING;
 		}
 	}
 	
@@ -146,7 +146,15 @@ public abstract class CommandAdapter {
 	}
 	
 	public void addCommands(String packpath) throws CIBusException {
-		List<String>  classList = ClassFinder.findClasspath(packpath, CommonBusActivator.getClassLoader());
+		ClassLoader cl = null;
+		try {
+			cl = CommonBusActivator.getClassLoader();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (cl == null)
+			cl = CommandAdapter.class.getClassLoader();
+		List<String>  classList = ClassFinder.findClasspath(packpath, cl);
 		for (String clsname : classList) {
 			try {
 				addCommand(clsname);

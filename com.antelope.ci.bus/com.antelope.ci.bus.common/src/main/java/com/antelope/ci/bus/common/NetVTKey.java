@@ -92,7 +92,7 @@ public class NetVTKey {
 	/**
 	 * Enter (defining the return or enter key)
 	 */
-	public static final int ENTER = 10;
+//	public static final int ENTER = 10;
 
 	/**
 	 * Color init (defining ctrl-a atm)
@@ -148,5 +148,47 @@ public class NetVTKey {
 	 * CRLF (defining carriage+linebreak which is obligation)
 	 */
 	public static final String CRLF = "\r\n";
+	
+	public static final int[] Set = {
+		BEL,
+		BS,
+		DEL,
+		CR,
+		LF,
+		FCOLOR,
+		BCOLOR,
+		STYLE,
+		RESET,
+		BOLD,
+		BOLD_OFF,
+		ITALIC,
+		ITALIC_OFF,
+		BLINK,
+		BLINK_OFF,
+		UNDERLINED,
+		UNDERLINED_OFF,
+		REVERSE,
+		REVERSE_OFF,
+		DEVICERESET,
+		LINEWRAP,
+		NOLINEWRAP,
+		SPACE,
+		UP,
+		DOWN,
+		RIGHT,
+		LEFT,
+		TABULATOR,
+		DELETE,
+		BACKSPACE,
+		COLORINIT,
+		LOGOUTREQUEST,
+		BLACK,
+		RED,
+		GREEN,
+		YELLOW,
+		BLUE,
+		MAGENTA,
+		CYAN,
+	};
 }
 

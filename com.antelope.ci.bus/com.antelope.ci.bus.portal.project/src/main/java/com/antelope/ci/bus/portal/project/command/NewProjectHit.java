@@ -10,9 +10,11 @@ package com.antelope.ci.bus.portal.project.command;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.core.shell.command.PortalHit;
+import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
+import com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
@@ -30,23 +32,17 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 		commands="n, N", 
 		status=BusProjectShellStatus.PROJECT, 
 		type=CommandType.HIT, 
+		mode=BusShellMode.MAIN,
 		beforeClear=false, 
 		form="classpath:/com/antelope/ci/bus/portal/project/form/new_project.xml",
 		property="com.antelope.ci.bus.portal.project.form.project_form")
-public class NewProjectHit extends PortalHit {
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
-	 */
-	@Override
-	protected String execute(BusShell shell, TerminalIO io, String status, Object... args) {
+public class NewProjectHit extends MainCommonPortalHit {
+	@Override protected String executeOnMain(BusPortalShell shell, TerminalIO io, String status, Object... args) {
 		try {
 			super.draw(shell);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
-		
 		return BusProjectShellStatus.PROJECT;
 	}
 

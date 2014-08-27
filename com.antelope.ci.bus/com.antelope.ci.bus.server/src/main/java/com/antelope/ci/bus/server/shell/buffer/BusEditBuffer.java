@@ -154,7 +154,7 @@ public class BusEditBuffer extends BusScreenBuffer {
 	@Override
 	public ShellCommandArg enter() {
 		try {
-			put((char) NetVTKey.ENTER);
+			put((char) NetVTKey.LF);
 			lines++;
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
@@ -189,7 +189,7 @@ public class BusEditBuffer extends BusScreenBuffer {
 		List<String> lineList = new ArrayList<String>();
 		CharBuffer cb = CharBuffer.allocate(1024);
 		for (char c : s.toCharArray()) {
-			if (c == NetVTKey.ENTER) {
+			if (c == NetVTKey.LF) {
 				lineList.add(read(cb));
 				cb.clear();
 			}

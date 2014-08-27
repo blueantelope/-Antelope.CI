@@ -31,11 +31,17 @@ public abstract class BusBaseEchoShell extends BusShell {
 	
 	public BusBaseEchoShell() {
 		super();
-		tabPress = false;
+		initForEcho();
 	}
 	
 	public BusBaseEchoShell(BusShellSession session) {
 		super(session);
+		initForEcho();
+	}
+	
+	protected void initForEcho() {
+		activeMoveAction = true;
+		activeEditAction = true;
 		tabPress = false;
 	}
 	
@@ -47,39 +53,33 @@ public abstract class BusBaseEchoShell extends BusShell {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusShell#action()
+	 * @see com.antelope.ci.bus.server.shell.BusShell#action(int)
 	 */
-	@Override
-	protected void action() throws CIBusException {
+	@Override protected void action(int c) throws CIBusException {
 		try {
-			int c = io.read();
-			if (c != -1) {
-				if (!super.defaultAction(c)) {
-					switch (c) {
-						case NetVTKey.TABULATOR:
-							if (!buffer.inCmdTab()) {
-								matchCommand();
-								if (tabPress) {
-									buffer.tabTip();
-									tabPress = false;
-								}
-								if (!tabPress)
-									tabPress = true;
-							}
-							break;
-						case NetVTKey.ENTER:
-							ShellCommandArg cmdArg = buffer.enter();
-							if (cmdArg != null) {
-								execute(cmdArg);
-								resetCommand();
-								io.write(prompt());
-							}
-							break;
-						default:
-							buffer.put((char) c);
-							break;
+			switch (c) {
+				case NetVTKey.TABULATOR:
+					if (!buffer.inCmdTab()) {
+						matchCommand();
+						if (tabPress) {
+							buffer.tabTip();
+							tabPress = false;
+						}
+						if (!tabPress)
+							tabPress = true;
 					}
-				}
+					break;
+				case NetVTKey.LF:
+					ShellCommandArg cmdArg = buffer.enter();
+					if (cmdArg != null) {
+						execute(cmdArg);
+						resetCommand();
+						io.write(prompt());
+					}
+					break;
+				default:
+					buffer.put((char) c);
+					break;
 			}
 		} catch (Exception e) {
 			DevAssistant.errorln(e);

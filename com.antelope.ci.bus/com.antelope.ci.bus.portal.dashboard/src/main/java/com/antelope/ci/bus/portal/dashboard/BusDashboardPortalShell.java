@@ -11,6 +11,7 @@ package com.antelope.ci.bus.portal.dashboard;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
+import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.server.shell.Shell;
 
 
@@ -49,6 +50,14 @@ public class BusDashboardPortalShell extends BusPortalShell {
 	protected void shutdown() throws CIBusException {
 		
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected PortalBlock loadBlock() {
+		
+		// TODO Auto-generated method stub
+		return null;
 		
 	}
 

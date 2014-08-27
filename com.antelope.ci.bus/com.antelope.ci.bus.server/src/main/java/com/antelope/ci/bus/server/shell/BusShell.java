@@ -59,6 +59,7 @@ public abstract class BusShell {
 	protected boolean activeMoveAction;
 	protected boolean activeEditAction;
 	protected String mode;
+	protected int controlKey;
 	
 	public BusShell(BusShellSession session) {
 		this();
@@ -84,6 +85,11 @@ public abstract class BusShell {
 		activeMoveAction = false;
 		activeEditAction = false;
 		mode = BusShellMode.MAIN;
+		controlKey = -1;
+	}
+	
+	public int getControlKey() {
+		return controlKey;
 	}
 	
 	public boolean useMoveAction() {
@@ -195,12 +201,27 @@ public abstract class BusShell {
 		mainView();
 		loopAction();
 	}
-
+	
 	private void loopAction() throws CIBusException {
+		int c = -1;
 		while (true) {
-			log.debug("action start");
-			action();
-			log.debug("action end");
+			try {
+				c = io.read();
+			} catch (IOException e) {
+				throw new CIBusException("", e);
+			}
+			if (c == -1)
+				break;
+			putControlKey(c);
+			try {
+				if (!defaultAction(c)) {
+					action(c);
+				}
+			} catch (Exception e) {
+				DevAssistant.assert_exception(e);
+				throw new CIBusException("", e);
+			}
+			
 			if (quit) {
 				close();
 				break;
@@ -468,7 +489,7 @@ public abstract class BusShell {
 			throw new CIBusException("", e);
 		}
 		StringBuffer strBuf = new StringBuffer();
-		while (in != NetVTKey.ENTER) {
+		while (in != NetVTKey.LF) {
 			try {
 				if (in == NetVTKey.DELETE || in == NetVTKey.BACKSPACE) {
 					if (strBuf.length() > 0) {
@@ -641,11 +662,27 @@ public abstract class BusShell {
 		return false;
 	}
 
+	protected boolean noActionForContorl() {
+		if (controlKey != -1)
+			return true;
+		return false;
+	}
+	
+	protected void putControlKey(int c) {
+		controlKey = -1;
+		for (int k : NetVTKey.Set) {
+			if (k == c) {
+				controlKey = k;
+				break;
+			}
+		}
+	}
+
 	protected abstract void custom() throws CIBusException;
 
 	public abstract void mainView() throws CIBusException;
 
-	protected abstract void action() throws CIBusException;
+	protected abstract void action(int c) throws CIBusException;
 
 	protected abstract void shutdown() throws CIBusException;
 	

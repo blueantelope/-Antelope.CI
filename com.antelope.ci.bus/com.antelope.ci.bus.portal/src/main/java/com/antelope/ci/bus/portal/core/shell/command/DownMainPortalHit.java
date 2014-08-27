@@ -23,7 +23,12 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2014-8-26		上午11:28:31 
  */
-@Command(name="switch_portal", commands=CommandAdapter.downCommand, status=BusShellStatus.ROOT, type=CommandType.HIT, mode=BusShellMode.MAIN)
+@Command(
+		name="down_main", 
+		commands=CommandAdapter.downCommand, 
+		status=BusShellStatus.GLOBAL, 
+		type=CommandType.HIT, 
+		mode=BusShellMode.MAIN)
 public class DownMainPortalHit extends MainCommonPortalHit {
 	/**
 	 * 

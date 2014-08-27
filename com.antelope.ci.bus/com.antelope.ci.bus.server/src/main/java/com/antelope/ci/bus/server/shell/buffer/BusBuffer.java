@@ -135,7 +135,7 @@ public abstract class BusBuffer {
 	
 	public ShellCommandArg enter() {
 		try {
-			io.write((char) NetVTKey.ENTER);
+			io.write((char) NetVTKey.LF);
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		}

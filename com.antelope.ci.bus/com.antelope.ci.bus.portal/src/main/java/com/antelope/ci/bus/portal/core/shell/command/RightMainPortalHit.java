@@ -24,7 +24,12 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2014-8-26		上午11:33:38 
  */
-@Command(name="right_main", commands=CommandAdapter.rightCommand, status=BusShellStatus.ROOT, type=CommandType.HIT, mode=BusShellMode.MAIN)
+@Command(
+		name="right_main", 
+		commands=CommandAdapter.rightCommand, 
+		status=BusShellStatus.GLOBAL, 
+		type=CommandType.HIT, 
+		mode=BusShellMode.MAIN)
 public class RightMainPortalHit extends MainCommonPortalHit {
 	/**
 	 * 

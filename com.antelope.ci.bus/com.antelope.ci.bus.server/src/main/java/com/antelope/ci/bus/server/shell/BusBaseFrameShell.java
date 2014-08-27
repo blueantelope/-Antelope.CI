@@ -41,34 +41,32 @@ public abstract class BusBaseFrameShell extends BusShell {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.BusShell#action()
+	 * @see com.antelope.ci.bus.server.shell.BusShell#action(int)
 	 */
-	@Override
-	protected void action() throws CIBusException {
+	@Override protected void action(int c) throws CIBusException {
 		try {
-			int c = io.read();
 			ShellCommandArg cmdArg;
-			if (c != -1) {
-				if (!super.defaultAction(c)) {
-					switch (c) {
-						case NetVTKey.TABULATOR:
-							buffer.tab();
-							break;
-						case NetVTKey.ENTER:
-							cmdArg = buffer.enter();
-							execute(cmdArg);
-							buffer.reset();
-							break;
-						default:
-							break;
+			switch (c) {
+				case NetVTKey.TABULATOR:
+					buffer.tab();
+					break;
+				case NetVTKey.LF:
+					cmdArg = buffer.enter();
+					execute(cmdArg);
+					buffer.reset();
+					break;
+				default:
+					if (noActionForContorl()) {
+						cmdArg = new ShellCommandArg(String.valueOf(controlKey), new String[]{});
+						execute(cmdArg);
+					} else {
+						buffer.put((char) c);
+						cmdArg = buffer.toCommand();
+						execute(cmdArg);
+						buffer.reset();
 					}
-				}
-				
-				buffer.put((char) c);
-				cmdArg = buffer.toCommand();
-				execute(cmdArg);
-				buffer.reset();
-			} 
+					break;
+			}
 		} catch (Exception e) {
 			DevAssistant.assert_exception(e);
 			throw new CIBusException("", e);
