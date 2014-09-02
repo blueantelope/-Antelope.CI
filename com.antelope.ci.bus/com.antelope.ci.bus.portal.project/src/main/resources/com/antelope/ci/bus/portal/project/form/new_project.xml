@@ -9,7 +9,7 @@
 			<up active="off"></up>
 			<left active="off"></left>
 			<right active="off"></right>
-			<bottom active="on">_{20}</bottom>
+			<bottom active="on"><![CDATA[_<n:95>{10}]]></bottom>
 		</box>
 	</input>
 	<content>

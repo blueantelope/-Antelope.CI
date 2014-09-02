@@ -23,6 +23,7 @@ import com.antelope.ci.bus.common.xml.BusXmlHelper.SetterGetterPair;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_LAYOUT;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Action;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
@@ -512,6 +513,44 @@ public class Portal implements Serializable {
 		}
 		
 		return order;
+	}
+	
+	public PlaceParts getNorthPlace() {
+		return getPlace(EU_LAYOUT.NORTH.getName());
+	}
+	
+	public PlaceParts getWestPlace() {
+		return getPlace(EU_LAYOUT.WEST.getName());
+	}
+	
+	public PlaceParts getCenterPlace() {
+		return getPlace(EU_LAYOUT.CENTER.getName());
+	}
+	
+	public PlaceParts getEastPlace() {
+		return getPlace(EU_LAYOUT.EAST.getName());
+	}
+	
+	public PlaceParts getSouthPlace() {
+		return getPlace(EU_LAYOUT.SOUTH.getName());
+	}
+	
+	private PlaceParts getPlace(String name) {
+		if (layout != null) {
+			if (layout.getPlaceList() != null) {
+				for (Place place : layout.getPlaceList()) {
+					if (place != null) {
+						String pname = place.getName();
+						if (!StringUtil.empty(pname)) {
+							if (pname.trim().equalsIgnoreCase(name))
+								return place.getParts();
+						}
+					}
+				}
+			}
+		}
+		
+		return null;
 	}
 }
 

@@ -58,8 +58,10 @@ public abstract class BusShell {
 	protected BusBuffer buffer;
 	protected boolean activeMoveAction;
 	protected boolean activeEditAction;
+	protected boolean activeUserAction;
 	protected String mode;
 	protected int controlKey;
+	protected ShellCommandArg cmdArg;
 	
 	public BusShell(BusShellSession session) {
 		this();
@@ -84,6 +86,7 @@ public abstract class BusShell {
 		paletteMap = new HashMap<String, ShellPalette>();
 		activeMoveAction = false;
 		activeEditAction = false;
+		activeUserAction = false;
 		mode = BusShellMode.MAIN;
 		controlKey = -1;
 	}
@@ -114,6 +117,14 @@ public abstract class BusShell {
 	
 	public void closeEditAction() {
 		this.activeMoveAction = false;
+	}
+	
+	public void openUserAction() {
+		this.activeUserAction = true;
+	}
+	
+	public void closeUserAction() {
+		this.activeUserAction = false;
 	}
 	
 	public void setSort(int sort) {
@@ -214,8 +225,13 @@ public abstract class BusShell {
 				break;
 			putControlKey(c);
 			try {
-				if (!defaultAction(c)) {
-					action(c);
+				boolean ran = false;
+				ran = defaultAction(c);
+				if (!ran) {
+					if (activeUserAction)
+						ran = userAction(c);
+					if (!ran)
+						action(c);
 				}
 			} catch (Exception e) {
 				DevAssistant.assert_exception(e);
@@ -266,7 +282,6 @@ public abstract class BusShell {
 	
 	protected void storeCursor() {
 		try {
-//			io.storeCursor();
 			io.homeCursor();
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
@@ -275,12 +290,7 @@ public abstract class BusShell {
 	
 	@Deprecated
 	protected void restoreCursor() {
-//		try {
-//			io.restoreCursor();
-//			io.homeCursor();
-//		} catch (IOException e) {
-//			DevAssistant.errorln(e);
-//		}
+
 	}
 
 	protected void waitForWake() {
@@ -679,6 +689,8 @@ public abstract class BusShell {
 	}
 
 	protected abstract void custom() throws CIBusException;
+	
+	protected abstract boolean userAction(int c) throws CIBusException;
 
 	public abstract void mainView() throws CIBusException;
 

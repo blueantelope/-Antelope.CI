@@ -11,21 +11,21 @@ package com.antelope.ci.bus.server.shell.command;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.ValidatorUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
+import com.antelope.ci.bus.server.shell.command.CommandHelper.COMMAND_SIGN;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -37,86 +37,6 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-3		上午10:18:19 
  */
 public abstract class CommandAdapter {
-	private static class CommandSignPair {
-		public String _suffix;
-		public String _prefix;
-		public CommandSignPair(String _suffix, String _prefix) {
-			super();
-			this._suffix = _suffix;
-			this._prefix = _prefix;
-		}
-	}
-	
-	private static final String NUMBER_SUFFIX = "<n:";
-	private static final String NUMBER_PREFIX = ">";
-	private static Map<String, CommandSignPair> command_sign_map;
-	public final static String upCommand = NUMBER_SUFFIX + NetVTKey.UP + NUMBER_PREFIX;
-	public final static String downCommand = NUMBER_SUFFIX + NetVTKey.DOWN + NUMBER_PREFIX;
-	public final static String leftCommand = NUMBER_SUFFIX + NetVTKey.LEFT + NUMBER_PREFIX;
-	public final static String rightCommand = NUMBER_SUFFIX + NetVTKey.RIGHT + NUMBER_PREFIX;
-	static {
-		command_sign_map = new HashMap<String, CommandSignPair>();
-		command_sign_map.put("number", new CommandSignPair(NUMBER_SUFFIX, NUMBER_PREFIX));
-	}
-
-	public enum COMMAND_SIGN {
-		STRING("string", null, null),
-		NUMBER("number", command_sign_map.get("number")._suffix, command_sign_map.get("number")._prefix);
-		
-		private String name;
-		private String _suffix;
-		private String _prefix;
-		COMMAND_SIGN(String name, String _suffix, String _prefix) {
-			this.name = name;
-			this._suffix = _suffix;
-			this._prefix = _prefix;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public String truncate(String command) {
-			return StringUtil.truncate(command, _suffix, _prefix);
-		}
-		
-		public static COMMAND_SIGN fromName(String name) throws CIBusException {
-			for (COMMAND_SIGN csign : COMMAND_SIGN.values()) {
-				if (name.equalsIgnoreCase(csign.getName()))
-					return csign;
-			}
-			
-			throw new CIBusException("", "unkown command sing name");
-		}
-		
-		public static COMMAND_SIGN toSign(String command) {
-			for (String name : command_sign_map.keySet()) {
-				String suffix = command_sign_map.get(name)._suffix;
-				String prefix = command_sign_map.get(name)._prefix;
-				if (StringUtil.signString(command, suffix, prefix)) {
-					try {
-						return fromName(name);
-					} catch (CIBusException e) {
-						DevAssistant.errorln(e);
-					}
-				}
-			}
-			
-			return STRING;
-		}
-	}
-	
-	private static String genNumberCommand(int cmd) {
-		return genSignCommand("number", String.valueOf(cmd));
-	}
-	
-	private static String genSignCommand(String name, String cmd) {
-		CommandSignPair pair = command_sign_map.get(name);
-		if (pair != null)
-			return pair._prefix + cmd + pair._suffix;
-		return cmd;
-	}
-	
 	protected static final String DOT = ".";
 	protected Map<String, ICommand> commandMap;
 	protected Map<String, ICommand> globalCommandMap;
@@ -256,11 +176,15 @@ public abstract class CommandAdapter {
 			COMMAND_SIGN csign = COMMAND_SIGN.toSign(scmd);
 			switch (csign) {
 				case NUMBER:
-					String c = csign.truncate(scmd);
-					if (StringUtil.isNumeric(c)) {
-						int i = Integer.parseInt(c);
-						if (i == Integer.parseInt(cmdStr))
-							return true;
+					try {
+						String c = csign.truncate(scmd);
+						if (StringUtil.isNumeric(c)) {
+							int i = Integer.parseInt(c);
+							if (ValidatorUtil.isNumber(cmdStr) &&  i == Integer.parseInt(cmdStr))
+								return true;
+						}
+					} catch (Exception e) {
+						DevAssistant.errorln(e);
 					}
 					return false;
 				default:

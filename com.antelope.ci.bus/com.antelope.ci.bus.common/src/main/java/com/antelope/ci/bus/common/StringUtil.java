@@ -187,19 +187,6 @@ public class StringUtil {
 		return subString(str, start, getWordCount(str));
 	}
 
-	public static boolean signString(String str, String suffix, String prefix) {
-		if (str.startsWith(suffix) && str.endsWith(prefix))
-			return true;
-		return false;
-	}
-	
-	public static String truncate(String str, String suffix, String prefix) {
-		if (str.startsWith(suffix) && str.endsWith(prefix))
-			return str.substring(suffix.length(), str.length()-prefix.length());
-		
-		return str;
-	}
-	
 	public static String subString(String str, int start, int end) throws CIBusException {
 		if (start < 0 || end < 0 || end < start || end > getWordCount(str))
 			throw new CIBusException("", "subString exception occur, index not fit rule");
@@ -321,7 +308,7 @@ public class StringUtil {
 		return false;
 	}
 	
-	public static String formatString(String str, String prefix, String suffix) {
+	public static String loopString(String str, String prefix, String suffix) {
 		StringBuffer sb = new StringBuffer();
 		int index = 0;
 		while (true) {

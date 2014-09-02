@@ -121,6 +121,17 @@ public class PlaceParts implements Serializable {
 		appendParts(this, aParts);
 	}
 	
+	public PlacePart getPlacepartByLayout(String layout) {
+		if (placeList != null) {
+			for (PlacePart part : partList) {
+				if (part.getPlace().trim().equalsIgnoreCase(layout))
+					return part;
+			}
+		}
+		
+		return null;
+	}
+	
 	private void appendParts(PlaceParts parts, PlaceParts aParts) {
 		if (aParts.getPartList() != null) {
 			for (PlacePart aPart : aParts.getPartList()) {

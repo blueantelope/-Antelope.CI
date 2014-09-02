@@ -28,7 +28,7 @@ public class TestFormatString extends TestCase {
 	private static final String STR2 = "_{20}*{10}/////";
 	
 	@Test public void test() {
-		String fs = StringUtil.formatString(STR2, "{", "}");
+		String fs = StringUtil.loopString(STR2, "{", "}");
 		System.out.println(fs);
 	}
 

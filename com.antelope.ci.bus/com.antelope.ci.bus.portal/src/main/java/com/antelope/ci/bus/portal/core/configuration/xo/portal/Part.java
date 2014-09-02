@@ -42,6 +42,7 @@ public class Part implements Serializable {
 	private String embed_exp;
 	private Integer sort;
 	private List<Content> contentList;
+	private BlockGroup blockGroup;
 	
 	public Part() {
 		super();
@@ -67,6 +68,15 @@ public class Part implements Serializable {
 		contentList.add(content);
 	}
 	
+	@XmlElement(name="blocks")
+	public BlockGroup getBlockGroup() {
+		return blockGroup;
+	}
+
+	public void setBlockGroup(BlockGroup blockGroup) {
+		this.blockGroup = blockGroup;
+	}
+
 	@XmlAttribute(name="embed")
 	public String getEmbed_exp() {
 		return embed_exp;

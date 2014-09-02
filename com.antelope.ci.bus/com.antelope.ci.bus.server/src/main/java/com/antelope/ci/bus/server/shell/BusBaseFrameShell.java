@@ -30,13 +30,18 @@ public abstract class BusBaseFrameShell extends BusShell {
 	
 	public BusBaseFrameShell() {
 		super();
-		cmd = new String();
+		initForFrame();
 	}
 
 	public BusBaseFrameShell(BusShellSession session) {
 		super(session);
+		initForFrame();
+	}
+	
+	protected void initForFrame() {
 		cmd = new String();
 	}
+	
 	
 	/**
 	 * 
@@ -45,27 +50,14 @@ public abstract class BusBaseFrameShell extends BusShell {
 	 */
 	@Override protected void action(int c) throws CIBusException {
 		try {
-			ShellCommandArg cmdArg;
-			switch (c) {
-				case NetVTKey.TABULATOR:
-					buffer.tab();
-					break;
-				case NetVTKey.LF:
-					cmdArg = buffer.enter();
-					execute(cmdArg);
-					buffer.reset();
-					break;
-				default:
-					if (noActionForContorl()) {
-						cmdArg = new ShellCommandArg(String.valueOf(controlKey), new String[]{});
-						execute(cmdArg);
-					} else {
-						buffer.put((char) c);
-						cmdArg = buffer.toCommand();
-						execute(cmdArg);
-						buffer.reset();
-					}
-					break;
+			if (noActionForContorl()) {
+				cmdArg = new ShellCommandArg(String.valueOf(controlKey), new String[]{});
+				execute(cmdArg);
+			} else {
+				buffer.put((char) c);
+				cmdArg = buffer.toCommand();
+				execute(cmdArg);
+				buffer.reset();
 			}
 		} catch (Exception e) {
 			DevAssistant.assert_exception(e);
@@ -83,6 +75,26 @@ public abstract class BusBaseFrameShell extends BusShell {
 		view();
 		ShellCursor cursor = initCursorPosistion();
 		buffer = new BusHitBuffer(io, cursor, new ShellScreen(session.getWidth(), session.getHeigth()));
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#userAction(int)
+	 */
+	@Override protected boolean userAction(int c) throws CIBusException {
+		switch (c) {
+			case NetVTKey.TABULATOR:
+				buffer.tab();
+				return true;
+			case NetVTKey.LF:
+				cmdArg = buffer.enter();
+				execute(cmdArg);
+				buffer.reset();
+				return true;
+			default:
+				return false;
+		}
 	}
 	
 	protected abstract ShellCursor initCursorPosistion(); 

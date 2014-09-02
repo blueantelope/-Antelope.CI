@@ -12,7 +12,7 @@ import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
-import com.antelope.ci.bus.server.shell.command.CommandAdapter;
+import com.antelope.ci.bus.server.shell.command.CommandHelper;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -26,7 +26,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  */
 @Command(
 		name="right_main", 
-		commands=CommandAdapter.rightCommand, 
+		commands=CommandHelper.rightCommand, 
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 
 		mode=BusShellMode.MAIN)

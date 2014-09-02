@@ -13,6 +13,7 @@ import java.io.Serializable;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlText;
+import com.antelope.ci.bus.server.shell.command.CommandHelper;
 
 
 /**
@@ -41,7 +42,11 @@ public class BoxFace implements Serializable {
 		return value;
 	}
 	public void setValue(String value) {
-		this.value = StringUtil.formatString(value, PREFIX, SUFFIX);
+		String s = StringUtil.loopString(value, PREFIX, SUFFIX);
+		if (!StringUtil.empty(s))
+			this.value = CommandHelper.convertSign(s);
+		else 
+			this.value = s;
 	}
 	
 	public String getExpression() {

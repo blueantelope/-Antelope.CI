@@ -23,8 +23,10 @@
 			</part>
 			
 			<part name="second.menu" embed="replace">
-				<content><![CDATA[${project.menu.new}
-				]]></content>
+				<blocks mode="vertical">
+					<block active="on" focus="on"><![CDATA[${project.menu.new}
+					]]></block>
+				</blocks>
 			</part>
 			
 			<part name="title" embed="replace">

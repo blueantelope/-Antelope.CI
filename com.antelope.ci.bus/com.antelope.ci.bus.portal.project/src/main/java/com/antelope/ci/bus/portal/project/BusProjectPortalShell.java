@@ -54,8 +54,7 @@ public class BusProjectPortalShell extends BusPortalShell {
 	@Override
 	protected PortalBlock loadBlock() {
 		PortalBlock block = new PortalBlock();
-		
-		
+	
 		return block;
 	}
 

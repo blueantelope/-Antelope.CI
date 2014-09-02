@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.portal.core.shell;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,7 +137,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		// nothing
 	}
 	
-	private void draw() throws IOException, CIBusException {
+	private void draw() throws CIBusException {
 		Map<String, PlacePartTree> placeTreeMap = portal.makePlacePartTreeMap();
 		Map<String, Integer> contentWidthMap = divideContentWidth(getWidth(), placeTreeMap);
 		shiftTop();
@@ -535,52 +534,53 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return height;
 	}
 	
-	protected void layout() throws IOException, CIBusException {
-		Map<String, Map<String, PlacePart>> placeMap = portal.getPlaceMap();
-		shiftTop();
-		int north_height = 0;
-		Map<String, PlacePart> northMap = placeMap.get(EU_LAYOUT.NORTH.getName());
-		if (northMap != null) {
-			north_height = getPartHeight(northMap, getWidth());
-			layoutInner(northMap, getWidth());
-		}
-		
-		Map<String, PlacePart> southMap = placeMap.get(EU_LAYOUT.SOUTH.getName());
-		if (southMap != null) {
-			shiftBottom();
-			layoutInner(southMap, getWidth());
-		}
-
-		shiftTop();
-		int west_width = 0;
-		Map<String, PlacePart> westMap = placeMap.get(EU_LAYOUT.WEST.getName());
-		if (westMap != null) {
-			shiftDown(north_height);
-			west_width = getPartWdith(westMap, getWidth());
-			layoutInner(westMap, west_width);
-		}
-		
-		shiftTop();
-		int east_width = 0;
-		Map<String, PlacePart> eastMap = placeMap.get(EU_LAYOUT.EAST.getName());
-		if (eastMap != null) {
-			shiftDown(north_height);
-			east_width = getPartWdith(eastMap, getWidth());
-			shiftRight(getWidth() - east_width);
-			layoutInner(eastMap, east_width);
-		}
-		
-		shiftTop();
-		Map<String, PlacePart> centerMap = placeMap.get(EU_LAYOUT.CENTER.getName());
-		if (centerMap != null) {
-			shiftDown(north_height);
-			shiftRight(west_width);
-			int center_width = getWidth() - west_width - east_width;
-			if (center_width < 0)
-				throw new CIBusException("", "not enough width for center");
-			layoutInner(centerMap, center_width);
-		}
-	}
+	
+//	@Deprecated protected void layout() throws CIBusException {
+//		Map<String, Map<String, PlacePart>> placeMap = portal.getPlaceMap();
+//		shiftTop();
+//		int north_height = 0;
+//		Map<String, PlacePart> northMap = placeMap.get(EU_LAYOUT.NORTH.getName());
+//		if (northMap != null) {
+//			north_height = getPartHeight(northMap, getWidth());
+//			layoutInner(northMap, getWidth());
+//		}
+//		
+//		Map<String, PlacePart> southMap = placeMap.get(EU_LAYOUT.SOUTH.getName());
+//		if (southMap != null) {
+//			shiftBottom();
+//			layoutInner(southMap, getWidth());
+//		}
+//
+//		shiftTop();
+//		int west_width = 0;
+//		Map<String, PlacePart> westMap = placeMap.get(EU_LAYOUT.WEST.getName());
+//		if (westMap != null) {
+//			shiftDown(north_height);
+//			west_width = getPartWdith(westMap, getWidth());
+//			layoutInner(westMap, west_width);
+//		}
+//		
+//		shiftTop();
+//		int east_width = 0;
+//		Map<String, PlacePart> eastMap = placeMap.get(EU_LAYOUT.EAST.getName());
+//		if (eastMap != null) {
+//			shiftDown(north_height);
+//			east_width = getPartWdith(eastMap, getWidth());
+//			shiftRight(getWidth() - east_width);
+//			layoutInner(eastMap, east_width);
+//		}
+//		
+//		shiftTop();
+//		Map<String, PlacePart> centerMap = placeMap.get(EU_LAYOUT.CENTER.getName());
+//		if (centerMap != null) {
+//			shiftDown(north_height);
+//			shiftRight(west_width);
+//			int center_width = getWidth() - west_width - east_width;
+//			if (center_width < 0)
+//				throw new CIBusException("", "not enough width for center");
+//			layoutInner(centerMap, center_width);
+//		}
+//	}
 	
 	protected int getPartHeight(Map<String, PlacePart> placeMap, int width) {
 		int north_height = 0;
@@ -923,7 +923,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		Part part = portal.getPartMap().get(placePart.getName());
 		return part.reListContent(width);
 	}
-
+	
 	@Deprecated protected String placePartContent(PlacePart placePart) throws CIBusException {
 		EU_ORIGIN origin = EU_ORIGIN.toOrigin(placePart.getOrigin());
 		Part part;
@@ -946,7 +946,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	@Override protected void view() throws CIBusException {
 		try {
 			draw();
-		} catch (IOException e) {
+		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
 	}

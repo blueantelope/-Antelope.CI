@@ -16,7 +16,6 @@ import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.buffer.BusEchoBuffer;
-import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 
 
 /**
@@ -42,6 +41,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	protected void initForEcho() {
 		activeMoveAction = true;
 		activeEditAction = true;
+		activeUserAction = true;
 		tabPress = false;
 	}
 	
@@ -57,30 +57,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	 */
 	@Override protected void action(int c) throws CIBusException {
 		try {
-			switch (c) {
-				case NetVTKey.TABULATOR:
-					if (!buffer.inCmdTab()) {
-						matchCommand();
-						if (tabPress) {
-							buffer.tabTip();
-							tabPress = false;
-						}
-						if (!tabPress)
-							tabPress = true;
-					}
-					break;
-				case NetVTKey.LF:
-					ShellCommandArg cmdArg = buffer.enter();
-					if (cmdArg != null) {
-						execute(cmdArg);
-						resetCommand();
-						io.write(prompt());
-					}
-					break;
-				default:
-					buffer.put((char) c);
-					break;
-			}
+			buffer.put((char) c);
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
@@ -108,6 +85,42 @@ public abstract class BusBaseEchoShell extends BusShell {
 			io.write(prompt());
 			resetCommand();
 		} catch (IOException e) {
+			DevAssistant.errorln(e);
+			throw new CIBusException("", e);
+		}
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#userAction(int)
+	 */
+	@Override protected boolean userAction(int c) throws CIBusException {
+		try {
+			switch (c) {
+				case NetVTKey.TABULATOR:
+					if (!buffer.inCmdTab()) {
+						matchCommand();
+						if (tabPress) {
+							buffer.tabTip();
+							tabPress = false;
+						}
+						if (!tabPress)
+							tabPress = true;
+					}
+					return true;
+				case NetVTKey.LF:
+					cmdArg = buffer.enter();
+					if (cmdArg != null) {
+						execute(cmdArg);
+						resetCommand();
+						io.write(prompt());
+					}
+					return true;
+				default:
+					return false;
+			}
+		} catch (Exception e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
 		}

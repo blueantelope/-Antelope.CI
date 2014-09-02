@@ -13,7 +13,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
-import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
