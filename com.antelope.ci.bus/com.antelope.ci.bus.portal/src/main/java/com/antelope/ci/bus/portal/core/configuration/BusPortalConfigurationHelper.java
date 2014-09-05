@@ -41,7 +41,6 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
-import com.antelope.ci.bus.portal.core.configuration.xo.portal.Content;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extensions;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Layout;
@@ -52,7 +51,6 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePart;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlaceParts;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderDelimiter;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
-import com.antelope.ci.bus.server.shell.ShellText;
 
 /**
  * configraiton reader for portal (include main and part)
@@ -215,13 +213,8 @@ public class BusPortalConfigurationHelper {
 			if (major_part == null) {
 				major_part = new Part();
 				major_part.setName(rname);
-				Content content = new Content();
-				content.setValue("");
-				major_part.setContent(content);
 				majorExt.addPart(major_part);
 			}
-			major_part.getContent().setValue(toShellText(major_part.getContent().getValue(), hit_font));
-			major_part.getContentList().clear();
 			
 			if (del_position == EU_Position.START)
 				major_part.addContent(del_value, "", del_margin, EU_Position.START, 1);
@@ -259,10 +252,11 @@ public class BusPortalConfigurationHelper {
 				String extValue = extPart.getValue();
 				if (!"".equals(extName)) {
 					if (ResourceUtil.needReplace(extValue))
-						extValue = ResourceUtil.replaceLableForReader(extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
+						extValue = ResourceUtil.replaceLableForReader(
+								extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
 					if (ResourceUtil.needReplace(extValue))
 						extValue = ResourceUtil.replaceLableForReader(extValue, reader);
-					extValue = toShellText(extValue, ext_font);
+//					extValue = toShellText(extValue, ext_font);
 				}
 				if (extList_count == pwpcList.size())
 					type = -1;
@@ -276,16 +270,6 @@ public class BusPortalConfigurationHelper {
 		}
 		
 		return majorExt;
-	}
-	
-	private String toShellText(String value, RenderFont font) {
-		Content content = new Content(value);
-		if (ShellText.isShellText(value)) {
-			return content.getShellValue();
-		} else {
-			content.setFont(font.toFontExpression());
-			return content.toShellText().toString();
-		}
 	}
 	
 	private static class PartWithPortalClass {
@@ -303,19 +287,20 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	private void rendStartPart(Part part, String dec, Margin margin) {
+	/*
+	@Deprecated private void rendStartPart(Part part, String dec, Margin margin) {
 		rendPart(part, dec, "", margin, 1);
 	}
 	
-	private void rendMiddlePart(Part part, String dec, String value, Margin margin) {
+	@Deprecated private void rendMiddlePart(Part part, String dec, String value, Margin margin) {
 		rendPart(part, dec, value, margin, 2);
 	}
 	
-	private void rendEndPart(Part part, String dec, Margin margin) {
+	@Deprecated private void rendEndPart(Part part, String dec, Margin margin) {
 		rendPart(part, dec, "", margin, 3);
 	}
 	
-	private void rendPart(Part part, String dec, String value, Margin margin, int valuePosition) {
+	@Deprecated private void rendPart(Part part, String dec, String value, Margin margin, int valuePosition) {
 		switch (valuePosition) {
 			case 1:				// start
 				part.addForeValue(dec);
@@ -339,6 +324,7 @@ public class BusPortalConfigurationHelper {
 				break;
 		}
 	}
+	*/
 	
 	private List<String> sortPortalMap(Map<String, Portal> portalMap) {
 		List<String> resutlList = new ArrayList<String>();

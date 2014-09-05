@@ -33,7 +33,7 @@ public class TestParse extends TestCase {
 		Portal portal = BusPortalConfigurationHelper.getHelper().getPortal();
 		System.out.println(portal.getPlaceMap().get(EU_LAYOUT.CENTER.getName()));
 		System.out.println(portal);
-		System.out.println(portal.getPartMap().get("help").getContent().getValue());
+		System.out.println(portal.getPartMap().get("help").getValue());
 	}
 	
 	public static void main(String[] args) {

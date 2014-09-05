@@ -9,8 +9,6 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;

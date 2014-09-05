@@ -10,9 +10,11 @@ package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -30,6 +32,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
 @XmlEntity(name="blocks")
 public class BlockGroup implements Serializable {
 	private String mode;
+	private Render render;
 	private List<Block> blockList;
 	
 	public BlockGroup() {
@@ -43,6 +46,14 @@ public class BlockGroup implements Serializable {
 	}
 	public void setMode(String mode) {
 		this.mode = mode;
+	}
+	
+	@XmlElement(name="render")
+	public Render getRender() {
+		return render;
+	}
+	public void setRender(Render render) {
+		this.render = render;
 	}
 	
 	@XmlElement(name="block", isList=true, listClass=Block.class)
@@ -60,6 +71,60 @@ public class BlockGroup implements Serializable {
 			DevAssistant.errorln(e);
 		}
 		return EU_BlockMode.HORIZONTAL;
+	}
+	
+	public boolean isEmpty() {
+		for (Block block : blockList) {
+			if (block.active() && !StringUtil.empty(block.getValue()))
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public String getValue() {
+		String ret = "";
+		int n = 0;
+		for (Block block : blockList) {
+			if (block.active() && !StringUtil.empty(block.getValue())) {
+				if (n++ == 0)
+					ret = block.getValue();
+				else
+					ret += "\n" + block.getValue();
+			}
+		}
+		
+		return ret;
+	}
+	
+	public String getShellValue() {
+		String ret = "";
+		switch (toBlockMode()) {
+			case HORIZONTAL:
+				int n = 0;
+				for (Block block : blockList) {
+					if (block.active() && !StringUtil.empty(block.getShellValue())) {
+						if (n++ == 0)
+							ret = block.getShellValue();
+						else
+							ret += "\n" + block.getShellValue();
+					}
+				}
+				break;
+			case VERTICAL:
+				for (Block block : blockList) {
+					if (block.active() && !StringUtil.empty(block.getShellValue())) {
+						ret += block.getShellValue();
+					}
+				}
+				break;
+		}
+		
+		return ret;
+	}
+	
+	public List<String> getShellValueList() throws CIBusException {
+		return Arrays.asList(StringUtil.toLines(getShellValue()));
 	}
 }
 

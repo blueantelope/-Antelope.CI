@@ -15,6 +15,7 @@ import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.XOUtil;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
+import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -25,18 +26,9 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
  * @Date	 2014-9-2		下午3:07:09 
  */
 @XmlEntity(name="block")
-public class Block implements Serializable {
-	private String value;
-	private FontExpression font;
+public class Block extends CommonContent {
 	private String focus;
 	private String active;
-	
-	@XmlCdata public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
 	
 	@XmlAttribute(name="focus")
 	public String getFocus() {
@@ -58,12 +50,5 @@ public class Block implements Serializable {
 	}
 	public boolean active() {
 		return XOUtil.on_off(active);
-	}
-	
-	public FontExpression getFont() {
-		return font;
-	}
-	public void setFont(FontExpression font) {
-		this.font = font;
 	}
 }

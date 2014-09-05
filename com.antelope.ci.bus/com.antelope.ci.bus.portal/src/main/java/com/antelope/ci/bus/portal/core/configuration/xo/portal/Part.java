@@ -29,7 +29,6 @@ import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
- * TODO 描述
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-2-2		下午8:02:13 
@@ -37,12 +36,11 @@ import com.antelope.ci.bus.server.shell.ShellText;
 @XmlEntity(name="part")
 public class Part implements Serializable {
 	private String name;
-	private Content content;
 	private EU_Embed embed;
 	private String embed_exp;
 	private Integer sort;
 	private List<Content> contentList;
-	private BlockGroup blockGroup;
+	private String value;
 	
 	public Part() {
 		super();
@@ -57,26 +55,15 @@ public class Part implements Serializable {
 		this.name = name;
 	}
 	
-	@XmlElement(name="content")
-	public Content getContent() {
-		if (content == null && contentList != null && !contentList.isEmpty()) 
-			return contentList.get(0);
-		return content;
+	@XmlElement(name="content", isList=true, listClass=Place.class)
+	public List<Content> getContentList() {
+		return contentList;
 	}
-	public void setContent(Content content) {
-		this.content = content;
-		contentList.add(content);
+	public void setContentList(List<Content> contentList) {
+		this.contentList = contentList;
 	}
+
 	
-	@XmlElement(name="blocks")
-	public BlockGroup getBlockGroup() {
-		return blockGroup;
-	}
-
-	public void setBlockGroup(BlockGroup blockGroup) {
-		this.blockGroup = blockGroup;
-	}
-
 	@XmlAttribute(name="embed")
 	public String getEmbed_exp() {
 		return embed_exp;
@@ -119,55 +106,35 @@ public class Part implements Serializable {
 			contentList = new Vector<Content>();
 	}
 	
-	private void initContentList(String div, Margin margin) {
-		if (contentList == null) 
-			contentList = new Vector<Content>();
-		if (contentList.isEmpty()) {
-			contentList.add(content);
-			addAfterContent(margin);
-			addContent(new Content(div));
-		}
-	}
-	
-	public List<Content> getContentList() {
-		return contentList;
-	}
-	
 	public boolean contentEmpty() {
-		if (contentList != null) {
-			for (Content c : contentList)
-				if (!StringUtil.empty(c.getValue()))
-					return false;
+		for (Content content : contentList) {
+			if (!content.isEmpty())
+				return false;
 		}
 		
 		return true;
 	}
 	
+	public void initValue() {
+		value = "";
+		int n = 0;
+		for (Content content : contentList) {
+			if (!StringUtil.empty(content.getValue())) {
+				if (n++ == 0)
+					value = content.getValue();
+				else
+					value += "\n" + content.getValue();
+			}
+		}
+	}
+	
 	public String getValue() {
-		if (content == null || StringUtil.empty(content.getValue()))
-			return "";
-		return content.getValue();
+		return value;
 	}
-	
-	public void addAfterValue(String s) {
-		if (content == null || StringUtil.empty(content.getValue()))
-			content = new Content();
-		if (StringUtil.empty(content.getValue()))
-			content.setValue("");
-		content.setValue(content.getValue() + s);
-	}
-	
-	public void addForeValue(String s) {
-		if (content == null || StringUtil.empty(content.getValue()))
-			content = new Content();
-		if (StringUtil.empty(content.getValue()))
-			content.setValue("");
-		content.setValue(s + content.getValue());
-	}
-	
+
 	public List<List<String>> reListContent(int width) {
 		List<List<String>> conList = new ArrayList<List<String>>();
-		if (contentList != null && contentList.size() > 1) {
+		if (!contentList.isEmpty()) {
 			try {
 				addInnerList(conList, width);
 			} catch (Exception e) {
@@ -185,58 +152,39 @@ public class Part implements Serializable {
 	} 
 	
 	private void addInnerList(List<List<String>> conList,  int width) throws Exception {
-		int size = contentList.size();
 		List<String> innerList = new ArrayList<String>();
-		List<InnerValue> valueList = new ArrayList<InnerValue>();
-		int index = 0;
-		String totalValue = "";
-		for (Content con : contentList) {
-			String sv = con.getShellValue();
-			InnerValue iv = new InnerValue(index, index+sv.length(), con);
-			valueList.add(iv);
-			totalValue += sv;
-		}
-		
-		BufferedReader reader = new BufferedReader(new StringReader(totalValue));
-		String line = null;
-		index = 0;
-		int vl_index = 0;
-		int vl_start = 0;
-		int vl_position = 0;
 		int n = 0;
-		while ((line = reader.readLine()) != null) {
-			if (n > 0) {
-				conList.add(innerList);
-				innerList = new ArrayList<String>();
-			}
-			
-			int iv_sum = 0;
-			while (vl_index < size) {
-				InnerValue iv = valueList.get(vl_index);
-				Content con = iv.getCon();
-				String sv = con.getShellValue();
-				int sv_len = StringUtil.getWordCount(sv);
-				vl_start = vl_position + 1;
-				iv_sum += sv_len;
-				if (iv_sum <= width) {
-					vl_position += sv_len;
-					String inner_value = StringUtil.subString(totalValue, vl_start, vl_position);
-					addInner(innerList, con, inner_value);
-				} else {
-					vl_position += sv_len - (iv_sum - width) + 1;
-					String inner_value = StringUtil.subString(totalValue, vl_start, vl_position);
-					addInner(innerList, con, inner_value);
+		int i = 0;
+		int start = 0;
+		int position = 0;
+		int limit = 0;
+		for (Content con : contentList) {
+			if (!con.isEmpty()) {
+				if (n > 0) {
 					conList.add(innerList);
 					innerList = new ArrayList<String>();
-					vl_start = vl_position + 1;
-					vl_position += iv_sum - width;
-					inner_value = StringUtil.subString(totalValue, vl_start, vl_position);
-					addInner(innerList, con, inner_value);
-					break;
 				}
-				
-				vl_index++;
 			}
+			
+			
+			
+			i = 1;
+			start = 0;
+			String v = con.getValue();
+			limit = StringUtil.getWordCount(v);
+			position = limit < width ? limit : width;
+			while (start < limit) {
+				String inner_value = StringUtil.subString(v, start, position);
+				addInner(innerList, con, inner_value);
+				
+				if (limit < width)
+				
+				start += position;
+				if (position < limit) {
+				}
+			}
+			
+			
 			n++;
 		}
 		
@@ -258,30 +206,9 @@ public class Part implements Serializable {
 		innerList.add(inner_con.toString());
 	}
 	
-	private static class InnerValue {
-		private int start;
-		private int end;
-		private Content con;
-		public InnerValue(int start, int end, Content con) {
-			super();
-			this.start = start;
-			this.end = end;
-			this.con = con;
-		}
-		public int getStart() {
-			return start;
-		}
-		public int getEnd() {
-			return end;
-		}
-		public Content getCon() {
-			return con;
-		}
-	}
-
 	private void addInnerContent(List<List<String>> conList, int width) throws Exception {
 		List<String> innerList = new ArrayList<String>();
-		BufferedReader reader = new BufferedReader(new StringReader(content.getShellValue()));
+		BufferedReader reader = new BufferedReader(new StringReader(content.getValue()));
 		boolean isShellText = content.isShellText();
 		String line = null;
 		int n = 0;
@@ -321,16 +248,16 @@ public class Part implements Serializable {
 		if (contentList != null && !contentList.isEmpty()) {
 			StringBuffer buf = new StringBuffer();
 			for (Content con : contentList) 
-				buf.append(con.getShellValue());
+				buf.append(con.getValue());
 			return StringUtil.toLines(buf.toString());
 		}
 		
-		return StringUtil.toLines(content.getShellValue());
+		return StringUtil.toLines(content.getValue());
 	}
 	
 	// type 0: head 1: common -1: tail
 	public void addContent(String desc, String div, Margin margin, EU_Position position, int type) {
-		Content add_content = new Content(desc);
+		Content add_content = new Content();
 		switch (position) {
 			case START:
 				addContent(add_content);

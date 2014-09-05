@@ -103,6 +103,7 @@ public class Portal implements Serializable {
 		this.action = action;
 	}
 
+	/*
 	public void attachExtensions() {
 		if (extensions != null) {
 			if (extensions.getExtentionList() != null) {
@@ -126,6 +127,7 @@ public class Portal implements Serializable {
 			}
 		}
 	}
+	*/
 	
 	private void attachBase(Base base_ext) {
 		switch (base_ext.getEmbed()) {
@@ -183,6 +185,7 @@ public class Portal implements Serializable {
 		}
 	}
 	
+	/*
 	private void attachPart(List<Part> pList_ext) {
 		Map<String, Part> partMap = getPartMap();
 		for (Part p_ext : pList_ext) {
@@ -216,6 +219,7 @@ public class Portal implements Serializable {
 			}
 		}
 	}
+	*/
 	
 	public void addPart(Part part) throws CIBusException {
 		if (parts == null)
@@ -355,6 +359,7 @@ public class Portal implements Serializable {
 		return null;
 	}
 	
+	/*
 	public String getPartValue(String partName) {
 		Part p = getPart(partName);
 		if (p != null) {
@@ -365,6 +370,7 @@ public class Portal implements Serializable {
 		
 		return "";
 	}
+	*/
 	
 	private Part getPart(List<Part> partList, String partName) {
 		for (Part part : partList) {
@@ -374,12 +380,14 @@ public class Portal implements Serializable {
 		return null;
 	}
 	
+	/*
 	private String getPartValue(Part p) {
 		if (p.getContent() != null)
 			return p.getContent().getValue();
 		
 		return null;
 	}
+	*/
 	
 	public PlacePart getPlacePart(String lplaceName, String lpartName) {
 		Map<String, Map<String, PlacePart>> placeMap = getPlaceMap();

@@ -9,11 +9,14 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import com.antelope.ci.bus.common.xml.XmlCdata;
+import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
-import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -25,62 +28,66 @@ import com.antelope.ci.bus.server.shell.ShellText;
  */
 @XmlEntity(name="content")
 public class Content implements Serializable {
-	private String value;
-	private FontExpression font;
+	private List<ContentText> textList;
+	private BlockGroup blockGroup;
 	
-	public Content(String value) {
-		super();
-		this.value = value;
-	}
-
 	public Content() {
 		super();
-	}
-	
-	@XmlCdata
-	public String getValue() {
-		return value;
+		textList = new ArrayList<ContentText>();
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+
+	public List<ContentText> getTextList() {
+		return textList;
+	}
+	public void setTextList(List<ContentText> textList) {
+		this.textList = textList;
 	}
 
-	public FontExpression getFont() {
-		return font;
-	}
 
-	public void setFont(FontExpression font) {
-		this.font = font;
+	@XmlElement(name="blocks")
+	public BlockGroup getBlockGroup() {
+		return blockGroup;
+	}
+	public void setBlockGroup(BlockGroup blockGroup) {
+		this.blockGroup = blockGroup;
 	}
 	
-	@Override public String toString() {
-		if (font != null)
-			return toShellText().toString();
-		return value;
-	}
-	
-	public ShellText toShellText() {
-		ShellText text = new ShellText();
-		text.setText(value);
-		text.setFont_mark(font.getMark().getCode());
-		text.setFont_size(font.getSize().getCode());
-		text.setFont_style(font.getSytle().getCode());
-		
-		return text;
-	}
-	
-	public boolean isShellText() {
-		return ShellText.isShellText(value);
-	}
-	
-	public String getShellValue() {
-		if (isShellText()) {
-			ShellText text = ShellText.toShellText(value.trim());
-			return text.getText();
+	public boolean isEmpty() {
+		if (!textList.isEmpty()) {
+			for (ContentText text : textList) {
+				if (!StringUtil.empty(text.getValue()))
+					return false;
+			}
+		} else if (null != blockGroup) {
+			if (!blockGroup.isEmpty())
+				return false;
 		}
 		
-		return value;
+		return true;
+	}
+	
+	public String getValue() {
+		String ret = "";
+		if (!textList.isEmpty()) {
+			int n = 0;
+			for (ContentText text : textList) {
+				if (!StringUtil.empty(text.getValue())) {
+					if (n++ == 0)
+						ret = text.getShellValue();
+					else
+						ret += "\n" + text.getShellValue();
+				}
+			}
+		} else if (null != blockGroup) {
+			ret = blockGroup.getShellValue();
+		}
+		
+		return ret;
+	}
+	
+	public List<String> getValueList() throws CIBusException {
+		return Arrays.asList(StringUtil.toLines(getValue()));
 	}
 }
 
