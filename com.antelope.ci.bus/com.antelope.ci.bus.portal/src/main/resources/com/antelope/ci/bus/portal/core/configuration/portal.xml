@@ -49,19 +49,25 @@
 	<!-- part -->
 	<parts>
 		<part name="banner">
-			<content>
-				<text><![CDATA[${banner.title}]]></text>
-			</content>
+			<contents>
+				<content type="text">
+					<value><![CDATA[${banner.title}]]></value>
+				</content>
+			</contents>
 		</part>
 		<part name="page">
-			<content>
-				<text><![CDATA[${page.total}#{page.total}${page.line} #{page.current}/#{page.total} ${page.previous} ${page.next} ${page.end} ${page.per}:#{page.per}]]></text>
-			</content>
+			<contents>
+				<content type="text">
+					<value><![CDATA[${page.total}#{page.total}${page.line} #{page.current}/#{page.total} ${page.previous} ${page.next} ${page.end} ${page.per}:#{page.per}]]></value>
+				</content>
+			</contents>
 		</part>
 		<part name="help">
-			<content>
-				<text><![CDATA[/p:${help.page} /s:${help.search}]]></text>
-			</content>
+			<contents>
+				<content type="text">
+					<value><![CDATA[/p:${help.page} /s:${help.search}]]></value>
+				</content>
+			</contents>
 		</part>
 	</parts>
 	

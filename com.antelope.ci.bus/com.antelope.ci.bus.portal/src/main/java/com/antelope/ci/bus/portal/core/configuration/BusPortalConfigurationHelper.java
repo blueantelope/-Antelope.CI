@@ -250,7 +250,7 @@ public class BusPortalConfigurationHelper {
 				String extName = extPwpc.getPortalClass();
 				Part extPart = extPwpc.getPart();
 				String extValue = extPart.getValue();
-				if (!"".equals(extName)) {
+				if (!StringUtil.empty(extName) && !StringUtil.empty(extValue)) {
 					if (ResourceUtil.needReplace(extValue))
 						extValue = ResourceUtil.replaceLableForReader(
 								extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));

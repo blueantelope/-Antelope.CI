@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portal>
 	<extensions>
+	
 		<extension point="base" >
 			<base name="project" order="1" embed="replace">
 			</base>
 		</extension>
+		
 		<extension point="layout">
 			<parts name="center" embed="replace">
 					<part name="second.menu" place="west" origin="part" />
@@ -17,40 +19,51 @@
 					</place>
 			</parts>
 		</extension>
+		
 		<extension point="parts">
 			<part name="first.menu" embed="append" sort="1">
-				<content>
-					<text><![CDATA[${first.menu}]]></text>
-				</content>
+				<contents>
+					<content type="text">
+						<value><![CDATA[${first.menu}]]></value>
+					</content>
+				</contents>
 			</part>
 			
 			<part name="second.menu" embed="replace">
-				<content>
-					<blocks mode="vertical">
-						<render align="left">
-							<font style="normal" mark="normal" size="medium" />
-							<delimiter value=" " position="middle" margin="after:3" />
-						</render>
-						<block active="on" focus="on"><![CDATA[${project.menu.new}]]></block>
-					</blocks>
-				</content>
+				<contents>
+					<content type="block">
+						<blocks mode="vertical">
+							<render align="left">
+								<font style="normal" mark="normal" size="medium" />
+								<delimiter value=" " position="middle" margin="after:3" />
+							</render>
+							<block active="on" focus="on">
+								<value><![CDATA[${project.menu.new}]]></value>
+							</block>
+						</blocks>
+					</content>
+				</contents>
 			</part>
 			
 			<part name="title" embed="replace">
-				<content>
-					<text><![CDATA[${title}]]></text>
-				</content>
+				<contents>
+					<content type="text">
+						<value><![CDATA[${title}]]></value>
+					</content>
+				</contents>
 			</part>
 			
 			<part name="content" embed="replace">
-				<content>
-					<text><![CDATA[${content.line1}
+				<contents>
+					<content type="text">
+						<value><![CDATA[${content.line1}
 ${content.line2}
-${content.line3}
-				]]>
-					</text>
-				</content>
+${content.line3}]]>
+						</value>
+					</content>
+				</contents>
 			</part>
 		</extension>
+		
 	</extensions>
 </portal>

@@ -621,9 +621,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	private int getContentHeight(Map<String, PlacePart> placeMap, EU_LAYOUT layout, int width) throws CIBusException {
 		PlacePart pp = placeMap.get(layout.getName());
-		if (pp != null) {
+		if (pp != null)
 			return getContentHeight(pp, width);
-		}
 		
 		return 0;
 	}
@@ -927,7 +926,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected List<List<String>> placePartContent(PlacePart placePart, int width)  {
 		Part part = portal.getPartMap().get(placePart.getName());
-		return part.reListContent(width);
+		return part.relist(width);
 	}
 	
 	/*

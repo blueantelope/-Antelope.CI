@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonContent.java
+// com.antelope.ci.bus.portal.core.configuration.xo.meta.Value.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -6,48 +6,46 @@
  * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.core.configuration.xo.portal;
+package com.antelope.ci.bus.portal.core.configuration.xo.meta;
 
 import java.io.Serializable;
 
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlCdata;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
+import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
 import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-9-5		上午9:25:43 
+ * @Date	 2014-9-10		上午11:54:38 
  */
-public class CommonContent implements Serializable {
+@XmlEntity(name="value")
+public class CommonValue implements Serializable {
 	protected String value;
 	protected FontExpression font;
-	
-	public CommonContent(String value) {
-		super();
-		this.value = value;
-	}
 
-	public CommonContent() {
+	public CommonValue() {
 		super();
+	}
+	
+	public CommonValue(String value) {
+		this.value = value;
 	}
 	
 	@XmlCdata public String getValue() {
 		return value;
 	}
-
 	public void setValue(String value) {
 		this.value = value;
 	}
-
+	
 	public FontExpression getFont() {
 		return font;
 	}
-
 	public void setFont(FontExpression font) {
 		this.font = font;
 	}
@@ -82,12 +80,12 @@ public class CommonContent implements Serializable {
 	}
 	
 	public static String toShellText(String value, RenderFont font) {
-		CommonContent content = new CommonContent(value);
+		CommonValue commonValue = new CommonValue(value);
 		if (ShellText.isShellText(value)) {
-			return content.getShellValue();
+			return commonValue.getShellValue();
 		} else {
-			content.setFont(font.toFontExpression());
-			return content.toShellText().toString();
+			commonValue.setFont(font.toFontExpression());
+			return commonValue.toShellText().toString();
 		}
 	}
 	

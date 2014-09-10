@@ -491,6 +491,7 @@ public class Portal implements Serializable {
 		return null;
 	}
 	
+	/*
 	public String getExtPartValue(String name) {
 		Part part = getExtPart(name);
 		if (part != null) {
@@ -500,6 +501,7 @@ public class Portal implements Serializable {
 		
 		return "";
 	}
+	*/
 	
 	public RenderFont getHitFont() {
 		if (action != null) {

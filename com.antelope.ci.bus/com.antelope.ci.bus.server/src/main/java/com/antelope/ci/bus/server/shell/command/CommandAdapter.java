@@ -70,7 +70,7 @@ public abstract class CommandAdapter {
 		try {
 			cl = CommonBusActivator.getClassLoader();
 		} catch (Exception e) {
-			e.printStackTrace();
+			DevAssistant.errorln(e);
 		}
 		if (cl == null)
 			cl = CommandAdapter.class.getClassLoader();

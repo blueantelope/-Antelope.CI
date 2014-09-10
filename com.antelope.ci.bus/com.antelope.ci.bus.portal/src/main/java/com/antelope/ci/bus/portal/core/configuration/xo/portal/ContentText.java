@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.CommonValue;
 
 
 /**
@@ -16,7 +17,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  * @version  0.1
  * @Date	 2014-9-4		下午5:32:07 
  */
-@XmlEntity(name="text")
-public class ContentText extends CommonContent {
+@XmlEntity(name="value")
+public class ContentText extends CommonValue {
 
 }

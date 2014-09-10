@@ -30,14 +30,14 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
  * @Date	 2014-9-2		下午3:08:50 
  */
 @XmlEntity(name="blocks")
-public class BlockGroup implements Serializable {
+public class ContentBlocks implements Serializable {
 	private String mode;
 	private Render render;
-	private List<Block> blockList;
+	private List<ContentBlock> blockList;
 	
-	public BlockGroup() {
+	public ContentBlocks() {
 		super();
-		blockList = new ArrayList<Block>();
+		blockList = new ArrayList<ContentBlock>();
 	}
 	
 	@XmlAttribute(name="mode")
@@ -56,11 +56,11 @@ public class BlockGroup implements Serializable {
 		this.render = render;
 	}
 	
-	@XmlElement(name="block", isList=true, listClass=Block.class)
-	public List<Block> getBlockList() {
+	@XmlElement(name="block", isList=true, listClass=ContentBlock.class)
+	public List<ContentBlock> getBlockList() {
 		return blockList;
 	}
-	public void setBlockList(List<Block> blockList) {
+	public void setBlockList(List<ContentBlock> blockList) {
 		this.blockList = blockList;
 	}
 	
@@ -74,7 +74,7 @@ public class BlockGroup implements Serializable {
 	}
 	
 	public boolean isEmpty() {
-		for (Block block : blockList) {
+		for (ContentBlock block : blockList) {
 			if (block.active() && !StringUtil.empty(block.getValue()))
 				return false;
 		}
@@ -83,18 +83,13 @@ public class BlockGroup implements Serializable {
 	}
 	
 	public String getValue() {
-		String ret = "";
-		int n = 0;
-		for (Block block : blockList) {
-			if (block.active() && !StringUtil.empty(block.getValue())) {
-				if (n++ == 0)
-					ret = block.getValue();
-				else
-					ret += "\n" + block.getValue();
-			}
+		StringBuffer buf = new StringBuffer();
+		for (ContentBlock block : blockList) {
+			if (block.active() && !StringUtil.empty(block.getValue()))
+				buf.append(block.getValue());
 		}
 		
-		return ret;
+		return buf.toString();
 	}
 	
 	public String getShellValue() {
@@ -102,7 +97,7 @@ public class BlockGroup implements Serializable {
 		switch (toBlockMode()) {
 			case HORIZONTAL:
 				int n = 0;
-				for (Block block : blockList) {
+				for (ContentBlock block : blockList) {
 					if (block.active() && !StringUtil.empty(block.getShellValue())) {
 						if (n++ == 0)
 							ret = block.getShellValue();
@@ -112,7 +107,7 @@ public class BlockGroup implements Serializable {
 				}
 				break;
 			case VERTICAL:
-				for (Block block : blockList) {
+				for (ContentBlock block : blockList) {
 					if (block.active() && !StringUtil.empty(block.getShellValue())) {
 						ret += block.getShellValue();
 					}

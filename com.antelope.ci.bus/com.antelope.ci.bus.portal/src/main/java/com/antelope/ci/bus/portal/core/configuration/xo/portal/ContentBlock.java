@@ -11,24 +11,23 @@ package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 import java.io.Serializable;
 
 import com.antelope.ci.bus.common.xml.XmlAttribute;
-import com.antelope.ci.bus.common.xml.XmlCdata;
+import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.XOUtil;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
-import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.CommonValue;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-9-2		下午3:07:09 
  */
 @XmlEntity(name="block")
-public class Block extends CommonContent {
+public class ContentBlock implements Serializable {
 	private String focus;
 	private String active;
+	private CommonValue cvalue;
 	
 	@XmlAttribute(name="focus")
 	public String getFocus() {
@@ -50,5 +49,25 @@ public class Block extends CommonContent {
 	}
 	public boolean active() {
 		return XOUtil.on_off(active);
+	}
+	
+	@XmlElement(name="value")
+	public CommonValue getCvalue() {
+		return cvalue;
+	}
+	public void setCvalue(CommonValue cvalue) {
+		this.cvalue = cvalue;
+	}
+	
+	public String getValue() {
+		if (null != cvalue)
+			return cvalue.getValue();
+		return null;
+	}
+	
+	public String getShellValue() {
+		if (null != cvalue)
+			return cvalue.getShellValue();
+		return null;
 	}
 }
