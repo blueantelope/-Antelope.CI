@@ -151,7 +151,7 @@ public class ShellUtil {
 	
 	public static void shiftNext(TerminalIO io, String str) throws CIBusException {
 		try {
-			io.moveLeft(StringUtil.getWordCount(str));
+			io.moveLeft(StringUtil.lengthVT(str));
 			io.moveDown(1);
 		} catch (IOException e) {
 			throw new CIBusException("", e);

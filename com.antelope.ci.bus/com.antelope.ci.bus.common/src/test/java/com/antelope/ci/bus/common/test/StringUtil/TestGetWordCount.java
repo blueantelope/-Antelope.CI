@@ -33,7 +33,7 @@ public class TestGetWordCount extends TestCase {
 	}
 	
 	private void test_case(String s) {
-		System.out.println(s + " count is " + StringUtil.getWordCount(s));
+		System.out.println(s + " count is " + StringUtil.lengthVT(s));
 	}
 	
 	public static void main(String[] args) {

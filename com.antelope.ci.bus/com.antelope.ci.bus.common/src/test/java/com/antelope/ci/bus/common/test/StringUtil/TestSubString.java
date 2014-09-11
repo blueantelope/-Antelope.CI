@@ -30,7 +30,7 @@ public class TestSubString extends TestCase {
 	@Test
 	public void test() throws CIBusException {
 		String str = "测试tsetsdfsdf";
-		String sub = StringUtil.subString(str, 0, 2);
+		String sub = StringUtil.subStringVT(str, 0, 2);
 		System.out.println(sub);
 	}
 	

@@ -825,7 +825,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 									count += text.placeholderWidth();
 							} else {
 								write(cursor, v);
-								count += StringUtil.getWordCount(v);
+								count += StringUtil.lengthVT(v);
 							}
 						}
 					} else if (ShellText.isShellText(c)) {
@@ -834,7 +834,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 							count += text.placeholderWidth();
 					} else {
 						write(cursor, c);
-						count = StringUtil.getWordCount(c);
+						count = StringUtil.lengthVT(c);
 					}
 				}
 				if (count != 0)
@@ -861,10 +861,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					if (ShellText.isShellText(v)) {
 						ShellText text = writeFormat(cursor, v);
 						if (text != null)
-							shiftLeft(StringUtil.getWordCount(text.getText()));
+							shiftLeft(StringUtil.lengthVT(text.getText()));
 					} else {
 						write(cursor, v);
-						shiftLeft(StringUtil.getWordCount(v));
+						shiftLeft(StringUtil.lengthVT(v));
 					}
 				}
 				
@@ -872,7 +872,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					ShellText text = (ShellText) line;
 					write(cursor, text);
 					if (text != null)
-						shiftLeft(StringUtil.getWordCount(text.getText()));
+						shiftLeft(StringUtil.lengthVT(text.getText()));
 				}
 				
 				cursor.setX(default_x);
@@ -898,7 +898,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						shiftLeft(lastsize);
 					shiftDown(1);
 				}
-				lastsize = StringUtil.getWordCount(line);
+				lastsize = StringUtil.lengthVT(line);
 				write(cursor, line);
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
@@ -908,12 +908,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected void write(ShellCursor cursor, String value) throws CIBusException {
 		print(value);
-		cursor.addX(StringUtil.getWordCount(value));
+		cursor.addX(StringUtil.lengthVT(value));
 	}
 	
 	protected void write(ShellCursor cursor, ShellText text) {
 		print(text);
-		cursor.addX(StringUtil.getWordCount(text.getText()));
+		cursor.addX(StringUtil.lengthVT(text.getText()));
 	}
 	
 	protected ShellText writeFormat(ShellCursor cursor, String value) {

@@ -130,68 +130,42 @@ public class Content implements Serializable {
 		return conList;
 	}
 	
-	private void addInnerList(List<List<String>> conList,  int width) throws CIBusException {
-		List<InnerText> valueList = new ArrayList<InnerText>();
-		int index = 0;
-		String totalValue = "";
+	private void addInnerList(List<List<String>> conList,  int width) {
 		for (ContentText con : textList) {
-			String sv = con.getValue();
-			InnerText iv = new InnerText(index, index+sv.length(), con);
-			valueList.add(iv);
-			totalValue += sv;
-			index += sv.length() + 1;
+			try {
+				addContentText(conList, width, con);
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
+			}
 		}
-		
-		BufferedReader reader = new BufferedReader(new StringReader(totalValue));
-		String line = null;
-		int vl_index = 0;
-		int vl_start = 0;
-		int vl_position = 0;
-		int vl_size = 0;
-		List<String> innerList = new ArrayList<String>();
+	}
+	
+	private void addContentText(List<List<String>> conList, int width, ContentText text) throws CIBusException {
 		try {
+			BufferedReader reader = new BufferedReader(new StringReader(text.getValue()));
+			int start = 0;
+			int position = 0;
+			int limit = 0;
+			String line = null;
+			List<String> innerList = new ArrayList<String>();
 			while ((line = reader.readLine()) != null) {
 				innerList = new ArrayList<String>();
 				conList.add(innerList);
-				
-				vl_index = 0;
-				vl_start = 0;
-				vl_position = 0;
-				vl_size = line.length();
-				int iv_sum = 0;
-				while (vl_index < vl_size) {
-					InnerText innerText = valueList.get(vl_index);
-					ContentText text = innerText.getText();
-					String sv = text.getShellValue();
-					int sv_len = StringUtil.getWordCount(sv);
-					vl_start = vl_position + 1;
-					iv_sum += sv_len;
-					if (iv_sum <= width) {
-						vl_position += sv_len;
-						String inner_value = StringUtil.subString(line, vl_start, vl_position);
-						addInner(innerList, text, inner_value);
-					} else {
-						vl_position += sv_len - (iv_sum - width) + 1;
-						String inner_value = StringUtil.subString(line, vl_start, vl_position);
-						addInner(innerList, text, inner_value);
-						conList.add(innerList);
-						innerList = new ArrayList<String>();
-						vl_start = vl_position + 1;
-						vl_position += iv_sum - width;
-						inner_value = StringUtil.subString(line, vl_start, vl_position);
-						addInner(innerList, text, inner_value);
-						break;
-					}
-					
-					vl_index++;
+				start = 0;
+				position = 0;
+				limit = StringUtil.lengthVT(line);
+				while (start < limit) {
+					position += start + width;
+					if (position > limit)
+						position = limit;
+					String inner_value = StringUtil.subStringVT(line, start, position);
+					addInner(innerList, text, inner_value);
+					start += StringUtil.lengthVT(inner_value) + 1;
 				}
 			}
 		} catch (Exception e) {
 			throw new CIBusException("", e);
 		}
-		
-		if (!innerList.isEmpty()) 
-			conList.add(innerList);
 	}
 	
 	private void addInner(List<String> innerList, ContentText con, String inner_value) {

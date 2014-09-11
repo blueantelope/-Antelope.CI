@@ -83,7 +83,7 @@ public class PortalShellUtil {
 				if (ShellText.isShellText(c)) {
 					cw += ShellText.length(c);
 				} else {
-					cw += StringUtil.getWordCount(c);
+					cw += StringUtil.lengthVT(c);
 				}
 			}
 			

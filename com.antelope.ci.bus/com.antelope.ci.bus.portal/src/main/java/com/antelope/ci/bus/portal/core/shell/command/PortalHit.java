@@ -180,7 +180,7 @@ public abstract class PortalHit extends Hit {
 		int before = margin.getBefore();
 		int after = margin.getAfter();
 		
-		int len = StringUtil.getWordCount(value);
+		int len = StringUtil.lengthVT(value);
 		
 		EU_Position position = align.getEU_Position();
 		int indent = 0;
@@ -215,7 +215,7 @@ public abstract class PortalHit extends Hit {
 		
 		text.setText(value);
 		
-		return new XPosition(before+indent, indent+StringUtil.getWordCount(value));
+		return new XPosition(before+indent, indent+StringUtil.lengthVT(value));
 	}
 	
 	private static class XPosition {

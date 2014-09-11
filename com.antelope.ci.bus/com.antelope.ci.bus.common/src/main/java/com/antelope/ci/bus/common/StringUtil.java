@@ -132,7 +132,7 @@ public class StringUtil {
 		List<String> lineList = new ArrayList<String>();
 		String line;
 		while ((line = reader.readLine()) != null) {
-			int len = getWordCount(line);
+			int len = lengthVT(line);
 			if (len < width) {
 				lineList.add(line);
 			} else {
@@ -183,12 +183,12 @@ public class StringUtil {
 		return lineList.toArray(new String[lineList.size()]);
 	}
 	
-	public static String subString(String str, int start) throws CIBusException {
-		return subString(str, start, getWordCount(str));
+	public static String subStringVT(String str, int start) throws CIBusException {
+		return subStringVT(str, start, lengthVT(str));
 	}
 
-	public static String subString(String str, int start, int end) throws CIBusException {
-		if (start < 0 || end < 0 || end < start || end > getWordCount(str))
+	public static String subStringVT(String str, int start, int end) throws CIBusException {
+		if (start < 0 || end < 0 || end < start || end > lengthVT(str))
 			throw new CIBusException("", "subString exception occur, index not fit rule");
 		
 		boolean started = false;
@@ -235,7 +235,7 @@ public class StringUtil {
 		return maxWidth;
 	}
 
-	public static int getWordCount(String s) {
+	public static int lengthVT(String s) {
 		int length = 0;
 		for (int i = 0; i < s.length(); i++) {
 			int codePoint = Character.codePointAt(s, i);

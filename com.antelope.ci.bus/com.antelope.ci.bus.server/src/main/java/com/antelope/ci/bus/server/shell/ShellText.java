@@ -105,7 +105,7 @@ public class ShellText {
 	
 	public static int length(String str) {
 		ShellText st = toShellText(str);
-		return StringUtil.getWordCount(st.getText());
+		return StringUtil.lengthVT(st.getText());
 	}
 	
 	public static String toShellText(ShellText text) {
@@ -153,7 +153,7 @@ public class ShellText {
 	}
 	
 	public int placeholderWidth() {
-		int width = StringUtil.getWordCount(text);
+		int width = StringUtil.lengthVT(text);
 		if (indent > 0) width+= indent;
 		return width;
 	}
