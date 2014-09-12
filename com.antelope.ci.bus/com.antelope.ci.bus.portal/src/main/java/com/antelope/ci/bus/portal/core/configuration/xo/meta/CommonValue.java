@@ -33,6 +33,7 @@ public class CommonValue implements Serializable {
 	}
 	
 	public CommonValue(String value) {
+		super();
 		this.value = value;
 	}
 	

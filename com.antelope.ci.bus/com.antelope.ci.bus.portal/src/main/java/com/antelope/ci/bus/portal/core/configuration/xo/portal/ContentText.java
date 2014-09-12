@@ -19,5 +19,13 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.CommonValue;
  */
 @XmlEntity(name="value")
 public class ContentText extends CommonValue {
-
+	
+	public ContentText() {
+		super();
+	}
+	
+	public ContentText(String value) {
+		super(value);
+	}
+	
 }

@@ -12,12 +12,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -25,11 +28,28 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="contents")
 public class Contents implements Serializable {
+	private String mode;
 	private List<Content> contentList;
 	
 	public Contents() {
 		super();
 		contentList = new ArrayList<Content>();
+	}
+	
+	@XmlAttribute(name="mode")
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	public EU_BlockMode toBlockMode() {
+		try {
+			return EU_BlockMode.toMode(mode);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+		return EU_BlockMode.VERTICAL;
 	}
 	
 	@XmlElement(name="content", isList=true, listClass=Content.class)
@@ -40,12 +60,21 @@ public class Contents implements Serializable {
 		this.contentList = contentList;
 	}
 	
-	public List<List<String>> relist(int width) {
-		List<List<String>> strList = new ArrayList<List<String>>();
-		for (Content content : contentList)
-			strList.addAll(content.relist(width));
-		
-		return strList;
+	public void addContent(Content content) {
+		contentList.add(content);
+	}
+	
+	public void relist(List<List<String>> strList, int width, boolean horizontal) {
+		boolean first = true;
+		for (Content content : contentList) {
+			if (first && horizontal)
+				content.relist(strList, width, true);
+			else if (!first && toBlockMode()==EU_BlockMode.HORIZONTAL)
+				content.relist(strList, width, true);
+			else
+				content.relist(strList, width, false);
+			first = false;
+		}
 	}
 	
 	public boolean isEmpty() {

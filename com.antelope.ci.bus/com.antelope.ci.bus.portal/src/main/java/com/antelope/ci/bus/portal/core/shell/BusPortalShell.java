@@ -334,7 +334,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				List<List<String>> contentList = placePartContent(northPart, width);
 				if (!contentList.isEmpty()) {
 					moveCursor(cursor);
-					north_height = contentList.size();
+					north_height = sizeMatrix(contentList);
 					writeLine(cursor, contentList);
 					content_cursor = cursor.clone();
 				}
@@ -352,7 +352,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				if (!contentList.isEmpty()) {
 					if (content_cursor == null)
 						content_cursor = cursor.clone();
-					south_height = contentList.size();
+					south_height = sizeMatrix(contentList);
 					cursor.addY(height - north_height - south_height);
 					moveCursor(cursor);
 					writeLine(cursor, contentList);
@@ -451,7 +451,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			if (!contentList.isEmpty()) {
 				int palette_width = PortalShellUtil.maxLine(contentList);
 				palette_width = palette_width < width ? palette_width : width;
-				int palette_height = contentList.size();
+				int palette_height = sizeMatrix(contentList);
 				palette.setShapePoint(palette_width, palette_height);
 				writeLine(cursor, contentList);
 			}
@@ -630,7 +630,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	private int getContentHeight(PlacePart pp, int width) throws CIBusException {
 		try {
 			List<List<String>> contentList = placePartContent(pp, width);
-			return contentList.size();
+			return sizeMatrix(contentList);
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
@@ -927,6 +927,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected List<List<String>> placePartContent(PlacePart placePart, int width)  {
 		Part part = portal.getPartMap().get(placePart.getName());
 		return part.relist(width);
+	}
+	
+	protected<O> int sizeMatrix(List<List<O>> matrix) {
+		return matrix.size();
 	}
 	
 	/*

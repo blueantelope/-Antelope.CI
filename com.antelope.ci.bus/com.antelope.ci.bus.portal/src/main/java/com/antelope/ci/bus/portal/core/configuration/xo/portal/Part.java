@@ -13,10 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ContentType;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Embed;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
@@ -33,6 +37,7 @@ public class Part implements Serializable {
 	private EU_Embed embed;
 	private String embed_exp;
 	private Integer sort;
+	private String mode;
 	private List<Contents> contentsList;
 	private String value;
 	
@@ -81,16 +86,20 @@ public class Part implements Serializable {
 		this.sort = sort;
 	}
 	
-	public void addContent(Contents content) {
-		initcontentsList();
-		contentsList.add(content);
+	@XmlAttribute(name="mode")
+	public String getMode() {
+		return mode;
 	}
-	
-	public void addContent(int index, Contents content) {
-		initcontentsList();
-		int lLen = contentsList.size();
-		if (index > (lLen -1)) index = lLen;
-		contentsList.add(index, content);
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	public EU_BlockMode toBlockMode() {
+		try {
+			return EU_BlockMode.toMode(mode);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+		return EU_BlockMode.VERTICAL;
 	}
 	
 	private void initcontentsList() {
@@ -113,42 +122,46 @@ public class Part implements Serializable {
 
 	public List<List<String>> relist(int width) {
 		List<List<String>> strList = new ArrayList<List<String>>();
-		for (Contents con : contentsList)
-			strList.addAll(con.relist(width));
+		for (Contents contents : contentsList)
+			contents.relist(strList, width, toBlockMode()==EU_BlockMode.HORIZONTAL);
 		
 		return strList;
-	} 
+	}
+	
+	public void addContents(String value, String div, Margin margin, EU_Position position, int type) {
+		Contents newContents = createTextContent(value);
+		addContents(newContents, div, margin, position, type);
+	}
 	
 	// type 0: head 1: common -1: tail
-	public void addContent(String desc, String div, Margin margin, EU_Position position, int type) {
-		Contents add_content = new Contents();
+	public void addContents(Contents newContents, String div, Margin margin, EU_Position position, int type) {
 		switch (position) {
 			case START:
-				addContent(add_content);
-//				addBeforeContent(margin);
+				contentsList.add(newContents);
+				addBeforeTextContent(margin);
 				break;
 			case END:
-//				addAfterContent(margin);
-				addContent(add_content);
+				addAfterTextContent(margin);
+				contentsList.add(newContents);
 				break;
 			case MIDDLE:
 			default:
 				switch (type) {
 					case 0:		// head
-						addContent(add_content);
-//						addAfterContent(margin);
-//						addContent(new Content(div));
+						contentsList.add(newContents);
+						addAfterTextContent(margin);
+						addTextContent(div);
 						break;
 					case -1:		// tail
-//						addBeforeContent(margin);
-						addContent(add_content);
+						addBeforeTextContent(margin);
+						contentsList.add(newContents);
 						break;
 					case 1:		// common
 					default:
-//						addBeforeContent(margin);
-//						addContent(add_content);
-//						addAfterContent(margin);
-//						addContent(new Content(div));
+						addBeforeTextContent(margin);
+						contentsList.add(newContents);
+						addAfterTextContent(margin);
+						addTextContent(div);
 						break;
 					
 				}
@@ -156,18 +169,38 @@ public class Part implements Serializable {
 		}
 	}
 	
-//	private void addBeforeContent(Margin margin) {
-//		if (margin != null) {
-//			Content bc = new Content(StringUtil.repeatString(" ", margin.getBefore()));
-//			addContent(bc);
-//		}
-//	}
-//	
-//	private void addAfterContent(Margin margin) {
-//		if (margin != null) {
-//			Content ec = new Content(StringUtil.repeatString(" ", margin.getAfter()));
-//			addContent(ec);
-//		}
-//	}
+	private void addBeforeTextContent(Margin margin) {
+		if (margin != null)
+			addTextContent(" ", margin.getBefore());
+	}
+	
+	private void addAfterTextContent(Margin margin) {
+		if (margin != null)
+			addTextContent(" ", margin.getAfter());
+	}
+	
+	private void addTextContent(String repeat, int times) {
+		addTextContent(StringUtil.repeatString(repeat, times));
+	}
+	
+	private void addTextContent(String value) {
+		Contents contents =createTextContent(value);
+		contentsList.add(contents);
+	}
+	
+	private Contents createTextContent(String value) {
+		ContentText text = new ContentText(value);
+		
+		Content content = new Content();
+		content.setMode(EU_BlockMode.HORIZONTAL.getName());
+		content.setType(EU_ContentType.TEXT.getName());
+		content.addText(text);
+		
+		Contents contents = new Contents();
+		contents.setMode(EU_BlockMode.HORIZONTAL.getName());
+		contents.addContent(content);
+		
+		return contents;
+	}
 }
 

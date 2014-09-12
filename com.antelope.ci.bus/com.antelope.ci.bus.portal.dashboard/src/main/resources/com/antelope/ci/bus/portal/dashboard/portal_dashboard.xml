@@ -21,8 +21,8 @@
 		</extension>
 		
 		<extension point="parts">
-			<part name="first.menu" embed="append" sort="0">
-				<contents>
+			<part name="first.menu" embed="append" sort="0" mode="horizontal">
+				<contents mode="horizontal">
 					<content type="text">
 						<value><![CDATA[${first.menu}]]></value>
 					</content>
@@ -35,9 +35,7 @@
 						<value><![CDATA[${second.menu1}
 ${second.menu2}
 ${second.menu3}
-${second.menu4}
-				]]>
-						</value>
+${second.menu4}]]></value>
 					</content>
 				</contents>
 			</part>

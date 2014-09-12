@@ -41,6 +41,8 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
+import com.antelope.ci.bus.portal.core.configuration.xo.portal.Content;
+import com.antelope.ci.bus.portal.core.configuration.xo.portal.Contents;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extensions;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Layout;
@@ -217,7 +219,7 @@ public class BusPortalConfigurationHelper {
 			}
 			
 			if (del_position == EU_Position.START)
-				major_part.addContent(del_value, "", del_margin, EU_Position.START, 1);
+				major_part.addContents(del_value, "", del_margin, EU_Position.START, 1);
 			
 			List<PartWithPortalClass> pwpcList =  new ArrayList<PartWithPortalClass>();
 			int major_order = majorExt.getOrder();
@@ -246,30 +248,65 @@ public class BusPortalConfigurationHelper {
 			int extList_count = 0;
 			int type = 0;
 			for (PartWithPortalClass extPwpc : pwpcList) {
+				if (extList_count == pwpcList.size())
+					type = -1;
 				extList_count++;
 				String extName = extPwpc.getPortalClass();
 				Part extPart = extPwpc.getPart();
-				String extValue = extPart.getValue();
-				if (!StringUtil.empty(extName) && !StringUtil.empty(extValue)) {
-					if (ResourceUtil.needReplace(extValue))
-						extValue = ResourceUtil.replaceLableForReader(
-								extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
-					if (ResourceUtil.needReplace(extValue))
-						extValue = ResourceUtil.replaceLableForReader(extValue, reader);
-//					extValue = toShellText(extValue, ext_font);
+				List<NewTextContents> newContentsList = new ArrayList<NewTextContents>();
+				for (Contents contents : extPart.getContentsList()) {
+					for (Content content : contents.getContentList()) {
+						switch (content.toEUtype()) {
+							case TEXT:
+								String extValue = content.getValue();
+								if (!StringUtil.empty(extName) && !StringUtil.empty(extValue)) {
+									if (ResourceUtil.needReplace(extValue))
+										extValue = ResourceUtil.replaceLableForReader(
+												extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
+									if (ResourceUtil.needReplace(extValue))
+										extValue = ResourceUtil.replaceLableForReader(extValue, reader);
+								}
+								newContentsList.add(new NewTextContents(extValue, del_value, del_margin, del_position, type));
+							
+								break;
+							case BLOCK:
+								
+								break;
+						}
+					}
 				}
-				if (extList_count == pwpcList.size())
-					type = -1;
-				major_part.addContent(extValue, del_value, del_margin, del_position, type);
+				addTextContents(extPart, newContentsList);
 				if (type == 0)
 					type = 1;
 			}
 			
 			if (del_position == EU_Position.END)
-				major_part.addContent(del_value, "", del_margin, EU_Position.END, 1);
+				major_part.addContents(del_value, "", del_margin, EU_Position.END, 1);
 		}
 		
 		return majorExt;
+	}
+	
+	private void addTextContents(Part part, List<NewTextContents> textContentsList) {
+		for (NewTextContents textContents : textContentsList)
+			part.addContents(textContents.value, textContents.div, textContents.margin, textContents.position, textContents.type);
+	}
+	
+	private static class NewTextContents {
+		String value;
+		String div;
+		Margin margin;
+		EU_Position position;
+		int type;
+		public NewTextContents(String value, String div, Margin margin,
+				EU_Position position, int type) {
+			super();
+			this.value = value;
+			this.div = div;
+			this.margin = margin;
+			this.position = position;
+			this.type = type;
+		}
 	}
 	
 	private static class PartWithPortalClass {

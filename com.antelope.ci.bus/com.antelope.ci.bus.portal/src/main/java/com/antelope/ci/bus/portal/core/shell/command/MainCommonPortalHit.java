@@ -57,6 +57,7 @@ public abstract class MainCommonPortalHit extends PortalHit {
 	
 	private void move(BusPortalShell shell, int direction) {
 		PortalBlock block = shell.getBlock();
+		if (null == block)	return;
 		PortalBlock moveBlock = null;
 		switch (direction) {
 			case 1:

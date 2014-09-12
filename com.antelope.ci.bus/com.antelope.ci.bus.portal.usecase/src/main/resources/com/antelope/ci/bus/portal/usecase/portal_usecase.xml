@@ -21,7 +21,7 @@
 		</extension>
 		
 		<extension point="parts">
-			<part name="first.menu" embed="append" sort="2">
+			<part name="first.menu" embed="append" sort="2" mode="horizontal">
 				<contents>
 					<content type="text">
 						<value><![CDATA[${first.menu}]]></value>

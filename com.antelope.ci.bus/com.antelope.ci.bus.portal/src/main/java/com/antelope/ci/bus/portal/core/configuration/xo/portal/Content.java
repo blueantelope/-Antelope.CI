@@ -21,6 +21,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ContentType;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
 import com.antelope.ci.bus.server.shell.ShellText;
@@ -35,10 +36,10 @@ import com.antelope.ci.bus.server.shell.ShellText;
 @XmlEntity(name="contents")
 public class Content implements Serializable {
 	private String type;
+	private String mode;
 	private List<ContentText> textList;
 	private List<ContentBlocks> blocksList;
 
-	
 	public Content() {
 		super();
 		textList = new ArrayList<ContentText>();
@@ -52,8 +53,30 @@ public class Content implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public EU_ContentType getEUtype() throws CIBusException {
-		return EU_ContentType.toType(type);
+	public EU_ContentType toEUtype() {
+		try {
+			return EU_ContentType.toType(type);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+		
+		return EU_ContentType.TEXT;
+	}
+	
+	@XmlAttribute(name="mode")
+	public String getMode() {
+		return mode;
+	}
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	public EU_BlockMode toBlockMode() {
+		try {
+			return EU_BlockMode.toMode(mode);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+		return EU_BlockMode.HORIZONTAL;
 	}
 	
 	@XmlElement(name="value", isList=true, listClass=ContentText.class)
@@ -63,6 +86,9 @@ public class Content implements Serializable {
 	public void setTextList(List<ContentText> textList) {
 		this.textList = textList;
 	}
+	public void addText(ContentText text) {
+		textList.add(text);
+	}
 
 	@XmlElement(name="blocks", isList=true, listClass=ContentBlocks.class)
 	public List<ContentBlocks> getBlocksList() {
@@ -70,6 +96,9 @@ public class Content implements Serializable {
 	}
 	public void setBlocksList(List<ContentBlocks> blocksList) {
 		this.blocksList = blocksList;
+	}
+	public void addBlocks(ContentBlocks blocks) {
+		blocksList.add(blocks);
 	}
 	
 	public boolean isEmpty() {
@@ -103,64 +132,77 @@ public class Content implements Serializable {
 		return Arrays.asList(StringUtil.toLines(getValue()));
 	}
 	
-	public List<List<String>> relist(int width) {
-		List<List<String>> strList = new ArrayList<List<String>>();
-		strList.addAll(relistTextlist(width));
-		strList.addAll(relistBlockslist(width));
-		
-		return strList;
-	}
-	
-	public List<List<String>> relistBlockslist(int width) {
-		List<List<String>> conList = new ArrayList<List<String>>();
-		
-		return conList;
-	}
-	
-	public List<List<String>> relistTextlist(int width) {
-		List<List<String>> conList = new ArrayList<List<String>>();
-		if (!textList.isEmpty()) {
-			try {
-				addInnerList(conList, width);
-			} catch (Exception e) {
-				DevAssistant.assert_exception(e);
-			}
+	public void relist(List<List<String>> strList, int width, boolean horizontal) {
+		switch(toEUtype()) {
+			case TEXT:
+				relistText(strList, width, horizontal);
+				break;
+			case BLOCK:
+				relistBlocks(strList, width, horizontal);
+				break;
+				
 		}
-		
-		return conList;
 	}
 	
-	private void addInnerList(List<List<String>> conList,  int width) {
+	public void relistBlocks(List<List<String>> strList, int width, boolean horizontal) {
+		
+	}
+	
+	public void relistText(List<List<String>> strList, int width, boolean horizontal) {
+		boolean first = true;
 		for (ContentText con : textList) {
 			try {
-				addContentText(conList, width, con);
+				addContentText(strList, width, con, (horizontal && first));
+				first = false;
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
 		}
 	}
 	
-	private void addContentText(List<List<String>> conList, int width, ContentText text) throws CIBusException {
+	private void addContentText(List<List<String>> conList, int width, ContentText text, boolean horizontal) throws CIBusException {
 		try {
 			BufferedReader reader = new BufferedReader(new StringReader(text.getValue()));
 			int start = 0;
 			int position = 0;
 			int limit = 0;
 			String line = null;
-			List<String> innerList = new ArrayList<String>();
+			List<String> innerList;
+			List<String> lastList;
+			boolean checked = false;
+			String value;
 			while ((line = reader.readLine()) != null) {
-				innerList = new ArrayList<String>();
-				conList.add(innerList);
 				start = 0;
 				position = 0;
 				limit = StringUtil.lengthVT(line);
+				if (horizontalPoint(conList, checked, horizontal)) {
+					lastList = conList.get(conList.size()-1);
+					int lastindex = lastList.size() - 1;
+					String last = lastList.get(lastindex);
+					int lastsize;
+					if (ShellText.isShellText(last))
+						lastsize = ShellText.length(last);
+					else
+						lastsize = StringUtil.lengthVT(last);
+					position = width - lastsize;
+					if (position > limit)
+						position = limit;
+					value = StringUtil.subStringVT(line, start, position);
+					String textValue = genContentText(text, value).toString();
+					lastList.add(textValue);
+					start = position + 1;
+				}
+				checked = true;
+				
 				while (start < limit) {
+					innerList = new ArrayList<String>();
 					position += start + width;
 					if (position > limit)
 						position = limit;
-					String inner_value = StringUtil.subStringVT(line, start, position);
-					addInner(innerList, text, inner_value);
-					start += StringUtil.lengthVT(inner_value) + 1;
+					value = StringUtil.subStringVT(line, start, position);
+					addContentText(innerList, text, value);
+					conList.add(innerList);
+					start += StringUtil.lengthVT(value) + 1;
 				}
 			}
 		} catch (Exception e) {
@@ -168,18 +210,33 @@ public class Content implements Serializable {
 		}
 	}
 	
-	private void addInner(List<String> innerList, ContentText con, String inner_value) {
-		ContentText inner_text = new ContentText();
+	private boolean horizontalPoint(List<List<String>> conList, boolean checked, boolean horizontal) {
+		if (!checked 
+				&& !conList.isEmpty() 
+				&& !conList.get(conList.size()-1).isEmpty() 
+				&& (horizontal || toBlockMode() == EU_BlockMode.HORIZONTAL ))
+			return true;
+		
+		return false;
+	}
+	
+	private void addContentText(List<String> innerList, ContentText contentText, String value) {
+		innerList.add(genContentText(contentText, value).toString());
+	}
+	
+	private ContentText genContentText(ContentText contentText, String value) {
+		ContentText newContentText = new ContentText();
 		FontExpression font;
-		if (con.isShellText()) {
-			ShellText st = ShellText.toShellText(con.getShellValue());
+		if (contentText.isShellText()) {
+			ShellText st = ShellText.toShellText(contentText.getShellValue());
 			font = FontExpression.fromCode(st.getFont_mark(), st.getFont_size(), st.getFont_style());
 		} else {
-			font =con.getFont();
+			font =contentText.getFont();
 		}
-		inner_text.setFont(font);
-		inner_text.setValue(inner_value);
-		innerList.add(inner_text.toString());
+		newContentText.setFont(font);
+		newContentText.setValue(value);
+		
+		return newContentText;
 	}
 	
 	private static class InnerText {
