@@ -53,6 +53,15 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
 		<antcall target="make" />
 	</target>
+	
+	<target name="build_portal_notest">
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
+		<copy todir="${app.portal.bundle}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.portal-${bus.version}.jar" />
+			</fileset>
+		</copy>
+	</target>
 
 	<target name="make">
 		<copy todir="${app.portal.lib}">

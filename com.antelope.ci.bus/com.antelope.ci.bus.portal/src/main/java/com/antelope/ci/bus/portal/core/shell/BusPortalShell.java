@@ -533,55 +533,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return height;
 	}
 	
-	/*
-	@Deprecated protected void layout() throws CIBusException {
-		Map<String, Map<String, PlacePart>> placeMap = portal.getPlaceMap();
-		shiftTop();
-		int north_height = 0;
-		Map<String, PlacePart> northMap = placeMap.get(EU_LAYOUT.NORTH.getName());
-		if (northMap != null) {
-			north_height = getPartHeight(northMap, getWidth());
-			layoutInner(northMap, getWidth());
-		}
-		
-		Map<String, PlacePart> southMap = placeMap.get(EU_LAYOUT.SOUTH.getName());
-		if (southMap != null) {
-			shiftBottom();
-			layoutInner(southMap, getWidth());
-		}
-
-		shiftTop();
-		int west_width = 0;
-		Map<String, PlacePart> westMap = placeMap.get(EU_LAYOUT.WEST.getName());
-		if (westMap != null) {
-			shiftDown(north_height);
-			west_width = getPartWdith(westMap, getWidth());
-			layoutInner(westMap, west_width);
-		}
-		
-		shiftTop();
-		int east_width = 0;
-		Map<String, PlacePart> eastMap = placeMap.get(EU_LAYOUT.EAST.getName());
-		if (eastMap != null) {
-			shiftDown(north_height);
-			east_width = getPartWdith(eastMap, getWidth());
-			shiftRight(getWidth() - east_width);
-			layoutInner(eastMap, east_width);
-		}
-		
-		shiftTop();
-		Map<String, PlacePart> centerMap = placeMap.get(EU_LAYOUT.CENTER.getName());
-		if (centerMap != null) {
-			shiftDown(north_height);
-			shiftRight(west_width);
-			int center_width = getWidth() - west_width - east_width;
-			if (center_width < 0)
-				throw new CIBusException("", "not enough width for center");
-			layoutInner(centerMap, center_width);
-		}
-	}
-	*/
-	
 	protected int getPartHeight(Map<String, PlacePart> placeMap, int width) {
 		int north_height = 0;
 		int south_height = 0;
@@ -664,35 +615,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return part_width;
 	}
 	
-	/*
-	@Deprecated protected int getPartWdith(Map<String, PlacePart> placeMap) {
-		int part_width = 0;
-		int pc_width = 0;
-		try {
-			pc_width = getContentWidth(placeMap, EU_LAYOUT.NORTH);
-			part_width = pc_width > part_width ? pc_width : part_width;
-		} catch (CIBusException e) {}
-		try {
-			pc_width = getContentWidth(placeMap, EU_LAYOUT.SOUTH);
-			part_width = pc_width > part_width ? pc_width : part_width;
-		} catch (CIBusException e) {}
-		try {
-			pc_width = getContentWidth(placeMap, EU_LAYOUT.WEST);
-			part_width = pc_width > part_width ? pc_width : part_width;
-		} catch (CIBusException e) {}
-		try {
-			pc_width = getContentWidth(placeMap, EU_LAYOUT.EAST);
-			part_width = pc_width > part_width ? pc_width : part_width;
-		} catch (CIBusException e) {}
-		try {
-			pc_width = getContentWidth(placeMap, EU_LAYOUT.CENTER);
-			part_width = pc_width > part_width ? pc_width : part_width;
-		} catch (CIBusException e) {}
-		
-		return part_width;
-	}
-	*/
-	
 	private int getContentWidth(Map<String, PlacePart> placeMap, EU_LAYOUT layout, int width) throws CIBusException {
 		PlacePart pp = placeMap.get(layout.getName());
 		if (pp != null) {
@@ -712,30 +634,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	/*
-	@Deprecated private int getContentWidth(Map<String, PlacePart> placeMap, EU_LAYOUT layout) throws CIBusException {
-		PlacePart pp = placeMap.get(layout.getName());
-		if (pp != null) {
-			return getContentWidth(pp);
-		}
-		
-		return 0;
-	}
-	*/
-	
-	/*
-	@Deprecated private int getContentWidth(PlacePart pp) throws CIBusException {
-		try {
-			String pcon = placePartContent(pp);
-			if (pcon == null) return 0;
-			return StringUtil.maxLine(pcon);
-		} catch (Exception e) {
-			DevAssistant.errorln(e);
-			throw new CIBusException("", e);
-		}
-	}
-	*/
-
 	protected void layoutInner(Map<String, PlacePart> placeMap, int width) {
 		storeCursor();
 		ShellCursor cursor = new ShellCursor();

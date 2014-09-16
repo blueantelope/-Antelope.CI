@@ -125,10 +125,10 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private Portal parseDynamic(String shellClass) throws CIBusException {
-		PortalPair pp = configPairMap.get(shellClass);
+		PortalPair portalPair = configPairMap.get(shellClass);
 		Portal global_portal;
-		if (pp != null) {
-			if (pp.isValidate())
+		if (portalPair != null) {
+			if (portalPair.isValidate())
 				global_portal = validateAndParsePortal(PORTAL_XML);
 			else
 				throw new CIBusException("", "validate error");
@@ -202,13 +202,13 @@ public class BusPortalConfigurationHelper {
 			RenderFont hit_font = majorExt.getHitFont();
 			if (hit_font == null)
 				hit_font = ext_font;
-			String del_value = " ";
-			EU_Position del_position = EU_Position.MIDDLE;
-			Margin del_margin = null;
+			String delimiter_value = " ";
+			EU_Position delimiter_position = EU_Position.MIDDLE;
+			Margin delimiter_margin = null;
 			if (delimiter != null) {
-				del_value = delimiter.getValue();
-				del_position = delimiter.getEU_Position();
-				del_margin = delimiter.getMarginObject();
+				delimiter_value = delimiter.getValue();
+				delimiter_position = delimiter.getEU_Position();
+				delimiter_margin = delimiter.getMarginObject();
 			}
 			
 			Part major_part = majorExt.getPart(pp.getName());
@@ -218,101 +218,82 @@ public class BusPortalConfigurationHelper {
 				majorExt.addPart(major_part);
 			}
 			
-			if (del_position == EU_Position.START)
-				major_part.addContents(del_value, "", del_margin, EU_Position.START, 1);
+			List<Contents> newContentsList = new ArrayList<Contents>();
+			if (delimiter_position == EU_Position.START)
+				newContentsList.addAll(Part.createStartContentsList(delimiter_value, delimiter_margin));
 			
-			List<PartWithPortalClass> pwpcList =  new ArrayList<PartWithPortalClass>();
+			List<PortalclassPart> portalclassPartList =  new ArrayList<PortalclassPart>();
 			int major_order = majorExt.getOrder();
-			boolean majorAdded = false;
-			for (String extName : sortList) {
-				Portal ext = minorPortalMap.get(extName);
-				int ext_order = ext.getOrder();
-				if (!majorAdded && major_order != -1 && major_order <= ext_order) {
-					pwpcList.add(new PartWithPortalClass("", major_part));
-					majorAdded = true;
+			boolean added = false;
+			for (String portalclass : sortList) {
+				Portal extPortal = minorPortalMap.get(portalclass);
+				int ext_order = extPortal.getOrder();
+				if (!added && major_order != -1 && major_order <= ext_order) {
+					portalclassPartList.add(new PortalclassPart("", major_part));
+					added = true;
 				}
-				Part extPart = ext.getExtPart(pp.getName());
+				Part extPart = extPortal.getExtPart(pp.getName());
 				if (extPart != null)
-					pwpcList.add(new PartWithPortalClass(extName, extPart));
+					portalclassPartList.add(new PortalclassPart(portalclass, extPart));
 			}
-			if (!majorAdded)
-				pwpcList.add(new PartWithPortalClass("", major_part));
+			if (!added)
+				portalclassPartList.add(new PortalclassPart("", major_part));
 			
-			Collections.sort(pwpcList, new Comparator<PartWithPortalClass>() {
+			Collections.sort(portalclassPartList, new Comparator<PortalclassPart>() {
 				@Override
-				public int compare(PartWithPortalClass p1, PartWithPortalClass p2) {
+				public int compare(PortalclassPart p1, PortalclassPart p2) {
 					return p1.getPart().getSort() - p2.getPart().getSort();
 				}
 			});
 		
 			int extList_count = 0;
-			int type = 0;
-			for (PartWithPortalClass extPwpc : pwpcList) {
-				if (extList_count == pwpcList.size())
-					type = -1;
-				extList_count++;
-				String extName = extPwpc.getPortalClass();
-				Part extPart = extPwpc.getPart();
-				List<NewTextContents> newContentsList = new ArrayList<NewTextContents>();
-				for (Contents contents : extPart.getContentsList()) {
-					for (Content content : contents.getContentList()) {
-						switch (content.toEUtype()) {
-							case TEXT:
-								String extValue = content.getValue();
-								if (!StringUtil.empty(extName) && !StringUtil.empty(extValue)) {
-									if (ResourceUtil.needReplace(extValue))
-										extValue = ResourceUtil.replaceLableForReader(
-												extValue, parseProperties(configPairMap.get(extName).getProps_name(), extName, classLoader));
-									if (ResourceUtil.needReplace(extValue))
-										extValue = ResourceUtil.replaceLableForReader(extValue, reader);
-								}
-								newContentsList.add(new NewTextContents(extValue, del_value, del_margin, del_position, type));
-							
-								break;
-							case BLOCK:
-								
-								break;
+			EU_Position position = EU_Position.START;
+			for (PortalclassPart portalclassPart : portalclassPartList) {
+				if ((++extList_count) == portalclassPartList.size())
+					position = EU_Position.END;
+				String portalclass = portalclassPart.getPortalClass();
+				if (StringUtil.empty(portalclass)) {
+					newContentsList.addAll(Part.createContensList(major_part, "", delimiter_value, delimiter_margin, position));
+				} else {
+					Part extPart = portalclassPart.getPart();
+					for (Contents contents : extPart.getContentsList()) {
+						for (Content content : contents.getContentList()) {
+							switch (content.toEUtype()) {
+								case TEXT:
+									String extValue = content.getValue();
+									if (!StringUtil.empty(portalclass) && !StringUtil.empty(extValue)) {
+										if (ResourceUtil.needReplace(extValue))
+											extValue = ResourceUtil.replaceLableForReader(
+													extValue, parseProperties(configPairMap.get(portalclass).getProps_name(), portalclass, classLoader));
+										if (ResourceUtil.needReplace(extValue))
+											extValue = ResourceUtil.replaceLableForReader(extValue, reader);
+									}
+									newContentsList.addAll(Part.createContensList(extValue, delimiter_value, delimiter_margin, position));
+									break;
+								case BLOCK:
+									
+									break;
+							}
 						}
 					}
 				}
-				addTextContents(extPart, newContentsList);
-				if (type == 0)
-					type = 1;
+				major_part.addContentsList(newContentsList, position);
+				if (position == EU_Position.START)
+					position = EU_Position.MIDDLE;
 			}
 			
-			if (del_position == EU_Position.END)
-				major_part.addContents(del_value, "", del_margin, EU_Position.END, 1);
+			if (delimiter_position == EU_Position.END)
+				newContentsList.addAll(Part.createEndContentsList(delimiter_value, delimiter_margin));
+			major_part.setAllContentsList(newContentsList);
 		}
 		
 		return majorExt;
 	}
 	
-	private void addTextContents(Part part, List<NewTextContents> textContentsList) {
-		for (NewTextContents textContents : textContentsList)
-			part.addContents(textContents.value, textContents.div, textContents.margin, textContents.position, textContents.type);
-	}
-	
-	private static class NewTextContents {
-		String value;
-		String div;
-		Margin margin;
-		EU_Position position;
-		int type;
-		public NewTextContents(String value, String div, Margin margin,
-				EU_Position position, int type) {
-			super();
-			this.value = value;
-			this.div = div;
-			this.margin = margin;
-			this.position = position;
-			this.type = type;
-		}
-	}
-	
-	private static class PartWithPortalClass {
+	private static class PortalclassPart {
 		private String portalClass;
 		private Part part;
-		public PartWithPortalClass(String portalClass, Part part) {
+		public PortalclassPart(String portalClass, Part part) {
 			this.portalClass = portalClass;
 			this.part = part;
 		}
@@ -323,45 +304,6 @@ public class BusPortalConfigurationHelper {
 			return part;
 		}
 	}
-	
-	/*
-	@Deprecated private void rendStartPart(Part part, String dec, Margin margin) {
-		rendPart(part, dec, "", margin, 1);
-	}
-	
-	@Deprecated private void rendMiddlePart(Part part, String dec, String value, Margin margin) {
-		rendPart(part, dec, value, margin, 2);
-	}
-	
-	@Deprecated private void rendEndPart(Part part, String dec, Margin margin) {
-		rendPart(part, dec, "", margin, 3);
-	}
-	
-	@Deprecated private void rendPart(Part part, String dec, String value, Margin margin, int valuePosition) {
-		switch (valuePosition) {
-			case 1:				// start
-				part.addForeValue(dec);
-				if (margin != null)
-					part.addForeValue(StringUtil.repeatString(" ", margin.getBefore()));
-				break;
-			case 3:				// end
-				part.addAfterValue(dec);
-				if (margin != null)
-					part.addAfterValue(StringUtil.repeatString(" ", margin.getAfter()));
-				break;
-			case 2:				// middle
-			default:	
-				if (margin != null) 
-					part.addAfterValue(StringUtil.repeatString(" ", margin.getBefore()));
-				part.addAfterValue(dec);
-				part.addAfterValue(value);
-				part.addAfterValue(dec);
-				if (margin != null) 
-					part.addAfterValue(StringUtil.repeatString(" ", margin.getAfter()));
-				break;
-		}
-	}
-	*/
 	
 	private List<String> sortPortalMap(Map<String, Portal> portalMap) {
 		List<String> resutlList = new ArrayList<String>();
