@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -84,6 +85,11 @@ public class Contents implements Serializable {
 		}
 		
 		return true;
+	}
+	
+	public void replace(BasicConfigrationReader[] readerList) {
+		for (Content content : contentList)
+			content.replace(readerList);
 	}
 }
 

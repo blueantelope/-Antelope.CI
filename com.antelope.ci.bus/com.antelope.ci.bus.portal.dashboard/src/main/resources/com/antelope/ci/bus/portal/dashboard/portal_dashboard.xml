@@ -53,9 +53,7 @@ ${second.menu4}]]></value>
 					<content type="text">
 						<value><![CDATA[${content.line1}
 ${content.line2}
-${content.line3}
-				]]>
-						</value>
+${content.line3}]]></value>
 					</content>
 				</contents>
 			</part>

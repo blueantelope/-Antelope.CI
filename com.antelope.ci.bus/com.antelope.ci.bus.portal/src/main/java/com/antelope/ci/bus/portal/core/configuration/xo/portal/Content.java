@@ -17,6 +17,7 @@ import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -116,20 +117,38 @@ public class Content implements Serializable {
 	
 	public String getValue() {
 		StringBuffer buf = new StringBuffer();
-		for (ContentText text : textList) {
-			if (!StringUtil.empty(text.getValue()))
-				buf.append(text.getValue());
+		switch (toEUtype()) {
+			case TEXT:
+				for (ContentText text : textList) {
+					if (!StringUtil.empty(text.getValue()))
+						buf.append(text.getValue());
+				}
+				break;
+			case BLOCK:
+				for (ContentBlocks blocks : blocksList) {
+					if (!StringUtil.empty(blocks.getValue()))
+						buf.append(blocks.getValue());
+				}
+				break;
 		}
-		for (ContentBlocks blocks : blocksList) {
-			if (!StringUtil.empty(blocks.getValue()))
-				buf.append(blocks.getValue());
-		}
-		
 		return buf.toString();
 	}
 	
 	public List<String> getValueList() throws CIBusException {
 		return Arrays.asList(StringUtil.toLines(getValue()));
+	}
+	
+	public void replace(BasicConfigrationReader[] readerList) {
+		switch (toEUtype()) {
+			case TEXT:
+				for (ContentText text : textList)
+					text.replaceValue(readerList);
+				break;
+			case BLOCK:
+				for (ContentBlocks blocks : blocksList)
+					blocks.replace(readerList);
+				break;
+		}
 	}
 	
 	public void relist(List<List<String>> strList, int width, boolean horizontal) {

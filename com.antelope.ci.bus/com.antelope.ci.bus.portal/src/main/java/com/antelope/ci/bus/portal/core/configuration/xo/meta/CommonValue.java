@@ -10,7 +10,9 @@ package com.antelope.ci.bus.portal.core.configuration.xo.meta;
 
 import java.io.Serializable;
 
+import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
@@ -42,6 +44,11 @@ public class CommonValue implements Serializable {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	public void replaceValue(BasicConfigrationReader[] readerList) {
+		for (BasicConfigrationReader reader : readerList)
+			if (ResourceUtil.needReplace(value))
+				value = ResourceUtil.replaceLableForReader(value, reader);
 	}
 	
 	public FontExpression getFont() {

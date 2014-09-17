@@ -11,10 +11,10 @@ package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -39,13 +39,13 @@ public class Part implements Serializable {
 	private Integer sort;
 	private String mode;
 	private List<Contents> contentsList;
-	private List<Contents> allContentsList;
+	private List<Contents> _resetContentsList;
 	private String value;
 	
 	public Part() {
 		super();
 		contentsList = new ArrayList<Contents>();
-		allContentsList = new ArrayList<Contents>();
+		_resetContentsList = new ArrayList<Contents>();
 	}
 	
 	@XmlAttribute(name="name")
@@ -65,22 +65,21 @@ public class Part implements Serializable {
 	}
 	
 	public List<Contents> getAllContentsList() {
-		return allContentsList;
+		return _resetContentsList;
 	}
-	public void setAllContentsList(List<Contents> allContentsList) {
-		this.allContentsList = allContentsList;
+	public void setAllContentsList(List<Contents> resetContentsList) {
+		this._resetContentsList = resetContentsList;
 	}
-	public void addContentsList(List<Contents> newContentsList, EU_Position position) {
+	public void resetContentsList(List<Contents> newContentsList, EU_Position position) {
 		switch (position) {
 			case START:
-				allContentsList.addAll(0, newContentsList);
+				_resetContentsList.addAll(0, newContentsList);
 				break;
 			default:
-				allContentsList.addAll(newContentsList);
+				_resetContentsList.addAll(newContentsList);
 				break;
 		}
 	}
-
 
 	@XmlAttribute(name="embed")
 	public String getEmbed_exp() {
@@ -137,8 +136,8 @@ public class Part implements Serializable {
 
 	public List<List<String>> relist(int width) {
 		List<List<String>> strList = new ArrayList<List<String>>();
-		List<Contents> reContentslist = allContentsList;
-		if (allContentsList.isEmpty())
+		List<Contents> reContentslist = _resetContentsList;
+		if (_resetContentsList.isEmpty())
 			reContentslist = contentsList;
 		for (Contents contents : reContentslist)
 			contents.relist(strList, width, toBlockMode()==EU_BlockMode.HORIZONTAL);
@@ -156,37 +155,20 @@ public class Part implements Serializable {
 		return createContensList(newContents, div, margin, position);
 	}
 	
-	private static List<Contents> createContensList(Part part, Contents newContents, String div, Margin margin, EU_Position position) {
-		List<Contents> newContentsList = new ArrayList<Contents>();
-		switch (position) {
-			case START:
-				addNewContents(newContentsList, part.getContentsList());
-				addNewContents(newContentsList, newContents);
-				addAfterTextContent(newContentsList, margin);
-				addTextContent(newContentsList, div);
-				break;
-			case END:
-				addBeforeTextContent(newContentsList, margin);
-				addNewContents(newContentsList, newContents);
-				addNewContents(newContentsList, part.getContentsList());
-				break;
-			case MIDDLE:
-			default:
-				addBeforeTextContent(newContentsList, margin);
-				addNewContents(newContentsList, newContents);
-				addNewContents(newContentsList, part.getContentsList());
-				addAfterTextContent(newContentsList, margin);
-				addTextContent(newContentsList, div);
-				break;
-		}
-		
-		return newContentsList;
+	public static List<Contents> createContensList(Part part, Contents newContents, String div, Margin margin, EU_Position position) {
+		return commonCreateContensList(part, newContents, div, margin, position);
 	}
 	
-	private static List<Contents> createContensList(Contents newContents, String div, Margin margin, EU_Position position) {
+	public static List<Contents> createContensList(Contents newContents, String div, Margin margin, EU_Position position) {
+		return commonCreateContensList(null, newContents, div, margin, position);
+	}
+	
+	private static List<Contents> commonCreateContensList(Part part, Contents newContents, String div, Margin margin, EU_Position position) {
 		List<Contents> newContentsList = new ArrayList<Contents>();
 		switch (position) {
 			case START:
+				if (null != part)
+					addNewContents(newContentsList, part.getContentsList());
 				addNewContents(newContentsList, newContents);
 				addAfterTextContent(newContentsList, margin);
 				addTextContent(newContentsList, div);
@@ -194,11 +176,15 @@ public class Part implements Serializable {
 			case END:
 				addBeforeTextContent(newContentsList, margin);
 				addNewContents(newContentsList, newContents);
+				if (null != part)
+					addNewContents(newContentsList, part.getContentsList());
 				break;
 			case MIDDLE:
 			default:
 				addBeforeTextContent(newContentsList, margin);
 				addNewContents(newContentsList, newContents);
+				if (null != part)
+					addNewContents(newContentsList, part.getContentsList());
 				addAfterTextContent(newContentsList, margin);
 				addTextContent(newContentsList, div);
 				break;
@@ -277,6 +263,11 @@ public class Part implements Serializable {
 		contents.setMode(EU_BlockMode.HORIZONTAL.getName());
 		contents.addContent(content);
 		return contents;
+	}
+	
+	public void replace(BasicConfigrationReader[] readerList) {
+		for (Contents contents : contentsList)
+			contents.replace(readerList);
 	}
 }
 

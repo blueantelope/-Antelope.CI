@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
@@ -120,6 +121,11 @@ public class ContentBlocks implements Serializable {
 	
 	public List<String> getShellValueList() throws CIBusException {
 		return Arrays.asList(StringUtil.toLines(getShellValue()));
+	}
+	
+	public void replace(BasicConfigrationReader[] readerList) {
+		for (ContentBlock block : blockList)
+			block.getCvalue().replaceValue(readerList);
 	}
 }
 

@@ -143,27 +143,27 @@ public class BusPortalConfigurationHelper {
 	private Portal parseStatic(String shellClass) throws CIBusException {
 		Map<String, Portal> minorPortalMap = new HashMap<String, Portal>();
 		Portal majorExt = null;
-		BasicConfigrationReader majorExt_reader = null;
+		BasicConfigrationReader majorExtReader = null;
 		PortalPair portalPair = configPairMap.get(shellClass);
-		for (String ck : configPairMap.keySet()) {
+		for (String configPairName : configPairMap.keySet()) {
 			try {
-				InputStream xml_in = getXmlStream(configPairMap.get(ck).getXml_name());
+				InputStream xml_in = getXmlStream(configPairMap.get(configPairName).getXml_name());
 				Portal extPortal;
-				if (ck.equals(shellClass)) {
+				if (configPairName.equals(shellClass)) {
 					if (portalPair != null && portalPair.isValidate())
 						majorExt = validateAndParsePortal(xml_in);
 					else 
 						majorExt = parsePortal(xml_in);
-					majorExt_reader = parseProperties(configPairMap.get(ck).getProps_name(), ck, classLoader);
+					majorExtReader = parseProperties(configPairMap.get(configPairName).getProps_name(), configPairName, classLoader);
 					extPortal = majorExt;
 				} else {
 					if (portalPair != null && portalPair.isValidate())
 						extPortal = validateAndParsePortal(xml_in);
 					else 
 						extPortal = parsePortal(xml_in);
-					minorPortalMap.put(ck, extPortal);
+					minorPortalMap.put(configPairName, extPortal);
 				}
-				portalExtMap.put(ck, extPortal);
+				portalExtMap.put(configPairName, extPortal);
 			} catch (Exception e) {
 				DevAssistant.assert_exception(e);
 			}
@@ -177,28 +177,28 @@ public class BusPortalConfigurationHelper {
 		}
 		
 		List<PortalReplace> replaceList = genPortalReplaceList(majorExt);
-		for (PortalReplace pr : replaceList) {
+		for (PortalReplace portalReplace : replaceList) {
 			String new_value = "";
-			switch (pr.getOrigin()) {
+			switch (portalReplace.getOrigin()) {
 				case GLOBAL:
-					new_value = (String) pr.getValue();
+					new_value = (String) portalReplace.getValue();
 					if (ResourceUtil.needReplace(new_value))
 						new_value = ResourceUtil.replaceLableForReader(new_value, reader);
 					break;
 				case PART:
-					if (majorExt_reader != null)
-						new_value = ResourceUtil.replaceLableForReader((String) pr.getValue(), majorExt_reader);
+					if (majorExtReader != null)
+						new_value = ResourceUtil.replaceLableForReader((String) portalReplace.getValue(), majorExtReader);
 					break;
 			}
 			if (!StringUtil.empty(new_value))
-				ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
+				ProxyUtil.invoke(portalReplace.getParent(), portalReplace.getSetter(), new Object[]{new_value});
 		}
 		
 		Map<String, PlacePart> renderMap = majorExt.getPalcePartRenderMap();
-		for (String rname : renderMap.keySet()) {
-			PlacePart pp =  renderMap.get(rname);
-			RenderDelimiter delimiter = pp.getRender().getDelimiter();
-			RenderFont ext_font = pp.getRender().getFont();
+		for (String renderName : renderMap.keySet()) {
+			PlacePart placePart =  renderMap.get(renderName);
+			RenderDelimiter delimiter = placePart.getRender().getDelimiter();
+			RenderFont ext_font = placePart.getRender().getFont();
 			RenderFont hit_font = majorExt.getHitFont();
 			if (hit_font == null)
 				hit_font = ext_font;
@@ -211,35 +211,35 @@ public class BusPortalConfigurationHelper {
 				delimiter_margin = delimiter.getMarginObject();
 			}
 			
-			Part major_part = majorExt.getPart(pp.getName());
-			if (major_part == null) {
-				major_part = new Part();
-				major_part.setName(rname);
-				majorExt.addPart(major_part);
+			Part majorPart = majorExt.getPart(placePart.getName());
+			if (majorPart == null) {
+				majorPart = new Part();
+				majorPart.setName(renderName);
+				majorExt.addPart(majorPart);
 			}
 			
 			List<Contents> newContentsList = new ArrayList<Contents>();
 			if (delimiter_position == EU_Position.START)
 				newContentsList.addAll(Part.createStartContentsList(delimiter_value, delimiter_margin));
 			
-			List<PortalclassPart> portalclassPartList =  new ArrayList<PortalclassPart>();
+			List<PortalclassPart> portalClassPartList =  new ArrayList<PortalclassPart>();
 			int major_order = majorExt.getOrder();
 			boolean added = false;
-			for (String portalclass : sortList) {
-				Portal extPortal = minorPortalMap.get(portalclass);
+			for (String portalClass : sortList) {
+				Portal extPortal = minorPortalMap.get(portalClass);
 				int ext_order = extPortal.getOrder();
 				if (!added && major_order != -1 && major_order <= ext_order) {
-					portalclassPartList.add(new PortalclassPart("", major_part));
+					portalClassPartList.add(new PortalclassPart("", majorPart));
 					added = true;
 				}
-				Part extPart = extPortal.getExtPart(pp.getName());
+				Part extPart = extPortal.getExtPart(placePart.getName());
 				if (extPart != null)
-					portalclassPartList.add(new PortalclassPart(portalclass, extPart));
+					portalClassPartList.add(new PortalclassPart(portalClass, extPart));
 			}
 			if (!added)
-				portalclassPartList.add(new PortalclassPart("", major_part));
+				portalClassPartList.add(new PortalclassPart("", majorPart));
 			
-			Collections.sort(portalclassPartList, new Comparator<PortalclassPart>() {
+			Collections.sort(portalClassPartList, new Comparator<PortalclassPart>() {
 				@Override
 				public int compare(PortalclassPart p1, PortalclassPart p2) {
 					return p1.getPart().getSort() - p2.getPart().getSort();
@@ -248,43 +248,30 @@ public class BusPortalConfigurationHelper {
 		
 			int extList_count = 0;
 			EU_Position position = EU_Position.START;
-			for (PortalclassPart portalclassPart : portalclassPartList) {
-				if ((++extList_count) == portalclassPartList.size())
-					position = EU_Position.END;
-				String portalclass = portalclassPart.getPortalClass();
-				if (StringUtil.empty(portalclass)) {
-					newContentsList.addAll(Part.createContensList(major_part, "", delimiter_value, delimiter_margin, position));
-				} else {
-					Part extPart = portalclassPart.getPart();
-					for (Contents contents : extPart.getContentsList()) {
-						for (Content content : contents.getContentList()) {
-							switch (content.toEUtype()) {
-								case TEXT:
-									String extValue = content.getValue();
-									if (!StringUtil.empty(portalclass) && !StringUtil.empty(extValue)) {
-										if (ResourceUtil.needReplace(extValue))
-											extValue = ResourceUtil.replaceLableForReader(
-													extValue, parseProperties(configPairMap.get(portalclass).getProps_name(), portalclass, classLoader));
-										if (ResourceUtil.needReplace(extValue))
-											extValue = ResourceUtil.replaceLableForReader(extValue, reader);
-									}
-									newContentsList.addAll(Part.createContensList(extValue, delimiter_value, delimiter_margin, position));
-									break;
-								case BLOCK:
-									
-									break;
-							}
-						}
+			if (portalClassPartList.size() > 1) {
+				for (PortalclassPart portalclassPart : portalClassPartList) {
+					if ((++extList_count) == portalClassPartList.size())
+						position = EU_Position.END;
+					String portalclass = portalclassPart.getPortalClass();
+					if (StringUtil.empty(portalclass)) {
+						newContentsList.addAll(Part.createContensList(majorPart, "", delimiter_value, delimiter_margin, position));
+					} else {
+						Part extPart = portalclassPart.getPart();
+						BasicConfigrationReader[] readerList = new BasicConfigrationReader[] {
+								parseProperties(configPairMap.get(portalclass).getProps_name(), portalclass, classLoader),
+								reader
+						};
+						extPart.replace(readerList);
+						newContentsList.addAll(Part.createContensList(extPart, "", delimiter_value, delimiter_margin, position));
 					}
+					majorPart.resetContentsList(newContentsList, position);
+					if (position == EU_Position.START)
+						position = EU_Position.MIDDLE;
 				}
-				major_part.addContentsList(newContentsList, position);
-				if (position == EU_Position.START)
-					position = EU_Position.MIDDLE;
-			}
-			
+			}	
 			if (delimiter_position == EU_Position.END)
 				newContentsList.addAll(Part.createEndContentsList(delimiter_value, delimiter_margin));
-			major_part.setAllContentsList(newContentsList);
+			majorPart.setAllContentsList(newContentsList);
 		}
 		
 		return majorExt;
@@ -778,8 +765,6 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	@Deprecated
-	/* genPortalReplaceList */
 	private void findReplace(List<PortalReplace> replaceList, Object root, Class... replaceClasses) throws CIBusException {
 		List<Object> deepList = new ArrayList<Object>();
 		
