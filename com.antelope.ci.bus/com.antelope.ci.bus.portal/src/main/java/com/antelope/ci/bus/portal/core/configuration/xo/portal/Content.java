@@ -8,9 +8,7 @@
 
 package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
-import java.io.BufferedReader;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -164,14 +162,12 @@ public class Content implements Serializable {
 	}
 	
 	public void relistBlocks(List<List<String>> strList, int width, boolean horizontal) {
-		
-	}
-	
-	public void relistText(List<List<String>> strList, int width, boolean horizontal) {
 		boolean first = true;
-		for (ContentText con : textList) {
+		EU_BlockMode mode = toBlockMode();
+		for (ContentBlocks blocks : blocksList) {
 			try {
-				addContentText(strList, width, con, (horizontal && first));
+				horizontal = first && (mode==EU_BlockMode.HORIZONTAL || horizontal);
+				blocks.relist(strList, width, horizontal);
 				first = false;
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
@@ -179,103 +175,17 @@ public class Content implements Serializable {
 		}
 	}
 	
-	private void addContentText(List<List<String>> conList, int width, ContentText text, boolean horizontal) throws CIBusException {
-		try {
-			BufferedReader reader = new BufferedReader(new StringReader(text.getValue()));
-			int start = 0;
-			int position = 0;
-			int limit = 0;
-			String line = null;
-			List<String> innerList;
-			List<String> lastList;
-			boolean checked = false;
-			String value;
-			while ((line = reader.readLine()) != null) {
-				start = 0;
-				position = 0;
-				limit = StringUtil.lengthVT(line);
-				if (horizontalPoint(conList, checked, horizontal)) {
-					lastList = conList.get(conList.size()-1);
-					int lastindex = lastList.size() - 1;
-					String last = lastList.get(lastindex);
-					int lastsize;
-					if (ShellText.isShellText(last))
-						lastsize = ShellText.length(last);
-					else
-						lastsize = StringUtil.lengthVT(last);
-					position = width - lastsize;
-					if (position > limit)
-						position = limit;
-					value = StringUtil.subStringVT(line, start, position);
-					String textValue = genContentText(text, value).toString();
-					lastList.add(textValue);
-					start = position + 1;
-				}
-				checked = true;
-				
-				while (start < limit) {
-					innerList = new ArrayList<String>();
-					position += start + width;
-					if (position > limit)
-						position = limit;
-					value = StringUtil.subStringVT(line, start, position);
-					addContentText(innerList, text, value);
-					conList.add(innerList);
-					start += StringUtil.lengthVT(value) + 1;
-				}
+	public void relistText(List<List<String>> strList, int width, boolean horizontal) {
+		boolean first = true;
+		EU_BlockMode mode = toBlockMode();
+		for (ContentText text : textList) {
+			try {
+				horizontal = first && (mode==EU_BlockMode.HORIZONTAL || horizontal);
+				text.relist(strList, width, horizontal);
+				first = false;
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
 			}
-		} catch (Exception e) {
-			throw new CIBusException("", e);
-		}
-	}
-	
-	private boolean horizontalPoint(List<List<String>> conList, boolean checked, boolean horizontal) {
-		if (!checked 
-				&& !conList.isEmpty() 
-				&& !conList.get(conList.size()-1).isEmpty() 
-				&& (horizontal || toBlockMode() == EU_BlockMode.HORIZONTAL ))
-			return true;
-		
-		return false;
-	}
-	
-	private void addContentText(List<String> innerList, ContentText contentText, String value) {
-		innerList.add(genContentText(contentText, value).toString());
-	}
-	
-	private ContentText genContentText(ContentText contentText, String value) {
-		ContentText newContentText = new ContentText();
-		FontExpression font;
-		if (contentText.isShellText()) {
-			ShellText st = ShellText.toShellText(contentText.getShellValue());
-			font = FontExpression.fromCode(st.getFont_mark(), st.getFont_size(), st.getFont_style());
-		} else {
-			font =contentText.getFont();
-		}
-		newContentText.setFont(font);
-		newContentText.setValue(value);
-		
-		return newContentText;
-	}
-	
-	private static class InnerText {
-		private int start;
-		private int end;
-		private ContentText text;
-		public InnerText(int start, int end, ContentText text) {
-			super();
-			this.start = start;
-			this.end = end;
-			this.text = text;
-		}
-		public int getStart() {
-			return start;
-		}
-		public int getEnd() {
-			return end;
-		}
-		public ContentText getText() {
-			return text;
 		}
 	}
 }

@@ -70,4 +70,9 @@ public class ContentBlock implements Serializable {
 			return cvalue.getShellValue();
 		return null;
 	}
+	
+	public void defaultSet() {
+		this.focus = "off";
+		this.active = "off";
+	}
 }

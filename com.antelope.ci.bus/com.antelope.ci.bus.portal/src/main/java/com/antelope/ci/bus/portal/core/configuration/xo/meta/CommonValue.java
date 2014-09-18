@@ -110,5 +110,12 @@ public class CommonValue implements Serializable {
 		else
 			value = s + value;
 	}
+	
+	public CommonValue clone() {
+		CommonValue cloneCommonValue = new CommonValue();
+		cloneCommonValue.setFont(font);
+		cloneCommonValue.setValue(value);
+		return cloneCommonValue;
+	}
 }
 
