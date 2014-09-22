@@ -22,8 +22,6 @@ import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ContentType;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
-import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -186,6 +184,19 @@ public class Content implements Serializable {
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}
+		}
+	}
+	
+	public void addContentFont(RenderFont font) {
+		switch (toEUtype()) {
+			case TEXT:
+				for (ContentText text : textList)
+					text.setFont(font.toFontExpression());
+				break;
+			case BLOCK:
+				for (ContentBlocks blocks : blocksList)
+					blocks.addBlockFont(font);
+				break;
 		}
 	}
 }

@@ -26,6 +26,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.XOUtil;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.CommonValue;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
+import com.antelope.ci.bus.portal.core.shell.PortalShellText;
 import com.antelope.ci.bus.server.shell.ShellText;
 
 
@@ -159,16 +160,16 @@ public class ContentBlocks implements Serializable {
 					int lastindex = lastList.size() - 1;
 					String last = lastList.get(lastindex);
 					int lastsize;
+					String last_temp = PortalShellText.peel(last);
 					if (ShellText.isShellText(last))
-						lastsize = ShellText.length(last);
+						lastsize = ShellText.length(last_temp);
 					else
-						lastsize = StringUtil.lengthVT(last);
+						lastsize = StringUtil.lengthVT(last_temp);
 					position = width - lastsize;
 					if (position > limit)
 						position = limit;
 					value = StringUtil.subStringVT(line, start, position);
-					String textValue = genContentBlock(block, value).getValue();
-					lastList.add(textValue);
+					lastList.add(genContentBlock(block, value).getShellValue());
 					start = position + 1;
 				}
 				checked = true;
@@ -190,12 +191,14 @@ public class ContentBlocks implements Serializable {
 	}
 	
 	private void addContentBlock(List<String> innerList, ContentBlock block, String value) {
-		innerList.add(genContentBlock(block, value).getValue());
+		ContentBlock contentBlock = genContentBlock(block, value);
+		innerList.add(contentBlock.getShellValue());
 	}
 	
 	private ContentBlock genContentBlock(ContentBlock block, String value) {
 		ContentBlock newContentBlock = new ContentBlock();
-		newContentBlock.defaultSet();
+		newContentBlock.setActive(block.getActive());
+		newContentBlock.setFocus(block.getFocus());
 		FontExpression font;
 		CommonValue cValue = block.getCvalue();
 		if (cValue.isShellText()) {
@@ -210,6 +213,11 @@ public class ContentBlocks implements Serializable {
 		newContentBlock.setCvalue(newCommonValue);
 		
 		return newContentBlock;
+	}
+	
+	public void addBlockFont(RenderFont font) {
+		for (ContentBlock block : blockList)
+			block.getCvalue().setFont(font.toFontExpression());
 	}
 }
 

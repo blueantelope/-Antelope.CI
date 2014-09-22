@@ -95,19 +95,19 @@ public class PortalShellUtil {
 	
 	public static boolean isMainMode(BusPortalShell shell) {
 		String mode = null;
-		if (shell.getBlock() != null)
-			mode = shell.getBlock().getMode();
+		if (shell.getActiveBlock() != null)
+			mode = shell.getActiveBlock().getMode();
 		if (StringUtil.empty(mode))
 			mode = BusShellMode.MAIN;
 		return BusShellMode.isMain(mode);
 	}
 	
 	public static boolean isInputMode(BusPortalShell shell) {
-		return BusShellMode.isInput(shell.getBlock().getMode());
+		return BusShellMode.isInput(shell.getActiveBlock().getMode());
 	}
 	
 	public static BaseMode getPortalMode(BusPortalShell shell) throws CIBusException {
-		return BaseMode.toMode(shell.getBlock().getMode());
+		return BaseMode.toMode(shell.getActiveBlock().getMode());
 	}
 }
 

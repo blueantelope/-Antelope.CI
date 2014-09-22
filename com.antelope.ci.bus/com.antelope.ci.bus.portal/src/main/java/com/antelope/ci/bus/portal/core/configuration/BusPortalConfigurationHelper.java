@@ -41,7 +41,6 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
-import com.antelope.ci.bus.portal.core.configuration.xo.portal.Content;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Contents;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extensions;
@@ -217,6 +216,7 @@ public class BusPortalConfigurationHelper {
 				majorPart.setName(renderName);
 				majorExt.addPart(majorPart);
 			}
+			majorPart.addContentsFont(hit_font);
 			
 			List<Contents> newContentsList = new ArrayList<Contents>();
 			if (delimiter_position == EU_Position.START)

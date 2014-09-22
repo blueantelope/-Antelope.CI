@@ -53,7 +53,9 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected Portal portal;
 	protected ShellPalette contentPalette;
-	protected PortalBlock block;
+	protected PortalBlock activeBlock;
+	protected List<PortalBlock> mainBlockList;
+	protected boolean loadMainblock;
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -65,7 +67,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		} 
 		customInit();
 		parsePortal();
-		this.block = loadBlock();
+		mainBlockList = new ArrayList<PortalBlock>();
+		loadMainblock = true;
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
 	}
@@ -108,12 +111,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	public PortalBlock getBlock() {
-		return block;
+	public PortalBlock getActiveBlock() {
+		return activeBlock;
 	}
 	
 	public void updateBlock(PortalBlock block) {
-		this.block = block;
+		this.activeBlock = block;
 	}
 	
 	protected ShellCursor getContentCursor() {
@@ -131,9 +134,17 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		portal = configHelper.parse(this.getClass().getName());
 	}
 	
-	@Override
-	public void setSort(int sort) {
+	@Override public void setSort(int sort) {
 		// nothing
+	}
+	
+	private void initActiveBlock() {
+		if (loadMainblock) {
+			loadMainblock = false;
+			for (PortalBlock mainBlock : mainBlockList) {
+				mainBlock.getCursor();
+			}
+		}
 	}
 	
 	private void draw() throws CIBusException {
@@ -706,33 +717,20 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected void writeLine(ShellCursor cursor, List<List<String>> valueList) {
 		int default_x = cursor.getX();
 		boolean first = true;
-		for (List<String> value : valueList) {
+		for (List<String> values : valueList) {
 			try {
 				if (first)
 					first = false;
 				else
 					shiftDown(1);
 				int count = 0;
-				for (String c : value) {
-					if (ShellText.containP(c)) {
-						List<String> vList = ShellText.splitForP(c);
-						for (String v : vList) {
-							if (ShellText.isShellText(v)) {
-								ShellText text = writeFormat(cursor, v);
-								if (text != null)
-									count += text.placeholderWidth();
-							} else {
-								write(cursor, v);
-								count += StringUtil.lengthVT(v);
-							}
-						}
-					} else if (ShellText.isShellText(c)) {
-						ShellText text = writeFormat(cursor, c);
-						if (text != null)
-							count += text.placeholderWidth();
+				for (String value : values) {
+					if (ShellText.containP(value)) {
+						List<String> vList = ShellText.splitForP(value);
+						for (String v : vList)
+							count += writeUnit(cursor, v);
 					} else {
-						write(cursor, c);
-						count = StringUtil.lengthVT(c);
+						count += writeUnit(cursor, value);
 					}
 				}
 				if (count != 0)
@@ -745,40 +743,23 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	@Deprecated protected void writeLine(ShellCursor cursor, Object[] lines) {
-		int default_x = cursor.getX();
-		boolean first = true;
-		for (Object line : lines) {
-			try {
-				if (first)
-					first = false;
-				else
-					shiftDown(1);
-				if (line instanceof String) {
-					String v = (String) line;
-					if (ShellText.isShellText(v)) {
-						ShellText text = writeFormat(cursor, v);
-						if (text != null)
-							shiftLeft(StringUtil.lengthVT(text.getText()));
-					} else {
-						write(cursor, v);
-						shiftLeft(StringUtil.lengthVT(v));
-					}
-				}
-				
-				if (line instanceof ShellText) {
-					ShellText text = (ShellText) line;
-					write(cursor, text);
-					if (text != null)
-						shiftLeft(StringUtil.lengthVT(text.getText()));
-				}
-				
-				cursor.setX(default_x);
-				cursor.addY(1);
-			} catch (CIBusException e) {
-				DevAssistant.errorln(e);
-			}
+	protected int writeUnit(ShellCursor cursor, String str) throws CIBusException {
+		int width = 0;
+		String s = PortalShellText.peel(str);
+		if (ShellText.isShellText(str)) {
+			ShellText text = writeFormat(cursor, s);
+			if (text != null)
+				width= text.placeholderWidth();
+		} else {
+			write(cursor, s);
+			width = StringUtil.lengthVT(s);
 		}
+		if (loadMainblock && PortalShellText.containBlock(str)) {
+			PortalBlock portalBlock = new PortalBlock();
+			portalBlock.setCursor(cursor.clone());
+			mainBlockList.add(portalBlock);
+		}
+		return width;
 	}
 	
 	protected void write(ShellCursor cursor, String[] lines) {
@@ -831,30 +812,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return matrix.size();
 	}
 	
-	/*
-	@Deprecated protected String placePartContent(PlacePart placePart) throws CIBusException {
-		EU_ORIGIN origin = EU_ORIGIN.toOrigin(placePart.getOrigin());
-		Part part;
-		switch (origin) {
-			case GLOBAL:
-				part = portal.getPartMap().get(placePart.getName());
-				if (part != null)
-					return part.getContent().getValue();
-				break;
-			case PART:
-				part = portal.getPartMap().get(placePart.getName());
-				if (part != null)
-					return part.getContent().getValue();
-				break;
-		}
-
-		return null;
-	}
-	*/
-
 	@Override protected void view() throws CIBusException {
 		try {
 			draw();
+			initActiveBlock();
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}

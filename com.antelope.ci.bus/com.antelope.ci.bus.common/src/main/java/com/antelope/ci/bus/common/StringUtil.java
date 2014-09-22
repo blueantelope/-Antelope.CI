@@ -422,4 +422,22 @@ public class StringUtil {
         buffer[1] = Character.forDigit(b & 0x0F, 16);
         return new String(buffer);
     }
+	
+	public static String deleteFirst(String str, String delStr) {
+		String str_lower = str.toLowerCase();
+		String delStr_lower = delStr.toLowerCase();
+		int index = str_lower.indexOf(delStr_lower);
+		if (index != -1)
+			return str.substring(index+delStr_lower.length());
+		return str;
+	}
+	
+	public static String deleteLast(String str, String delStr) {
+		String str_lower = str.toLowerCase();
+		String delStr_lower = delStr.toLowerCase();
+		int index = str_lower.lastIndexOf(delStr_lower);
+		if (index != -1)
+			return str.substring(0, index);
+		return str;
+	}
 }

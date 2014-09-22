@@ -269,5 +269,17 @@ public class Part implements Serializable {
 		for (Contents contents : contentsList)
 			contents.replace(readerList);
 	}
+	
+	public void addContentsFont(RenderFont font) {
+		for (Contents contents : _resetContentsList)
+			addContentsFont(contents, font);
+		for (Contents contents : contentsList)
+			addContentsFont(contents, font);
+	}
+		
+	private void addContentsFont(Contents contents, RenderFont font) {
+		for (Content content : contents.getContentList())
+			content.addContentFont(font);
+	}
 }
 

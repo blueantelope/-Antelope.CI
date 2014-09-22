@@ -15,6 +15,7 @@ import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.XOUtil;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.CommonValue;
+import com.antelope.ci.bus.portal.core.shell.PortalShellText;
 
 
 /**
@@ -66,13 +67,23 @@ public class ContentBlock implements Serializable {
 	}
 	
 	public String getShellValue() {
-		if (null != cvalue)
-			return cvalue.getShellValue();
-		return null;
+		String shellValue = null;
+		if (null != cvalue) {
+			shellValue = cvalue.getShellValue();
+			if (available())
+				shellValue = PortalShellText.genShelText(shellValue);
+		}
+		return shellValue;
 	}
 	
 	public void defaultSet() {
 		this.focus = "off";
 		this.active = "off";
+	}
+	
+	public boolean available() {
+		if (focus() && active())
+			return true;
+		return false;
 	}
 }
