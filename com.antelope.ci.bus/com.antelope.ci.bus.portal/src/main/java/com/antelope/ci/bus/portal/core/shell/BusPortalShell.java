@@ -9,6 +9,8 @@
 package com.antelope.ci.bus.portal.core.shell;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +42,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
  */
 @Shell(name="base.frame", commandAdapter="com.antelope.ci.bus.portal.shell.command.PortalCommandAdapter")
 public abstract class BusPortalShell extends BusBaseFrameShell {
-	private static final Logger log = Logger.getLogger(BusPortalShell.class);
+	protected static final Logger log = Logger.getLogger(BusPortalShell.class);
 	
 	protected static final EU_LAYOUT[] LAYOUT_ORDER		= new EU_LAYOUT[] 
 			{EU_LAYOUT.NORTH, EU_LAYOUT.SOUTH, EU_LAYOUT.WEST, EU_LAYOUT.EAST, EU_LAYOUT.CENTER};
@@ -138,16 +140,151 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		// nothing
 	}
 	
-	private void initActiveBlock() {
+	protected void initActiveBlock() {
 		if (loadMainblock) {
 			loadMainblock = false;
-			for (PortalBlock mainBlock : mainBlockList) {
-				mainBlock.getCursor();
-			}
+			List<List<PortalBlock>> mainMatrix = genMatrix(mainBlockList);
+			activeBlock = fromMatrix(mainMatrix);
 		}
 	}
 	
-	private void draw() throws CIBusException {
+	protected List<List<PortalBlock>> genMatrix(List<PortalBlock> blockList) {
+		List<List<PortalBlock>> matrix = new ArrayList<List<PortalBlock>>();
+		Collections.sort(blockList, new Comparator<PortalBlock>() {
+			@Override public int compare(PortalBlock b1, PortalBlock b2) {
+				int ret = b1.getCursor().getX() - b2.getCursor().getX();
+				if (ret == 0)
+					return b1.getCursor().getY() - b2.getCursor().getY();
+				return ret;
+			}
+		});
+		
+		int current_y = 0;
+		int last_y = 0;
+		List<PortalBlock> rowList = new ArrayList<PortalBlock>();
+		for (PortalBlock block : blockList) {
+			current_y = block.getCursor().getY();
+			if (current_y != last_y) {
+				if (!rowList.isEmpty())
+					matrix.add(rowList);
+				 rowList = new ArrayList<PortalBlock>();
+			}
+			rowList.add(block);
+			last_y = current_y;
+		}
+		if (!rowList.isEmpty())
+			matrix.add(rowList);
+		
+		return matrix;
+	}
+	
+	protected PortalBlock fromMatrix(List<List<PortalBlock>> matrix) {
+		PortalBlock rootBlock = null;
+		PortalBlock up_block;
+		PortalBlock down_block;
+		PortalBlock left_block;
+		PortalBlock right_block;
+		int row_index = 0;
+		int col_index = 0;
+		List<PortalBlock> lastList = null;
+		List<PortalBlock> nextList = null;
+		for (List<PortalBlock> rowList : matrix) {
+			up_block = null;
+			down_block = null;
+			left_block = null;
+			right_block = null;
+			col_index = 0;
+			lastList = null;
+			nextList = null;
+			
+			for (PortalBlock current_block : rowList) {
+				if (row_index == 0 && col_index == 0)
+					rootBlock = current_block;
+				if (row_index > 0) {
+					lastList = matrix.get(row_index-1);
+					if (!lastList.isEmpty())
+						left_block = lastList.get(lastList.size() - 1);
+				}
+				if (matrix.size() > (row_index+1)) {
+					nextList = matrix.get(row_index+1);
+					if (!nextList.isEmpty())
+						right_block = nextList.get(0);
+				}
+				
+				if (lastList != null)
+					up_block = findUpBlock(current_block, lastList);
+				if (up_block != null)
+					current_block.setUp(up_block);
+				
+				if (nextList != null)
+					down_block = findUpBlock(current_block, nextList);
+				if (down_block != null)
+					current_block.setDown(down_block);
+				
+				if (col_index > 0)
+					left_block = rowList.get(col_index - 1);
+				if (left_block != null)
+					current_block.setLeft(left_block);
+					
+				if ((col_index + 1) < rowList.size())
+					right_block = rowList.get(col_index + 1);
+				if (right_block != null)
+					current_block.setRight(right_block);
+				
+				col_index++;
+			}
+			
+			row_index++;
+		}
+		
+		return rootBlock;
+	}
+	
+	protected PortalBlock findUpBlock(PortalBlock block, List<PortalBlock> rowList) {
+		return findValignBlock(block, rowList, 0);
+	}
+	
+	protected PortalBlock findDownBlock(PortalBlock block, List<PortalBlock> rowList) {
+		return findValignBlock(block, rowList, 1);
+	}
+	
+	protected PortalBlock findValignBlock(PortalBlock block, List<PortalBlock> rowList, int updown) {
+		int x_start, x_end, row_x;
+		for (PortalBlock row_block : rowList) {
+			boolean mark;
+			if (updown == 0)	mark = row_block.isMarkUp();
+			else						mark = row_block.isMarkDown();
+			if (!mark) {
+				x_start = block.getCursor().getX();
+				x_end = x_start + block.getWidth();
+				row_x = row_block.getCursor().getX();
+				if (x_start <= row_x || x_end > row_x) {
+					if (updown == 0)	row_block.markUp();
+					else						row_block.markDown();
+					return row_block;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	@Deprecated protected int locateOfMatrix(int index, int[] row_sizes) {
+		int current = 0;
+		int last = 0;
+		int location = 0;
+		for (int size : row_sizes) {
+			current += size;
+			if (index < current && index >= last)
+				return location;
+			last = current;
+			location++;
+		}
+			
+		return -1;
+	}
+	
+	protected void draw() throws CIBusException {
 		Map<String, PlacePartTree> placeTreeMap = portal.makePlacePartTreeMap();
 		Map<String, Integer> contentWidthMap = divideContentWidth(getWidth(), placeTreeMap);
 		shiftTop();
@@ -437,7 +574,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	private void putContentPalette(PlacePart part, ShellCursor cursor, int width, int height) {
+	protected void putContentPalette(PlacePart part, ShellCursor cursor, int width, int height) {
 		if ("content".equals(part.getName())) {
 			contentPalette = new ShellPalette();
 			contentPalette.setStartPoint(cursor.getX(), cursor.getY());
@@ -446,7 +583,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	private void moveCursor(ShellCursor cursor) throws CIBusException {
+	protected void moveCursor(ShellCursor cursor) throws CIBusException {
 		if (cursor.getX() != 0)
 			shiftRight(cursor.getX());
 		if (cursor.getY() != 0)
@@ -581,7 +718,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return north_height + south_height + content_height;
 	}
 	
-	private int getContentHeight(Map<String, PlacePart> placeMap, EU_LAYOUT layout, int width) throws CIBusException {
+	protected int getContentHeight(Map<String, PlacePart> placeMap, EU_LAYOUT layout, int width) throws CIBusException {
 		PlacePart pp = placeMap.get(layout.getName());
 		if (pp != null)
 			return getContentHeight(pp, width);
@@ -589,7 +726,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return 0;
 	}
 	
-	private int getContentHeight(PlacePart pp, int width) throws CIBusException {
+	protected int getContentHeight(PlacePart pp, int width) throws CIBusException {
 		try {
 			List<List<String>> contentList = placePartContent(pp, width);
 			return sizeMatrix(contentList);
@@ -626,7 +763,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return part_width;
 	}
 	
-	private int getContentWidth(Map<String, PlacePart> placeMap, EU_LAYOUT layout, int width) throws CIBusException {
+	protected int getContentWidth(Map<String, PlacePart> placeMap, EU_LAYOUT layout, int width) throws CIBusException {
 		PlacePart pp = placeMap.get(layout.getName());
 		if (pp != null) {
 			return getContentWidth(pp, width);
@@ -749,7 +886,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (ShellText.isShellText(str)) {
 			ShellText text = writeFormat(cursor, s);
 			if (text != null)
-				width= text.placeholderWidth();
+				width = text.placeholderWidth();
 		} else {
 			write(cursor, s);
 			width = StringUtil.lengthVT(s);
@@ -757,6 +894,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (loadMainblock && PortalShellText.containBlock(str)) {
 			PortalBlock portalBlock = new PortalBlock();
 			portalBlock.setCursor(cursor.clone());
+			portalBlock.setWidth(width);
 			mainBlockList.add(portalBlock);
 		}
 		return width;
@@ -810,6 +948,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected<O> int sizeMatrix(List<List<O>> matrix) {
 		return matrix.size();
+	}
+	
+	protected<O> int totalSizeMatrix(List<List<O>> matrix) {
+		int size = 0;
+		for (List<O> rowList : matrix)
+			size += rowList.size();
+		return size;
 	}
 	
 	@Override protected void view() throws CIBusException {

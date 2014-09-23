@@ -40,6 +40,9 @@
 							<block active="on" focus="on">
 								<value><![CDATA[${project.menu.new}]]></value>
 							</block>
+							<block active="on" focus="on">
+								<value><![CDATA[${project.menu.edit}]]></value>
+							</block>
 						</blocks>
 					</content>
 				</contents>

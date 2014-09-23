@@ -136,11 +136,14 @@ public class ContentBlocks implements Serializable {
 	}
 	
 	public void relist(List<List<String>> strList, int width, boolean horizontal) throws CIBusException {
-		for (ContentBlock block : blockList)
-			relistBlock(strList, width, block, horizontal);
+		boolean checked = false;
+		for (ContentBlock block : blockList) {
+			relistBlock(strList, width, block, checked, horizontal);
+			checked = true;
+		}
 	}
 	
-	public void relistBlock(List<List<String>> strList, int width, ContentBlock block, boolean horizontal) throws CIBusException {
+	public void relistBlock(List<List<String>> strList, int width, ContentBlock block, boolean checked, boolean horizontal) throws CIBusException {
 		try {
 			BufferedReader reader = new BufferedReader(new StringReader(block.getValue()));
 			int start = 0;
@@ -149,7 +152,6 @@ public class ContentBlocks implements Serializable {
 			String line = null;
 			List<String> innerList;
 			List<String> lastList;
-			boolean checked = false;
 			String value;
 			while ((line = reader.readLine()) != null) {
 				start = 0;
@@ -172,7 +174,7 @@ public class ContentBlocks implements Serializable {
 					lastList.add(genContentBlock(block, value).getShellValue());
 					start = position + 1;
 				}
-				checked = true;
+				
 				
 				while (start < limit) {
 					innerList = new ArrayList<String>();

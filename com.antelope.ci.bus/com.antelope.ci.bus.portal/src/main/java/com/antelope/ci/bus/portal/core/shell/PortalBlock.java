@@ -21,11 +21,15 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 public class PortalBlock {
 	private String name;
 	private ShellCursor cursor;
+	private int width;
+	private int height;
 	private String mode;
 	private PortalBlock up;
 	private PortalBlock down;
 	private PortalBlock left;
 	private PortalBlock right;
+	private boolean _markUp;
+	private boolean _markDown;
 	
 	public PortalBlock() {
 		this(BaseMode.MAIN.getName());
@@ -37,6 +41,8 @@ public class PortalBlock {
 		left = null;
 		right = null;
 		this.mode = mode;
+		this._markUp = false;
+		this._markDown = false;
 	}
 
 	public String getName() {
@@ -50,7 +56,6 @@ public class PortalBlock {
 	public ShellCursor getCursor() {
 		return cursor;
 	}
-
 	public void setCursor(ShellCursor cursor) {
 		this.cursor = cursor;
 	}
@@ -62,7 +67,6 @@ public class PortalBlock {
 	public PortalBlock getUp() {
 		return up;
 	}
-
 	public void setUp(PortalBlock up) {
 		this.up = up;
 	}
@@ -70,7 +74,6 @@ public class PortalBlock {
 	public PortalBlock getDown() {
 		return down;
 	}
-
 	public void setDown(PortalBlock down) {
 		this.down = down;
 	}
@@ -78,7 +81,6 @@ public class PortalBlock {
 	public PortalBlock getLeft() {
 		return left;
 	}
-
 	public void setLeft(PortalBlock left) {
 		this.left = left;
 	}
@@ -86,8 +88,36 @@ public class PortalBlock {
 	public PortalBlock getRight() {
 		return right;
 	}
-
 	public void setRight(PortalBlock right) {
 		this.right = right;
 	}
+	
+	public void markUp() {
+		this._markUp = true;
+	}
+	public boolean isMarkUp() {
+		return _markUp;
+	}
+	
+	public void markDown() {
+		this._markDown = true;
+	}
+	public boolean isMarkDown() {
+		return _markDown;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+	public void setHeight(int height) {
+		this.height = height;
+	}
+	
 }
