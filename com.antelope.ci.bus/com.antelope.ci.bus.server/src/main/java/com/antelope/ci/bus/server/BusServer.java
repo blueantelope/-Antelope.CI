@@ -66,7 +66,6 @@ public abstract class BusServer {
 		customInit();
 	}
 	
-	
 	public BusServerConfig getConfig() {
 		return config;
 	}

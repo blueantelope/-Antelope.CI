@@ -91,5 +91,11 @@ public class ShellCursor {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public boolean same(ShellCursor cursor) {
+		if (x == cursor.getX() && y == cursor.getY())
+			return true;
+		return false;
+	}
 }
 

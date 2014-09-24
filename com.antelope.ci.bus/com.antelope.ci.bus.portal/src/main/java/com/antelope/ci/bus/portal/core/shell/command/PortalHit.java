@@ -121,10 +121,10 @@ public abstract class PortalHit extends Hit {
 			
 			// group for shell
 			List<Group> groupList = content.getGroupList();
-			List<ShellText> componet_textList = new ArrayList<ShellText>();
+			List<ShellText> textList = new ArrayList<ShellText>();
 			int widthpercent = 0;
 			for (Group group : groupList) {
-				componentToContentInProcess(contentSet, componet_textList, widthpercent);
+				componentToContentInProcess(contentSet, textList, widthpercent);
 				List<Component> componentList = group.getComponentList();
 				if (componentList != null) {
 					for (Component component : componentList) {
@@ -134,18 +134,7 @@ public abstract class PortalHit extends Hit {
 							EU_ComponentType ctype = component.toComponentType();
 							switch (ctype) {
 								case textfield:
-									// label
-									String boxValue = getBoxValue(label);
-									if (!StringUtil.empty(boxValue))
-										dealWidget(field, contentSet, componet_textList, palette, formStyle, width, boxValue, widthpercent);
-									if (!StringUtil.empty(label.getValue()))
-										dealWidget(label, contentSet, componet_textList, palette, formStyle, width, label.getValue(), widthpercent);
-									// field
-									boxValue = getBoxValue(field);
-									if (!StringUtil.empty(boxValue))
-										dealWidget(field, contentSet, componet_textList, palette, formStyle, width, boxValue, widthpercent);
-									if (!StringUtil.empty(field.getValue()))
-										dealWidget(field, contentSet, componet_textList, palette, formStyle, width, field.getValue(), widthpercent);
+									widthpercent = dealTextfield(label, field, contentSet, textList, palette, formStyle, widthpercent);
 									break;
 								default:
 									break;
@@ -157,18 +146,30 @@ public abstract class PortalHit extends Hit {
 					}
 				}
 			}
-			componentToContentInTail(contentSet, componet_textList, widthpercent);
+			componentToContentInTail(contentSet, textList, widthpercent);
 			
 			shell.writeContent(contentSet);
 			focus(shell, content);
 		}
 	}
 	
+	private int dealTextfield(Label label, Field field, ShellLineContentSet contentSet, List<ShellText> textList, 
+			ShellPalette palette, Style formStyle, int widthpercent) throws CIBusException {
+		// label
+		if (!StringUtil.empty(label.getValue()))
+			widthpercent = dealWidget(label, contentSet, textList, palette, formStyle, label.getValue(), widthpercent);
+		// field
+		String boxValue = getBoxValue(field);
+		if (!StringUtil.empty(boxValue))
+			widthpercent = dealWidget(field, contentSet, textList, palette, formStyle, boxValue, widthpercent);
+		return widthpercent;
+	}
+	
+	
 	private String getBoxValue(Widget widget) {
 		Box box = widget.getBox();
-		if (null != box) {
+		if (null != box)
 			return box.getBottom().getExpression();
-		}
 		return null;
 	}
 	
@@ -256,8 +257,9 @@ public abstract class PortalHit extends Hit {
 		contentSet.addLine(line);
 	}
 	
-	private void dealWidget(Widget widget, ShellLineContentSet contentSet, List<ShellText> componet_textList, 
-			ShellPalette palette, Style formStyle, int width, String str, int widthpercent) throws CIBusException {
+	private int dealWidget(Widget widget, ShellLineContentSet contentSet, List<ShellText> textList, 
+			ShellPalette palette, Style formStyle, String str, int widthpercent) throws CIBusException {
+		int width = getContentWidth(palette);
 		int length = widget.getComponetWidth(width);
 		int rowSize = widget.getRowSize();
 		ShellText text = widget.toShellText(str);
@@ -273,35 +275,37 @@ public abstract class PortalHit extends Hit {
 		}
 		
 		if (rowSize > 0) {
-			componentToContentInProcess(contentSet, componet_textList, widthpercent);
+			componentToContentInProcess(contentSet, textList, widthpercent);
 			addShellContent(contentSet, text);
 			widthpercent = 0;
 			cursor_x = 0;
 			cursor_y += rowSize;
 		} else {
 			widthpercent += widget.percentForWidth();
+			textList.add(text);
 			if (widthpercent >= 100) {
-				componentToContentInProcess(contentSet, componet_textList, widthpercent);
+				componentToContentInProcess(contentSet, textList, widthpercent);
+				widthpercent = 0;
 				cursor_x = 0;
 				cursor_y += 1;
-			} else {
-				componet_textList.add(text);
 			}
 		}
+		
+		return widthpercent;
 	}
 	
-	private void componentToContentInProcess(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
-		compoentToContent(contentSet, componet_textList, widthpercent, false);
+	private void componentToContentInProcess(ShellLineContentSet contentSet, List<ShellText> textList, int widthpercent) {
+		compoentToContent(contentSet, textList, widthpercent, false);
 	}
 	
-	private void componentToContentInTail(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent) {
-		compoentToContent(contentSet, componet_textList, widthpercent, true);
+	private void componentToContentInTail(ShellLineContentSet contentSet, List<ShellText> textList, int widthpercent) {
+		compoentToContent(contentSet, textList, widthpercent, true);
 	}
 	
-	private void compoentToContent(ShellLineContentSet contentSet, List<ShellText> componet_textList, int widthpercent, boolean tail) {
-		if (!componet_textList.isEmpty() || tail == true) {
-			addShellContent(contentSet, componet_textList);
-			componet_textList.clear();
+	private void compoentToContent(ShellLineContentSet contentSet, List<ShellText> textList, int widthpercent, boolean tail) {
+		if (!textList.isEmpty() || tail == true) {
+			addShellContent(contentSet, textList);
+			textList.clear();
 			widthpercent = 0;
 		}
 	}

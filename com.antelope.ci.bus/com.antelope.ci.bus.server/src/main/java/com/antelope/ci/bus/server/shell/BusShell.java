@@ -691,7 +691,7 @@ public abstract class BusShell {
 	protected abstract void custom() throws CIBusException;
 	
 	protected abstract boolean userAction(int c) throws CIBusException;
-
+	
 	public abstract void mainView() throws CIBusException;
 
 	protected abstract void action(int c) throws CIBusException;

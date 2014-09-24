@@ -33,7 +33,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 public class ShellText {
 	private static final String TEXT_PREFIX = "<text";
 	private static final String TEXT_SUFFIX= "</text>";
-	private static final String P_PREFIX = "<p";
+	private static final String P_PREFIX = "<p>";
 	private static final String P_SUFFIX = "</p>";
 	protected String text;
 	protected int indent = 0; 

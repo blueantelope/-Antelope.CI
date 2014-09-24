@@ -124,7 +124,7 @@ public class Widget implements Serializable {
 		if (column_width.trim().endsWith("%")) {
 			NumberFormat nformat = NumberFormat.getPercentInstance();
 			try {
-				return nformat.parse(column_width.trim()).intValue();
+				return (int) (nformat.parse(column_width.trim()).floatValue() * 100);
 			} catch (ParseException e) {
 				throw new CIBusException("", e);
 			}

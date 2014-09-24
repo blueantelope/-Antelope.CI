@@ -27,6 +27,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_LAYOUT;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Part;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePart;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
+import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.Shell;
@@ -58,6 +59,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected PortalBlock activeBlock;
 	protected List<PortalBlock> mainBlockList;
 	protected boolean loadMainblock;
+	protected BusPortalShellLiving shellLiving;
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -71,15 +73,20 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		parsePortal();
 		mainBlockList = new ArrayList<PortalBlock>();
 		loadMainblock = true;
+		shellLiving = new BusPortalShellLiving();
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
+	}
+	
+	public void savePostion(int x, int y) {
+		shellLiving.savePosition(x, y);
 	}
 	
 	@Override public void writeContent(Object content) throws CIBusException {
 		clearContent();
 		if (content instanceof ShellLineContentSet) {
 			ShellLineContentSet contentSet = (ShellLineContentSet) content;
-			this.writeLine(getContentCursor(), contentSet.getContentList());
+			writeLine(getContentCursor(), contentSet.getContentList());
 		}
 	}
 	
@@ -285,6 +292,20 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected void draw() throws CIBusException {
+		if (shellLiving.inUse())
+			drawLiving();
+		else
+			drawPortal();
+	}
+	
+	protected void drawLiving() throws CIBusException {
+		for (BusPortalShellUnit unit : shellLiving.getUnitList())
+			writeLivingUnit(unit);
+		shiftTop();
+		moveCursor(shellLiving.getPosition());
+	}
+	
+	protected void drawPortal() throws CIBusException {
 		Map<String, PlacePartTree> placeTreeMap = portal.makePlacePartTreeMap();
 		Map<String, Integer> contentWidthMap = divideContentWidth(getWidth(), placeTreeMap);
 		shiftTop();
@@ -881,23 +902,38 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected int writeUnit(ShellCursor cursor, String str) throws CIBusException {
+		shellLiving.add(cursor, str);
+		ShellCursor blockCursor = cursor.clone();
 		int width = 0;
 		String s = PortalShellText.peel(str);
-		if (ShellText.isShellText(str)) {
+		if (ShellText.isShellText(s)) {
 			ShellText text = writeFormat(cursor, s);
-			if (text != null)
-				width = text.placeholderWidth();
+			width= text.placeholderWidth();
 		} else {
 			write(cursor, s);
 			width = StringUtil.lengthVT(s);
 		}
 		if (loadMainblock && PortalShellText.containBlock(str)) {
 			PortalBlock portalBlock = new PortalBlock();
-			portalBlock.setCursor(cursor.clone());
+			portalBlock.setCursor(blockCursor);
 			portalBlock.setWidth(width);
 			mainBlockList.add(portalBlock);
 		}
 		return width;
+	}
+	
+	protected void writeLivingUnit(BusPortalShellUnit unit) throws CIBusException {
+		writeLivingUnit(unit.cursor, unit.text);
+	}
+	
+	protected void writeLivingUnit(ShellCursor cursor, String str) throws CIBusException {
+		shiftTop();
+		moveCursor(cursor);
+		String s = PortalShellText.peel(str);
+		if (ShellText.isShellText(s))
+			writeFormat(s);
+		else
+			print(s);
 	}
 	
 	protected void write(ShellCursor cursor, String[] lines) {
@@ -933,11 +969,16 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		cursor.addX(StringUtil.lengthVT(text.getText()));
 	}
 	
+	protected void writeFormat(String value) {
+		ShellText text = ShellText.toShellText(value);
+		if (text != null)
+			print(text);
+	}
+	
 	protected ShellText writeFormat(ShellCursor cursor, String value) {
 		ShellText text = ShellText.toShellText(value);
-		if (text != null) {
+		if (text != null)
 			write(cursor, text);
-		}
 		return text;
 	}
 	
@@ -967,7 +1008,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 
 	@Override protected ShellCursor initCursorPosistion() {
-		return new ShellCursor(0, 0);
+		if (shellLiving.inUse())
+			return shellLiving.getPosition();
+		shellLiving.savePosition(0, 0);
+		return shellLiving.getPosition();
 	}
 	
 	protected abstract void customInit() throws CIBusException;

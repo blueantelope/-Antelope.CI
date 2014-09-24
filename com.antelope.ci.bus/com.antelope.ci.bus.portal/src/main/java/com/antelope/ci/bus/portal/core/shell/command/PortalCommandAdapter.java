@@ -10,7 +10,9 @@ package com.antelope.ci.bus.portal.core.shell.command;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.command.ICommand;
 import com.antelope.ci.bus.server.shell.command.hit.HitAdapter;
+import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**

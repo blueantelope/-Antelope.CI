@@ -74,6 +74,8 @@ public abstract class BusBaseFrameShell extends BusShell {
 	public void mainView() throws CIBusException {
 		view();
 		ShellCursor cursor = initCursorPosistion();
+		shiftTop();
+		move(cursor.getX(), cursor.getY());
 		buffer = new BusHitBuffer(io, cursor, new ShellScreen(session.getWidth(), session.getHeigth()));
 	}
 	
