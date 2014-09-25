@@ -91,6 +91,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	@Override public void clearContent() throws CIBusException {
+		shellLiving.removeFromPalette(contentPalette);
 		if (contentPalette != null) {
 			int px = contentPalette.getX();
 			int py = contentPalette.getY();

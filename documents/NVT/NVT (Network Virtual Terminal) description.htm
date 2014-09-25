@@ -1,0 +1,1243 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.01 transitional//en">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="Author" content="Jan Rehak, english corrected by Jamie 28.10">
+<meta name="Description" content="NVT (Network Virtual Terminal) IAC SE NOP RFC2217 ">
+<meta name="KeyWords" content="NVT (Network Virtual Terminal) description, rfc2217, converter, Ethernet, module, tcp, ip, research, port redirector, virtual port, virtual, port, development,  lan, network, modem,  konvertor, converter, server, embedded, server, terminal, terminalovy, device server, embedded internet, terminal server, access server, remote access, console device networking, embedded device networking, remote network management, telnet, network enabling, embedded networking ">
+<meta name="resource-type" content="document">
+<meta name="robots" content="ALL,FOLLOW">
+<meta http-equiv="Content-LANGuage" content="en">
+<meta http-equiv="Cache-Control" content="Public">
+<title>NVT (Network Virtual Terminal) description</title>
+<link href="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/index.css" rel="stylesheet" type="text/css">
+<style type="text/css">	
+<!--BODY {MARGIN: 0px}  @import url("/index_nnn.css"); --></style>
+<script src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/ga.js" async="" type="text/javascript"></script><script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-11261392-1']);
+  _gaq.push(['_setDomainName', 'none']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  _gaq.push(['_addItem',
+    '001', 
+    '001EN', 
+    'HWg rating', 
+    'HTML Support', 
+    '3',  // unit price 
+    '1'
+  ]);
+  _gaq.push(['_trackTrans']); 
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  function trackEvent(gaArr, eventArr) {
+   eventArr.unshift('_trackEvent');
+   gaArr.push(eventArr);
+   return void(0);
+  }
+      
+  function trackPageview(gaArr, pageArr) {
+   pageArr.unshift('_trackPageview');
+   gaArr.push(pageArr);
+   return void(0);
+  }
+
+  function waitGo(url, t) {
+   setTimeout('location.href = "' + url +'"', t);
+   return true;
+  }
+</script>
+<link href="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/contentpreview.css" type="text/css" rel="stylesheet"><link href="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/clip_result_iframe.css" type="text/css" rel="stylesheet"></head>
+
+
+
+<body topmargin="0" lefmargin="0" alink="#3366FF" bgcolor="#FFFFFF" link="#0000EE" marginheight="0" marginwidth="0" text="#000000" vlink="#551A8B">
+
+<!-- javascript kod pro hover efekty ZACATEK-->
+<script language="javascript" type="text/javascript" defer="defer">
+<!--
+function hide_content(node) {
+ 
+  uzel = document.getElementById(node);
+  for (var i = 0; i < uzel.childNodes.length; i++) {
+		    if (uzel.childNodes[i].nodeType == '1') {
+		        uzel.childNodes[i].style.display = "none";
+		    }
+	}
+}
+
+function make_inactive(node) {
+ 
+  uzel = document.getElementById(node);
+  for (var i = 0; i < uzel.childNodes.length; i++) {
+		    if (uzel.childNodes[i].nodeType == '1') {
+		        uzel.childNodes[i].className = "inactive";
+		    }
+	}
+}
+
+
+function show_div(id) {
+  
+  hide_content('aplikace-content');
+  make_inactive('aplikace-nav');
+  make_inactive('aplikace-index');
+  document.getElementById('obsah'+id).style.display = "block";
+  document.getElementById('nav'+id).className = "active";
+  document.getElementById('index'+id).className = "active";
+}
+// -->
+</script>
+<!-- javascript kod pro hover efekty KONEC -->
+
+<!-- hlavicka stranky s menu - ZACATEK -->
+<a name="top"></a>
+<div id="top-matryoska">
+  <div id="top">
+    <div id="search">
+<form action="http://www.hw-group.com/search_en.html" id="cse-search-box" name="do_search" class="search-form">
+<img src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/button-search.png" onclick="document.do_search.submit();" height="27" width="28">
+  <div id="input-matryoska">
+    <input name="q" size="10" id="hledej" type="text">
+    <!--<input type="submit" name="sa" value="Hledat" style="WIDTH: 92px; border:1 solid #000000; font-weight: bold;"/>-->
+  </div>
+    <input name="cx" value="015720202341316619574:y4rwcwtudjy" type="hidden">
+    <input name="cof" value="FORID:10" type="hidden">
+    <input name="ie" value="UTF-8" type="hidden">
+    <input name="lr" value="lang_en" type="hidden">
+</form>
+
+    </div>
+    <a href="http://www.hw-group.com/"><img id="logo" src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/logo-hwgroup.png" alt="HW group - IP sensors"></a>
+    <div id="product1" onclick="document.location.href='/products_ip_monitoring_en.html';" onmouseover="document.getElementById('product1').style.backgroundPosition='left -99px';document.getElementById('a_pr1').style.textDecoration='underline';" onmouseout="document.getElementById('product1').style.backgroundPosition='left top';document.getElementById('a_pr1').style.textDecoration='none';">
+      <p><a id="a_pr1" href="http://www.hw-group.com/products_ip_monitoring_en.html">Monitoring</a></p>
+    </div>
+    <div id="product2" onclick="document.location.href='/products/poseidon/poseidon_xxxx_en.html';" onmouseover="document.getElementById('product2').style.backgroundPosition='left -99px';document.getElementById('a_pr2').style.textDecoration='underline';" onmouseout="document.getElementById('product2').style.backgroundPosition='left top';document.getElementById('a_pr2').style.textDecoration='none';">
+      <p><a id="a_pr2" href="http://www.hw-group.com/products/poseidon/poseidon_xxxx_en.html">Poseidon</a></p>
+    </div>
+    <div style="background-position: left top;" id="product3" onclick="document.location.href='/products/damocles/damocles_xxxx_en.html';" onmouseover="document.getElementById('product3').style.backgroundPosition='left -99px';document.getElementById('a_pr3').style.textDecoration='underline';" onmouseout="document.getElementById('product3').style.backgroundPosition='left top';document.getElementById('a_pr3').style.textDecoration='none';">
+      <p><a style="text-decoration: none;" id="a_pr3" href="http://www.hw-group.com/products/damocles/damocles_xxxx_en.html">Damocles</a></p>
+    </div>
+    <div style="background-position: left top;" id="product4" onclick="document.location.href='/products_ip_serial_en.html';" onmouseover="document.getElementById('product4').style.backgroundPosition='left -99px';document.getElementById('a_pr4').style.textDecoration='underline';" onmouseout="document.getElementById('product4').style.backgroundPosition='left top';document.getElementById('a_pr4').style.textDecoration='none';">
+      <p><a style="text-decoration: none;" id="a_pr4" href="http://www.hw-group.com/products_ip_serial_en.html">IP Serial</a></p>
+    </div>
+    <p class="clear"></p>
+    <ul id="top-menu">
+        <li><p><a href="http://www.hw-group.com/index_en.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">Main page</a></p></li>
+        <li><p><a href="http://www.hw-group.com/products_en.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">Products</a></p></li>
+        <li><p><a href="http://www.hw-group.com/case_studies/index_en.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">Case Studies</a></p></li>
+        <li><p><a href="http://www.hw-group.com/software/index_en.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">Software</a></p></li>
+        <li><p><a href="http://www.hw-group.com/download_en.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">Support</a></p></li>
+        <li>
+          <p><a href="http://www.hw-group.com/pricelist_en.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">Where to Buy</a></p>
+        </li>
+        <li><p><a href="http://www.hw-group.com/contacts_en.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">Contacts</a></p></li>
+      
+        <li class="mapa"><p><a href="http://www.hw-group.com/sitemap.html" onclick="trackEvent(_gaq,['Menu-top’,'Index-top,this.href]); return !waitGo(this.href,200);">SiteMap</a></p></li>
+    </ul>
+    
+  </div>
+</div>
+
+
+<!-- hlavicka stranky s menu - KONEC -->
+<div align="center"><table border="0" width="70%" cellpadding="0" cellspacing="0">
+    <tbody><tr>
+      <td>
+
+<div align="center">
+          <h1>NVT (Network Virtual Terminal) description</h1>
+        </div>
+        <div class="flags">
+<a href="http://www.hw-group.com/support/nvt/index_en.html"><img src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/en.gif" alt="" border="0" height="28" width="48"><br>
+          <small>English version</small></a>
+          <p id="pix20"></p>
+          <a href="http://www.hw-group.com/support/nvt/index_cz.html"><img src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/cz.gif" alt="" border="0" height="28" width="48"><br>
+          <small>Czech version</small></a>
+          <p id="pix20"></p>
+        </div>
+        <div align="center">
+          <h6 id="title-descr"><i>Communication with the TCP/IP device 
+over the Ethernet network can be extended to more functions using NVT 
+(Network Virtual Terminal) commands. It can be used according to the 
+RFC2217 standard to change baudrate on remote Virtual Serial Port for 
+example. The simple NVT control commands are included in the data stream
+ with the character "FF" used as the command prefix. If  the "FF" 
+character occurs within the normal data stream, it is simply doubled.<br>
+You can find </i><i>detailed NVT and a complete TELNET description in 
+the last section of this article, we shall begin with a detailed manual 
+of used commands and examples.</i></h6>
+        </div>
+        <p>&nbsp;</p>
+        <p><b><img src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/nvt_sphere100.png" align="right" height="100" width="100">Article content :</b></p>
+        <p>- <a href="#hw_devices">Description of the NVT commands implemented in HW devices<br>
+          </a>
+        - <a href="#basic_nvt">The basic functions supported by NVT</a> <br>
+        - <a href="#rfc2217_supported">Supported RFC2217 functions</a><br>
+        - <a href="#gpio">Supported General Purpose Input Output (GPIO) functions</a><br>
+        - <a href="#examples">Examples of correct NVT usage.</a><br>
+         <br>
+        - <a href="#telnet">The Telnet Protocol</a><br>
+         &nbsp;&nbsp;- <a href="#telnet_nvt">The Network Virtual Terminal</a><br>
+        &nbsp;&nbsp;- <a href="#telnet_commands">Commands</a><br>
+        &nbsp;&nbsp;- <a href="#telnet_negotiable">Telnet Negotiable Options</a><br>
+        &nbsp;&nbsp;- <a href="#telnet_control">Telnet control functions</a><br>
+          <br>
+          &nbsp; - <a href="#download">Related Datasheets &amp; Links</a><br>
+          &nbsp; - <a href="#related">Related products </a></p>
+        <p>&nbsp;       </p>
+        
+		<p><a name="hw_devices" id="hw_devices"></a></p>
+<h3>Description of the NVT commands implemented in HW devices</h3>
+        The aim in our applications is to stay compatible with existing 
+standards, but there is a need to implement several parts of different 
+standards, because some things are not necessary for our applications 
+and some implementation parts are very useful and necessary. Basically 
+we use some extensions from RCF2217 standard (controlling the serial 
+asynchronous channel properties) and some more extensions (controlling 
+I/O pins and other peripherals). 
+        <p>You can download the whole RCF 2217 standard documentation here- <a href="http://www.hw-group.com/support/nvt/rfc2217.txt">rfc2217.txt</a></p>
+        <p>The size of implemented extensions is getting larger every 
+day, so the following functions are just a base. The full list of 
+implemented commands is available upon request. There may be some 
+commands specific to certain devices.         </p>
+
+        <p><a name="basic_nvt"></a>&nbsp;<br></p>
+        <h3>The basic functions supported by NVT </h3>
+        The basic functions of the TELNET protocol are described in the RFC854 (<a href="http://www.hw-group.com/support/nvt/rfc0854.txt">rfc0854.txt</a>) standard or in a shorter version within "<a href="#telnet">The Telnet Protocol</a>" chapter of this manual. 
+        <h4>Brief NVT description :</h4>
+        <ul>
+          <li>NVT comands are inserted to the data stream via TCP/IP before sending to the TCP/IP connection.</li>
+          <li>Every NVT command is prefixed by character "0xFF". </li>
+          <li>There are some basic commands with 2 byte interpretation 
+only (EOF, ABORT, BRK, AYT, NOP, EC), and others with defined start 
+(&lt;IAC&gt;&lt;SB&gt; = 0xFF 0xFA) and defined end 
+(&lt;IAC&gt;&lt;SE&gt; = 0xFF 0xF0) commands. </li>
+          <li>The TCP/IP device separates NVT commands and processes 
+them without delay, while the data stream stores to the output stack. 
+Hence NVT commands are asynchronous and independent on the data stream! 
+You can't simply send "A", change parity and then send "B" to the TCP/IP
+ connection. This doesn't result in character "A" having a different 
+parity than character "B". </li>
+          <li>The NVT commands can't be found in the serial port data, 
+if the device is Serial / TCP/IP converter. The firmware of the TCP/IP 
+device filter all NVT from the data stream. Because of this, you have to
+ switch on/off the NVT support in the SETUP of the Converter device. <br>
+If you are sending character "0xFF" (255), the PC will just double it, 
+because in NVT "0xFFFF" means send character "0xFF"  to the output.</li>
+          <li>NVT uses a <b>negotiation</b> process. It's a way of 
+testing if terminals on the opposite side use ECHO or not ar if there 
+are specific terminals etc. We support easy negotiation with RFC2217 
+confirmation.</li>
+        </ul>
+        <p>It is good to know,  there are basic commands (EOF, ABORT, 
+BRK, AYT, NOP, EC...), which might be represented by double characters 
+that we do not need to use in practical applications using the embedded 
+device (Unless NOP and AYT).</p>
+        <table class="tab-tech" align="center" border="1" bordercolor="#000000" width="80%
+		  " cellpadding="0" cellspacing="0">
+          <tbody><tr class="tab-tr-black">
+            <td align="center" valign="top" width="10%">Dec</td>
+            <td align="center" valign="top" width="10%">HEX</td>
+            <td align="center" valign="top" width="10%">Shortcut</td>
+            <td align="center" valign="top" width="70%">Description</td>
+          </tr>
+          <tr>
+            <td align="center" valign="top">240</td>
+            <td align="center" valign="top">F0</td>
+            <td align="center" valign="top">SE</td>
+            <td valign="top">End of sub negotiation parameters</td>
+          </tr>
+          <tr>
+            <td align="center" valign="top">241</td>
+            <td align="center" valign="top">F1</td>
+            <td align="center" valign="top">NOP</td>
+            <td valign="top">No Operation</td>
+          </tr>
+          <tr>
+            <td align="center" valign="top">246</td>
+            <td align="center" valign="top">F6</td>
+            <td align="center" valign="top">AYT</td>
+            <td valign="top">Are You There</td>
+          </tr>
+          <tr>
+            <td align="center" valign="top">250</td>
+            <td align="center" valign="top">FA</td>
+            <td align="center" valign="top">SB</td>
+            <td valign="top">Indicates that what follows is sub negotiation of the indicated option.</td>
+          </tr>
+          <tr>
+            <td align="center" valign="top">255</td>
+            <td align="center" valign="top">FF</td>
+            <td align="center" valign="top">IAC</td>
+            <td valign="top">Data Byte 255</td>
+          </tr>
+        </tbody></table>
+        &nbsp; 
+        <ul>
+          <li><b>AYT </b>is useful to request identification of the device and check ahead for NVT compatible devices. </li>
+          <li><b>NOP</b>	means NO OPERATION, but we can use it to "keep 
+connection" when there is no data stream. You can send the command and 
+over the TCP/IP layer confirmation, check there is still functionality 
+and an opened TCP connection.</li>
+        </ul>
+        <p align="center"><img src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/NVT_scheme.png" height="208" width="550"></p>
+        <p><br>
+          &nbsp;</p>
+
+<a name="rfc2217_supported"></a>
+
+        <h3>Supported RFC2217 functions</h3>
+        The RFC2217 is the standard defined in October 1997 by G. Clark 
+from Cisco Systems, Inc. It proposes a protocol to allow greater use of 
+modems attached
+             to a network for outbound dialing purposes. In brief it 
+describes how to control the remote asynchronous serial port connected 
+over the TCP/IP network. It enables you to change remote serial port 
+baudrate speeds, parity and other paramethers. You can download the 
+whole RCF 2217 standard documentation here - <a href="http://www.hw-group.com/support/nvt/rfc2217.txt">rfc2217.txt</a>
+<h4>We support:</h4>
+        <p class="script"> <b>Com Port Control Client to Access Server constants</b><br>
+          	CAS_SIGNATURE,		0<br>
+          	CAS_SET_BAUDRATE,	1<br>
+          	CAS_SET_DATASIZE,	2<br>
+          	CAS_SET_PARITY,		3<br>
+          	CAS_SET_STOPSIZE,	4<br>
+          	CAS_SET_CONTROL,	5<br>
+          	CAS_NOTIFY_LINESTATE,	6<br>
+          	CAS_NOTIFY_MODEMSTATE,	7<br>
+          	CAS_FLOWCONTROL_SUSPEND,8<br>
+          	CAS_FLOWCONTROL_RESUME,	9<br>
+          	CAS_SET_LINESTATE_MASK,	10<br>
+          	CAS_SET_MODEMSTATE_MASK,11<br>
+          	CAS_PURGE_DATA,		12<br>
+          	CAS_OPT_GPIO,		50<br>
+          	CAS_SET_GPIO,		51<br>
+        </p>
+        <p class="script"> <b>Com Port Control Access Server to Client constants</b><br>
+          	ASC_SIGNATURE,		100<br>
+          	ASC_SET_BAUDRATE,	101<br>
+          	ASC_SET_DATASIZE,	102<br>
+          	ASC_SET_PARITY,		103<br>
+          	ASC_SET_STOPSIZE,	104<br>
+          	ASC_SET_CONTROL,	105<br>
+          	ASC_NOTIFY_LINESTATE,	106<br>
+          	ASC_NOTIFY_MODEMSTATE,	107<br>
+          	ASC_FLOWCONTROL_SUSPEND,108<br>
+          	ASC_FLOWCONTROL_RESUME,	109<br>
+          	ASC_SET_LINESTATE_MASK,	110<br>
+          	ASC_SET_MODEMSTATE_MASK,111<br>
+          	ASC_PURGE_DATA,		112<br>
+          	ASC_OPT_GPIO,		150<br>
+          	ASC_SET_GPIO,		151<br>
+        </p>
+        &nbsp;
+		  <a name="gpio"></a>
+<h3>Supported General Purpose Input Output (GPIO) functions</h3>
+        We extended the RFC2217 standard to incorporate some GPIO 
+(General Purpose Input Output) functions listed below. It's not 
+standardised, but we didn't find any standards for GPIO functions during
+ the year 2001.
+        <p>&nbsp;</p>
+        <h4> COM-PORT-OPTION	- 	44 (2C  hex)</h4>
+        <blockquote>
+          <p>Behind the sequence IAC SB, there might also be the 
+enlargement COM-PORT-OPTION command (the command is ended by the IAC SE 
+sequence of course) in RFC2217 standard. We are only describing some of 
+the sub-commands. The whole description is in the <a href="#rfc2217_supported">RFC2217</a> standard.</p>
+          <p>The values <b>up to 100 dec </b>are valid in the <b>Client &gt;&gt; Server</b> mode.<br>
+          The values <b>higher than 100 dec</b> are valid in <b>Server &gt;&gt; Client</b> mode</p>
+          <table class="tab-tech" align="center" border="1" bordercolor="#000000" width="66%" cellpadding="0" cellspacing="0">
+            <tbody><tr class="tab-tr-black">
+              <td align="center" valign="top" width="10%">Dec</td>
+              <td align="center" valign="top" width="10%">HEX</td>
+              <td align="center" valign="top" width="70%">Description</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">0</td>
+              <td align="center" valign="top">00</td>
+              <td valign="top">&nbsp;CAS_SIGNATURE</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">1</td>
+              <td align="center" valign="top">01</td>
+              <td valign="top">&nbsp;CAS_SET_BAUDRATE</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">2</td>
+              <td align="center" valign="top">02</td>
+              <td valign="top">&nbsp;CAS_SET_DATASIZE</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">3</td>
+              <td align="center" valign="top">03</td>
+              <td valign="top">&nbsp;CAS_SET_PARITY</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">4</td>
+              <td align="center" valign="top">04</td>
+              <td valign="top">&nbsp;CAS_SET_STOPSIZE</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">5</td>
+              <td align="center" valign="top">05</td>
+              <td valign="top">&nbsp;CAS_SET_CONTROL</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">6</td>
+              <td align="center" valign="top">06</td>
+              <td valign="top">&nbsp;CAS_NOTIFY_LINESTATE</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">7</td>
+              <td align="center" valign="top">07</td>
+              <td valign="top">&nbsp;CAS_NOTIFY_MODEMSTATE</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">8</td>
+              <td align="center" valign="top">08</td>
+              <td valign="top">&nbsp;CAS_FLOWCONTROL_SUSPEND</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">9</td>
+              <td align="center" valign="top">09</td>
+              <td valign="top">&nbsp;CAS_FLOWCONTROL_RESUME</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">10</td>
+              <td align="center" valign="top">0A</td>
+              <td valign="top">&nbsp;CAS_SET_LINESTATE_MASK</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">11</td>
+              <td align="center" valign="top">0B</td>
+              <td valign="top">&nbsp;CAS_SET_MODEMSTATE_MASK</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">12</td>
+              <td align="center" valign="top">0C</td>
+              <td valign="top">&nbsp;CAS_PURGE_DATA</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">50</td>
+              <td align="center" valign="top">32</td>
+              <td valign="top">&nbsp;CAS_OPT_GPIO</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">51</td>
+              <td align="center" valign="top">33</td>
+              <td valign="top">&nbsp;CAS_SET_GPIO</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">:</td>
+              <td align="center" valign="top">:</td>
+              <td valign="top">&nbsp;</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top"><b>+100</b></td>
+              <td align="center" valign="top"><b>+64</b></td>
+              <td valign="top"><b>&nbsp;ASC_</b></td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">150</td>
+              <td align="center" valign="top">96</td>
+              <td valign="top">&nbsp;ASC_OPT_GPIO</td>
+            </tr>
+            <tr>
+              <td align="center" valign="top">151</td>
+              <td align="center" valign="top">97</td>
+              <td valign="top">&nbsp;ASC_SET_GPIO</td>
+            </tr>
+            <tr>
+              <td colspan="3" align="center" valign="top"><p><br>
+                Supported NVT commands</p></td>
+            </tr>
+          </tbody></table>
+          <p>ASC_ is the device response to the CAS_ command. It means 
+the PC will send a CAS_SET_PARITY command and the TCP/IP device will 
+reply with the parity value confirmation ASC_SET_PARITY.</p>
+          <p>&nbsp; </p>
+        </blockquote>
+		
+		<p><br>&nbsp;</p>
+		
+        <h4>COM-PORT-GPIO SUBOPTION 	- 	50 and 51 (32 and 33  hex)</h4>
+        <blockquote>
+	 <p>
+          For direct I/O pin control we use the double byte command 
+GPIO-50 or 51 (which is behind the COM-PORT-OPTION 44 command) followed 
+by the sub option sequence.</p>
+        <p><b>Sub option 50 (32 hex)</b><br>
+          -	<b>0 (00 hex)</b> – request for input state reading - the answer contains the value of the input port (The CPU’s pins or input shift register) <br>
+          -	<b>16 .. 23 (10 .. 17 hex)</b> – set the output bit 0..7 as 1<br>
+          -	<b>32 .. 39 (20 .. 27 hex)</b> – set the output bit 0..7 as 0<br>
+          -	<b>48 (30 hex)</b> – request for output state reading - tha answer contains the value of the output port</p>
+          <p><b>Sub option 51 (33 hex)</b><br>
+          -	sets the sent XX value to the output port, see example. It 
+sends the same answer back, because it reads it from the inner 
+pseudoregister. </p>
+          <p>We practically control the GPIO port by sending the "<b>FF FA 2C 32 XX FF F0</b>“
+ sequence with XX port value. (the XX value is sent to the output port).
+ For example the 0x11 (0x11 = 11 hex) value sets P1.1 to 1, other P1 
+pins stay unchanged. </p>
+          <p><b>Sub option 52 (34 hex)</b><br>
+            Sends the <b>outputs value, <u>if there has been a change in any state</u></b>,
+ or if the device was powered on. This command does not expect any 
+answer, therefore there is no value for 152 (98 HEX) in the table (a 
+single report is basically an unrequested answer).<br>
+          </p>
+          <p>This command <b>can be preceded</b> with a "<b>FF FA 2C 32 00 FF F0</b>", sequence. This command is used to synchronize binary inputs and outputs of two devices connected to each other.</p>
+          <p>If we receive the "<b>FF FA 2C 34 XX FF F0</b>" in the data flow, we know that an input port has been changed. </p>
+          <blockquote>
+            <p><b>Why two sequencies ?</b><br>
+In the appropriate communication between two I/O controller devices, the first device sends the "<b>FF FA 2C 32 00 FF F0</b>" sequence only once, because the other I/O Controller responds with <b>"FF FA 2C 97 XX FF F0"</b> (where XX is its inputs state). From now on, both sides send only the "<b>FF FA 2C 34 XX FF F0</b>" if there has been an input state change.</p>
+          </blockquote>
+          <p><b><i>Note:</i></b><i> To activate the function that informs about the input changes, you need to set the monitored input range with the "<u>#T: Trigger AND mask</u>"command. </i></p>
+          <ul>
+            <li>To transmit all the inputs set: #T=255</li>
+            <li>To <u>turn off</u> inputs transmitting set #T=0</li>
+          </ul>
+          <p><br>
+          </p>
+        </blockquote>
+        <p align="center"><img src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/NVT_scheme.png" height="208" width="550"></p>
+		
+        <p><a name="examples"></a></p>
+        <p>&nbsp;</p>
+
+        <h3>How to use NVT correctly</h3>
+        Almost all the NVT commands have a set number of characters. If 
+the value is set in 4 Byte format and we would like to read the actual 
+value from the device by the “0 setting”, we have to send this “0” as a 
+00 00 00 00 hex sequence.  
+        <h4><br>
+        </h4>
+        <h4>
+                    Setting up the output of the GPIO port</h4>
+        <blockquote>
+          <p>The following command sets the output GPIO port to hex value AA (10101010 bin)
+        </p>
+<p class="script" style="font-family: monospace;">
+&lt;<b>IAC</b>&gt;&lt;<b>SB</b>&gt;&lt;<b>COM_PORT_OPTION</b>&gt;&lt;<b>CAS_SET_GPIO</b>&gt;&lt;byte to output)&gt;&lt;<b>IAC</b>&gt;&lt;<b>SE</b>&gt;<br>
+&nbsp;<b>FF&nbsp;&nbsp;&nbsp;FA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;33&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FF&nbsp;&nbsp;&nbsp;F0<br>
+<br>
+</b>This sequence is the <b>answer from the device</b> :<br>
+&lt;<b>IAC</b>&gt;&lt;<b>SB</b>&gt;&lt;<b>COM_PORT_OPTION</b>&gt;&lt;<b>ACS_SET_GPIO</b>&gt;&lt;byte to output)&gt;&lt;<b>IAC</b>&gt;&lt;<b>SE</b>&gt;<br>
+&nbsp;<b>FF&nbsp;&nbsp;&nbsp;FA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;97&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FF&nbsp;&nbsp;&nbsp;F0<br>
+
+</b>
+</p>
+          <p>You can see that the answer from the device contains +100 
+DEC (+64 HEX because 0x33 + 0x64 = 0x97) value for the NVT command 
+confirmation. </p>
+        </blockquote>
+        <p>&nbsp;</p>
+        <h4>
+          Reading the GPIO inputs </h4>
+        <blockquote>
+          <p>
+        By sending the <b>FF FA 2C 32 00 FF F0 </b>sequence 	&gt;&gt;   	the embedded server responds with:  <b>FF FA 2C 96 XX FF F0</b><br>
+          - where XX is the actual value of the input pins. 
+        </p>
+        </blockquote>
+        <p>&nbsp;</p>
+        <h4>Reading the output value</h4>
+        <blockquote>
+          <p>
+        By sending the <b>FF FA 2C 32 30 FF F0</b>  sequence	&gt;&gt;   the embedded server responds with :  <b>FF FA 2C 97 XX FF F0</b><br>
+          - where XX is the actual value of the register, which is used to set the outputs. <br>
+        <br>
+        <i><b>Note:        </b>The output value here is the output 
+REGISTER value. This can be very useful if you have to combine bit and 
+byte oriented commands. </i>
+</p>
+        </blockquote>
+        <p>&nbsp;</p>
+        <h4>Clearing the P1.5 output pin (or D5 of the data output)</h4>
+        <blockquote>
+          <p>
+        By sending the <b>FF FA 2C 32 25 FF F0</b>  sequence	&gt;&gt;   	the embedded server responds with :  <b>FF FA 2C 97 DF FF F0<br>
+        </b>- where DF is the actual value of the output port (it also 
+depends on the previous port state). The embedded server only changes 
+one bit, but returns the whole port value.</p>
+        </blockquote>
+        <p>&nbsp;</p>
+		
+		<h4>Reporting the input changes</h4>
+        <blockquote>
+          <p>
+        If you do not send ani request from your PC and the input state changes, you receive the "<b>FF FA 2C 32 00 FF F0 </b>" and the "<b>FF FA 2C 34 <u>XX</u> FF F0</b>" sequence</p>
+          <p>Where the <b><u>XX</u></b> is the actual value of the binary input.
+          </p>
+          <p>
+The function works similar to the incoming data on the serial port. If 
+your device works in the TCP Client/Server mode and has NVT enabled, 
+then when you receive 1 byte from the serial port (or there is any 
+binary input change), teh device tries to establish a TCP connection and
+ send the data. When the TCP connection is established, only the actual 
+inputs status is sent, not the whole history of changes.</p>
+    <p><b><i>Note:</i></b><i> To activate the function that informs about the input changes, you need to set the monitored input range with the "<u>#T: Trigger AND mask</u>"command. </i></p>
+          <ul>
+            <li>To transmit all the inputs set: #T=255</li>
+            <li>To <u>turn off</u> inputs transmitting set #T=0</li>
+          </ul>
+          <p></p>
+        </blockquote>
+        
+		
+        <h4>How to change the RS-232 line baudrate speed</h4>
+        <blockquote>
+          <p>
+        You can check the actual Port speed by sending the <b>00 00 00 00</b>
+ sequence.  If you send any other value, the Port speed will be changed 
+by the server. The dec value corresponds with the port speed in Bd.
+        </p>
+          <p>By sending the <b>FF FA 2C 01 00 00 00 00 FF F0 </b>sequence	&gt;&gt;   The server returns :  <b>FF FA 2C 65 00 00 25 80 FF F0</b><br>
+          After the 00 00 25 80 HEX-&gt;DEC conversion, we can read the port speed directly, which is 9600Bd. <br>
+        </p>
+        </blockquote>
+
+<p>&nbsp;</p>
+
+<h4>Keep Connection</h4>
+        <blockquote>
+          <p>
+        If data is not transferred, the server terminates the connection. To keep the connection active all the time, use the “<font face="Courier New, Courier, mono"><b>K: Keep connection</b></font>” command in the setup mode of the Embedded device. <br>
+          The connection is active for an unlimited time, because the 
+NOP command sends (FF F1 sequence) from the Embedded device side every 
+5seconds. The
+TCP connection will close if the TCP layer finds it can't deliver 
+packets for too long a time.
+        </p>
+          <p>        <i><b>Note :      </b>Keep connection function works only if NVT support is switched on! </i><br>
+          </p>
+        </blockquote>
+        <p>&nbsp;
+</p>
+        <h4>How to solve the 9th bit problem?</h4>
+        <blockquote>
+          <p>
+        The “<i>space mark</i>” NVT feature has been implemented from 
+version 2.3. This feature can be used for the 9th bit settings, which 
+was commonly used by older applications during 90's. 
+        </p>
+          <p>Note, the parity change is asynchronous, it is not 
+buffered, but it is completed after the character is received. The 
+synchronous functions are available as our proprietary solution by 
+sending the 0xFE’P’ sequence, which reserves the parity. You have to 
+enable the "<font face="Courier New, Courier, mono"><b>Variable Parity</b></font>" support in the SETUP.</p>
+        </blockquote>
+        <p>&nbsp;</p>
+        <h4>Are You There ?</h4>
+        <blockquote>
+          <p>
+        If you would like to check whether the device is available via the network, there is a special “<b>Are you there</b>”
+ command in telnet application. Usually, the response from a standard 
+Unix device is “Yes”. We have extended this response as follows: If you 
+send the <b>FF F6</b> sequence, our Embedded server will answer the response in the following format: 
+        </p>
+          <p class="script">
+
+
+          &lt;WEB51 HW 4.5 SW 2.3 SN 01A03B #01&gt; <br>
+          <br>
+Which means :<br>
+          &lt;WEB51 HW XXX SW XXX SN 1035EE #0F *OvErr *ParErr *FlErr&gt;</p>
+          <p>There is the device name, HW version, firmware version and 
+“S/N”, which is the last 3 Bytes of the MAC address. The sequence behind
+ the * character is just for the status response and is not necessary. </p>
+        </blockquote>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>
+          <a name="telnet"></a>
+        </p>
+        <h2>The Telnet Protocol</h2>
+        <p>
+          The Telnet protocol is often thought of as simply providing a 
+facility for remote logins to a computer via the Internet. This was its 
+original purpose although it can be used for many other functions. <br>
+          It is best understood in the context of a user with a simple 
+terminal using the local telnet program (known as the client program) to
+ run a login session on a remote computer where his communication needs 
+are handled by a telnet server program. It should be emphasised that the
+ telnet server can pass on the data it has received from the client to 
+many other types of process including a remote login server. It is 
+described in the RFC854 standard,  first published in 1983. </p>
+
+        <p><a name="telnet_nvt"></a>&nbsp;</p>
+        <h3>The Network Virtual Terminal</h3>
+        Communication is established using the TCP/IP protocols and 
+communication is based on a set of facilities known as a Network Virtual
+ Terminal (NVT). At the user or client end the telnet client program is 
+responsible for mapping incoming NVT codes to the actual codes needed to
+ operate the user's display device and is also responsible for mapping 
+user generated keyboard sequences into NVT sequences. 
+        <p>
+          The NVT uses 7 bit codes for characters, the display device, 
+referred to as a printer in the RFC, is only required to display the 
+"standard" printing ASCII characters represented by 7 bit codes and to 
+recognise and process certain control codes. The 7 bit characters are 
+transmitted as 8 bit bytes with most significant bit set to zero. An 
+end-of-line is transmitted as the character sequence CR (carriage 
+return) followed by LF (line feed). If it is desired to transmit an 
+actual carriage return this is transmitted as a carriage return followed
+ by a NUL (all bits zero) character. <br>
+        </p>
+        <p>NVT ASCII is used by many other Internet protocols. <br>
+          The following control codes are required to be understood by the Network Virtual Terminal. <br>
+        </p>
+        <table align="center" border="1" width="75%" cellpadding="2" cellspacing="0">
+          <tbody><tr class="tab-tr-black">
+            <th width="15%">Name </th>
+            <th width="11%">code </th>
+            <th width="20%">Decimal Value </th>
+            <th width="54%">Function </th>
+          </tr>
+          <tr>
+            <td><b>NULL </b></td>
+            <td>NUL </td>
+            <td>0 </td>
+            <td>No operation </td>
+          </tr>
+          <tr>
+            <td><b>Line Feed </b></td>
+            <td>LF </td>
+            <td>10 </td>
+            <td>Moves the printer to the next print line, keeping the same horizontal position. </td>
+          </tr>
+          <tr>
+            <td><b>Carriage Return </b></td>
+            <td>CR </td>
+            <td>13 </td>
+            <td>Moves the printer to the left margin of the current line. </td>
+          </tr>
+        </tbody></table>
+        <p>The following control codes are optional but should have the indicated effect on the display. <br>
+        </p>
+        <table align="center" border="1" width="75%" cellpadding="2" cellspacing="0">
+          <tbody><tr class="tab-tr-black">
+            <th>Name </th>
+            <th>code </th>
+            <th>Decimal Value </th>
+            <th>Function </th>
+          </tr>
+          <tr>
+            <td><b>BELL </b></td>
+            <td>BEL </td>
+            <td>7 </td>
+            <td>Produces an audible or visible signal (which does NOT move the print head. </td>
+          </tr>
+          <tr>
+            <td><b>Back Space </b></td>
+            <td>BS </td>
+            <td>8 </td>
+            <td>Moves the print head one character position towards the 
+left margin. [On a printing devices this mechanism was commonly used to 
+form composite characters by printing two basic characters on top of 
+each other.] </td>
+          </tr>
+          <tr>
+            <td><b>Horizontal Tab </b></td>
+            <td>HT </td>
+            <td>9 </td>
+            <td>Moves the printer to the next horizontal tab stop. It 
+remains unspecified how either party determines or establishes where 
+such tab stops are located. </td>
+          </tr>
+          <tr>
+            <td><b>Vertical Tab </b></td>
+            <td>VT </td>
+            <td>11 </td>
+            <td>Moves the printer to the next vertical tab stop. It 
+remains unspecified how either party determines or establishes where 
+such tab stops are located. </td>
+          </tr>
+          <tr>
+            <td><b>Form Feed </b></td>
+            <td>FF </td>
+            <td>12 </td>
+            <td>Moves the printer to the top of the next page, keeping 
+the same horizontal position. [On visual displays this commonly clears 
+the screen and moves the cursor to the top left corner.] </td>
+          </tr>
+        </tbody></table>
+        <p>&nbsp;</p>
+        <p>The NVT keyboard is specified as being capable of generating 
+all 128 ASCII codes by using keys, key combinations or key sequences. <br>
+        </p>
+<p><br></p>
+          <a name="telnet_commands"></a>
+        <h3>Commands</h3>
+        The telnet protocol also specifies various commands that control
+ the method and various details of the interaction between the client 
+and server. These commands are incorporated within the data stream. The 
+commands are distinguished by the use of various characters with the 
+most significant bit set. Commands are always introduced by a character 
+with the decimal code 255 known as an Interpret as command (IAC) 
+character. The complete set of special characters is <br>
+        <p>&nbsp;
+
+</p>
+        <table align="center" border="1" width="75%" cellpadding="2" cellspacing="0">
+          <tbody><tr class="tab-tr-black">
+            <th>Name </th>
+            <th>Decimal Code </th>
+            <th>Meaning </th>
+          </tr>
+          <tr>
+            <td><b>SE </b></td>
+            <td align="center">240 </td>
+            <td>End of subnegotiation parameters. </td>
+          </tr>
+          <tr>
+            <td><b>NOP </b></td>
+            <td align="center">241 </td>
+            <td>No operation </td>
+          </tr>
+          <tr>
+            <td><b>DM </b></td>
+            <td align="center">242 </td>
+            <td>Data mark. Indicates the position of a Synch event 
+within the data stream. This should always be accompanied by a TCP 
+urgent notification. </td>
+          </tr>
+          <tr>
+            <td><b>BRK </b></td>
+            <td align="center">243 </td>
+            <td>Break. Indicates that the "break" or "attention" key was hit. </td>
+          </tr>
+          <tr>
+            <td><b>IP </b></td>
+            <td align="center">244 </td>
+            <td>Suspend, interrupt or abort the process to which the NVT is connected. </td>
+          </tr>
+          <tr>
+            <td><b>AO </b></td>
+            <td align="center">245 </td>
+            <td>Abort output. Allows the current process to run to completion but do not send its output to the user. </td>
+          </tr>
+          <tr>
+            <td><b>AYT </b></td>
+            <td align="center">246 </td>
+            <td>Are you there. Send back to the NVT some visible evidence that the AYT was received. </td>
+          </tr>
+          <tr>
+            <td><b>EC </b></td>
+            <td align="center">247 </td>
+            <td>Erase character. The receiver should delete the last preceding undeleted character from the data stream. </td>
+          </tr>
+          <tr>
+            <td><b>EL </b></td>
+            <td align="center">248 </td>
+            <td>Erase line. Delete characters from the data stream back to but not including the previous CRLF. </td>
+          </tr>
+          <tr>
+            <td><b>GA </b></td>
+            <td align="center">249 </td>
+            <td>Go ahead. Used, under certain circumstances, to tell the other end that it can transmit. </td>
+          </tr>
+          <tr>
+            <td><b>SB </b></td>
+            <td align="center">250 </td>
+            <td>Subnegotiation of the indicated option follows. </td>
+          </tr>
+          <tr>
+            <td><b>WILL </b></td>
+            <td align="center">251 </td>
+            <td>Indicates the desire to begin performing, or confirmation that you are now performing, the indicated option. </td>
+          </tr>
+          <tr>
+            <td><b>WONT </b></td>
+            <td align="center">252 </td>
+            <td>Indicates the refusal to perform, or continue performing, the indicated option. </td>
+          </tr>
+          <tr>
+            <td><b>DO </b></td>
+            <td align="center">253 </td>
+            <td>Indicates the request that the other party perform, or 
+confirmation that you are expecting the other party to perform, the 
+indicated option. </td>
+          </tr>
+          <tr>
+            <td><b>DONT </b></td>
+            <td align="center">254 </td>
+            <td>Indicates the demand that the other party stop 
+performing, or confirmation that you are no longer expecting the other 
+party to perform, the indicated option. </td>
+          </tr>
+          <tr>
+            <td><b>IAC </b></td>
+            <td align="center">255 </td>
+            <td>Interpret as command </td>
+          </tr>
+        </tbody></table>
+        <p align="center"><img src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/nvt_negotiation.png" height="270" width="550">
+        </p>
+        <p>There are a variety of options that can be negotiated between
+ a telnet client and server using commands at any stage during the 
+connection. They are described in detail in separate RFCs. The following
+ are the most important. <br>
+        </p>
+        <table align="center" border="1" width="66%" cellpadding="2" cellspacing="1">
+          <tbody><tr class="tab-tr-black">
+            <th>Decimal code </th>
+            <th>Name </th>
+            <th>RFC </th>
+          </tr>
+          <tr>
+            <td align="center">1 </td>
+            <td>echo </td>
+            <td align="center">857 </td>
+          </tr>
+          <tr>
+            <td align="center">3 </td>
+            <td>suppress go ahead </td>
+            <td align="center">858 </td>
+          </tr>
+          <tr>
+            <td align="center">5 </td>
+            <td>status </td>
+            <td align="center">859 </td>
+          </tr>
+          <tr>
+            <td align="center">6 </td>
+            <td>timing mark </td>
+            <td align="center">860 </td>
+          </tr>
+          <tr>
+            <td align="center">24 </td>
+            <td>terminal type </td>
+            <td align="center">1091 </td>
+          </tr>
+          <tr>
+            <td align="center">31 </td>
+            <td>window size </td>
+            <td align="center">1073 </td>
+          </tr>
+          <tr>
+            <td align="center">32 </td>
+            <td>terminal speed </td>
+            <td align="center">1079 </td>
+          </tr>
+          <tr>
+            <td align="center">33 </td>
+            <td>remote flow control </td>
+            <td align="center">1372 </td>
+          </tr>
+          <tr>
+            <td align="center">34 </td>
+            <td>linemode </td>
+            <td align="center">1184 </td>
+          </tr>
+          <tr>
+            <td align="center">36 </td>
+            <td>environment variables </td>
+            <td align="center">1408 </td>
+          </tr>
+        </tbody></table>
+        <p>Options are agreed by a process of negotiation which results 
+in the client and server having a common view of various extra 
+capabilities that affect the interchange and the operation of 
+applications. <br>
+          Either end of a telnet dialogue can enable or disable an 
+option either locally or remotely. The initiator sends a 3 byte command 
+of the form </p>
+        <p><span class="script">IAC,&lt;type of operation&gt;,&lt;option&gt;<br>
+          </span>
+        </p>
+        <p>The response is of the same form. 
+        </p>
+        <p>Operation is one of </p>
+        <table align="center" border="1" width="66%" cellpadding="3" cellspacing="1">
+          <tbody><tr class="tab-tr-black">
+            <th>Description </th>
+            <th>Decimal Code </th>
+            <th>Action </th>
+          </tr>
+          <tr>
+            <td>WILL </td>
+            <td>251 </td>
+            <td>Sender wants to do something. </td>
+          </tr>
+          <tr>
+            <td>DO </td>
+            <td>252 </td>
+            <td>Sender wants the other end to do something. </td>
+          </tr>
+          <tr>
+            <td>WONT </td>
+            <td>253 </td>
+            <td>Sender doesn't want to do something. </td>
+          </tr>
+          <tr>
+            <td>DONT </td>
+            <td>254 </td>
+            <td>Sender doesn't want the other end to do anything. </td>
+          </tr>
+        </tbody></table>
+        <p>&nbsp;</p>
+        <p>Associated with each of the these there are various possible responses <br>
+        </p>
+        <table align="center" border="1" width="66%" cellpadding="2" cellspacing="1">
+          <tbody><tr class="tab-tr-black">
+            <th>Sender Sent </th>
+            <th>Receiver Responds </th>
+            <th>Implication </th>
+          </tr>
+          <tr>
+            <td>WILL </td>
+            <td>DO </td>
+            <td>The sender would like to use a certain facility if the receiver can handle it. Option is now in effect </td>
+          </tr>
+          <tr>
+            <td>WILL </td>
+            <td>DONT </td>
+            <td>Receiver says it cannot support the option. Option is not in effect. </td>
+          </tr>
+          <tr>
+            <td>DO </td>
+            <td>WILL </td>
+            <td>The sender says it can handle traffic from the sender if the sender wishes to use a certain option. Option is now in effect. </td>
+          </tr>
+          <tr>
+            <td>DO </td>
+            <td>WONT </td>
+            <td>Receiver says it cannot support the option. Option is not in effect. </td>
+          </tr>
+          <tr>
+            <td>WONT </td>
+            <td>DONT </td>
+            <td>Option disabled. DONT is only valid response. </td>
+          </tr>
+          <tr>
+            <td>DONT </td>
+            <td>WONT </td>
+            <td>Option disabled. WONT is only valid response. </td>
+          </tr>
+        </tbody></table>
+        <p>For example if the sender wants the other end to suppress go-ahead it would send the byte sequence <br>
+          255(IAC),251(WILL),3<br>
+          The final byte of the three byte sequence identifies the required action. <br>
+          For some of the negotiable options values need to be 
+communicated once support of the option has been agreed. This is done 
+using sub-option negotiation. Values are communicated via an exchange of
+ value query commands and responses in the following form. <br>
+           IAC,SB,&lt;option code number&gt;,1,IAC,SE<br>
+          and <br>
+          IAC,SB,&lt;option code&gt;,0,&lt;value&gt;,IAC,SE<br>
+        </p>
+        <p>For example if the client wishes to identify the terminal type to the server the following exchange might take place <br>
+          Client   255(IAC),251(WILL),24<br>
+          Server   255(IAC),253(DO),24<br>
+          Server   255(IAC),250(SB),24,1,255(IAC),240(SE)<br>
+          Client   255(IAC),250(SB),24,0,'V','T','2','2','0',255(IAC),240(SE)<br>
+        </p>
+        <p>The first exchange establishes that the terminal type (option
+ number 24) will be handled, the server then enquires of the client what
+ value it wishes to associate with the terminal type. The sequence 
+SB,24,1 implies <b>sub-option negotiation</b> for option type 24, value 
+required (1). The IAC,SE sequence indicates the end of this request. The
+ response IAC,SB,24,0,'V'... implies sub-option negotiation for option 
+type 24, value supplied (0), the IAC,SE sequence indicates the end of 
+the response (and the supplied value). <br>
+          The encoding of the value is specific to the option but a sequence of characters, as shown above, is common. </p>
+        <p>&nbsp;</p>
+        <p><a name="telnet_negotiable" id="telnet_negotiable"></a></p>
+        <h3>Telnet Negotiable Options</h3>
+        Many of those listed here are self-evident, but some call for more comments. <br>
+          <ul>
+          <li><b>	Suppress Go Ahead</b> <br>
+          The original telnet implementation defaulted to "half duplex" 
+operation. This means that data traffic could only go in one direction 
+at a time and specific action is required to indicate the end of traffic
+ in one direction and that traffic may now start in the other direction.
+ [This similar to the use of "roger" and "over" by amateur and CB radio 
+operators.] The specific action is the inclusion of a GA character in 
+the data stream. <br>
+          Modern links normally allow bi-directional operation and the "suppress go ahead" option is enabled. <br>
+            &nbsp;          </li>
+          <li>          	<b>echo <br>
+            </b>
+
+          The echo option is enabled, usually by the server, to indicate
+ that the server will echo every character it receives. A combination of
+ "suppress go ahead" and "echo" is called 'character at a time mode' 
+meaning that each character is separately transmitted and echoed. <br>
+          There is an understanding known as kludge line mode which 
+means that if either "suppress go ahead" or "echo" is enabled but not 
+both then telnet operates in line at a time mode meaning that complete 
+lines are assembled at each end and transmitted in one "go". <br>
+            &nbsp;          </li>
+          <li>          <b>linemode </b><br>
+          This option replaces and supersedes the line mode kludge. <br>
+            
+            &nbsp;
+            </li>
+          <li><b>remote flow control </b><br>
+          This option controls where the special flow control effects of Ctrl-S/Ctrl-Q are implemented. 
+        </li>
+        </ul>
+        <p><a name="telnet_control"></a><br>&nbsp;</p>
+        <h3>Telnet control functions</h3>
+        The telnet protocol includes a number of control functions. 
+These are initiated in response to conditions detected by the client 
+(usually certain special keys or key combinations) or server. The 
+detected condition causes a special character to be incorporated in the 
+data stream. <br>
+        <ul>
+          <li><b>Interrupt Process </b><br>
+          This is used by the client to cause the suspension or 
+termination of the server process. Typically the user types Ctrl-C on 
+the keyboard. An IP (244) character is included in the data stream. <br>
+          </li>
+          <li>          <b>Abort Output <br>
+            </b>
+          This is used to suppress the transmission of remote process 
+output. An AO (238) character is included in the data stream. <br>
+          </li>
+          <li>          <b>Are You There <br>
+            </b>
+          This is used to trigger a visible response from the other end 
+to confirm the operation of the link and the remote process. An AYT 
+(246) character is incorporated in the data stream. <br>
+          </li>
+          <li>          <b>Erase character <br>
+            </b>
+          Sent to the display to tell it to delete the immediately 
+preceding character from the display. An EC (247) character is 
+incorporated in the data stream. <br>
+          </li>
+          <li>          <b>Erase line <br>
+            </b>
+          Causes the deletion of the current line of input. An EL (248) character is incorporated in the data stream. <br>
+          </li>
+          <li>          <b>Data Mark <br>
+            </b>
+          Some control functions such as AO and IP require immediate 
+action and this may cause difficulties if data is held in buffers 
+awaiting input requests from a (possibly misbehaving) remote process. To
+ overcome this problem a DM (242) character is sent in a TCP Urgent 
+segment, this tells the receiver to examine the data stream for 
+"interesting" characters such as IP, AO and AYT. This is known as the 
+telnet synch mechanism. <br>
+          </li>
+        </ul>
+        <p>&nbsp;<br><a name="download"></a></p>
+        <h3>Related Datasheets &amp; Links</h3>
+        <ul>
+          <li> Originally whole RCF 2217 standard documentation - <a href="http://www.hw-group.com/support/nvt/rfc2217.txt">rfc2217.txt</a></li>
+        </ul>
+        <p>&nbsp;</p>
+        <p>&nbsp;<br></p>
+        <a name="related"></a>
+<h3>Related products</h3>
+        These products are related because of usage the TEA algorithmor. 
+If you are interested in all of our products, please check our <a href="http://www.hw-group.com/products_en.html" target="_blank">Product page</a>.
+
+        <ul>
+          <li><b><a href="http://www.hw-group.com/products/converter/index_en.html">PortBox</a></b> - Ethernet / RS-232/485/422 converter<br>
+          Conversion of a serial line to Ethernet and vice versa (Server
+ or Client/Server mode) with RS-485 support and protocol enhancements.  
+Data is transmitted over the Ethernet using the TCP/IP or UDP/IP 
+protocols.<br>
+            &nbsp;          </li>
+          <li><b><a href="http://www.hw-group.com/products/hw_vsp/index_en.html">HW Virtual Serial Port</a></b> -
+		 create Com5  and redirect it over the TCP/IP<br>
+          The Virtual Serial Port driver for Windows is a software tool,
+ which adds a virtual Comm port to the system, for instance COM5, and 
+all the data from this port is re-directed to another TCP/IP device on 
+the Ethernet network. <br>
+          This software is free for any device, but with non HWgroup device's there are baudrate limitations upto 14,400 Bd.<br>
+            &nbsp;</li>
+          <li><b><a href="http://www.hw-group.com/products/io_controller/index_en.html">Eth. I/O Controller</a></b> - Remote binary I/O pins control + RS-232 converter<br>
+          Conversion of a serial line to Ethernet and vice versa (Server
+ or Client/Server mode) with RS-485 support and protocol enhancements.  
+Data is transmitted over the Ethernet using the TCP/IP or UDP/IP 
+protocols.<br>
+            &nbsp;</li>
+          <li><b><a href="http://www.hw-group.com/products/charon1/index_en.html">Charon I module</a></b> - low-cost embedded interface module converter<br>
+          The fabulous Charon, from Roman mythology, was the boatman on 
+the river Styx, which separated the world of the living and the world of
+ the dead. His boat was the only "interface" crossing that boundary. Our
+ Charon I module is named after him because it is also an interface. 
+Typically, it converts Ethernet to RS232 or RS485 and vice versa. 
+However, it can also be used as a WWW server, control inputs and 
+outputs, and so on, utilizing either our ready-made firmware or your 
+custom created software.</li>
+        </ul></td>
+</tr>
+</tbody></table></div>
+<p><br></p>
+<!-- paticka - ZACATEK -->
+<div id="footer-div">
+<div id="footer-long">
+<div id="footer-matryoska">
+
+  <div id="footer">
+    <div id="footer-right">
+<p><a href="http://jancermak.cz/">webdesign <b>jAN cERMaK</b></a><br>
+      <a href="http://ei-design.cz/">coding <b>Ei-design</b></a></p>
+    </div>
+
+    <div id="footer-left">
+
+      <div id="goto-top">
+        <p><a href="#top" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Up</a></p>
+      </div>
+
+
+      <ul>
+        <li><p><a href="http://www.hw-group.com/index_en.html" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Main page</a></p></li>
+        <li><p><a href="http://www.hw-group.com/products_en.html" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Products</a></p></li>
+        <li><p><a href="http://www.hw-group.com/case_studies/index_en.html" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Case Studies</a></p></li>
+        <li><p><a href="http://www.hw-group.com/software/index_en.html" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Software</a></p> </li>
+        <li><p><a href="http://www.hw-group.com/download_en.html" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Support &amp; Download</a></p></li>
+        <li><p><a href="http://www.hw-group.com/pricelist_en.html" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Where to buy</a></p>  </li>
+        <li><p class="last"><a href="http://www.hw-group.com/contacts_en.html" onclick="trackEvent(_gaq,['Menu-footer,'Index-footer,this.href]); return !waitGo(this.href,200);">Contacts</a></p>   </li>
+	<p class="clear"></p> 
+      </ul>
+	<p class="clear"></p> 
+      <p class="adresa"><b>HW group</b> - Prague, Czech Republic<br>
+      Phone: <b>+420 222 511 918</b> fax +420 222 513 8333
+      </p>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+var google_conversion_id = 1071657851;
+var google_custom_params = window.google_tag_params;
+var google_remarketing_only = true;
+/* ]]> */
+</script>
+<script type="text/javascript" src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/conversion.js">
+</script><iframe style="" name="google_conversion_frame" title="Google conversion frame" src="NVT%20%28Network%20Virtual%20Terminal%29%20description_files/a.htm" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" height="13" width="300" frameborder="0">&lt;img
+ height="1" width="1" border="0" alt="" 
+src="http://googleads.g.doubleclick.net/pagead/viewthroughconversion/1071657851/?frame=0&amp;random=1411608937449&amp;cv=7&amp;fst=1411608937449&amp;num=1&amp;fmt=1&amp;guid=ON&amp;u_h=768&amp;u_w=1366&amp;u_ah=706&amp;u_aw=1366&amp;u_cd=24&amp;u_his=9&amp;u_tz=480&amp;u_java=true&amp;u_nplug=42&amp;u_nmime=122&amp;frm=0&amp;url=http%3A//www.hw-group.com/support/nvt/index_en.html"
+ /&gt;</iframe>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="//googleads.g.doubleclick.net/pagead/viewthroughconversion/1071657851/?value=0&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+
+<!-- paticka - KONEC -->
+
+
+
+      
+
+
+
+</body></html>

@@ -34,8 +34,7 @@ public class RefreshHit extends Hit {
 	@Override
 	public String execute(BusShell shell, TerminalIO io, String status, Object... args) {
 		try {
-			ShellUtil.clear(io);
-			shell.mainView();
+			shell.refresh();
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}

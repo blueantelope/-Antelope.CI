@@ -38,7 +38,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 public class NewProjectHit extends MainCommonPortalHit {
 	@Override protected String executeOnMain(BusPortalShell shell, TerminalIO io, String status, Object... args) {
 		try {
-			super.draw(shell);
+			draw(shell);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}

@@ -11,6 +11,9 @@ package com.antelope.ci.bus.portal.core.shell;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.server.shell.ShellPalette;
+import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 
@@ -73,7 +76,8 @@ class BusPortalShellLiving {
 		}
 	}
 	
-	public void removeUnit(List<ShellCursor> removeList) {
+	
+	public void removeUnits(List<ShellCursor> removeList) {
 		List<Integer> removeIndexList= new ArrayList<Integer>();
 		int n = 0;
 		for (ShellCursor remove : removeList) {
@@ -88,6 +92,23 @@ class BusPortalShellLiving {
 		}
 		for (Integer removeIndex : removeIndexList)
 			unitList.remove(removeIndex);
+	}
+	
+	public void removeFromPalette(ShellPalette palette) {
+		List<Integer> removeIndexList= new ArrayList<Integer>();
+		int n = 0;
+		for (BusPortalShellUnit unit : unitList) {
+			if (unit.contain(palette))
+				removeIndexList.add(n);
+			n++;
+		}
+		
+		if (!removeIndexList.isEmpty()) {
+			for (int i = removeIndexList.size()-1; i >= 0; i--) {
+				int removeIndex = removeIndexList.get(i);
+				unitList.remove(removeIndex);
+			}
+		}
 	}
 
 	static class BusPortalShellUnit {
@@ -110,6 +131,39 @@ class BusPortalShellLiving {
 		
 		public boolean same(ShellCursor _cursor) {
 			return cursor.same(_cursor);
+		}
+		
+		int width() {
+			String s = PortalShellText.peel(text);
+			if (ShellText.isShellText(s))
+				return ShellText.toShellText(s).placeholderWidth();
+			else
+				return StringUtil.lengthVT(s);
+		}
+		
+		int height() {
+			return 1;
+		}
+		
+		public boolean contain(ShellPalette palette) {
+			int cx = cursor.getX();
+			int cy = cursor.getY();
+			int cw = cx + width();
+			int ch = cy + height();
+			int px = palette.getX();
+			int py = palette.getY();
+			int pw = px + palette.getWidth();
+			int ph = py + palette.getHeight();
+			if (cw >= px && ch >= py && cw <= pw && ch <= ph)
+				return true;
+			if (cx <= pw && ch >= py && cx >= px && ch <= ph)
+				return true;
+			if (cw >= px && cy <= ph && cw <= pw && cy >= py)
+				return true;
+			if (cx <= pw && cy <= ph && cx >= px && cy >= py)
+				return true;
+			
+			return false;
 		}
 	}
 }

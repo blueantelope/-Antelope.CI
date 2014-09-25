@@ -356,7 +356,7 @@ public abstract class BusShell {
 		session.getCallback().onExit(0);
 	}
 	
-	protected void refresh() throws CIBusException {
+	public void refresh() throws CIBusException {
 		clear();
 		mainView();
 	}
