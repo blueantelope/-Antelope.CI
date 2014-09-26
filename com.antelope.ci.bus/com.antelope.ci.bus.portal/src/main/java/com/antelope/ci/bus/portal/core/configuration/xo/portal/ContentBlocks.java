@@ -31,7 +31,6 @@ import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -200,7 +199,7 @@ public class ContentBlocks implements Serializable {
 	private ContentBlock genContentBlock(ContentBlock block, String value) {
 		ContentBlock newContentBlock = new ContentBlock();
 		newContentBlock.setActive(block.getActive());
-		newContentBlock.setFocus(block.getFocus());
+		newContentBlock.setAction(block.getAction());
 		FontExpression font;
 		CommonValue cValue = block.getCvalue();
 		if (cValue.isShellText()) {
@@ -212,6 +211,8 @@ public class ContentBlocks implements Serializable {
 		CommonValue newCommonValue = cValue.clone();
 		newCommonValue.setFont(font);
 		newCommonValue.setValue(value);
+		if (cValue.focus())
+			newCommonValue.openFocus();
 		newContentBlock.setCvalue(newCommonValue);
 		
 		return newContentBlock;

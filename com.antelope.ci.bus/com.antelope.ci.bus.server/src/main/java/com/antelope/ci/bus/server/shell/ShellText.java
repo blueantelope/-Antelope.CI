@@ -82,21 +82,11 @@ public class ShellText {
 	}
 	
 	public static boolean isShellText(String str) {
-		if (StringUtil.empty(str))
-			return false;
-		str = str.trim();
-		if (StringUtil.startsWithIgnoreCase(str, TEXT_PREFIX) && str.endsWith(TEXT_SUFFIX))
-			return true;
-		return false;
+		return StringUtil.containEndsite(str, TEXT_PREFIX, TEXT_SUFFIX);
 	}
 	
 	public static boolean containP(String str) {
-		if (StringUtil.empty(str))
-			return false;
-		str = str.trim();
-		if (StringUtil.startsWithIgnoreCase(str, P_PREFIX) && str.endsWith(P_SUFFIX))
-			return true;
-		return false;
+		return StringUtil.containEndsite(str, P_PREFIX, P_SUFFIX);
 	}
 	
 	@Override public String toString() {

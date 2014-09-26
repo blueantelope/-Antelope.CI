@@ -154,13 +154,13 @@ class BusPortalShellLiving {
 			int py = palette.getY();
 			int pw = px + palette.getWidth();
 			int ph = py + palette.getHeight();
-			if (cw >= px && ch >= py && cw <= pw && ch <= ph)
+			if (px >= cx && py >= cy && px < cw && py < ch)
 				return true;
-			if (cx <= pw && ch >= py && cx >= px && ch <= ph)
+			if (pw <= cw && py >= cy && pw > cx && py < ch)
 				return true;
-			if (cw >= px && cy <= ph && cw <= pw && cy >= py)
+			if  (px >= cx && ph <= ch && px < cw && ph > cy)
 				return true;
-			if (cx <= pw && cy <= ph && cx >= px && cy >= py)
+			if  (pw <=cw && ph <= ch && pw > cx && ph > cy)
 				return true;
 			
 			return false;

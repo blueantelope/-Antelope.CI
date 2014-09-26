@@ -18,7 +18,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.XOUtil;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.CommonValue;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
 import com.antelope.ci.bus.server.shell.ShellText;
 
@@ -90,11 +89,20 @@ public class ContentText extends CommonValue {
 	}
 	
 	private void addContentText(List<String> innerList, ContentText contentText, String value) {
-		innerList.add(genContentText(contentText, value).toString());
+		String innerValue = genContentText(contentText, value).toString();
+		innerList.add(innerValue);
+	}
+	
+	public ContentText clone() {
+		ContentText cloneCommonText = new ContentText();
+		cloneCommonText.setFont(font);
+		cloneCommonText.setValue(value);
+		cloneCommonText.setFocus("off");
+		return cloneCommonText;
 	}
 	
 	private ContentText genContentText(ContentText contentText, String value) {
-		ContentText newContentText = new ContentText();
+		ContentText newContentText = contentText.clone();
 		FontExpression font;
 		if (contentText.isShellText()) {
 			ShellText st = ShellText.toShellText(contentText.getShellValue());
@@ -103,6 +111,8 @@ public class ContentText extends CommonValue {
 			font =contentText.getFont();
 		}
 		newContentText.setFont(font);
+		if (contentText.focus())
+			newContentText.openFocus();
 		newContentText.setValue(value);
 		
 		return newContentText;

@@ -37,10 +37,10 @@
 								<font style="normal" mark="normal" size="medium" />
 								<delimiter value=" " position="middle" margin="after:3" />
 							</render>
-							<block active="on" focus="on">
-								<value><![CDATA[${project.menu.new}]]></value>
+							<block active="on" action="on">
+								<value focus="on"><![CDATA[${project.menu.new}]]></value>
 							</block>
-							<block active="on" focus="on">
+							<block active="on" action="on">
 								<value><![CDATA[${project.menu.edit}]]></value>
 							</block>
 						</blocks>

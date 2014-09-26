@@ -13,9 +13,12 @@ import java.io.Serializable;
 import com.antelope.ci.bus.common.ResourceUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
+import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlCdata;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.XOUtil;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
+import com.antelope.ci.bus.portal.core.shell.PortalShellText;
 import com.antelope.ci.bus.server.shell.ShellText;
 
 
@@ -27,18 +30,34 @@ import com.antelope.ci.bus.server.shell.ShellText;
  */
 @XmlEntity(name="value")
 public class CommonValue implements Serializable {
+	protected String focus;
 	protected String value;
 	protected FontExpression font;
-
+	
 	public CommonValue() {
 		super();
+		this.focus = "off";
 	}
 	
 	public CommonValue(String value) {
-		super();
+		this();
 		this.value = value;
 	}
 	
+	@XmlAttribute(name="focus")
+	public String getFocus() {
+		return focus;
+	}
+	public void setFocus(String focus) {
+		this.focus = focus;
+	}
+	public void openFocus() {
+		this.focus = "on";
+	}
+	public boolean focus() {
+		return XOUtil.on_off(focus);
+	}
+
 	@XmlCdata public String getValue() {
 		return value;
 	}
@@ -59,9 +78,12 @@ public class CommonValue implements Serializable {
 	}
 	
 	@Override public String toString() {
+		String ret = value;
 		if (font != null)
-			return toShellText().toString();
-		return value;
+			ret = toShellText().toString();
+		if (focus())
+			ret = PortalShellText.genFocusText(ret);
+		return ret;
 	}
 	
 	public ShellText toShellText() {
@@ -115,6 +137,7 @@ public class CommonValue implements Serializable {
 		CommonValue cloneCommonValue = new CommonValue();
 		cloneCommonValue.setFont(font);
 		cloneCommonValue.setValue(value);
+		cloneCommonValue.setFocus("off");
 		return cloneCommonValue;
 	}
 }

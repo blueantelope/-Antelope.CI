@@ -440,4 +440,23 @@ public class StringUtil {
 			return str.substring(0, index);
 		return str;
 	}
+	
+	public static String peel(String str, String prefix, String suffix) {
+		String ret = str;
+		if (containEndsite(str, prefix, suffix)) {
+			ret = StringUtil.deleteFirst(str, prefix);
+			ret = StringUtil.deleteLast(ret, suffix); 
+		}
+		
+		return ret;
+	}
+	
+	public static boolean containEndsite(String str, String prefix, String suffix) {
+		if (StringUtil.empty(str))
+			return false;
+		str = str.trim();
+		if (StringUtil.startsWithIgnoreCase(str, prefix) && str.endsWith(suffix))
+			return true;
+		return false;
+	}
 }

@@ -18,29 +18,33 @@ import com.antelope.ci.bus.server.shell.ShellText;
  * @Date	 2014年9月22日		上午11:21:11 
  */
 public class PortalShellText {
+	private static final String FOCUS_PREFIX = "<focus>";
+	private static final String FOCUS_SUFFIX = "</focus>";
 	private static final String BLOCK_PREFIX = "<block>";
 	private static final String BLOCK_SUFFIX= "</block>";
 	
-	public static boolean containBlock(String str) {
-		if (StringUtil.empty(str))
-			return false;
-		str = str.trim();
-		if (StringUtil.startsWithIgnoreCase(str, BLOCK_PREFIX) && str.endsWith(BLOCK_SUFFIX))
-			return true;
-		return false;
+	public static boolean isFocus(String str) {
+		return StringUtil.contain(str, FOCUS_PREFIX, FOCUS_SUFFIX);
 	}
 	
-	public static String genShelText(String str) {
+	public static boolean containBlock(String str) {
+		return StringUtil.containEndsite(str, BLOCK_PREFIX, BLOCK_SUFFIX);
+	}
+	
+	public static String genBlockText(String str) {
 		return BLOCK_PREFIX + str + BLOCK_SUFFIX;
+	}
+	
+	public static String genFocusText(String str) {
+		return FOCUS_PREFIX + str + FOCUS_SUFFIX;
 	}
 	
 	public static String peel(String str) {
 		String ret = str;
-		if (containBlock(str)) {
-			ret = StringUtil.deleteFirst(str, BLOCK_PREFIX);
-			ret = StringUtil.deleteLast(ret, BLOCK_SUFFIX); 
-		}
-		
+		if (containBlock(str))
+			ret = StringUtil.peel(ret, BLOCK_PREFIX, BLOCK_SUFFIX);
+		if (isFocus(ret))
+			ret = StringUtil.peel(ret, FOCUS_PREFIX, FOCUS_SUFFIX);
 		return ret;
 	}
 	

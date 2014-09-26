@@ -60,6 +60,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected List<PortalBlock> mainBlockList;
 	protected boolean loadMainblock;
 	protected BusPortalShellLiving shellLiving;
+	protected ShellCursor initPosition;
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -74,11 +75,16 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		mainBlockList = new ArrayList<PortalBlock>();
 		loadMainblock = true;
 		shellLiving = new BusPortalShellLiving();
+		initPosition = new ShellCursor(0, 0);
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
 	}
 	
-	public void savePostion(int x, int y) {
+	public void savePositionFromContent(int x, int y) {
+		savePosition(contentPalette.getX() + x, contentPalette.getY() + y);
+	}
+	
+	public void savePosition(int x, int y) {
 		shellLiving.savePosition(x, y);
 	}
 	
@@ -91,7 +97,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	@Override public void clearContent() throws CIBusException {
-		shellLiving.removeFromPalette(contentPalette);
 		if (contentPalette != null) {
 			int px = contentPalette.getX();
 			int py = contentPalette.getY();
@@ -111,6 +116,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			write(cursor, lines);
 			shiftTop();
 			move(px, py);
+			shellLiving.removeFromPalette(contentPalette);
 		}
 	}
 	
@@ -906,6 +912,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		shellLiving.add(cursor, str);
 		ShellCursor blockCursor = cursor.clone();
 		int width = 0;
+		if (PortalShellText.isFocus(str)) {
+			initPosition = cursor.clone();
+			shellLiving.savePosition(initPosition);
+		}
 		String s = PortalShellText.peel(str);
 		if (ShellText.isShellText(s)) {
 			ShellText text = writeFormat(cursor, s);
@@ -1011,7 +1021,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	@Override protected ShellCursor initCursorPosistion() {
 		if (shellLiving.inUse())
 			return shellLiving.getPosition();
-		shellLiving.savePosition(0, 0);
+		shellLiving.savePosition(initPosition);
 		return shellLiving.getPosition();
 	}
 	

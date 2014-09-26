@@ -78,7 +78,7 @@ public abstract class MainCommonPortalHit extends PortalHit {
 				int x = moveBlock.getCursor().getX();
 				int y = moveBlock.getCursor().getY();
 				shell.shift(x, y);
-				shell.savePostion(x, y);
+				shell.savePosition(x, y);
 				shell.updateBlock(moveBlock);
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);

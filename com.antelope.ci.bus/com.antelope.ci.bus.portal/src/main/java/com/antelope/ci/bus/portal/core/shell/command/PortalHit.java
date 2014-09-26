@@ -33,9 +33,9 @@ import com.antelope.ci.bus.portal.core.configuration.xo.form.Widget;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
+import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.portal.core.shell.ShellLineContentSet;
-import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.command.Command;
@@ -96,7 +96,7 @@ public abstract class PortalHit extends Hit {
 		cursor_y = 0;
 	}
 	
-	protected void draw(BusShell shell) throws CIBusException {
+	protected void drawForm(BusPortalShell shell) throws CIBusException {
 		reset();
 		if (form != null) {
 			Content content = form.getContent();
@@ -310,11 +310,12 @@ public abstract class PortalHit extends Hit {
 		}
 	}
 	
-	private void focus(BusShell shell, Content content) throws CIBusException  {
+	private void focus(BusPortalShell shell, Content content) throws CIBusException  {
 		Widget focus_widget = content.getFocusWidget();
 		if (focus_widget != null) {
 			shell.moveContent();
 			shell.move(focus_widget.getX(), focus_widget.getY());
+			shell.savePositionFromContent(focus_widget.getX(), focus_widget.getY());
 		}
 	}
 }

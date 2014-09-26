@@ -26,21 +26,21 @@ import com.antelope.ci.bus.portal.core.shell.PortalShellText;
  */
 @XmlEntity(name="block")
 public class ContentBlock implements Serializable {
-	private String focus;
+	private String action;
 	private String active;
 	private CommonValue cvalue;
 	
-	@XmlAttribute(name="focus")
-	public String getFocus() {
-		return focus;
+	@XmlAttribute(name="action")
+	public String getAction() {
+		return action;
 	}
-	public void setFocus(String focus) {
-		this.focus = focus;
+	public void setAction(String action) {
+		this.action = action;
 	}
-	public boolean focus() {
-		return XOUtil.on_off(focus);
+	public boolean action() {
+		return XOUtil.on_off(action);
 	}
-	
+
 	@XmlAttribute(name="active")
 	public String getActive() {
 		return active;
@@ -70,19 +70,22 @@ public class ContentBlock implements Serializable {
 		String shellValue = null;
 		if (null != cvalue) {
 			shellValue = cvalue.getShellValue();
-			if (available())
-				shellValue = PortalShellText.genShelText(shellValue);
+			if (available()) {
+				if (cvalue.focus())
+					shellValue = PortalShellText.genFocusText(shellValue);
+				shellValue = PortalShellText.genBlockText(shellValue);
+			}
 		}
 		return shellValue;
 	}
 	
 	public void defaultSet() {
-		this.focus = "off";
+		this.action = "off";
 		this.active = "off";
 	}
 	
 	public boolean available() {
-		if (focus() && active())
+		if (action() && active())
 			return true;
 		return false;
 	}
