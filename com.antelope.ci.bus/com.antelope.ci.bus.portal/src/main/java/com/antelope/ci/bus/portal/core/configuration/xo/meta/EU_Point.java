@@ -21,6 +21,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  */
 public enum EU_Point implements Serializable {
 	BASE("base"),
+	ACTION("action"),
 	LAYOUT("layout"),
 	PARTS("parts");
 	

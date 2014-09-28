@@ -25,6 +25,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_LAYOUT;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Action;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
@@ -41,7 +42,6 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -54,6 +54,10 @@ public class Portal implements Serializable {
 	private Parts parts;
 	private Extensions extensions;
 	private Action action;
+	
+	public Portal() {
+		super();
+	}
 	
 	public String getName() {
 		String name = "null";
@@ -103,32 +107,6 @@ public class Portal implements Serializable {
 		this.action = action;
 	}
 
-	/*
-	public void attachExtensions() {
-		if (extensions != null) {
-			if (extensions.getExtentionList() != null) {
-				for (Extension ext : extensions.getExtentionList()) {
-					switch (ext.getPoint()) {
-						case 	BASE:
-							attachBase(ext.getBase());
-							break;
-						case LAYOUT:
-							List<PlaceParts> ppList_ext = ext.getPlacePartList();
-							if (ppList_ext != null)
-								attachLayout(ppList_ext);
-							break;
-						case PARTS:
-							List<Part> pList_ext = ext.getPartList();
-							if (pList_ext != null)
-								attachPart(pList_ext);
-							break;
-					}
-				}
-			}
-		}
-	}
-	*/
-	
 	private void attachBase(Base base_ext) {
 		switch (base_ext.getEmbed()) {
 			case REPLACE:
@@ -184,42 +162,6 @@ public class Portal implements Serializable {
 			}
 		}
 	}
-	
-	/*
-	private void attachPart(List<Part> pList_ext) {
-		Map<String, Part> partMap = getPartMap();
-		for (Part p_ext : pList_ext) {
-			String p_ext_name = p_ext.getName();
-			Part p = partMap.get(p_ext_name);
-			switch (p_ext.getEmbed()) {
-				case REPLACE:
-					if (p != null)
-						p = p_ext;
-					break;
-				case APPEND:
-					if (p == null) {
-						if (parts == null) parts = new Parts();
-						List<Part> partList = parts.getPartList();
-						if (partList == null) partList = new ArrayList<Part>();
-						if (p_ext.getSort() == null) {
-							partList.add(p);
-						} else {
-							int s_index = p_ext.getSort();
-							int p_len = partList.size();
-							s_index = s_index > (p_len - 1) ? p_len : s_index;
-							partList.add(s_index, p);
-						}
-					} else {
-						if (p_ext.getSort() == null)
-							p.addContent(p_ext.getContent());
-						else
-							p.addContent(p_ext.getSort(), p_ext.getContent());
-					}
-					break;
-			}
-		}
-	}
-	*/
 	
 	public void addPart(Part part) throws CIBusException {
 		if (parts == null)
@@ -473,15 +415,19 @@ public class Portal implements Serializable {
 		if (extensions != null) {
 			List<Extension> extentionList = extensions.getExtentionList();
 			if (extentionList != null) {
-				for (Extension e : extentionList) {
-					if (e != null) {
-						if (e.getPoint() == EU_Point.PARTS) {
-							List<Part> partList = e.getPartList();
-							if (partList != null) {
-								Part part = getPart(partList, name);
-								if (part != null)
-									return part;
+				for (Extension extension : extentionList) {
+					if (extension != null) {
+						try {
+							if (extension.toPoint() == EU_Point.PARTS) {
+								List<Part> partList = extension.getPartList();
+								if (partList != null) {
+									Part part = getPart(partList, name);
+									if (part != null)
+										return part;
+								}
 							}
+						} catch (CIBusException e) {
+							DevAssistant.errorln(e);
 						}
 					}
 				}
@@ -491,24 +437,9 @@ public class Portal implements Serializable {
 		return null;
 	}
 	
-	/*
-	public String getExtPartValue(String name) {
-		Part part = getExtPart(name);
-		if (part != null) {
-			String v = getPartValue(part);
-			return v == null ? "" : v;
-		}
-		
-		return "";
-	}
-	*/
-	
 	public RenderFont getHitFont() {
-		if (action != null) {
-			Hit hit = action.getHit();
-			if (hit != null) 
-				return hit.getFont();
-		}
+		if (action != null)
+			return action.getFont();
 		
 		return null;
 	}
@@ -561,6 +492,12 @@ public class Portal implements Serializable {
 		}
 		
 		return null;
+	}
+	
+	public void resetHit() {
+		if (action != null)
+			action.deweight();
+		
 	}
 }
 

@@ -2,10 +2,18 @@
 <portal>
 	<extensions>
 	
-		<extension point="base" >
+		<extension point="base">
 			<base name="project" order="1" embed="replace">
 			</base>
 		</extension>
+		
+		<extension point="action">
+			<action>
+				<hit name="switch_portal">
+					<font style="bold" mark="lt" size="medium" />
+				</hit>
+			</action>
+		</action>
 		
 		<extension point="layout">
 			<parts name="center" embed="replace">

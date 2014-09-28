@@ -11,19 +11,31 @@ package com.antelope.ci.bus.portal.core.configuration.xo.meta;
 import java.io.Serializable;
 
 import com.antelope.ci.bus.common.xml.XmlAttribute;
+import com.antelope.ci.bus.common.xml.XmlEntity;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-7-11		下午2:40:18 
  */
+@XmlEntity(name="font")
 public class Font implements Serializable {
 	protected String style;
 	protected String size;
 	protected String mark;
+	
+	public Font() {
+		super();
+	}
+
+	public Font(String style, String size, String mark) {
+		super();
+		this.style = style;
+		this.size = size;
+		this.mark = mark;
+	}
 
 	@XmlAttribute(name="style")
 	public String getStyle() {

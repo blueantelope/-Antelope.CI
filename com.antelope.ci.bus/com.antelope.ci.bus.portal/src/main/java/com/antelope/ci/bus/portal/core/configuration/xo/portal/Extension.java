@@ -26,26 +26,21 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
  */
 @XmlEntity(name="extension")
 public class Extension implements Serializable {
-	private String point_exp;
-	private EU_Point point;
+	private String point;
 	private Base base;
+	private Action action;
 	private List<PlaceParts> placePartList;
 	private List<Part> partList;
 	
 	@XmlAttribute(name="point")
-	public String getPoint_exp() {
-		return point_exp;
-	}
-	public void setPoint_exp(String point_exp) {
-		this.point_exp = point_exp;
-		try {
-			this.point = EU_Point.toPoint(this.point_exp);
-		} catch (CIBusException e) {
-		}
-	}
-	
-	public EU_Point getPoint() {
+	public String getPoint() {
 		return point;
+	}
+	public void setPoint_exp(String point) {
+		this.point = point;
+	}
+	public EU_Point toPoint() throws CIBusException {
+		return EU_Point.toPoint(point);
 	}
 	
 	@XmlElement(name="base")
@@ -54,6 +49,14 @@ public class Extension implements Serializable {
 	}
 	public void setBase(Base base) {
 		this.base = base;
+	}
+	
+	@XmlElement(name="action")
+	public Action getAction() {
+		return action;
+	}
+	public void setAction(Action action) {
+		this.action = action;
 	}
 	
 	@XmlElement(name="parts", isList=true, listClass=PlaceParts.class)
@@ -72,7 +75,4 @@ public class Extension implements Serializable {
 	public void setPartList(List<Part> partList) {
 		this.partList = partList;
 	}
-	
-	
 }
-

@@ -21,6 +21,12 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.Font;
  */
 @XmlEntity(name="font")
 public class RenderFont extends Font {
-	
+	public RenderFont() {
+		super();
+	}
+
+	public RenderFont(String style, String size, String mark) {
+		super(style, size, mark);
+	}
 }
 

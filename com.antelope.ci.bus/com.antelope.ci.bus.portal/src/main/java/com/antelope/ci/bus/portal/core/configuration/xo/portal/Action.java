@@ -9,13 +9,14 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -23,15 +24,72 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="action")
 public class Action implements Serializable {
-	protected Hit hit;
-
-	@XmlElement(name="hit")
-	public Hit getHit() {
-		return hit;
+	protected RenderFont font;
+	protected List<Hit> hitList;
+	protected List<HitGroup> hitgroupList;
+	
+	public Action() {
+		super();
+		this.hitList = new ArrayList<Hit>();
+		this.hitgroupList = new ArrayList<HitGroup>();
+	}
+	
+	@XmlElement(name="font")
+	public RenderFont getFont() {
+		return font;
+	}
+	public void setFont(RenderFont font) {
+		this.font = font;
 	}
 
-	public void setHit(Hit hit) {
-		this.hit = hit;
+	@XmlElement(name="hit", isList=true, listClass=Hit.class)
+	public List<Hit> getHitList() {
+		return hitList;
+	}
+	public void setHitList(List<Hit> hitList) {
+		this.hitList = hitList;
+	}
+	public void deweightHitList() {
+		CommonHit.deweightCommonHitList(hitList);
+	}
+	
+	@XmlElement(name="hitgroup", isList=true, listClass=HitGroup.class)
+	public List<HitGroup> getHitgroupList() {
+		return hitgroupList;
+	}
+	public void setHitgroupList(List<HitGroup> hitgroupList) {
+		this.hitgroupList = hitgroupList;
+	}
+	public void deweightHitgroupList() {
+		CommonHit.deweightCommonHitList(hitgroupList);
+	}
+	
+	public void deweight() {
+		deweightHitList();
+		deweightHitgroupList();
+	}
+	
+	public List<Hit> getGlobalHit() {
+		return CommonHit.getGlobalHit(hitList);
+	}
+	
+	public List<HitGroup> getGlobalHitgroup() {
+		return CommonHit.getGlobalHit(hitgroupList);
+	}
+	
+	public HitGroup getBlockHit() {
+		for (HitGroup hitgroup : hitgroupList) {
+			if (hitgroup.isBlock())
+				return hitgroup;
+		}
+		
+		return null;
+	}
+	
+	public void merge(Action anotherAction) {
+		if (anotherAction != null) {
+			hitList = CommonHit.merge(hitList, anotherAction.getHitList());
+			hitgroupList = CommonHit.merge(hitgroupList, anotherAction.getHitgroupList());
+		}
 	}
 }
-

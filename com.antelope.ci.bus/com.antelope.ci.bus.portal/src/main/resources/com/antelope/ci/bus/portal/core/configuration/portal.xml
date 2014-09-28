@@ -5,7 +5,11 @@
 	
 	<!-- action -->
 	<action>
-		<hit name="switch_portal">
+		<hitgroup name="block" origin="global" mode="main" onkey="13">
+			<key><![CDATA[<n:13>]]></key>
+			<font style="bold" mark="lt" size="medium" />
+		</hitgroup>
+		<hit name="switch_portal" scope="global" mode="main">
 			<font style="bold" mark="lt" size="medium" />
 		</hit>
 	</action>

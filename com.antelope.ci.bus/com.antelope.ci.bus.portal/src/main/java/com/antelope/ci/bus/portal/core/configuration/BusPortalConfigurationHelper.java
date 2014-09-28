@@ -40,6 +40,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ORIGIN;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
+import com.antelope.ci.bus.portal.core.configuration.xo.portal.Action;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Contents;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
@@ -481,22 +482,25 @@ public class BusPortalConfigurationHelper {
 		Portal new_portal = extPortal;
 		try {
 			new_portal = globalPortal.clonePortal();
-			Extensions exts = extPortal.getExtensions();
+			Extensions extensions = extPortal.getExtensions();
 			new_portal.getPlacePartMap(	);
-			if (exts != null) {
-				List<Extension> extList = exts.getExtentionList();
-				if (extList != null) {
-					for (Extension ext : extList) {
-						EU_Point eup = ext.getPoint();
+			if (extensions != null) {
+				List<Extension> extensionList = extensions.getExtentionList();
+				if (extensionList != null) {
+					for (Extension extension : extensionList) {
+						EU_Point eup = extension.toPoint();
 						switch (eup) {
 							case BASE:
-								extendBase(ext, new_portal);
+								extendBase(extension, new_portal);
+								break;
+							case ACTION:
+								extendAction(extension, new_portal);
 								break;
 							case LAYOUT:
-								extendLayout(ext, new_portal);
+								extendLayout(extension, new_portal);
 								break;
 							case PARTS:
-								extendParts(ext, new_portal);
+								extendParts(extension, new_portal);
 								break;
 						}
 					}
@@ -514,8 +518,8 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	
-	private void extendBase(Extension ext, Portal new_portal) throws CIBusException {
-		Base extBase = ext.getBase();
+	private void extendBase(Extension extension, Portal new_portal) throws CIBusException {
+		Base extBase = extension.getBase();
 		if (extBase == null) 
 			return;
 		
@@ -544,8 +548,23 @@ public class BusPortalConfigurationHelper {
 		new_portal.setBase(base);
 	}
 	
-	private void extendLayout(Extension ext, Portal new_portal) throws CIBusException {
-		List<PlaceParts> partsList = ext.getPlacePartList();
+	private void extendAction(Extension extension, Portal new_portal) throws CIBusException {
+		Action extAction = extension.getAction();
+		if (extAction != null)
+			extAction.deweight();
+		
+		Action action = new_portal.getAction();
+		if (action == null) {
+			new_portal.setAction(extAction);
+		} else {
+			action.deweight();
+			if (extAction != null)
+				action.merge(extAction);
+		}
+	}
+	
+	private void extendLayout(Extension extension, Portal new_portal) throws CIBusException {
+		List<PlaceParts> partsList = extension.getPlacePartList();
 		if (partsList == null) return;
 		Collections.sort(partsList, new Comparator<PlaceParts>() {
 			@Override
@@ -623,9 +642,9 @@ public class BusPortalConfigurationHelper {
 		}
 	}
 	
-	private void extendParts(Extension ext, Portal new_portal) {
+	private void extendParts(Extension extension, Portal new_portal) {
 		Parts newParts = new_portal.getParts();
-		for (Part part : ext.getPartList()) {
+		for (Part part : extension.getPartList()) {
 			switch (part.getEmbed()) {
 				case REPLACE:
 					newParts.addPart(part);

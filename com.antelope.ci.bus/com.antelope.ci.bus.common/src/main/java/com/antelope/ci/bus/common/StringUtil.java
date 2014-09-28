@@ -27,7 +27,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version 0.1
  * @Date 2013-9-26 下午9:03:45
  */
-public class StringUtil {
+public class StringUtil extends Object {
 	private static final char[] letters = { '0', '1', '2', '3', '4', '5', '6',
 			'7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
@@ -458,5 +458,9 @@ public class StringUtil {
 		if (StringUtil.startsWithIgnoreCase(str, prefix) && str.endsWith(suffix))
 			return true;
 		return false;
+	}
+	
+	public static int compare(String s1, String s2) {
+		return s1.trim().toLowerCase().compareTo(s2.trim().toLowerCase());
 	}
 }

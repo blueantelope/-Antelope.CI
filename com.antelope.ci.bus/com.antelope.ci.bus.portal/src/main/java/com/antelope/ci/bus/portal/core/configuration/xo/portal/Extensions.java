@@ -9,8 +9,11 @@
 package com.antelope.ci.bus.portal.core.configuration.xo.portal;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
@@ -25,6 +28,11 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 @XmlEntity(name="extensions")
 public class Extensions implements Serializable {
 	private List<Extension> extentionList;
+	
+	public Extensions() {
+		super();
+		extentionList = new ArrayList<Extension>();
+	}
 
 	@XmlElement(name="extension", isList=true, listClass=Extension.class)
 	public List<Extension> getExtentionList() {
@@ -36,10 +44,12 @@ public class Extensions implements Serializable {
 	}
 	
 	public Base getBase() {
-		if (extentionList != null && !extentionList.isEmpty()) {
-			for (Extension ext : extentionList) {
-				if (ext.getPoint() == EU_Point.BASE)
-					return ext.getBase();
+		for (Extension extension : extentionList) {
+			try {
+				if (extension.toPoint() == EU_Point.BASE)
+					return extension.getBase();
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
 			}
 		}
 		
@@ -52,5 +62,16 @@ public class Extensions implements Serializable {
 		else					return -1;
 	}
 	
+	public Action getAction() {
+		for (Extension extension : extentionList) {
+			try {
+				if (extension.toPoint() == EU_Point.ACTION)
+					return extension.getAction();
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		
+		return null;
+	}
 }
-
