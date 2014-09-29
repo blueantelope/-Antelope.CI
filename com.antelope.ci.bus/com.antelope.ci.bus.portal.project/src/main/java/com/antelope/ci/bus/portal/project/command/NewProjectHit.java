@@ -36,7 +36,8 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 		form="classpath:/com/antelope/ci/bus/portal/project/form/new_project.xml",
 		property="com.antelope.ci.bus.portal.project.form.project_form")
 public class NewProjectHit extends MainCommonPortalHit {
-	@Override protected String executeOnMain(BusPortalShell shell, TerminalIO io, String status, Object... args) {
+	
+	@Override protected String executeOnMain(BusPortalShell shell, String status, Object... args) {
 		try {
 			drawForm(shell);
 		} catch (CIBusException e) {

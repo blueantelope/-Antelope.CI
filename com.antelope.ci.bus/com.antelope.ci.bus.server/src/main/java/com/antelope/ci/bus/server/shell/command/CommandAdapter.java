@@ -30,7 +30,6 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -156,11 +155,11 @@ public abstract class CommandAdapter {
 	}
 	
 	protected String execute(String key, Map<String, ICommand> currentCmdMap, String status, 
-			boolean refresh, String cmd, BusShell shell, TerminalIO io, Object... args) throws CIBusException {
+			boolean refresh, String cmd, BusShell shell, Object... args) throws CIBusException {
 		ICommand command = currentCmdMap.get(key);
 		if (match(command, cmd)) {
-			String actionStatus = command.execute(refresh, shell, io, status, args);
-			afterExecute(command, status, io, args);
+			String actionStatus = command.execute(refresh, shell, status, args);
+			afterExecute(command, status, shell, args);
 			return actionStatus;
 		}
 		
@@ -202,8 +201,8 @@ public abstract class CommandAdapter {
 	
 	protected abstract void init();
 	
-	protected abstract void afterExecute(ICommand command, String status, TerminalIO io, Object... args) throws CIBusException;
+	protected abstract void afterExecute(ICommand command, String status, BusShell shell, Object... args) throws CIBusException;
 	
-	public abstract void showCommands(TerminalIO io, String prCmd, int width);
+	public abstract void showCommands(BusShell shell, String prCmd, int width);
 }
 

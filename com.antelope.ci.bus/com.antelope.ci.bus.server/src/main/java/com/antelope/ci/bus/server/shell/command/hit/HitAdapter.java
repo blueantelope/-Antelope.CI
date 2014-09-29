@@ -9,10 +9,10 @@
 package com.antelope.ci.bus.server.shell.command.hit;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.ICommand;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 /**
  * portal命令适配器
@@ -33,19 +33,12 @@ public class HitAdapter extends CommandAdapter {
 		addCommand(new RefreshHit());
 	}
 
-	@Override
-	protected void afterExecute(ICommand command, String status, TerminalIO io, Object... args) throws CIBusException {
-		
-		// TODO Auto-generated method stub
+	@Override protected void afterExecute(ICommand command, String status, BusShell shell, Object... args) throws CIBusException {
 		
 	}
 
-	@Override
-	public void showCommands(TerminalIO io, String prCmd, int width) {
-		
-		// TODO Auto-generated method stub
+	@Override public void showCommands(BusShell shell, String prCmd, int width) {
 		
 	}
-	
 }
 

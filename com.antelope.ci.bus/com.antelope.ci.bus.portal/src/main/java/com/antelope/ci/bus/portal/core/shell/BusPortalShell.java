@@ -80,6 +80,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			throw new CIBusException("", "must set configration of portal");
 	}
 	
+	public Portal getPortal() {
+		return portal;
+	}
+	
 	public void savePositionFromContent(int x, int y) {
 		savePosition(contentPalette.getX() + x, contentPalette.getY() + y);
 	}
@@ -928,6 +932,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			PortalBlock portalBlock = new PortalBlock();
 			portalBlock.setCursor(blockCursor);
 			portalBlock.setWidth(width);
+			portalBlock.setValue(s);
 			mainBlockList.add(portalBlock);
 		}
 		return width;
@@ -935,6 +940,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	protected void writeLivingUnit(BusPortalShellUnit unit) throws CIBusException {
 		writeLivingUnit(unit.cursor, unit.text);
+	}
+	
+	public void rewriteUnit(ShellCursor cursor, String str) throws CIBusException {
+		if (ShellText.isShellText(str))
+			writeFormat(str);
+		else
+			print(str);
 	}
 	
 	protected void writeLivingUnit(ShellCursor cursor, String str) throws CIBusException {

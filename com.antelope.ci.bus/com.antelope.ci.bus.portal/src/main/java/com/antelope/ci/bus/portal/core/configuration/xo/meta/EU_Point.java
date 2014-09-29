@@ -45,7 +45,7 @@ public enum EU_Point implements Serializable {
 				return p;
 		}
 		
-		throw new CIBusException("", "unknow point name");
+		throw new CIBusException("", "unknown point name");
 	}
 }
 

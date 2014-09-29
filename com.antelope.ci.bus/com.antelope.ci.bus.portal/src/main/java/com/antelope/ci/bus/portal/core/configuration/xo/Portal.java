@@ -31,6 +31,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extensions;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Hit;
+import com.antelope.ci.bus.portal.core.configuration.xo.portal.HitGroup;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Layout;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Part;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Parts;
@@ -498,6 +499,18 @@ public class Portal implements Serializable {
 		if (action != null)
 			action.deweight();
 		
+	}
+	
+	public HitGroup getBlockHit() {
+		if (action != null)
+			return action.getBlockHit();
+		return null;
+	}
+	
+	public Hit getHit(String scope, String mode, String name) {
+		if (action != null)
+			return action.getHit(scope, mode, name);
+		return null;
 	}
 }
 

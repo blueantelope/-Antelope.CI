@@ -12,7 +12,6 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.ShellUtil;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 /**
  * TODO 描述
@@ -24,24 +23,36 @@ public abstract class BaseCommand implements ICommand {
 	/**
 	 * 
 	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.command.ICommand#getContent()
+	 */
+	@Override public Command getContent() {
+		if (this.getClass().isAnnotationPresent(Command.class))
+			return this.getClass().getAnnotation(Command.class);
+		
+		return null;
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
 	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(boolean, com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(boolean refresh, BusShell shell, TerminalIO io, String status, Object... args) {
+	public String execute(boolean refresh, BusShell shell, String status, Object... args) {
 		if (this.getClass().isAnnotationPresent(Command.class)) {
 			Command command = this.getClass().getAnnotation(Command.class);
 			if (refresh && command.beforeClear()) {
 				try {
-					ShellUtil.clear(io);
+					ShellUtil.clear(shell.getIo());
 				} catch (CIBusException e) {
 					DevAssistant.errorln(e);
 				}
 			}
 		}
 		
-		return execute(shell, io, status, args);
+		return execute(shell, status, args);
 	}
 	
-	protected abstract String execute(BusShell shell, TerminalIO io, String status, Object... args);
+	protected abstract String execute(BusShell shell, String status, Object... args);
 }
 

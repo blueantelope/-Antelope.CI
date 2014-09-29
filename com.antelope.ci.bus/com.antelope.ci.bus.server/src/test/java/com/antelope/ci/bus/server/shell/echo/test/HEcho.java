@@ -17,21 +17,23 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-28		下午11:00:04 
  */
-@Command(name="h", commands="h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15", type=CommandType.ECHO)
+@Command(
+		name="h",
+		commands="h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12, h13, h14, h15",
+		type=CommandType.ECHO)
 public class HEcho extends Echo {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(BusShell shell, TerminalIO io, String status, Object... args) {
+	public String execute(BusShell shell, String status, Object... args) {
 		return BusShellStatus.KEEP;
 	}
 

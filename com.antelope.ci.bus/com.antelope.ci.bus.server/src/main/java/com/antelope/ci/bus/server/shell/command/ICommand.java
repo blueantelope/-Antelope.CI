@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.server.shell.command;
 
 import com.antelope.ci.bus.server.shell.BusShell;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -19,6 +18,8 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2013-12-3		上午9:40:01 
  */
 public interface ICommand {
-	public String execute(boolean refresh, BusShell shell, TerminalIO io, String status, Object... args);
+	public Command getContent();
+	
+	public String execute(boolean refresh, BusShell shell, String status, Object... args);
 }
 

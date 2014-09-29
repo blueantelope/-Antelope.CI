@@ -96,8 +96,6 @@ public abstract class CommonEntrance implements Entrance {
 				DevAssistant.errorln(e);
 			}
 		}
-		
-		
 	}
 	
 	private void destroy() {
@@ -112,4 +110,3 @@ public abstract class CommonEntrance implements Entrance {
 	
 	protected abstract void afterUnmount() throws CIBusException;
 }
-

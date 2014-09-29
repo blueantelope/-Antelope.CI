@@ -36,7 +36,7 @@ public class Extension implements Serializable {
 	public String getPoint() {
 		return point;
 	}
-	public void setPoint_exp(String point) {
+	public void setPoint(String point) {
 		this.point = point;
 	}
 	public EU_Point toPoint() throws CIBusException {

@@ -16,7 +16,6 @@ import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.HelpContent;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -25,17 +24,22 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-6		下午9:47:12 
  */
-@Command(name="help", commands="h, H", status=BusShellStatus.ROOT, type=CommandType.HIT, beforeClear=true)
+@Command(
+		name="help",
+		commands="h, H",
+		status=BusShellStatus.ROOT,
+		type=CommandType.HIT,
+		beforeClear=true)
 public class HelpHit extends Hit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(BusShell shell, TerminalIO io, String status, Object... args) {
+	public String execute(BusShell shell, String status, Object... args) {
 		try {
-			io.println(HelpContent.getContent().getHitContent(BusShellStatus.HELP));
+			shell.getIo().println(HelpContent.getContent().getHitContent(BusShellStatus.HELP));
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		} finally {

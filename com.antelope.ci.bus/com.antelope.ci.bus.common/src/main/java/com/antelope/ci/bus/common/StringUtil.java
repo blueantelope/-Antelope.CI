@@ -27,7 +27,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version 0.1
  * @Date 2013-9-26 下午9:03:45
  */
-public class StringUtil extends Object {
+public class StringUtil {
 	private static final char[] letters = { '0', '1', '2', '3', '4', '5', '6',
 			'7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 

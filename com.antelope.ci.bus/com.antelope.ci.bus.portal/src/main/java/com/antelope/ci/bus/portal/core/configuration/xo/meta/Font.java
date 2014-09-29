@@ -59,11 +59,9 @@ public class Font implements Serializable {
 	public String getMark() {
 		return mark;
 	}
-
 	public void setMark(String mark) {
 		this.mark = mark;
 	}
-
 	public EU_FontMark toEU_Mark() {
 		return EU_FontMark.toMark(mark);
 	}

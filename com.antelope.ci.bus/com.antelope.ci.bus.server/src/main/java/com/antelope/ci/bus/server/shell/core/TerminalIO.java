@@ -43,7 +43,6 @@ import java.io.OutputStream;
 import org.apache.log4j.Logger;
 
 /**
- * TODO 描述
  * 
  * @author blueantelope
  * @version 0.1

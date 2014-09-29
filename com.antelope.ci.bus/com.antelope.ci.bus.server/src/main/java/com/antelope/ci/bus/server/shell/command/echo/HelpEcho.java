@@ -16,7 +16,6 @@ import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 import com.antelope.ci.bus.server.shell.command.HelpContent;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 
@@ -30,18 +29,18 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 public class HelpEcho extends Echo {
 
 	public HelpEcho() {
-
+		super();
 	}
 	
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(BusShell shell, TerminalIO io, String status, Object... args) {
+	public String execute(BusShell shell, String status, Object... args) {
 		try {
-			io.println(HelpContent.getContent().getEchoContent(BusShellStatus.HELP));
+			shell.getIo().println(HelpContent.getContent().getEchoContent(BusShellStatus.HELP));
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		} finally {

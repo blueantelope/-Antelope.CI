@@ -13,7 +13,6 @@ import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -22,15 +21,20 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-6		下午9:49:33 
  */
-@Command(name="quit", commands="q, Q", status=BusShellStatus.HELP, type=CommandType.HIT, mode="+<"+BusShellMode.MAIN+">")
+@Command(
+		name="quit",
+		commands="q, Q",
+		status=BusShellStatus.HELP,
+		type=CommandType.HIT,
+		mode="+<"+BusShellMode.MAIN+">")
 public class QuitOnHelpHit extends Hit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public String execute(BusShell shell, TerminalIO io, String status, Object... args) {
+	public String execute(BusShell shell, String status, Object... args) {
 		return BusShellStatus.LAST;
 	}
 

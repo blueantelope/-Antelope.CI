@@ -30,7 +30,6 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 /**
  * shell view template
- * 
  * @author blueantelope
  * @version 0.1
  * @Date 2013-10-14 下午1:06:49
@@ -143,6 +142,10 @@ public abstract class BusShell {
 		return paletteMap.get(name);
 	}
 	
+	public TerminalIO getIo() {
+		return io;
+	}
+
 	private void init() {
 		Class clazz = this.getClass();
 		for (; commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz = clazz

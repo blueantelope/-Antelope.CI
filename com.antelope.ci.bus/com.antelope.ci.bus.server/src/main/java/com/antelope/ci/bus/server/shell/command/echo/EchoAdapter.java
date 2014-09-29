@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -48,10 +49,11 @@ public class EchoAdapter extends  CommandAdapter {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#showCommands(com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, int)
+	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#showCommands(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, int)
 	 */
 	@Override
-	public void showCommands(TerminalIO io, String prCmd, int width) {
+	public void showCommands(BusShell shell, String prCmd, int width) {
+		TerminalIO io = shell.getIo();
 		List<String> cmdList = new ArrayList<String>();
 		int maxLen = 0;
 		for (String name : commandMap.keySet()) {
@@ -99,10 +101,10 @@ public class EchoAdapter extends  CommandAdapter {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#afterExecute(com.antelope.ci.bus.server.shell.command.ICommand, java.lang.String, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#afterExecute(com.antelope.ci.bus.server.shell.command.ICommand, java.lang.String, com.antelope.ci.bus.server.shell.BusShell, java.lang.Object[])
 	 */
 	@Override
-	protected void afterExecute(ICommand command, String status, TerminalIO io, Object... args) throws CIBusException {
+	protected void afterExecute(ICommand command, String status, BusShell shell, Object... args) throws CIBusException {
 
 	}
 }

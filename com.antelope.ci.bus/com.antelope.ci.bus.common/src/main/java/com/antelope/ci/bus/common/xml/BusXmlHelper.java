@@ -113,7 +113,7 @@ public class BusXmlHelper {
 				if (o != null)
 					parseXml(document, o, "/"+xmlRoot.name(), clazz.getClassLoader());
 			} catch (Exception e) {
-				e.printStackTrace();
+				DevAssistant.errorln(e);
 			} 
 		} 
 		return o;
@@ -229,7 +229,6 @@ public class BusXmlHelper {
 				parseChildXml(elemnetList.get(0), instance, loader);
 			}
 		}
-		
 	}
 	
 	/*

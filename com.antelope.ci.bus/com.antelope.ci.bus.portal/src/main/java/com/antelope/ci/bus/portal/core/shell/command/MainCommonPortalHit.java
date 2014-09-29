@@ -15,11 +15,9 @@ import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -29,15 +27,29 @@ public abstract class MainCommonPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, java.lang.Object[])
 	 */
-	@Override protected String execute(BusShell shell, TerminalIO io, String status, Object... args) {
+	@Override protected String execute(BusShell shell, String status, Object... args) {
+		BusPortalShell portalShell = (BusPortalShell) shell;
+		try {
+			redoBlock(portalShell);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
 		if (PortalShellUtil.isMainMode((BusPortalShell) shell))
-			return executeOnMain((BusPortalShell) shell, io, status, args);
+			return executeOnMain((BusPortalShell) shell, status, args);
 		return BusShellStatus.KEEP;
 	}
 	
-	protected abstract String executeOnMain(BusPortalShell shell, TerminalIO io, String status, Object... args);
+	protected abstract String executeOnMain(BusPortalShell shell, String status, Object... args);
+	
+	protected void redoBlock(BusPortalShell shell) throws CIBusException {
+		PortalBlock block = shell.getActiveBlock();
+		if (block == null)
+			return;
+		shell.rewriteUnit(block.getCursor(), block.getValue());
+		shell.move(-block.getWidth(), 0);
+	}
 	
 	protected void up(BusPortalShell shell) {
 		move(shell, 1);

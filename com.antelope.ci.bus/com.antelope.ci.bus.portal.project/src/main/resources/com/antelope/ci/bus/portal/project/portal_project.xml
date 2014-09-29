@@ -9,11 +9,11 @@
 		
 		<extension point="action">
 			<action>
-				<hit name="switch_portal">
+				<hit name="new_project" scope="native" mode="main">
 					<font style="bold" mark="lt" size="medium" />
 				</hit>
 			</action>
-		</action>
+		</extension>
 		
 		<extension point="layout">
 			<parts name="center" embed="replace">

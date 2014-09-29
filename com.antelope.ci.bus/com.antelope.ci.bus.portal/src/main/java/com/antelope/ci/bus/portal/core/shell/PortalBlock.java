@@ -24,6 +24,7 @@ public class PortalBlock {
 	private int width;
 	private int height;
 	private String mode;
+	private String value;
 	private PortalBlock up;
 	private PortalBlock down;
 	private PortalBlock left;
@@ -119,5 +120,11 @@ public class PortalBlock {
 	public void setHeight(int height) {
 		this.height = height;
 	}
-	
+
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
 }

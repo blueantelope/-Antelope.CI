@@ -33,9 +33,9 @@ public class RightMainPortalHit extends MainCommonPortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.String, java.lang.Object[])
 	 */
-	@Override protected String executeOnMain(BusPortalShell shell, TerminalIO io, String status, Object... args) {
+	@Override protected String executeOnMain(BusPortalShell shell, String status, Object... args) {
 		right(shell);
 		return BusShellStatus.KEEP;
 	}

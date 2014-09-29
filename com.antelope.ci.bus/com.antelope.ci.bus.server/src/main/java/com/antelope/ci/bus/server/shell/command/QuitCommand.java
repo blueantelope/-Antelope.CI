@@ -10,25 +10,21 @@ package com.antelope.ci.bus.server.shell.command;
 
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
+ * quit system
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-12-13		下午5:44:04 
  */
-@Command(name="quit", commands="q, Q", status=BusShellStatus.LAST, type=CommandType.HIT)
-public class QuitCommand implements ICommand {
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(boolean, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
-	 */
-	@Override
-	public String execute(boolean refresh, BusShell shell, TerminalIO io, String status, Object... args) {
+@Command(
+		name="quit",
+		commands="q, Q",
+		status=BusShellStatus.LAST,
+		type=CommandType.HIT)
+public class QuitCommand extends BaseCommand {
+	@Override protected String execute(BusShell shell, String status, Object... args) {
 		return BusShellStatus.LAST;
 	}
 }
-

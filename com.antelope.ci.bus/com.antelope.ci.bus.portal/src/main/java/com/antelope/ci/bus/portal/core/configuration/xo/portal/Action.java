@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 
@@ -71,6 +72,16 @@ public class Action implements Serializable {
 	
 	public List<Hit> getGlobalHit() {
 		return CommonHit.getGlobalHit(hitList);
+	}
+	
+	public Hit getHit(String scope, String mode, String name) {
+		for (Hit hit : hitList) {
+			if (StringUtil.compare(scope, hit.getScope()) == 0
+					&& StringUtil.compare(mode, hit.getMode()) == 0
+							&& StringUtil.compare(name, hit.getName()) == 0)
+				return hit;
+		}
+		return null;
 	}
 	
 	public List<HitGroup> getGlobalHitgroup() {
