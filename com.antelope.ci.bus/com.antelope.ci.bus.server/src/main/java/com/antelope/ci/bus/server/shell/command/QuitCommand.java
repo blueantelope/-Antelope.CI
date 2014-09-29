@@ -24,7 +24,7 @@ import com.antelope.ci.bus.server.shell.BusShellStatus;
 		status=BusShellStatus.LAST,
 		type=CommandType.HIT)
 public class QuitCommand extends BaseCommand {
-	@Override protected String execute(BusShell shell, String status, Object... args) {
+	@Override protected String execute(BusShell shell, Object... args) {
 		return BusShellStatus.LAST;
 	}
 }

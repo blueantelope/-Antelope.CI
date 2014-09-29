@@ -43,7 +43,7 @@ public class PortalCommandAdapter extends HitAdapter {
 		addCommands("com.antelope.ci.bus.portal.core.shell.command");
 	}
 	
-	@Override protected void afterExecute(ICommand command, String status, BusShell shell, Object... args) throws CIBusException {
+	@Override protected void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException {
 		if (shell != null) {
 			BusPortalShell portalShell = (BusPortalShell) shell;
 			PortalBlock block = portalShell.getActiveBlock();

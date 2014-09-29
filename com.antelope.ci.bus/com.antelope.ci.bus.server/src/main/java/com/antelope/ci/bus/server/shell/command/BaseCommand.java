@@ -35,10 +35,10 @@ public abstract class BaseCommand implements ICommand {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(boolean, com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.core.TerminalIO, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.ICommand#execute(boolean, com.antelope.ci.bus.server.shell.BusShell, java.lang.Object[])
 	 */
 	@Override
-	public String execute(boolean refresh, BusShell shell, String status, Object... args) {
+	public String execute(boolean refresh, BusShell shell, Object... args) {
 		if (this.getClass().isAnnotationPresent(Command.class)) {
 			Command command = this.getClass().getAnnotation(Command.class);
 			if (refresh && command.beforeClear()) {
@@ -50,9 +50,9 @@ public abstract class BaseCommand implements ICommand {
 			}
 		}
 		
-		return execute(shell, status, args);
+		return execute(shell, args);
 	}
 	
-	protected abstract String execute(BusShell shell, String status, Object... args);
+	protected abstract String execute(BusShell shell, Object... args);
 }
 

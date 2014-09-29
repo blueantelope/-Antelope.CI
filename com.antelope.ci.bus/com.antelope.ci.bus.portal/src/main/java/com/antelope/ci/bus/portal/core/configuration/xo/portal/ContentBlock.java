@@ -26,9 +26,18 @@ import com.antelope.ci.bus.portal.core.shell.PortalShellText;
  */
 @XmlEntity(name="block")
 public class ContentBlock implements Serializable {
+	private String name;
 	private String action;
 	private String active;
 	private CommonValue cvalue;
+	
+	@XmlAttribute(name="name")
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	@XmlAttribute(name="action")
 	public String getAction() {
@@ -73,7 +82,7 @@ public class ContentBlock implements Serializable {
 			if (available()) {
 				if (cvalue.focus())
 					shellValue = PortalShellText.genFocusText(shellValue);
-				shellValue = PortalShellText.genBlockText(shellValue);
+				shellValue = PortalShellText.genBlockText(shellValue, name);
 			}
 		}
 		return shellValue;

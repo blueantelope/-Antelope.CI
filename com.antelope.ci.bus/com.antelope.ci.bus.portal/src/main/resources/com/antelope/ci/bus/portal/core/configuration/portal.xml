@@ -79,6 +79,8 @@
 	<extensions>
 		<extension point="base">
 		</extension>
+		<extension point="action">
+		</extension>
 		<extension point="layout">
 		</extension>
 		<extension point="parts">

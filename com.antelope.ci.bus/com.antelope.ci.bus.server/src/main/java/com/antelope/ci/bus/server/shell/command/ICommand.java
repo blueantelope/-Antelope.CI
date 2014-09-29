@@ -20,6 +20,6 @@ import com.antelope.ci.bus.server.shell.BusShell;
 public interface ICommand {
 	public Command getContent();
 	
-	public String execute(boolean refresh, BusShell shell, String status, Object... args);
+	public String execute(boolean refresh, BusShell shell, Object... args);
 }
 

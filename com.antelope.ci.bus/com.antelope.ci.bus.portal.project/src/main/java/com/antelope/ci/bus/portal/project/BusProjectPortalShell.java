@@ -13,18 +13,23 @@ import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.portal.project.command.NewProjectHit;
+import com.antelope.ci.bus.portal.project.command.ProjectRunMainPortalHit;
 import com.antelope.ci.bus.server.shell.Shell;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-2-27		下午6:03:13 
  */
-@Shell(name="portal.project", commandAdapter="com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter", status=BusProjectShellStatus.PROJECT)
-@PortalConfiguration(xml="classpath:/com/antelope/ci/bus/portal/project/portal_project", properties="classpath:com.antelope.ci.bus.portal.project.portal_project")
+@Shell(
+		name="portal.project",
+		commandAdapter="com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter",
+		status=BusProjectShellStatus.PROJECT)
+@PortalConfiguration(
+		xml="classpath:/com/antelope/ci/bus/portal/project/portal_project",
+		properties="classpath:com.antelope.ci.bus.portal.project.portal_project")
 public class BusProjectPortalShell extends BusPortalShell {
 
 	public BusProjectPortalShell() throws CIBusException {
@@ -34,20 +39,16 @@ public class BusProjectPortalShell extends BusPortalShell {
 	@Override
 	protected void customInit() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void custom() throws CIBusException {
 		commandAdapter.addCommand(new NewProjectHit());		
-		
+		commandAdapter.addCommand(new ProjectRunMainPortalHit());		
 	}
 
 	@Override
 	protected void shutdown() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 

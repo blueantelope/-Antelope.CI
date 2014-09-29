@@ -199,6 +199,10 @@ public abstract class BusShell {
 	public String getStatus() {
 		return this.status;
 	}
+	
+	public String getMode() {
+		return this.mode;
+	}
 
 	public void setLastStatus(String lastStatus) {
 		this.lastStatus = lastStatus;
@@ -206,6 +210,14 @@ public abstract class BusShell {
 
 	public boolean isOpened() {
 		return opened;
+	}
+	
+	public void runCommand(String name) {
+		try {
+			commandAdapter.execute(this, !multiShell(), name);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
 	}
 
 	public void open() throws CIBusException {
@@ -308,8 +320,7 @@ public abstract class BusShell {
 	protected void execute(ShellCommandArg cmdArg) {
 		if (cmdArg != null && cmdArg.exist()) {
 			try {
-				actionStatus = commandAdapter.execute(status, !multiShell(),
-						cmdArg.getCommand(), this, io, cmdArg.getArgs());
+				actionStatus = commandAdapter.execute(this, !multiShell(), cmdArg.getCommand(), cmdArg.getArgs());
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}

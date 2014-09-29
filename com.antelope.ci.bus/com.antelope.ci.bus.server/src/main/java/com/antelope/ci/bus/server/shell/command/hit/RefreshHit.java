@@ -31,10 +31,10 @@ public class RefreshHit extends Hit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.Object[])
 	 */
 	@Override
-	public String execute(BusShell shell, String status, Object... args) {
+	public String execute(BusShell shell, Object... args) {
 		try {
 			shell.refresh();
 		} catch (CIBusException e) {

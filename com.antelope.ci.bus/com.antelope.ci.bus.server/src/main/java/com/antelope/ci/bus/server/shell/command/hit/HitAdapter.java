@@ -33,7 +33,7 @@ public class HitAdapter extends CommandAdapter {
 		addCommand(new RefreshHit());
 	}
 
-	@Override protected void afterExecute(ICommand command, String status, BusShell shell, Object... args) throws CIBusException {
+	@Override protected void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException {
 		
 	}
 

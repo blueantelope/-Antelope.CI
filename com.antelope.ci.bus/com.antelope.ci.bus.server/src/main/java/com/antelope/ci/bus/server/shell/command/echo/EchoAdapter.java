@@ -101,10 +101,9 @@ public class EchoAdapter extends  CommandAdapter {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#afterExecute(com.antelope.ci.bus.server.shell.command.ICommand, java.lang.String, com.antelope.ci.bus.server.shell.BusShell, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#afterExecute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.command.ICommand, java.lang.Object[])
 	 */
-	@Override
-	protected void afterExecute(ICommand command, String status, BusShell shell, Object... args) throws CIBusException {
+	@Override protected void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException {
 
 	}
 }

@@ -16,11 +16,9 @@ import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -36,9 +34,14 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 		form="classpath:/com/antelope/ci/bus/portal/project/form/new_project.xml",
 		property="com.antelope.ci.bus.portal.project.form.project_form")
 public class NewProjectHit extends MainCommonPortalHit {
-	
-	@Override protected String executeOnMain(BusPortalShell shell, String status, Object... args) {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
+	 */
+	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
 		try {
+			shell.leaveBlock();
 			drawForm(shell);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);

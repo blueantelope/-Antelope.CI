@@ -139,6 +139,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		this.activeBlock = block;
 	}
 	
+	public void leaveBlock() {
+		this.activeBlock = null;
+	}
+	
 	protected ShellCursor getContentCursor() {
 		return new ShellCursor(contentPalette.getX(), contentPalette.getY());
 	}
@@ -930,6 +934,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 		if (loadMainblock && PortalShellText.containBlock(str)) {
 			PortalBlock portalBlock = new PortalBlock();
+			portalBlock.setName(PortalShellText.getName(str));
 			portalBlock.setCursor(blockCursor);
 			portalBlock.setWidth(width);
 			portalBlock.setValue(s);

@@ -26,7 +26,6 @@ import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
 import com.antelope.ci.bus.server.shell.command.CommandHelper.COMMAND_SIGN;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -55,7 +54,7 @@ public abstract class CommandAdapter {
 			Command cmd = command.getClass().getAnnotation(Command.class);
 			if (cmd.type() == cType) {
 				BaseStatus bs = BaseStatus.toStatus(cmd.status());
-				String key = cmd.status() + DOT + cmd.name();
+				String key = makeKey(cmd.status(), cmd.mode(), cmd.name());
 				if (bs == BaseStatus.GLOBAL)
 					globalCommandMap.put(key, command);
 				else
@@ -137,16 +136,31 @@ public abstract class CommandAdapter {
 		return cmdList;
 	}
 	
-	public String execute(String status, boolean refresh, String cmd, BusShell shell, TerminalIO io, Object... args) throws CIBusException {
+	public String execute(BusShell shell, boolean refresh, String key) throws CIBusException {
+		ICommand command = globalCommandMap.get(key);
+		if (command == null)
+			command = commandMap.get(key);
+		if (command != null) {
+			String rs = execute(command, shell, refresh, new String[]{});
+			if (rs != null)
+				return rs;
+		}
+		
+		return BusShellStatus.KEEP;
+	}
+	
+	public String execute(BusShell shell, boolean refresh, String cmd, Object... args) throws CIBusException {
+		String status = shell.getStatus();
+		String mode = shell.getMode();
 		for (String key : globalCommandMap.keySet()) {
-			String rs = execute(key, globalCommandMap, status, refresh, cmd, shell, io, args);
+			String rs = execute(key, globalCommandMap, shell, refresh, cmd, args);
 			if (rs != null)
 				return rs;
 		}
 		
 		for (String key : commandMap.keySet()) {
-			if (key.contains(status)) {
-				String rs = execute(key, commandMap, status, refresh, cmd, shell, io, args);
+			if (key.contains(status + DOT + mode)) {
+				String rs = execute(key, commandMap, shell, refresh, cmd, args);
 				if (rs != null)
 					return rs;
 			}
@@ -154,16 +168,19 @@ public abstract class CommandAdapter {
 		return BusShellStatus.KEEP;
 	}
 	
-	protected String execute(String key, Map<String, ICommand> currentCmdMap, String status, 
-			boolean refresh, String cmd, BusShell shell, Object... args) throws CIBusException {
+	protected String execute(String key, Map<String, ICommand> currentCmdMap, 
+			BusShell shell, boolean refresh, String cmd, Object... args) throws CIBusException {
 		ICommand command = currentCmdMap.get(key);
-		if (match(command, cmd)) {
-			String actionStatus = command.execute(refresh, shell, status, args);
-			afterExecute(command, status, shell, args);
-			return actionStatus;
-		}
+		if (command != null && match(command, cmd))
+			return execute(command, shell, refresh, cmd, args);
 		
 		return null;
+	}
+	
+	protected String execute(ICommand command,  BusShell shell, boolean refresh, Object... args) throws CIBusException {
+		String actionStatus = command.execute(refresh, shell, args);
+		afterExecute(shell, command, args);
+		return actionStatus;
 	}
 	
 	protected boolean match(ICommand command, String cmdStr) {
@@ -199,9 +216,13 @@ public abstract class CommandAdapter {
 		return isQuit;
 	}
 	
+	protected String makeKey(String status, String mode, String name) {
+		return status + DOT + mode + DOT + name;
+	}
+	
 	protected abstract void init();
 	
-	protected abstract void afterExecute(ICommand command, String status, BusShell shell, Object... args) throws CIBusException;
+	protected abstract void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException;
 	
 	public abstract void showCommands(BusShell shell, String prCmd, int width);
 }

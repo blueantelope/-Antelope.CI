@@ -76,6 +76,7 @@ public class BusShellStatus {
 		}
 	}
 	
+	public static final String NONE 				= "command.status.none";
 	public static final String GLOBAL 			= "command.status.global";
 	public static final String INIT					= "command.status.init";
 	public static final String ROOT 				= "command.status.root";

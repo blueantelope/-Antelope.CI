@@ -60,7 +60,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 				buffer.reset();
 			}
 		} catch (Exception e) {
-			DevAssistant.assert_exception(e);
+			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
 		}
 	}

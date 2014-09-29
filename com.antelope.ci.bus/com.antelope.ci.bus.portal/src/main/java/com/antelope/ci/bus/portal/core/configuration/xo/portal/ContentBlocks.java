@@ -198,6 +198,7 @@ public class ContentBlocks implements Serializable {
 	
 	private ContentBlock genContentBlock(ContentBlock block, String value) {
 		ContentBlock newContentBlock = new ContentBlock();
+		newContentBlock.setName(block.getName());
 		newContentBlock.setActive(block.getActive());
 		newContentBlock.setAction(block.getAction());
 		FontExpression font;

@@ -65,7 +65,7 @@ public class BusShellMode {
 	}
 	
 	public static final String MAIN				= "shell.mode.main";
-	public static final String INPUT 				= "shell.mode.input";
+	public static final String INPUT 			= "shell.mode.input";
 	public static final String EDIT				= "shell.mode.edit";
 	
 	public static boolean isMain(String modeName) {

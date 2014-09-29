@@ -27,9 +27,9 @@ public abstract class MainCommonPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.server.shell.command.BaseCommand#execute(com.antelope.ci.bus.server.shell.BusShell, java.lang.Object[])
 	 */
-	@Override protected String execute(BusShell shell, String status, Object... args) {
+	@Override protected String execute(BusShell shell, Object... args) {
 		BusPortalShell portalShell = (BusPortalShell) shell;
 		try {
 			redoBlock(portalShell);
@@ -37,11 +37,9 @@ public abstract class MainCommonPortalHit extends PortalHit {
 			DevAssistant.errorln(e);
 		}
 		if (PortalShellUtil.isMainMode((BusPortalShell) shell))
-			return executeOnMain((BusPortalShell) shell, status, args);
+			return executeOnMain((BusPortalShell) shell, args);
 		return BusShellStatus.KEEP;
 	}
-	
-	protected abstract String executeOnMain(BusPortalShell shell, String status, Object... args);
 	
 	protected void redoBlock(BusPortalShell shell) throws CIBusException {
 		PortalBlock block = shell.getActiveBlock();
@@ -97,5 +95,7 @@ public abstract class MainCommonPortalHit extends PortalHit {
 			}
 		}
 	}
+	
+	protected abstract String executeOnMain(BusPortalShell shell,  Object... args);
 }
 

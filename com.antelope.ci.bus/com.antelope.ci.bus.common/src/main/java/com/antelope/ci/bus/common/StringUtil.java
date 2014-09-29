@@ -277,6 +277,28 @@ public class StringUtil {
 		return result.toString();
 	}
 	
+	public static String deleteFirst(String str, String header, String tail) {
+		int start = str.indexOf(header);
+		if (start  != -1) {
+			int end = str.indexOf(tail, start+header.length());
+			if (end != -1)
+				return str.substring(end+tail.length());
+		}
+		
+		return str;
+	}
+	
+	public static String find(String str, String header, String tail) {
+		int start = str.indexOf(header);
+		if (start  != -1) {
+			start += header.length();
+			int end = str.indexOf(tail, start);
+			if (end != -1)
+				return str.substring(start, end);
+		}
+		return null;
+	}
+	
 	public static boolean contain(String str, String prefix, String suffix) {
 		String reg = "(" + prefix + ".+" + suffix + "){1,}";
 		Pattern pattern = Pattern.compile(reg);

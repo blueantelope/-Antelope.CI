@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.core.shell.command.RightMainPortalHit.java
+// com.antelope.ci.bus.portal.core.shell.command.CommandMainPortalHit.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -9,34 +9,33 @@
 package com.antelope.ci.bus.portal.core.shell.command;
 
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.server.shell.BusShellMode;
+import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
-import com.antelope.ci.bus.server.shell.command.CommandHelper;
-import com.antelope.ci.bus.server.shell.command.CommandType;
 
 
 /**
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014-8-26		上午11:33:38 
+ * @Date	 2014年9月29日		下午3:16:25 
  */
-@Command(
-		name="right_main", 
-		commands=CommandHelper.rightCommand, 
-		status=BusShellStatus.GLOBAL, 
-		type=CommandType.HIT, 
-		mode=BusShellMode.MAIN)
-public class RightMainPortalHit extends MainCommonPortalHit {
+public class RunMainPortalHit extends MainCommonPortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
 	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
 	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
-		right(shell);
+		Command command = getContent();
+		PortalBlock block = shell.getActiveBlock();
+		if (block != null) {
+			String name = command.status() + "."  + command.mode() + "." + block.getName();
+			shell.runCommand(name);
+		}
+		
 		return BusShellStatus.KEEP;
 	}
 
 }
+

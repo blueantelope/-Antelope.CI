@@ -32,9 +32,9 @@ public class LeftMainPortalHit extends MainCommonPortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.String, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
-	@Override protected String executeOnMain(BusPortalShell shell, String status, Object... args) {
+	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
 		left(shell);
 		return BusShellStatus.KEEP;
 	}
