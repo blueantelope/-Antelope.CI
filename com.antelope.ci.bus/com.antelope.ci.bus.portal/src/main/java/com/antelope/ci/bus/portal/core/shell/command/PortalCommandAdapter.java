@@ -11,13 +11,10 @@ package com.antelope.ci.bus.portal.core.shell.command;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
-import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.ICommand;
 import com.antelope.ci.bus.server.shell.command.hit.HitAdapter;
@@ -46,10 +43,6 @@ public class PortalCommandAdapter extends HitAdapter {
 	@Override protected void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException {
 		if (shell != null) {
 			BusPortalShell portalShell = (BusPortalShell) shell;
-			PortalBlock block = portalShell.getActiveBlock();
-			if (block == null)
-				return;
-			
 			Command cmdContent = command.getContent();
 			CommonHit hit = null;
 			// look for hit of block 
@@ -59,27 +52,7 @@ public class PortalCommandAdapter extends HitAdapter {
 					scope = EU_Scope.GLOBAL.getName();
 				hit = portalShell.getPortal().getHit(scope, cmdContent.mode(), cmdContent.name());
 			}
-			// look for hitgroup of block
-			if (hit == null)
-				hit = portalShell.getPortal().getBlockHit();
-			// render block
-			if (hit != null) {
-				FontExpression font = hit.getFont().toRenderFont().toFontExpression();
-				String value = block.getValue();
-				ShellText text;
-				if (ShellText.isShellText(value)) {
-					text = ShellText.toShellText(value);
-				} else {
-					text = new ShellText();
-					text.setText(value);
-				}
-				text.setFont_mark(font.getMark().getCode());
-				text.setFont_size(font.getSize().getCode());
-				text.setFont_style(font.getSytle().getCode());
-				value = text.toString();
-				portalShell.rewriteUnit(block.getCursor(), value);
-				portalShell.move(-block.getWidth(), 0);
-			}
+			portalShell.focus(hit);
 		}
 	}
 }

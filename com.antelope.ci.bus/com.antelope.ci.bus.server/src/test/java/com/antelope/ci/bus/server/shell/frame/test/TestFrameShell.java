@@ -171,4 +171,19 @@ public class TestFrameShell extends BusBaseFrameShell {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	protected boolean handleInput(int c) {
+		
+		// TODO Auto-generated method stub
+		return false;
+		
+	}
+
+	@Override
+	protected void handleMode() {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

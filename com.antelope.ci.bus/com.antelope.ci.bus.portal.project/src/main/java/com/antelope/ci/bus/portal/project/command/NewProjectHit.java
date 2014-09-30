@@ -41,7 +41,7 @@ public class NewProjectHit extends MainCommonPortalHit {
 	 */
 	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
 		try {
-			shell.leaveBlock();
+			shell.enterEdit();
 			drawForm(shell);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);

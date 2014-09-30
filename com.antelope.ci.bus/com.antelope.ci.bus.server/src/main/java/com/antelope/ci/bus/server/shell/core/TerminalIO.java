@@ -105,6 +105,27 @@ public class TerminalIO {
 	/************************************************************************
 	 * Visible character I/O methods *
 	 ************************************************************************/
+	
+	public synchronized int read(boolean dirrectly) throws IOException {
+		int i = m_io.readSsh();
+		if (dirrectly)	return i;
+		// translate possible control sequences
+		i = m_Terminal.translateControlCharacter(i);
+
+		// catch & fire a logoutrequest event
+		if (i == LOGOUTREQUEST) {
+			// m_Connection.processConnectionEvent(new
+			// ConnectionEvent(m_Connection,
+			// ConnectionEvent.CONNECTION_LOGOUTREQUEST));
+			i = HANDLED;
+		} else if (i > 256 && i == ESCAPE) {
+			// translate an incoming escape sequence
+			i = handleEscapeSequence(i);
+		}
+
+		// return i holding a char or a defined special key
+		return i;
+	}
 
 	/**
 	 * Read a single character and take care for terminal function calls.
@@ -135,7 +156,7 @@ public class TerminalIO {
 		// return i holding a char or a defined special key
 		return i;
 	}// read
-
+	
 	public synchronized int readForTelnet() throws IOException {
 		int i = m_io.read();
 		// translate possible control sequences

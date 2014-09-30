@@ -31,6 +31,7 @@ public class PortalBlock {
 	private PortalBlock right;
 	private boolean _markUp;
 	private boolean _markDown;
+	private boolean  _available;
 	
 	public PortalBlock() {
 		this(BaseMode.MAIN.getName());
@@ -44,6 +45,7 @@ public class PortalBlock {
 		this.mode = mode;
 		this._markUp = false;
 		this._markDown = false;
+		this._available = true;
 	}
 
 	public String getName() {
@@ -126,5 +128,15 @@ public class PortalBlock {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public boolean available() {
+		return _available;
+	}
+	public void disable() {
+		this._available = false;
+	}
+	public void enable() {
+		this._available = true;
 	}
 }

@@ -149,6 +149,7 @@ public abstract class PortalHit extends Hit {
 			
 			shell.writeContent(contentSet);
 			focus(shell, content);
+			shell.enterInputMode();
 		}
 	}
 	

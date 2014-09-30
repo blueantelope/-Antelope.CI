@@ -21,6 +21,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
@@ -61,6 +62,8 @@ public abstract class BusShell {
 	protected String mode;
 	protected int controlKey;
 	protected ShellCommandArg cmdArg;
+	protected volatile boolean editMode;
+	protected volatile boolean lastEditMode;
 	
 	public BusShell(BusShellSession session) {
 		this();
@@ -88,6 +91,8 @@ public abstract class BusShell {
 		activeUserAction = false;
 		mode = BusShellMode.MAIN;
 		controlKey = -1;
+		editMode = false;
+		lastEditMode = false;
 	}
 	
 	public int getControlKey() {
@@ -203,6 +208,19 @@ public abstract class BusShell {
 	public String getMode() {
 		return this.mode;
 	}
+	
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+	public void enterMainMode() {
+		this.mode = BaseMode.MAIN.getName();
+	}
+	public void enterInputMode() {
+		this.mode = BaseMode.INPUT.getName();
+	}
+	public void enterEditMode() {
+		this.mode = BaseMode.EDIT.getName();
+	}
 
 	public void setLastStatus(String lastStatus) {
 		this.lastStatus = lastStatus;
@@ -231,13 +249,16 @@ public abstract class BusShell {
 	private void loopAction() throws CIBusException {
 		int c = -1;
 		while (true) {
+			handleMode();
 			try {
-				c = io.read();
+				c = io.read(editMode);
 			} catch (IOException e) {
 				throw new CIBusException("", e);
 			}
 			if (c == -1)
 				break;
+			if (handleInput(c))
+				continue;
 			putControlKey(c);
 			try {
 				boolean ran = false;
@@ -717,4 +738,8 @@ public abstract class BusShell {
 	public abstract void moveContent() throws CIBusException;
 	
 	public abstract void writeContent(Object content) throws CIBusException;
+	
+	protected abstract boolean handleInput(int c);
+	
+	protected abstract void handleMode();
 }

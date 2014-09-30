@@ -17,6 +17,8 @@ package com.antelope.ci.bus.common;
  * @Date	 2014-4-15		下午4:41:07 
  */
 public class NetVTKey {
+	public static final int ESC = 27;
+	
 	public static final int ESCAPE = 1200; 	// Escape Sequence-ing 12xx
 	
 	/**

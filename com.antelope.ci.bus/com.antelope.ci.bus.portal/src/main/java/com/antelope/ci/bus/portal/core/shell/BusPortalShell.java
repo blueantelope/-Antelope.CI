@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.core.shell;
 
+import java.io.IOException;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,17 +20,21 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_LAYOUT;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
+import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Part;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePart;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.ShellPalette;
@@ -59,8 +65,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected PortalBlock activeBlock;
 	protected List<PortalBlock> mainBlockList;
 	protected boolean loadMainblock;
+	protected Map<String, List<PortalBlock>> blockMap;
 	protected BusPortalShellLiving shellLiving;
 	protected ShellCursor initPosition;
+	private static final int INPUTBUFFER_SIZE = 1024;
+	protected CharBuffer inputBuffer;
+	protected boolean inputInitialized;
+	protected boolean inputFinished;
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -74,8 +85,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		parsePortal();
 		mainBlockList = new ArrayList<PortalBlock>();
 		loadMainblock = true;
+		blockMap = new HashMap<String, List<PortalBlock>>();
 		shellLiving = new BusPortalShellLiving();
 		initPosition = new ShellCursor(0, 0);
+		inputBuffer = CharBuffer.allocate(INPUTBUFFER_SIZE);
+		inputInitialized = false;
+		inputFinished = false;
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
 	}
@@ -131,6 +146,12 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
+	public void enterEdit() {
+		activeBlock.disable();
+		lastEditMode = false;
+		editMode = true;
+	}
+	
 	public PortalBlock getActiveBlock() {
 		return activeBlock;
 	}
@@ -140,7 +161,49 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	public void leaveBlock() {
-		this.activeBlock = null;
+		activeBlock.disable();
+	}
+	
+	public void lostFocus() throws CIBusException {
+		String value = activeBlock.getValue();
+		ShellText text;
+		if (ShellText.isShellText(value)) {
+			text = ShellText.toShellText(value);
+		} else {
+			text = new ShellText();
+			text.setText(value);
+		}
+		value = text.toString();
+		rewriteUnit(activeBlock.getCursor(), value);
+		move(-activeBlock.getWidth(), 0);
+	}
+	
+	public void defaultFocus() throws CIBusException {
+		focus(null);
+	}
+	
+	public void focus(CommonHit hit) throws CIBusException {
+		if (activeBlock == null || !activeBlock.available())
+			return;
+	
+		String value = activeBlock.getValue();
+		ShellText text;
+		if (ShellText.isShellText(value)) {
+			text = ShellText.toShellText(value);
+		} else {
+			text = new ShellText();
+			text.setText(value);
+		}
+		if (hit == null) {
+			hit = portal.getBlockHit();
+			FontExpression font = hit.getFont().toRenderFont().toFontExpression();
+			text.setFont_mark(font.getMark().getCode());
+			text.setFont_size(font.getSize().getCode());
+			text.setFont_style(font.getSytle().getCode());
+		}
+		value = text.toString();
+		rewriteUnit(activeBlock.getCursor(), value);
+		move(-activeBlock.getWidth(), 0);
 	}
 	
 	protected ShellCursor getContentCursor() {
@@ -948,6 +1011,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	public void rewriteUnit(ShellCursor cursor, String str) throws CIBusException {
+		shiftTop();
+		moveCursor(cursor);
 		if (ShellText.isShellText(str))
 			writeFormat(str);
 		else
@@ -1036,10 +1101,98 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 
 	@Override protected ShellCursor initCursorPosistion() {
-		if (shellLiving.inUse())
-			return shellLiving.getPosition();
-		shellLiving.savePosition(initPosition);
+		if (!shellLiving.inUse())
+			shellLiving.savePosition(initPosition);
+		return initFocus();
+	}
+	
+	protected ShellCursor initFocus() {
+		try {
+			defaultFocus();
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
 		return shellLiving.getPosition();
+	}
+	
+	@Override protected boolean handleInput(int c) {
+		try {
+			BaseMode baseMode = BaseMode.toMode(mode);
+			switch (baseMode) {
+				case INPUT:
+				case EDIT:
+					if (c == NetVTKey.ESC) {
+						exitInput();
+						return true;
+					}
+					if (inputFinished) {
+						inputFinished = false;
+						return false;
+					}
+					if (c == NetVTKey.LF) {
+						finishInput();
+						return true;
+					}
+					if (!inputInitialized)
+						initInput();
+					inputBuffer.put((char) c);
+					writeInput((char) c);
+					return true;
+				case MAIN:
+				default:
+					return false;
+			}
+		} catch (Exception e) {
+			DevAssistant.errorln(e);
+		}
+		
+		return false;
+	}
+	
+	protected void exitInput() throws CIBusException {
+		mode = BaseMode.MAIN.getName();
+		activeBlock.enable();
+		lastEditMode = true;
+		editMode = false;
+		defaultFocus();
+	}
+	
+	protected void initInput() {
+		inputInitialized = true;
+		inputFinished = false;
+	}
+	
+	protected void finishInput() {
+		inputInitialized = false;
+		inputFinished = true;
+	}
+	
+	protected void writeInput(char c) throws CIBusException {
+		try {
+			activeBlock.getCursor();
+			io.write((char) c);
+		} catch (IOException e) {
+			throw new CIBusException("", e);
+		}
+	}
+	
+	@Override protected void handleMode() {
+		try {
+			changeMode();
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	protected void changeMode() throws CIBusException {
+		if (lastEditMode ^ editMode) {
+			try {
+				io.setUnderlined(editMode);
+				lastEditMode = editMode;
+			} catch (IOException e) {
+				throw new CIBusException("", e);
+			}
+		}
 	}
 	
 	protected abstract void customInit() throws CIBusException;

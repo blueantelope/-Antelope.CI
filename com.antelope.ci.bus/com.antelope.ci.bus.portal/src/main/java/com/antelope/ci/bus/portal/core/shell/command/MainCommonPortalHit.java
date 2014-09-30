@@ -10,11 +10,15 @@ package com.antelope.ci.bus.portal.core.shell.command;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
+import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
+import com.antelope.ci.bus.server.shell.command.Command;
 
 
 /**
@@ -31,22 +35,22 @@ public abstract class MainCommonPortalHit extends PortalHit {
 	 */
 	@Override protected String execute(BusShell shell, Object... args) {
 		BusPortalShell portalShell = (BusPortalShell) shell;
+		CommonHit hit = null;
+		Command cmdContent = getContent();
+		if (cmdContent != null) {
+			String scope = EU_Scope.NATIVE.getName();
+			if (BaseStatus.toStatus(cmdContent.status()) == BaseStatus.GLOBAL)
+				scope = EU_Scope.GLOBAL.getName();
+			hit = portalShell.getPortal().getHit(scope, cmdContent.mode(), cmdContent.name());
+		}
 		try {
-			redoBlock(portalShell);
+			portalShell.focus(hit);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
 		if (PortalShellUtil.isMainMode((BusPortalShell) shell))
 			return executeOnMain((BusPortalShell) shell, args);
 		return BusShellStatus.KEEP;
-	}
-	
-	protected void redoBlock(BusPortalShell shell) throws CIBusException {
-		PortalBlock block = shell.getActiveBlock();
-		if (block == null)
-			return;
-		shell.rewriteUnit(block.getCursor(), block.getValue());
-		shell.move(-block.getWidth(), 0);
 	}
 	
 	protected void up(BusPortalShell shell) {
@@ -67,32 +71,35 @@ public abstract class MainCommonPortalHit extends PortalHit {
 	
 	private void move(BusPortalShell shell, int direction) {
 		PortalBlock block = shell.getActiveBlock();
-		if (null == block)	return;
-		PortalBlock moveBlock = null;
-		switch (direction) {
-			case 1:
-				moveBlock = block.getUp();
-				break;
-			case 2:
-				moveBlock = block.getDown();
-				break;
-			case 3:
-				moveBlock = block.getLeft();
-				break;
-			case 4:
-				moveBlock = block.getRight();
-				break;
-		}
-		if (moveBlock != null) {
-			try {
+		if (null == block || !block.available())
+			return;
+		try {
+			shell.lostFocus();
+			PortalBlock moveBlock = null;
+			switch (direction) {
+				case 1:
+					moveBlock = block.getUp();
+					break;
+				case 2:
+					moveBlock = block.getDown();
+					break;
+				case 3:
+					moveBlock = block.getLeft();
+					break;
+				case 4:
+					moveBlock = block.getRight();
+					break;
+			}
+			if (moveBlock != null) {
 				int x = moveBlock.getCursor().getX();
 				int y = moveBlock.getCursor().getY();
 				shell.shift(x, y);
 				shell.savePosition(x, y);
 				shell.updateBlock(moveBlock);
-			} catch (CIBusException e) {
-				DevAssistant.errorln(e);
+				moveBlock.enable();
 			}
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
 		}
 	}
 	
