@@ -63,8 +63,8 @@ public class CIBus {
 
 	/* 帮助信息 */
 	private static final String HELP = "Usage: [OPTION] [VALUE]\n"
-			+ "\t-e, --etc\tetc direction path\n"
-			+ "\t-m, --mode\run mode(dev||app)\n";
+			+ "\t-h, --home\thome directory path\n"
+			+ "\t-m, --mode\trun mode(dev | app)\n";
 	/* 非法选项信息 */
 	private static final String FATAL = "invalid options\n"
 			+ "\tTry '--help' for more information\n";
@@ -130,10 +130,10 @@ public class CIBus {
 					String key = args[n];
 					String value = args[n + 1];
 					if ("-h".equalsIgnoreCase(key)
-							|| "-home".equalsIgnoreCase(key)) { // etc目录配置
+							|| "--home".equalsIgnoreCase(key)) { // home目录配置
 						bus_home = value;
 					} else if ("-m".equalsIgnoreCase(key)
-							|| "-mode".equalsIgnoreCase(key)) { // etc目录配置
+							|| "--mode".equalsIgnoreCase(key)) { // 运行模式
 						run_mode = RUN_MODE.toMode(value);
 						if (run_mode == null) {
 							System.err.print(FATAL);
