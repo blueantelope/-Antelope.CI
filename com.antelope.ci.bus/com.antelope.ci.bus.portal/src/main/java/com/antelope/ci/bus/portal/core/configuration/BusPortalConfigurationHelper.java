@@ -199,7 +199,7 @@ public class BusPortalConfigurationHelper {
 			PlacePart placePart =  renderMap.get(renderName);
 			RenderDelimiter delimiter = placePart.getRender().getDelimiter();
 			RenderFont ext_font = placePart.getRender().getFont();
-			RenderFont hit_font = majorExt.getHitFont();
+			RenderFont hit_font = majorExt.getSwitchHitFont();
 			if (hit_font == null)
 				hit_font = ext_font;
 			String delimiter_value = " ";

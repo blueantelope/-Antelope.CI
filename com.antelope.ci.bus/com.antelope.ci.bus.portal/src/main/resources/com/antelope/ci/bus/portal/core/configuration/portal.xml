@@ -5,7 +5,8 @@
 	
 	<!-- action -->
 	<action>
-		<hitgroup name="block" origin="global" mode="main" onkey="13">
+		<font style="bold" mark="lt" size="medium" />
+		<hitgroup name="block" scope="global" mode="main">
 			<key><![CDATA[<n:13>]]></key>
 			<font style="bold" mark="lt" size="medium" />
 		</hitgroup>

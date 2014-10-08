@@ -148,4 +148,25 @@ public class CommonHit implements Serializable {
 		hitList.addAll(anotherHitList);
 		return hitList;
 	}
+	
+	public static <H extends CommonHit > H getHit(List<H> hitList, String scope, String mode, String name) {
+		for (H hit : hitList) {
+			if (StringUtil.compare(scope, hit.getScope()) == 0
+					&& StringUtil.compare(mode, hit.getMode()) == 0
+							&& StringUtil.compare(name, hit.getName()) == 0)
+				return hit;
+		}
+		return null;
+	}
+	
+	public static <H extends CommonHit > RenderFont getHitFont(List<H> hitList, String scope, String mode, String name) {
+		for (H hit : hitList) {
+			if (StringUtil.compare(scope, hit.getScope()) == 0
+					&& StringUtil.compare(mode, hit.getMode()) == 0
+							&& StringUtil.compare(name, hit.getName()) == 0)
+				return hit.getFont().toRenderFont();
+		}
+		
+		return null;
+	}
 }

@@ -15,6 +15,8 @@ import java.util.List;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
+import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 
 
 /**
@@ -75,13 +77,11 @@ public class Action implements Serializable {
 	}
 	
 	public Hit getHit(String scope, String mode, String name) {
-		for (Hit hit : hitList) {
-			if (StringUtil.compare(scope, hit.getScope()) == 0
-					&& StringUtil.compare(mode, hit.getMode()) == 0
-							&& StringUtil.compare(name, hit.getName()) == 0)
-				return hit;
-		}
-		return null;
+		return CommonHit.getHit(hitList, scope, mode, name);
+	}
+	
+	public HitGroup getHitGroup(String scope, String mode, String name) {
+		return CommonHit.getHit(hitgroupList, scope, mode, name);
 	}
 	
 	public List<HitGroup> getGlobalHitgroup() {
@@ -102,5 +102,24 @@ public class Action implements Serializable {
 			hitList = CommonHit.merge(hitList, anotherAction.getHitList());
 			hitgroupList = CommonHit.merge(hitgroupList, anotherAction.getHitgroupList());
 		}
+	}
+	
+	private RenderFont getHitFont(String scope, String mode, String name) {
+		return CommonHit.getHitFont(hitList, scope, mode, name);
+	}
+	
+	private RenderFont getHitGroupFont(String scope, String mode, String name) {
+		return CommonHit.getHitFont(hitgroupList, scope, mode, name);
+	}
+	
+	public RenderFont getSwitchHitFont() {
+		RenderFont font = getHitFont(EU_Scope.GLOBAL.getName(), BaseMode.MAIN.getSimple(), "switch_portal");
+		if (font != null)
+			return font;
+		font = getHitGroupFont(EU_Scope.GLOBAL.getName(), BaseMode.MAIN.getSimple(), "switch_portal");
+		if (font != null)
+			return font;
+		
+		return font;
 	}
 }

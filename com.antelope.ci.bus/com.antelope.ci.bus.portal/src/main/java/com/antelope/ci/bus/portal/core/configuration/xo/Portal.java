@@ -25,7 +25,6 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_LAYOUT;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Action;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Base;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Extension;
@@ -302,19 +301,6 @@ public class Portal implements Serializable {
 		return null;
 	}
 	
-	/*
-	public String getPartValue(String partName) {
-		Part p = getPart(partName);
-		if (p != null) {
-			String v = getPartValue(p);
-			if (v != null)
-				return v;
-		}
-		
-		return "";
-	}
-	*/
-	
 	private Part getPart(List<Part> partList, String partName) {
 		for (Part part : partList) {
 			if (part.getName().equalsIgnoreCase(partName))
@@ -322,15 +308,6 @@ public class Portal implements Serializable {
 		}
 		return null;
 	}
-	
-	/*
-	private String getPartValue(Part p) {
-		if (p.getContent() != null)
-			return p.getContent().getValue();
-		
-		return null;
-	}
-	*/
 	
 	public PlacePart getPlacePart(String lplaceName, String lpartName) {
 		Map<String, Map<String, PlacePart>> placeMap = getPlaceMap();
@@ -438,9 +415,9 @@ public class Portal implements Serializable {
 		return null;
 	}
 	
-	public RenderFont getHitFont() {
+	public RenderFont getSwitchHitFont() {
 		if (action != null)
-			return action.getFont();
+			return action.getSwitchHitFont();
 		
 		return null;
 	}

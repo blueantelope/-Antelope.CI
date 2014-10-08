@@ -15,7 +15,6 @@ import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -23,18 +22,20 @@ import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
  */
 public class BusShellMode {
 	public enum BaseMode {
-		@Mode(code=1, name="shell.mode.main")
-		MAIN(1, "shell.mode.main"),
-		@Mode(code=2, name="shell.mode.input")
-		INPUT(2, "shell.mode.input"),
-		@Mode(code=3, name="shell.mode.edit")
-		EDIT(3, "shell.mode.edit");
+		@Mode(code=1, name="shell.mode.main", simple="main")
+		MAIN(1, "shell.mode.main", "main"),
+		@Mode(code=2, name="shell.mode.input", simple="input")
+		INPUT(2, "shell.mode.input", "input"),
+		@Mode(code=3, name="shell.mode.edit", simple="edit")
+		EDIT(3, "shell.mode.edit", "edit");
 		
 		private int code;
 		private String name;
-		private BaseMode(int code, String name) {
+		private String simple;
+		private BaseMode(int code, String name, String simple) {
 			this.code = code;
 			this.name = name;
+			this.simple = simple;
 		}
 		
 		public int getCode() {
@@ -43,6 +44,10 @@ public class BusShellMode {
 		
 		public String getName() {
 			return name;
+		}
+		
+		public String getSimple() {
+			return simple;
 		}
 		
 		public static BaseMode toMode(String name) throws CIBusException {
