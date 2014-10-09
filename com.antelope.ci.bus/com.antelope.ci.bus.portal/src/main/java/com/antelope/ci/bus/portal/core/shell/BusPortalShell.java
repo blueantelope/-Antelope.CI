@@ -1121,7 +1121,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			switch (baseMode) {
 				case INPUT:
 				case EDIT:
-					if (c == NetVTKey.ESC) {
+					if (c == NetVTKey.ESCAPE) {
 						exitInput();
 						return true;
 					}
@@ -1132,6 +1132,24 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					if (c == NetVTKey.LF) {
 						finishInput();
 						return true;
+					}
+					if (c == NetVTKey.BACKSPACE) {
+						if (inputBuffer.position() > 0) {
+							int newPosition = inputBuffer.position() - 1;
+							inputBuffer.position(newPosition);
+							io.eraseToBeginOfLine();
+						}
+						
+						break;
+					}
+					if (c == NetVTKey.DELETE) {
+						if (inputBuffer.position() > 0) {
+							int newPosition = inputBuffer.position() - 1;
+							inputBuffer.position(newPosition);
+							io.eraseToEndOfLine();
+						}
+						
+						break;
 					}
 					if (!inputInitialized)
 						initInput();

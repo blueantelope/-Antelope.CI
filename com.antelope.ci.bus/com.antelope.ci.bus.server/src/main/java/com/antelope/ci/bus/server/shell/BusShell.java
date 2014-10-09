@@ -251,7 +251,7 @@ public abstract class BusShell {
 		while (true) {
 			handleMode();
 			try {
-				c = io.read(editMode);
+				c = io.read();
 			} catch (IOException e) {
 				throw new CIBusException("", e);
 			}

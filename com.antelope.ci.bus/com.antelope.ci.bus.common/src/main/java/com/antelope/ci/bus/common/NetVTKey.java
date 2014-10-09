@@ -105,6 +105,43 @@ public class NetVTKey {
 	 * Logout request (defining ctrl-d atm)
 	 */
 	public static final int LOGOUTREQUEST = 1306;
+	
+	
+	/**
+	 * Terminal independent representation constants for terminal functions.
+	 */
+	public static final int[] HOME = { 0, 0 };
+
+	public static final int IOERROR = -1; // IO error
+	// HOME=1005, //Home cursor pos(0,0)
+
+	public static final int// Functions 105x
+	STORECURSOR = 1051; // store cursor position + attributes
+	public static final int RESTORECURSOR = 1052; // restore cursor + attributes
+
+	public static final int// Erasing 11xx
+	EEOL = 1100; // erase to end of line
+	public static final int EBOL = 1101; // erase to beginning of line
+	public static final int EEL = 1103; // erase entire line
+	public static final int EEOS = 1104; // erase to end of screen
+	public static final int EBOS = 1105; // erase to beginning of screen
+	public static final int EES = 1106; // erase entire screen
+
+	public static final int BYTEMISSING = 1201; // another byte needed
+	public static final int UNRECOGNIZED = 1202; // escape match missed
+
+	public static final int HANDLED = 1305;
+
+	/**
+	 * Internal UpdateType Constants
+	 */
+	public static final int LineUpdate = 475, CharacterUpdate = 476,
+			ScreenpartUpdate = 477;
+
+	/**
+	 * Internal BufferType Constants
+	 */
+	public static final int EditBuffer = 575, LineEditBuffer = 576;
 
 	/**
 	 * Black

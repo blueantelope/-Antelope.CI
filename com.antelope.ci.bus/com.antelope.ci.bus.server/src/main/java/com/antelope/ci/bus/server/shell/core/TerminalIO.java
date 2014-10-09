@@ -42,6 +42,8 @@ import java.io.OutputStream;
 
 import org.apache.log4j.Logger;
 
+import com.antelope.ci.bus.common.NetVTKey;
+
 /**
  * 
  * @author blueantelope
@@ -106,27 +108,6 @@ public class TerminalIO {
 	 * Visible character I/O methods *
 	 ************************************************************************/
 	
-	public synchronized int read(boolean dirrectly) throws IOException {
-		int i = m_io.readSsh();
-		if (dirrectly)	return i;
-		// translate possible control sequences
-		i = m_Terminal.translateControlCharacter(i);
-
-		// catch & fire a logoutrequest event
-		if (i == LOGOUTREQUEST) {
-			// m_Connection.processConnectionEvent(new
-			// ConnectionEvent(m_Connection,
-			// ConnectionEvent.CONNECTION_LOGOUTREQUEST));
-			i = HANDLED;
-		} else if (i > 256 && i == ESCAPE) {
-			// translate an incoming escape sequence
-			i = handleEscapeSequence(i);
-		}
-
-		// return i holding a char or a defined special key
-		return i;
-	}
-
 	/**
 	 * Read a single character and take care for terminal function calls.
 	 * 
@@ -147,7 +128,7 @@ public class TerminalIO {
 			// m_Connection.processConnectionEvent(new
 			// ConnectionEvent(m_Connection,
 			// ConnectionEvent.CONNECTION_LOGOUTREQUEST));
-			i = HANDLED;
+			i = NetVTKey.HANDLED;
 		} else if (i > 256 && i == ESCAPE) {
 			// translate an incoming escape sequence
 			i = handleEscapeSequence(i);
@@ -167,7 +148,7 @@ public class TerminalIO {
 			// m_Connection.processConnectionEvent(new
 			// ConnectionEvent(m_Connection,
 			// ConnectionEvent.CONNECTION_LOGOUTREQUEST));
-			i = HANDLED;
+			i = NetVTKey.HANDLED;
 		} else if (i > 256 && i == ESCAPE) {
 			// translate an incoming escape sequence
 			i = handleEscapeSequence(i);
@@ -229,27 +210,27 @@ public class TerminalIO {
 	 */
 
 	public synchronized void eraseToEndOfLine() throws IOException {
-		doErase(EEOL);
+		doErase(NetVTKey.EEOL);
 	}// eraseToEndOfLine
 
 	public synchronized void eraseToBeginOfLine() throws IOException {
-		doErase(EBOL);
+		doErase(NetVTKey.EBOL);
 	}// eraseToBeginOfLine
 
 	public synchronized void eraseLine() throws IOException {
-		doErase(EEL);
+		doErase(NetVTKey.EEL);
 	}// eraseLine
 
 	public synchronized void eraseToEndOfScreen() throws IOException {
-		doErase(EEOS);
+		doErase(NetVTKey.EEOS);
 	}// eraseToEndOfScreen
 
 	public synchronized void eraseToBeginOfScreen() throws IOException {
-		doErase(EBOS);
+		doErase(NetVTKey.EBOS);
 	}// eraseToBeginOfScreen
 
 	public synchronized void eraseScreen() throws IOException {
-		doErase(EES);
+		doErase(NetVTKey.EES);
 	}// eraseScreen
 
 	private synchronized void doErase(int funcConst) throws IOException {
@@ -304,14 +285,14 @@ public class TerminalIO {
 	}// setCursor
 
 	public synchronized void homeCursor() throws IOException {
-		m_io.write(m_Terminal.getCursorPositioningSequence(HOME));
+		m_io.write(m_Terminal.getCursorPositioningSequence(NetVTKey.HOME));
 		if (m_Autoflush) {
 			flush();
 		}
 	}// homeCursor
 	
 	public synchronized byte[] getCursor() {
-		byte[] cursor = m_Terminal.getSpecialSequence(STORECURSOR);
+		byte[] cursor = m_Terminal.getSpecialSequence(NetVTKey.STORECURSOR);
 		return cursor;
 	}
 
@@ -485,19 +466,72 @@ public class TerminalIO {
 	private int handleEscapeSequence(int i) throws IOException {
 		if (i == ESCAPE) {
 			int[] bytebuf = new int[m_Terminal.getAtomicSequenceLength()];
+			bytebuf[0] = i;
 			// fill atomic length
 			// FIXME: ensure CAN, broken Escapes etc.
-			for (int m = 0; m < bytebuf.length; m++) {
-				bytebuf[m] = m_io.read();
+			EscapeHandlerThread ehandler = new EscapeHandlerThread(m_io, bytebuf);
+			ehandler.start();
+			handleEscape(ehandler, bytebuf);
+			if (!ehandler.finished) {
+				try {
+					Thread.sleep(60);
+				} catch (InterruptedException e) { }
+				handleEscape(ehandler, bytebuf);
+				if (!ehandler.finished) {
+					ehandler.stop();
+					return ESCAPE;
+				}
 			}
+			
 			return m_Terminal.translateEscapeSequence(bytebuf);
 		}
-		if (i == BYTEMISSING) {
+		if (i == NetVTKey.BYTEMISSING) {
 			// FIXME:longer escapes etc...
 		}
 
-		return HANDLED;
+		return NetVTKey.HANDLED;
 	}// handleEscapeSequence
+	
+	private void handleEscape(EscapeHandlerThread ehandler, int[] bytebuf) throws IOException {
+		if (ehandler.exception != null) {
+			ehandler.stop();
+			throw ehandler.exception;
+		}
+		if (ehandler.finished) {
+			bytebuf = ehandler.bytebuf;
+		}
+	}
+	
+	private static class EscapeHandlerThread extends Thread {
+		volatile int[] bytebuf;
+		boolean finished;
+		private IO m_io;
+		IOException exception;
+		
+		public EscapeHandlerThread(IO m_io, int[] bytebuf) {
+			this.m_io = m_io;
+			init(bytebuf);
+		}
+		
+		private void init(int[] bytebuf) {
+			this.bytebuf = bytebuf;
+			exception = null;
+			finished = false;
+		}
+		
+		@Override public void run() {
+			for (int m = 0; m < bytebuf.length; m++) {
+				System.out.println("running");
+				try {
+					bytebuf[m] = m_io.read();
+				} catch (IOException e) {
+					exception = e;
+					break;
+				}
+			}
+			finished = true;
+		}
+	}
 
 	/**
 	 * Accessor method for the autoflushing mechanism.
@@ -629,40 +663,4 @@ public class TerminalIO {
 	/*** End of terminal management specific methods ***********************/
 
 	/** Constants Declaration **********************************************/
-
-	/**
-	 * Terminal independent representation constants for terminal functions.
-	 */
-	public static final int[] HOME = { 0, 0 };
-
-	public static final int IOERROR = -1; // IO error
-	// HOME=1005, //Home cursor pos(0,0)
-
-	public static final int// Functions 105x
-	STORECURSOR = 1051; // store cursor position + attributes
-	public static final int RESTORECURSOR = 1052; // restore cursor + attributes
-
-	public static final int// Erasing 11xx
-	EEOL = 1100; // erase to end of line
-	public static final int EBOL = 1101; // erase to beginning of line
-	public static final int EEL = 1103; // erase entire line
-	public static final int EEOS = 1104; // erase to end of screen
-	public static final int EBOS = 1105; // erase to beginning of screen
-	public static final int EES = 1106; // erase entire screen
-
-	public static final int BYTEMISSING = 1201; // another byte needed
-	public static final int UNRECOGNIZED = 1202; // escape match missed
-
-	public static final int HANDLED = 1305;
-
-	/**
-	 * Internal UpdateType Constants
-	 */
-	public static final int LineUpdate = 475, CharacterUpdate = 476,
-			ScreenpartUpdate = 477;
-
-	/**
-	 * Internal BufferType Constants
-	 */
-	public static final int EditBuffer = 575, LineEditBuffer = 576;
 }

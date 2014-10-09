@@ -66,10 +66,10 @@ public class Terminal {
 				}
 			}
 		} catch (ArrayIndexOutOfBoundsException e) {
-			return TerminalIO.BYTEMISSING;
+			return NetVTKey.BYTEMISSING;
 		}
 
-		return TerminalIO.UNRECOGNIZED;
+		return NetVTKey.UNRECOGNIZED;
 	}// translateEscapeSequence
 
 	public byte[] getCursorMoveSequence(int direction, int times) {
@@ -111,7 +111,7 @@ public class Terminal {
 
 		byte[] sequence = null;
 
-		if (pos[0] == TerminalIO.HOME[0] && pos[1] == TerminalIO.HOME[1]) {
+		if (pos[0] == NetVTKey.HOME[0] && pos[1] == NetVTKey.HOME[1]) {
 			sequence = new byte[3];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
@@ -144,40 +144,40 @@ public class Terminal {
 		byte[] sequence = null;
 
 		switch (eraseFunc) {
-		case TerminalIO.EEOL:
+		case NetVTKey.EEOL:
 			sequence = new byte[3];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
 			sequence[2] = LE;
 			break;
-		case TerminalIO.EBOL:
+		case NetVTKey.EBOL:
 			sequence = new byte[4];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
 			sequence[2] = 49; // Ascii Code of 1
 			sequence[3] = LE;
 			break;
-		case TerminalIO.EEL:
+		case NetVTKey.EEL:
 			sequence = new byte[4];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
 			sequence[2] = 50; // Ascii Code 2
 			sequence[3] = LE;
 			break;
-		case TerminalIO.EEOS:
+		case NetVTKey.EEOS:
 			sequence = new byte[3];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
 			sequence[2] = SE;
 			break;
-		case TerminalIO.EBOS:
+		case NetVTKey.EBOS:
 			sequence = new byte[4];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
 			sequence[2] = 49; // Ascii Code of 1
 			sequence[3] = SE;
 			break;
-		case TerminalIO.EES:
+		case NetVTKey.EES:
 			sequence = new byte[4];
 			sequence[0] = ESC;
 			sequence[1] = LSB;
@@ -196,12 +196,12 @@ public class Terminal {
 		byte[] sequence = null;
 
 		switch (function) {
-		case TerminalIO.STORECURSOR:
+		case NetVTKey.STORECURSOR:
 			sequence = new byte[2];
 			sequence[0] = ESC;
 			sequence[1] = 55; // Ascii Code of 7
 			break;
-		case TerminalIO.RESTORECURSOR:
+		case NetVTKey.RESTORECURSOR:
 			sequence = new byte[2];
 			sequence[0] = ESC;
 			sequence[1] = 56; // Ascii Code of 8
