@@ -22,7 +22,7 @@ import com.antelope.ci.bus.server.BusServerCondition;
 
 
 /**
- * TODO 描述
+ * create and run bus shell
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-17		下午10:22:10 

@@ -471,13 +471,11 @@ public class TerminalIO {
 			// FIXME: ensure CAN, broken Escapes etc.
 			EscapeHandlerThread ehandler = new EscapeHandlerThread(m_io, bytebuf);
 			ehandler.start();
-			handleEscape(ehandler, bytebuf);
-			if (!ehandler.finished) {
+			if (!handleEscape(ehandler, bytebuf)) {
 				try {
 					Thread.sleep(60);
 				} catch (InterruptedException e) { }
-				handleEscape(ehandler, bytebuf);
-				if (!ehandler.finished) {
+				if (!handleEscape(ehandler, bytebuf)) {
 					ehandler.stop();
 					return ESCAPE;
 				}
@@ -492,44 +490,44 @@ public class TerminalIO {
 		return NetVTKey.HANDLED;
 	}// handleEscapeSequence
 	
-	private void handleEscape(EscapeHandlerThread ehandler, int[] bytebuf) throws IOException {
+	private boolean handleEscape(EscapeHandlerThread ehandler, int[] bytebuf) throws IOException {
 		if (ehandler.exception != null) {
 			ehandler.stop();
 			throw ehandler.exception;
 		}
 		if (ehandler.finished) {
 			bytebuf = ehandler.bytebuf;
+			ehandler.stop();
+			return true;
 		}
+		return false;
 	}
 	
 	private static class EscapeHandlerThread extends Thread {
 		volatile int[] bytebuf;
 		boolean finished;
-		private IO m_io;
+		private IO io;
 		IOException exception;
 		
 		public EscapeHandlerThread(IO m_io, int[] bytebuf) {
-			this.m_io = m_io;
-			init(bytebuf);
-		}
-		
-		private void init(int[] bytebuf) {
+			this.io = m_io;
 			this.bytebuf = bytebuf;
 			exception = null;
 			finished = false;
 		}
-		
+ 		
 		@Override public void run() {
-			for (int m = 0; m < bytebuf.length; m++) {
-				System.out.println("running");
-				try {
-					bytebuf[m] = m_io.read();
-				} catch (IOException e) {
-					exception = e;
-					break;
+			while (true) {
+				for (int m = 0; m < bytebuf.length; m++) {
+					try {
+						bytebuf[m] = io.read();
+					} catch (IOException e) {
+						exception = e;
+						break;
+					}
 				}
+				finished = true;
 			}
-			finished = true;
 		}
 	}
 

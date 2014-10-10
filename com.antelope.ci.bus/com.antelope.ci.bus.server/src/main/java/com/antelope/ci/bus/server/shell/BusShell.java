@@ -241,13 +241,23 @@ public abstract class BusShell {
 	public void open() throws CIBusException {
 		opened = true;
 		environment();
-		clear();
-		mainView();
+		load();
+	}
+	
+	private void load() throws CIBusException {
+		refresh();
 		loopAction();
+	}
+	
+	private void reload() throws CIBusException {
+		load();
 	}
 	
 	private void loopAction() throws CIBusException {
 		int c = -1;
+		boolean activeAnotherShell = false;
+		boolean activeLastShell = false;
+		BusShell activeShell = null;
 		while (true) {
 			handleMode();
 			try {
@@ -280,38 +290,33 @@ public abstract class BusShell {
 			}
 			if (multiShell()) {
 				if (actionStatus.equals(lastStatus)) {
-					BusShell lastShell = shellMap.get(actionStatus);
-					synchronized (lastShell) {
-						lastShell.notify();
-						lastShell.refresh();
-						lastShell.loopAction();
-						waitForWake();
-						continue;
-					}	
+					activeShell = shellMap.get(actionStatus);
+					activeAnotherShell = true;
+					activeLastShell = true;
+					break;
 				}
 				if (!actionStatus.equals(status)) {
-					BusShell wakeShell = shellMap.get(actionStatus);
-					synchronized (wakeShell) {
-						wakeShell.notify();
-						if (wakeShell.getSession() == null)
-							wakeShell.attatchSession(session);
-						if (wakeShell.isOpened()) {
-							wakeShell.setLastStatus(status);
-							wakeShell.refresh();
-							wakeShell.loopAction();
-						} else {
-							wakeShell.open();
-						}
-						waitForWake();
-						continue;
-					}
+					activeShell = shellMap.get(actionStatus);
+					activeAnotherShell = true;
+					break;
 				}
 			} else {
 				if (lastStatus != BusShellStatus.INIT) {
-					if (actionStatus.equals(lastStatus)) {
+					if (actionStatus.equals(lastStatus))
 						refresh();
-					}
 				}
+			}
+		}
+		
+		if (activeAnotherShell) {
+			if (activeShell.getSession() == null)
+				activeShell.attatchSession(session);
+			if (activeShell.isOpened()) {
+				if (!activeLastShell)
+					activeShell.setLastStatus(status);
+				activeShell.reload();
+			} else {
+				activeShell.open();
 			}
 		}
 	}
@@ -327,15 +332,6 @@ public abstract class BusShell {
 	@Deprecated
 	protected void restoreCursor() {
 
-	}
-
-	protected void waitForWake() {
-		synchronized (shellMap.get(status)) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-			}
-		}
 	}
 
 	protected void execute(ShellCommandArg cmdArg) {

@@ -14,7 +14,6 @@ import java.io.PrintWriter;
 
 /**
  * 自定义异常类
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-7-31		下午2:07:54 
@@ -27,9 +26,7 @@ public class CIBusException extends Exception {
 	private String message;						// 异常信息
 	
 	/**
-	 * 
 	 * Creates a new instance of ARException.
-	 *
 	 * @param code
 	 */
 	public CIBusException(String code) {
@@ -38,9 +35,7 @@ public class CIBusException extends Exception {
 	}
 	
 	/**
-	 * 
 	 * Creates a new instance of ARException.
-	 *
 	 * @param code
 	 * @param value
 	 */
@@ -148,7 +143,6 @@ public class CIBusException extends Exception {
 	
 	/**
 	 * 断言打开，打印异常信息, 用于调试
-	 *
 	 * @param  @param e   
 	 * @return void   
 	 * @throws 
