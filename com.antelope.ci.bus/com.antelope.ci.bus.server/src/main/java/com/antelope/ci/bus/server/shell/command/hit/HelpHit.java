@@ -39,7 +39,7 @@ public class HelpHit extends Hit {
 	@Override
 	public String execute(BusShell shell, Object... args) {
 		try {
-			shell.getIo().println(HelpContent.getContent().getHitContent(BusShellStatus.HELP));
+			shell.getIO().println(HelpContent.getContent().getHitContent(BusShellStatus.HELP));
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		} finally {

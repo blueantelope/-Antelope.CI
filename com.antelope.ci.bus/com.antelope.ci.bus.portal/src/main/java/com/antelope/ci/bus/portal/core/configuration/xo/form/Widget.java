@@ -12,15 +12,17 @@ import java.io.Serializable;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
+import com.antelope.ci.bus.common.xml.XmlEntity;
+import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
 import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -74,6 +76,19 @@ public class Widget implements Serializable {
 		if (!StringUtil.empty(edit) && "open".equalsIgnoreCase(edit.trim()))
 			return true;
 		return false;
+	}
+	
+	public EU_ComponentType getType() {
+		if (this.getClass().isAnnotationPresent(XmlEntity.class)) {
+			XmlEntity entity = this.getClass().getAnnotation(XmlEntity.class);
+			try {
+				return EU_ComponentType.fromName(entity.name());
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		
+		return null;
 	}
 	
 	@XmlAttribute(name="box")

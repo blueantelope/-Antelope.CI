@@ -18,6 +18,8 @@ import com.antelope.ci.bus.server.shell.BusShell;
  * @Date	 2013-12-3		上午9:40:01 
  */
 public interface ICommand {
+	public String getIdentity();
+	
 	public Command getContent();
 	
 	public String execute(boolean refresh, BusShell shell, Object... args);

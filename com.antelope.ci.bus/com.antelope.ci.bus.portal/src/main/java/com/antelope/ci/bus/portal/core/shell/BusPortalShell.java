@@ -9,7 +9,6 @@
 package com.antelope.ci.bus.portal.core.shell;
 
 import java.io.IOException;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,6 +32,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.Part;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePart;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
+import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalFormBuffer;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
@@ -68,8 +68,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected Map<String, List<PortalBlock>> blockMap;
 	protected BusPortalShellLiving shellLiving;
 	protected ShellCursor initPosition;
-	private static final int INPUTBUFFER_SIZE = 1024;
-	protected CharBuffer inputBuffer;
+	protected List<BusPortalFormBuffer> formBufferList;
 	protected boolean inputInitialized;
 	protected boolean inputFinished;
 
@@ -88,7 +87,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		blockMap = new HashMap<String, List<PortalBlock>>();
 		shellLiving = new BusPortalShellLiving();
 		initPosition = new ShellCursor(0, 0);
-		inputBuffer = CharBuffer.allocate(INPUTBUFFER_SIZE);
+		formBufferList = new ArrayList<BusPortalFormBuffer>();
 		inputInitialized = false;
 		inputFinished = false;
 		if (portal == null)
@@ -97,6 +96,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	public Portal getPortal() {
 		return portal;
+	}
+	
+	public void initBufferForForm() {
+		sdfsd
 	}
 	
 	public void savePositionFromContent(int x, int y) {
@@ -352,21 +355,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 		
 		return null;
-	}
-	
-	@Deprecated protected int locateOfMatrix(int index, int[] row_sizes) {
-		int current = 0;
-		int last = 0;
-		int location = 0;
-		for (int size : row_sizes) {
-			current += size;
-			if (index < current && index >= last)
-				return location;
-			last = current;
-			location++;
-		}
-			
-		return -1;
 	}
 	
 	protected void draw() throws CIBusException {

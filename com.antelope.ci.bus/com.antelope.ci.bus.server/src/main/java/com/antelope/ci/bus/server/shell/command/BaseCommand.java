@@ -23,6 +23,19 @@ public abstract class BaseCommand implements ICommand {
 	/**
 	 * 
 	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.command.ICommand#getIdentity()
+	 */
+	@Override public String getIdentity() {
+		if (this.getClass().isAnnotationPresent(Command.class)) {
+			Command cmd = this.getClass().getAnnotation(Command.class);
+			return cmd.status() + "." + cmd.mode() + "." + cmd.name();
+		}
+		return "";
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
 	 * @see com.antelope.ci.bus.server.shell.command.ICommand#getContent()
 	 */
 	@Override public Command getContent() {
@@ -43,7 +56,7 @@ public abstract class BaseCommand implements ICommand {
 			Command command = this.getClass().getAnnotation(Command.class);
 			if (refresh && command.beforeClear()) {
 				try {
-					ShellUtil.clear(shell.getIo());
+					ShellUtil.clear(shell.getIO());
 				} catch (CIBusException e) {
 					DevAssistant.errorln(e);
 				}

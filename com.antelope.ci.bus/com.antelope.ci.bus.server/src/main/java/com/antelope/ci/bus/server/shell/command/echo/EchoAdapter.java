@@ -53,7 +53,7 @@ public class EchoAdapter extends  CommandAdapter {
 	 */
 	@Override
 	public void showCommands(BusShell shell, String prCmd, int width) {
-		TerminalIO io = shell.getIo();
+		TerminalIO io = shell.getIO();
 		List<String> cmdList = new ArrayList<String>();
 		int maxLen = 0;
 		for (String name : commandMap.keySet()) {

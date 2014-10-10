@@ -147,10 +147,6 @@ public abstract class BusShell {
 		return paletteMap.get(name);
 	}
 	
-	public TerminalIO getIo() {
-		return io;
-	}
-
 	private void init() {
 		Class clazz = this.getClass();
 		for (; commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz = clazz

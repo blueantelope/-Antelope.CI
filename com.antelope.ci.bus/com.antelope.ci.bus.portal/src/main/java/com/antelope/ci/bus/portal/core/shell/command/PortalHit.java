@@ -36,6 +36,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.portal.core.shell.ShellLineContentSet;
+import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalFormBuffer;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.command.Command;
@@ -51,6 +52,7 @@ import com.antelope.ci.bus.server.shell.command.hit.Hit;
 public abstract class PortalHit extends Hit {
 	private final static Logger log = Logger.getLogger(PortalHit.class);
 	protected Form form;
+	protected BusPortalFormBuffer formBuffer;
 	protected Properties properties;
 	protected int cursor_x = 0;
 	protected int cursor_y = 0;
@@ -95,6 +97,17 @@ public abstract class PortalHit extends Hit {
 		cursor_y = 0;
 	}
 	
+	protected void loadFormBuffer() {
+		if (form != null) {
+			if (formBuffer == null) {
+				formBuffer = new BusPortalFormBuffer(getIdentity());
+				sd
+			} else {
+				
+			}
+		}
+	}
+	
 	protected void drawForm(BusPortalShell shell) throws CIBusException {
 		reset();
 		if (form != null) {
@@ -127,6 +140,11 @@ public abstract class PortalHit extends Hit {
 				List<Component> componentList = group.getComponentList();
 				if (componentList != null) {
 					for (Component component : componentList) {
+						String componentName = component.getName();
+						if (formBuffer.getBuffer(componentName) == null) {
+							BusPortalInputBuffer inputBuffer = new BusPortalInputBuffer(shell.getIO(), componentName);
+						}
+						
 						Label label = component.getLabel();
 						Field field = component.getField();
 						try {

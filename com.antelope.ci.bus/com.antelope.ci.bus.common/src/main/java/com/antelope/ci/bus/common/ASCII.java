@@ -12,7 +12,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1

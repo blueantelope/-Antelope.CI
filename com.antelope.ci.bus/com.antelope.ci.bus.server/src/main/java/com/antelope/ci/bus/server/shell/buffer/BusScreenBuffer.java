@@ -11,7 +11,6 @@ package com.antelope.ci.bus.server.shell.buffer;
 import java.io.IOException;
 
 import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 

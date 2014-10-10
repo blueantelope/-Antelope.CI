@@ -40,7 +40,7 @@ public class HelpEcho extends Echo {
 	@Override
 	public String execute(BusShell shell, Object... args) {
 		try {
-			shell.getIo().println(HelpContent.getContent().getEchoContent(BusShellStatus.HELP));
+			shell.getIO().println(HelpContent.getContent().getEchoContent(BusShellStatus.HELP));
 		} catch (IOException e) {
 			DevAssistant.errorln(e);
 		} finally {
