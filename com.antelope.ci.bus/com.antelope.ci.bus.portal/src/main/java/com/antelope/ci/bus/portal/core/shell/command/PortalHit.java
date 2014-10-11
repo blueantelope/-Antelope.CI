@@ -37,8 +37,11 @@ import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.portal.core.shell.ShellLineContentSet;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalFormBuffer;
+import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalInputBuffer;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
+import com.antelope.ci.bus.server.shell.buffer.ShellScreen;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.hit.Hit;
 
@@ -97,22 +100,16 @@ public abstract class PortalHit extends Hit {
 		cursor_y = 0;
 	}
 	
-	protected void loadFormBuffer() {
-		if (form != null) {
-			if (formBuffer == null) {
-				formBuffer = new BusPortalFormBuffer(getIdentity());
-				sd
-			} else {
-				
-			}
-		}
-	}
-	
-	protected void drawForm(BusPortalShell shell) throws CIBusException {
+	protected void loadForm(BusPortalShell shell) throws CIBusException {
 		reset();
 		if (form != null) {
 			Content content = form.getContent();
 			if (content == null)	return;
+			if (formBuffer == null) {
+				formBuffer = new BusPortalFormBuffer(getIdentity());
+			} else {
+				formBuffer.resetBuffer();
+			}
 			
 			ShellLineContentSet contentSet = new ShellLineContentSet();
 			ShellPalette palette = PortalShellUtil.getContentPalette(shell);
@@ -141,10 +138,6 @@ public abstract class PortalHit extends Hit {
 				if (componentList != null) {
 					for (Component component : componentList) {
 						String componentName = component.getName();
-						if (formBuffer.getBuffer(componentName) == null) {
-							BusPortalInputBuffer inputBuffer = new BusPortalInputBuffer(shell.getIO(), componentName);
-						}
-						
 						Label label = component.getLabel();
 						Field field = component.getField();
 						try {
@@ -156,6 +149,8 @@ public abstract class PortalHit extends Hit {
 								default:
 									break;
 							}
+							if (formBuffer.getBuffer(componentName) == null)
+								addWidgeBuffer(componentName, shell, new Widget[]{label, field});
 						} catch (CIBusException e) {
 							DevAssistant.errorln(e);
 							log.error(e);
@@ -168,6 +163,22 @@ public abstract class PortalHit extends Hit {
 			shell.writeContent(contentSet);
 			focus(shell, content);
 			shell.enterInputMode();
+		}
+	}
+	
+	private void addWidgeBuffer(String componentName, BusPortalShell shell, Widget[] widgets) {
+		for (Widget widget : widgets) {
+			if (widget.editable()) {
+				String bufferName = genWidgetName(componentName, widget);
+				widget.setIdentity(bufferName);
+				BusPortalInputBuffer buffer = new BusPortalInputBuffer(
+						shell.getIO(), 
+						new ShellCursor(widget.getX(), widget.getY()), 
+						new ShellScreen(widget.width(), widget.getRowSize()),
+						bufferName
+						);
+				formBuffer.addBuffer(buffer);
+			}
 		}
 	}
 	
@@ -235,16 +246,6 @@ public abstract class PortalHit extends Hit {
 		text.setText(value);
 		
 		return new XPosition(before+indent, indent+StringUtil.lengthVT(value));
-	}
-	
-	private static class XPosition {
-		public int start;
-		public int end;
-		public XPosition(int start, int end) {
-			super();
-			this.start = start;
-			this.end = end;
-		}
 	}
 	
 	private Style repairStyle(Object owner, Style formStyle) throws CIBusException {
@@ -334,6 +335,30 @@ public abstract class PortalHit extends Hit {
 			shell.moveContent();
 			shell.move(focus_widget.getX(), focus_widget.getY());
 			shell.savePositionFromContent(focus_widget.getX(), focus_widget.getY());
+			BusPortalInputBuffer focus_buffer = getWidgetBuffer(focus_widget);
+			if (focus_buffer != null)
+				shell.replaceBuffer(focus_buffer);
+		}
+	}
+	
+	private BusPortalInputBuffer getWidgetBuffer(Widget widget) {
+		if (formBuffer != null && !StringUtil.empty(widget.getIdentity()))
+			return formBuffer.getBuffer(widget.getIdentity());
+				
+		return null;
+	}
+	
+	private String genWidgetName(String componentName, Widget widget) {
+		return componentName + "." + widget.getDisplayName() + "." + widget.getTypeName();
+	}
+		
+	private static class XPosition {
+		int start;
+		int end;
+		public XPosition(int start, int end) {
+			super();
+			this.start = start;
+			this.end = end;
 		}
 	}
 }

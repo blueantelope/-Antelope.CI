@@ -33,6 +33,7 @@ public class Widget implements Serializable {
 	protected String row_size;
 	protected String column_width;
 	protected String edit;
+	private String name;
 	protected String value;
 	protected String focus;
 	protected String boxName;
@@ -40,6 +41,7 @@ public class Widget implements Serializable {
 	protected Box box;
 	protected int x;
 	protected int y;
+	protected String identity;
 	
 	@XmlAttribute(name="length")
 	public String getLength() {
@@ -47,6 +49,11 @@ public class Widget implements Serializable {
 	}
 	public void setLength(String length) {
 		this.length = length;
+	}
+	public int width() {
+		if (!StringUtil.empty(length))
+			return Integer.valueOf(length);
+		return 0;
 	}
 	
 	@XmlAttribute(name="row_size")
@@ -90,6 +97,12 @@ public class Widget implements Serializable {
 		
 		return null;
 	}
+	public String getTypeName() {
+		EU_ComponentType type = getType();
+		if (type != null)
+			return type.name();
+		return "";
+	}
 	
 	@XmlAttribute(name="box")
 	public String getBoxName() {
@@ -97,6 +110,19 @@ public class Widget implements Serializable {
 	}
 	public void setBoxName(String boxName) {
 		this.boxName = boxName;
+	}
+	
+	@XmlAttribute(name="name")
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDisplayName() {
+		if (!StringUtil.empty(name))
+			return name;
+		return "";
 	}
 	
 	@XmlAttribute(name="value")
@@ -176,5 +202,15 @@ public class Widget implements Serializable {
 	public void setY(int y) {
 		this.y = new Integer(y);
 	}
+	
+	public ShellText toShellText() {
+		return toShellText(name);
+	}
+	
+	public String getIdentity() {
+		return identity;
+	}
+	public void setIdentity(String identity) {
+		this.identity = identity;
+	}
 }
-

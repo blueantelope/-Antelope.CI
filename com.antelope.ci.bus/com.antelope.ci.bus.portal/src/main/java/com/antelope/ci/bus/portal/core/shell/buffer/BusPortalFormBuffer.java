@@ -47,5 +47,11 @@ public class BusPortalFormBuffer {
 		
 		return null;
 	}
+	
+	public void resetBuffer() {
+		for (BusPortalInputBuffer buffer : bufferList) {
+			buffer.reset();
+		}
+	}
 }
 

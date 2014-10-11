@@ -95,6 +95,10 @@ public abstract class BusShell {
 		lastEditMode = false;
 	}
 	
+	public void replaceBuffer(BusBuffer buffer) {
+		this.buffer = buffer;
+	}
+	
 	public int getControlKey() {
 		return controlKey;
 	}

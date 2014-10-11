@@ -61,13 +61,9 @@ public class BusEditBuffer extends BusScreenBuffer {
 	@Override public void put(char c) throws CIBusException {
 		try {
 			buffer.put(c);
-			if (x() < width()) {
-				io.moveLeft(1);
-			} else {
-				io.moveDown(1);
-				io.moveRight(width());
+			io.write((char) c);
+			if (x() > width())
 				cursor.newLine();
-			}
 		} catch (IOException e) {
 			throw new CIBusException("", e);
 		}
@@ -94,9 +90,8 @@ public class BusEditBuffer extends BusScreenBuffer {
 	// 向右删除1个字符
 	public boolean delete() {
 		boolean op = false;
-		if (!empty() && position() < size()) {
-			deleteFromBuffer(position());
-			left(1);
+		if (!empty()) {
+			buffer.position(buffer.position()-1);
 			op = true;
 		}
 		
@@ -106,9 +101,8 @@ public class BusEditBuffer extends BusScreenBuffer {
 	@Override
 	public boolean backspace() {
 		boolean op = false;
-		if (!empty() && position() > 0) {
-			deleteFromBuffer(position());
-			right(1);
+		if (!empty()) {
+			buffer.position(buffer.position()-1);
 			op = true;
 		}
 		

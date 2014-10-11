@@ -8,9 +8,7 @@
 
 package com.antelope.ci.bus.portal.core.configuration.xo.form;
 
-import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlEntity;
-import com.antelope.ci.bus.server.shell.ShellText;
 
 
 /**
@@ -21,17 +19,5 @@ import com.antelope.ci.bus.server.shell.ShellText;
  */
 @XmlEntity(name="label")
 public class Label extends Widget {
-	private String name;
-
-	@XmlAttribute(name="name")
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	
-	public ShellText toShellText() {
-		return super.toShellText(name);
-	}
 }

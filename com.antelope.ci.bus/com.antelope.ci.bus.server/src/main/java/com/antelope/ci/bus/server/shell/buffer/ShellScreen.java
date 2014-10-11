@@ -10,7 +10,6 @@ package com.antelope.ci.bus.server.shell.buffer;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1

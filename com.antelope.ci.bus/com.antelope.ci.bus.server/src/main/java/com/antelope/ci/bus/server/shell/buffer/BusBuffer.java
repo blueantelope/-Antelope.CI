@@ -19,7 +19,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
+ * 
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-12-10		上午9:52:25 
@@ -63,7 +63,7 @@ public abstract class BusBuffer {
 	public void put(char c) throws CIBusException {
 		buffer.put(c);
 		try {
-			io.moveLeft(1);
+			io.write((char) c);
 		} catch (IOException e) {
 			throw new CIBusException("", e);
 		}
@@ -77,8 +77,6 @@ public abstract class BusBuffer {
 		}
 	}
 
-	public abstract boolean left();
-
 	public void right(int times) {
 		int n = 0;
 		while (n < times) {
@@ -86,8 +84,6 @@ public abstract class BusBuffer {
 				break;
 		}
 	}
-
-	public abstract boolean right();
 
 	public void up(int times) {
 		int n = 0;
@@ -97,8 +93,6 @@ public abstract class BusBuffer {
 		}
 	}
 
-	public abstract boolean up();
-
 	public void down(int times) {
 		int n = 0;
 		while (n < times) {
@@ -107,8 +101,6 @@ public abstract class BusBuffer {
 		}
 	}
 
-	public abstract boolean down();
-	
 	// 向右删除多个字符
 	public void delete(int times) {
 		int n = 0;
@@ -118,9 +110,6 @@ public abstract class BusBuffer {
 		}
 	}
 		
-	// 向右删除1个字符
-	public abstract boolean delete();
-	
 	// 向左删除多个字符
 	public void backspace(int times) {
 		int n = 0;
@@ -129,9 +118,6 @@ public abstract class BusBuffer {
 				break;
 		}
 	}
-	
-	// 向左删除一个字符
-	public abstract boolean backspace();
 	
 	public ShellCommandArg enter() {
 		try {
@@ -168,6 +154,20 @@ public abstract class BusBuffer {
 	public boolean inCmdTab() {
 		return inTip;
 	}
+	
+	// 向左删除一个字符
+	public abstract boolean backspace();
+	
+	// 向右删除1个字符
+	public abstract boolean delete();
+	
+	public abstract boolean left();
+	
+	public abstract boolean right();
+	
+	public abstract boolean down();
+	
+	public abstract boolean up();
 	
 	public abstract void tab();
 	

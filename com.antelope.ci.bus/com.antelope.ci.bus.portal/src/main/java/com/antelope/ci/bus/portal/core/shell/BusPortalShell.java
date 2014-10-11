@@ -98,8 +98,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return portal;
 	}
 	
-	public void initBufferForForm() {
-		sdfsd
+	public void addFormBuffer(BusPortalFormBuffer formBuffer) {
+		formBufferList.add(formBuffer);
 	}
 	
 	public void savePositionFromContent(int x, int y) {
@@ -1122,27 +1122,18 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						return true;
 					}
 					if (c == NetVTKey.BACKSPACE) {
-						if (inputBuffer.position() > 0) {
-							int newPosition = inputBuffer.position() - 1;
-							inputBuffer.position(newPosition);
-							io.eraseToBeginOfLine();
-						}
-						
+						buffer.backspace();
 						break;
 					}
 					if (c == NetVTKey.DELETE) {
-						if (inputBuffer.position() > 0) {
-							int newPosition = inputBuffer.position() - 1;
-							inputBuffer.position(newPosition);
-							io.eraseToEndOfLine();
-						}
-						
+						buffer.delete();
 						break;
 					}
 					if (!inputInitialized)
 						initInput();
-					inputBuffer.put((char) c);
-					writeInput((char) c);
+					
+					buffer.put((char) c);
+//					writeInput((char) c);
 					return true;
 				case MAIN:
 				default:
