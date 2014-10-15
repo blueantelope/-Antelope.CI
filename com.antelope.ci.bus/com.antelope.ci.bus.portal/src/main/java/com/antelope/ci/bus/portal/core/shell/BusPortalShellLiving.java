@@ -126,11 +126,11 @@ class BusPortalShellLiving {
 		}
 		
 		public boolean same(BusPortalShellUnit unit) {
-			return cursor.same(unit.cursor);
+			return cursor.coincident(unit.cursor);
 		}
 		
 		public boolean same(ShellCursor _cursor) {
-			return cursor.same(_cursor);
+			return cursor.coincident(_cursor);
 		}
 		
 		int width() {

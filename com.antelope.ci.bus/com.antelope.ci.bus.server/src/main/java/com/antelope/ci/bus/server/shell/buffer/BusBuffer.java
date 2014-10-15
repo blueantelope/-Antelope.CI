@@ -102,7 +102,7 @@ public abstract class BusBuffer {
 	}
 
 	// 向右删除多个字符
-	public void delete(int times) {
+	public void delete(int times) throws CIBusException {
 		int n = 0;
 		while (n < times) {
 			if (!delete())
@@ -111,7 +111,7 @@ public abstract class BusBuffer {
 	}
 		
 	// 向左删除多个字符
-	public void backspace(int times) {
+	public void backspace(int times) throws CIBusException {
 		int n = 0;
 		while (n < times) {
 			if (!backspace())
@@ -155,11 +155,41 @@ public abstract class BusBuffer {
 		return inTip;
 	}
 	
+	protected boolean empty() {
+		if (buffer.position() == 0)
+			return true;
+		return false;
+	}
+	
+	protected void putTab(int index) {
+		int n = 0;
+		while (n < tabSize) {
+			buffer.put(index, ' ');
+			n++;
+			index++;
+		}
+	}
+	
+	protected void putTab() {
+		char[] spaces = new char[tabSize];
+		int n = 0;
+		while (n < tabSize)
+			spaces[n++] = ' ';
+		buffer.put(spaces);
+	}
+	
+	protected void read(int index, char[] dst) {
+		int current = buffer.position();
+		buffer.position(index);
+		buffer.get(dst);
+		buffer.position(current);
+	}
+	
 	// 向左删除一个字符
-	public abstract boolean backspace();
+	public abstract boolean backspace() throws CIBusException;
 	
 	// 向右删除1个字符
-	public abstract boolean delete();
+	public abstract boolean delete() throws CIBusException;
 	
 	public abstract boolean left();
 	

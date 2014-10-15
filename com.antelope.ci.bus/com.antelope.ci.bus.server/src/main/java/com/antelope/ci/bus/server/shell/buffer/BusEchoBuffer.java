@@ -106,8 +106,12 @@ public class BusEchoBuffer extends BusBuffer {
 		}
 	}
 	
-	// 向右删除1个字符
-	public boolean delete() {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#delete()
+	 */
+	@Override public boolean delete() throws CIBusException {
 		if (inTip)
 			return false;
 		boolean isDel = false;
@@ -131,8 +135,12 @@ public class BusEchoBuffer extends BusBuffer {
 		return isDel;
 	}
 
-	// 向左删除一个字符
-	public boolean backspace() {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#backspace()
+	 */
+	@Override public boolean backspace() throws CIBusException {
 		if (inTip)
 			return false;
 		boolean isBack = false;

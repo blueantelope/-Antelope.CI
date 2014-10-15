@@ -491,4 +491,24 @@ public class StringUtil {
 			return -1;
 		return s1.trim().toLowerCase().compareTo(s2.trim().toLowerCase());
 	}
+	
+	public static char[] insert(char[] src, char c) {
+		char[] dst = new char[src.length + 1];
+		dst[0] = c;
+		System.arraycopy(src, 0, dst, 1, src.length);
+		return dst;
+	}
+	
+    public static final boolean isChinese(char c) {   
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);  
+        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS  
+                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS  
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A  
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION  
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION  
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {  
+            return true;  
+        }  
+        return false;  
+    }  
 }

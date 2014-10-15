@@ -11,7 +11,6 @@ package com.antelope.ci.bus.server.shell.buffer;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -72,7 +71,7 @@ public class ShellCursor {
 	
 	public void lastEndline(int width) {
 		x = width;
-		y -= 0;
+		y -= 1;
 	}
 	
 	public void addX(int times) {
@@ -92,7 +91,7 @@ public class ShellCursor {
 		this.y = y;
 	}
 	
-	public boolean same(ShellCursor cursor) {
+	public boolean coincident(ShellCursor cursor) {
 		if (x == cursor.getX() && y == cursor.getY())
 			return true;
 		return false;

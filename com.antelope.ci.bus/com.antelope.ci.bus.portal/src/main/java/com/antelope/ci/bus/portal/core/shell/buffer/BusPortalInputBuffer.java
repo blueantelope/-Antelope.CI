@@ -8,9 +8,7 @@
 
 package com.antelope.ci.bus.portal.core.shell.buffer;
 
-import com.antelope.ci.bus.server.shell.buffer.BusEditBuffer;
-import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
-import com.antelope.ci.bus.server.shell.buffer.ShellScreen;
+import com.antelope.ci.bus.server.shell.buffer.BusInputBuffer;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -20,12 +18,11 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2014年10月10日		下午4:20:59 
  */
-public class BusPortalInputBuffer extends BusEditBuffer {
-	private static final int BUFFER_SIZE = 512;
+public class BusPortalInputBuffer extends BusInputBuffer {
 	private String name;
 
-	public BusPortalInputBuffer(TerminalIO io, ShellCursor cursorStart, ShellScreen screen, String name) {
-		super(io, cursorStart, screen, BUFFER_SIZE);
+	public BusPortalInputBuffer(TerminalIO io, int x, int y, int width, int height, String name) {
+		super(io, x, y, width, height);
 		this.name = name;
 	}
 	

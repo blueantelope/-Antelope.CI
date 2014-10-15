@@ -71,6 +71,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected List<BusPortalFormBuffer> formBufferList;
 	protected boolean inputInitialized;
 	protected boolean inputFinished;
+	protected final int[] control_keys = new int[]{
+			NetVTKey.BACKSPACE,
+			NetVTKey.DELETE,
+			NetVTKey.LEFT,
+			NetVTKey.RIGHT,
+			NetVTKey.UP,
+			NetVTKey.DOWN
+	};
 
 	public BusPortalShell() throws CIBusException {
 		super();
@@ -1106,6 +1114,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	@Override protected boolean handleInput(int c) {
 		try {
 			BaseMode baseMode = BaseMode.toMode(mode);
+			boolean breakCase = false;
 			switch (baseMode) {
 				case INPUT:
 				case EDIT:
@@ -1121,19 +1130,15 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						finishInput();
 						return true;
 					}
-					if (c == NetVTKey.BACKSPACE) {
-						buffer.backspace();
+					
+					if (handleInputControl(c)) {
 						break;
 					}
-					if (c == NetVTKey.DELETE) {
-						buffer.delete();
-						break;
-					}
+					
 					if (!inputInitialized)
 						initInput();
 					
-					buffer.put((char) c);
-//					writeInput((char) c);
+					input.put((char) c);
 					return true;
 				case MAIN:
 				default:
@@ -1141,6 +1146,35 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			}
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
+		}
+		
+		return false;
+	}
+	
+	protected boolean handleInputControl(int c) throws CIBusException {
+		if (c == NetVTKey.BACKSPACE) {
+			input.backspace();
+			return true;
+		}
+		if (c == NetVTKey.DELETE) {
+			input.delete();
+			return true;
+		}
+		if (c == NetVTKey.LEFT) {
+			input.left();
+			return true;
+		}
+		if (c == NetVTKey.RIGHT) {
+			input.right();
+			return true;
+		}
+		if (c == NetVTKey.UP) {
+			input.up();
+			return true;
+		}
+		if (c == NetVTKey.DOWN) {
+			input.down();
+			return true;
 		}
 		
 		return false;
@@ -1187,7 +1221,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				io.setUnderlined(editMode);
 				lastEditMode = editMode;
 			} catch (IOException e) {
-				throw new CIBusException("", e);
+				throw new CIBusException("", "change into input mode", e);
 			}
 		}
 	}

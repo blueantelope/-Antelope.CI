@@ -40,8 +40,6 @@ import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalFormBuffer;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalInputBuffer;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
-import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
-import com.antelope.ci.bus.server.shell.buffer.ShellScreen;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.hit.Hit;
 
@@ -173,8 +171,8 @@ public abstract class PortalHit extends Hit {
 				widget.setIdentity(bufferName);
 				BusPortalInputBuffer buffer = new BusPortalInputBuffer(
 						shell.getIO(), 
-						new ShellCursor(widget.getX(), widget.getY()), 
-						new ShellScreen(widget.width(), widget.getRowSize()),
+						widget.getX(), widget.getY(), 
+						widget.width(), widget.getRowSize(),
 						bufferName
 						);
 				formBuffer.addBuffer(buffer);

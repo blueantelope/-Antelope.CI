@@ -55,7 +55,7 @@ public abstract class BusShell {
 	protected ClassLoader cloader;
 	protected int sort;
 	protected Map<String, ShellPalette> paletteMap;
-	protected BusBuffer buffer;
+	protected BusBuffer input;
 	protected boolean activeMoveAction;
 	protected boolean activeEditAction;
 	protected boolean activeUserAction;
@@ -96,7 +96,7 @@ public abstract class BusShell {
 	}
 	
 	public void replaceBuffer(BusBuffer buffer) {
-		this.buffer = buffer;
+		this.input = buffer;
 	}
 	
 	public int getControlKey() {
@@ -616,31 +616,31 @@ public abstract class BusShell {
 	}
 	
 	protected void left() {
-		buffer.left();
+		input.left();
 	}
 	
 	protected void right() {
-		buffer.right();
+		input.right();
 	}
 	
 	protected void up() {
-		buffer.up();
+		input.up();
 	}
 	
 	protected void down() {
-		buffer.down();
+		input.down();
 	}
 	
-	protected void delete() {
-		buffer.delete();
+	protected void delete() throws CIBusException {
+		input.delete();
 	}
 	
-	protected void backspace() {
-		buffer.backspace();
+	protected void backspace() throws CIBusException {
+		input.backspace();
 	}
 	
 	protected void space() throws CIBusException {
-		buffer.space();
+		input.space();
 	}
 	
 	protected void onKeyVoice() {
@@ -664,16 +664,16 @@ public abstract class BusShell {
 		if (activeMoveAction) {
 			switch (key) {
 				case NetVTKey.LEFT:
-					buffer.left();
+					input.left();
 					return true;
 				case NetVTKey.RIGHT:
-					buffer.right();
+					input.right();
 					return true;
 				case NetVTKey.UP:
-					buffer.up();
+					input.up();
 					return true;
 				case NetVTKey.DOWN:
-					buffer.down();
+					input.down();
 					return true;
 				default:
 					return false;
@@ -687,13 +687,21 @@ public abstract class BusShell {
 		if (activeEditAction) {
 			switch (key) {
 				case NetVTKey.DELETE:
-					buffer.delete();
+					try {
+						input.delete();
+					} catch (CIBusException e) {
+						DevAssistant.errorln(e);
+					}
 					return true;
 				case NetVTKey.BACKSPACE:
-					buffer.backspace();
+					try {
+						input.backspace();
+					} catch (CIBusException e) {
+						DevAssistant.errorln(e);
+					}
 					return true;
 				case NetVTKey.SPACE:
-					buffer.space();
+					input.space();
 					return true;
 				default:
 					return false;

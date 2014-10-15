@@ -46,7 +46,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	}
 	
 	protected void resetCommand() {
-		buffer.reset();
+		input.reset();
 		tabPress = false;
 	}
 	
@@ -57,7 +57,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	 */
 	@Override protected void action(int c) throws CIBusException {
 		try {
-			buffer.put((char) c);
+			input.put((char) c);
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
@@ -65,9 +65,9 @@ public abstract class BusBaseEchoShell extends BusShell {
 	}
 	
 	private void matchCommand() {
-		if (!buffer.exitSpace()) {
-			List<String> cmdList = commandAdapter.findCommands(buffer.read());
-			buffer.printTips(cmdList, session.getWidth());
+		if (!input.exitSpace()) {
+			List<String> cmdList = commandAdapter.findCommands(input.read());
+			input.printTips(cmdList, session.getWidth());
 		}
 	}
 	
@@ -79,7 +79,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	@Override
 	public void mainView() throws CIBusException {
 		try {
-			buffer = new BusEchoBuffer(io, prompt().length());
+			input = new BusEchoBuffer(io, prompt().length());
 			if (!StringUtil.empty(header()))
 				io.println(header());
 			io.write(prompt());
@@ -99,10 +99,10 @@ public abstract class BusBaseEchoShell extends BusShell {
 		try {
 			switch (c) {
 				case NetVTKey.TABULATOR:
-					if (!buffer.inCmdTab()) {
+					if (!input.inCmdTab()) {
 						matchCommand();
 						if (tabPress) {
-							buffer.tabTip();
+							input.tabTip();
 							tabPress = false;
 						}
 						if (!tabPress)
@@ -110,7 +110,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 					}
 					return true;
 				case NetVTKey.LF:
-					cmdArg = buffer.enter();
+					cmdArg = input.enter();
 					if (cmdArg != null) {
 						execute(cmdArg);
 						resetCommand();

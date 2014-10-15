@@ -14,7 +14,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
-import com.antelope.ci.bus.server.shell.buffer.ShellScreen;
 
 
 /**
@@ -54,10 +53,10 @@ public abstract class BusBaseFrameShell extends BusShell {
 				cmdArg = new ShellCommandArg(String.valueOf(controlKey), new String[]{});
 				execute(cmdArg);
 			} else {
-				buffer.put((char) c);
-				cmdArg = buffer.toCommand();
+				input.put((char) c);
+				cmdArg = input.toCommand();
 				execute(cmdArg);
-				buffer.reset();
+				input.reset();
 			}
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
@@ -76,7 +75,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 		ShellCursor cursor = initCursorPosistion();
 		shiftTop();
 		move(cursor.getX(), cursor.getY());
-		buffer = new BusHitBuffer(io, cursor, new ShellScreen(session.getWidth(), session.getHeigth()));
+		input = new BusHitBuffer(io);
 	}
 	
 	/**
@@ -87,12 +86,12 @@ public abstract class BusBaseFrameShell extends BusShell {
 	@Override protected boolean userAction(int c) throws CIBusException {
 		switch (c) {
 			case NetVTKey.TABULATOR:
-				buffer.tab();
+				input.tab();
 				return true;
 			case NetVTKey.LF:
-				cmdArg = buffer.enter();
+				cmdArg = input.enter();
 				execute(cmdArg);
-				buffer.reset();
+				input.reset();
 				return true;
 			default:
 				return false;

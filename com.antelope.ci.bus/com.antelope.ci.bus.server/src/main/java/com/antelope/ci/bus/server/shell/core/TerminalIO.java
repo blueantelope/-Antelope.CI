@@ -171,6 +171,11 @@ public class TerminalIO {
 			flush();
 		}
 	}// write(char)
+	
+	public synchronized void write(char[] chs) throws IOException {
+		for (char ch : chs)
+			write(ch);
+	}// write(char[])
 
 	public synchronized void write(String str) throws IOException {
 		if (m_ForceBold) {

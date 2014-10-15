@@ -21,40 +21,19 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version 0.1
  * @Date 2013-12-9 下午5:39:41
  */
-public class BusHitBuffer extends BusScreenBuffer {
-	public BusHitBuffer(TerminalIO io, ShellCursor cursorStart, ShellScreen screen) {
-		super(io, cursorStart, screen);
+public class BusHitBuffer extends BusBuffer {
+	
+	public BusHitBuffer(TerminalIO io) {
+		super(io, 64);
 	}
-
-	public BusHitBuffer(TerminalIO io, int cursorX, int cursorY, int width, int height) {
-		super(io, cursorX, cursorY, width, height);
-	}
-
+	
 	public void reset() {
 		super.reset();
-		int x = cursor.getX() - cursorStart.getX();
-		int y = cursor.getY() - cursorStart.getY();
-		try {
-			if (x > 0) {
-				io.moveDown(x);
-			} else {
-				io.moveUp(-x);
-			}
-			if (y > 0) {
-				io.moveLeft(y);
-			} else {
-				io.moveRight(-y);
-			}
-		} catch (IOException e) {
-			DevAssistant.errorln(e);
-		}
-		cursor = cursorStart;
 	}
 
 	@Override public void put(char c) {
 		buffer.put(c);
 	}
-
 	
 	@Override
 	public boolean delete() {
@@ -80,18 +59,38 @@ public class BusHitBuffer extends BusScreenBuffer {
 		return null;
 	}
 
-	@Override
-	public void tabTip() {
+	@Override public void tabTip() {
 		// nothing to do
 	}
 	
-	@Override
-	public boolean exitSpace() {
+	@Override public boolean exitSpace() {
 		return false;
 	}
 	
-	@Override
-	public void printTips(List<String> cmdList, int width) {
+	@Override public void printTips(List<String> cmdList, int width) {
 		// nothing to do
+	}
+
+
+	@Override public boolean left() {
+		return false;
+	}
+
+
+	@Override
+	public boolean right() {
+		return false;
+	}
+
+	@Override public boolean down() {
+		return false;
+	}
+
+	@Override public boolean up() {
+		return false;
+	}
+
+	@Override public void tab() {
+		
 	}
 }
