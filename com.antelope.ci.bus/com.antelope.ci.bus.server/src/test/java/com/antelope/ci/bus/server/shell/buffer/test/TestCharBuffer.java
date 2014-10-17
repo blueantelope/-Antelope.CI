@@ -34,6 +34,7 @@ public class TestCharBuffer extends TestCase {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		System.out.println("一".getBytes().length);
 		
 		CharBuffer buffer = CharBuffer.allocate(BUFFER_SIZE);
 		buffer.put('a');

@@ -12,14 +12,11 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import org.junit.Test;
-
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -29,9 +26,10 @@ public class TestSubString extends TestCase {
 
 	@Test
 	public void test() throws CIBusException {
-		String str = "测试tsetsdfsdf";
-		String sub = StringUtil.subStringVT(str, 0, 2);
+		String str = "sssss一sssss";
+		String sub = StringUtil.subStringVT(str, 0, 7);
 		System.out.println(sub);
+		System.out.println(sub.getBytes().length);
 	}
 	
 	public static void main(String[] args) {

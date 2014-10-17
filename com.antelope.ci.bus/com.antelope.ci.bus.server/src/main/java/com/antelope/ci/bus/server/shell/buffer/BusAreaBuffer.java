@@ -27,10 +27,20 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  */
 public class BusAreaBuffer extends BusBuffer {
 	protected ShellArea area;
+	protected int put_index;
+	protected char[] put_chars;
+	protected int latter_index;
+	protected char[] latter_chars;
+	protected int successor_num;
 
 	public BusAreaBuffer(TerminalIO io, ShellArea area) {
 		super(io);
 		this.area = area;
+		this.put_index = 0;
+		this.put_chars = null;
+		this.latter_index = 0;
+		this.latter_chars = null;
+		this.successor_num = 0;
 	}
 
 	public BusAreaBuffer(TerminalIO io, int x, int y, int width, int height) {
@@ -228,41 +238,44 @@ public class BusAreaBuffer extends BusBuffer {
 	@Override
 	public void put(char c) throws CIBusException {
 		try {
-			int index = area.index();
-			char[] latter = fromPosition(index);
-			char[] insertValue = null;
-			if (latter != null) {
-				insertValue = StringUtil.insert(latter, c);
-				io.write(insertValue);
-				io.moveLeft(latter.length);
-			} else {
-				io.write(c);
+			io.write(c);
+			if (successor_num > 0)
+				successor_num--;
+			if (successor_num == 0 && put_index == 0) {
+				successor_num = StringUtil.successor(c);
+				put_chars = new char[successor_num+1];
+				gen_latter_chars();
 			}
-			insert(index, c, insertValue);
-			area.go();
+			put_chars[put_index++] = c;
+			if (successor_num == 0) {
+				char[] insert_chars = put_chars;
+				if (latter_chars != null) {
+					io.write(latter_chars);
+					read(latter_index);
+					io.moveLeft(StringUtil.lengthVT(new String(latter_chars)));
+					buffer.position(latter_index);
+					insert_chars = StringUtil.concat(put_chars, latter_chars);
+				}
+				buffer.put(insert_chars);
+				area.go(StringUtil.lengthVT(new String(put_chars)));
+				put_index = 0;
+			}
 		} catch (IOException e) {
 			throw new CIBusException("", e);
-		}
+		}	
 	}
 	
-	protected void insert(int index, char c, char[] insertValue) {
-		if (insertValue != null) {
-			buffer.position(index);
-			buffer.put(insertValue);
-		} else {
-			buffer.put(c);
-		}
-	}
-	
-	protected char[] fromPosition(int index) {
-		int length = buffer.position() - index;
-		char[] latter = null;
+	protected void gen_latter_chars() throws CIBusException {
+		if (buffer.position() ==0)
+			return;
+		
+		latter_index = StringUtil.subStringVT(read(), 0, area.index()).getBytes().length;
+		int length = buffer.position() - latter_index;
 		if (length > 0) {
-			latter = new char[length];
-			read(index, latter);
+			latter_chars = new char[length];
+			read(latter_index, latter_chars);
 		}
 		
-		return latter;
 	}
 	
 	protected void move(DIRECTION direction) throws CIBusException {

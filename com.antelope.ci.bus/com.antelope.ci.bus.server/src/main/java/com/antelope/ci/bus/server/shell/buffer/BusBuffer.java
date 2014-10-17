@@ -185,6 +185,15 @@ public abstract class BusBuffer {
 		buffer.position(current);
 	}
 	
+	protected char[] read(int index) {
+		int current = buffer.position();
+		char[] chs = new char[current - index];
+		buffer.position(index);
+		buffer.get(chs);
+		buffer.position(current);
+		return chs;
+	}
+	
 	// 向左删除一个字符
 	public abstract boolean backspace() throws CIBusException;
 	

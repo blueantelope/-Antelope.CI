@@ -247,7 +247,7 @@ public class StringUtil {
 
 		return length;
 	}
-
+	
 	public static String getLastName(String value, String  deco) {
 		String[] ss = value.split(deco);
 		return ss[ss.length-1];
@@ -499,6 +499,26 @@ public class StringUtil {
 		return dst;
 	}
 	
+	public static char[] concat(char[] src1, char[] src2) {
+		if (src1 == null && src2 == null)
+			return null;
+		if (src1 == null)
+			return src2;
+		if (src2 == null)
+			return src1;
+		
+		char[] dst = new char[src1.length + src2.length];
+		System.arraycopy(src1, 0, dst, 0, src1.length);
+		System.arraycopy(src2, 0, dst, src1.length, src2.length);
+		return dst;
+	}
+	
+	public static final int successor(char c) {
+		if (((byte) c) >= 0)
+			return 0;
+		return 2;
+	}
+	
     public static final boolean isChinese(char c) {   
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);  
         if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS  
@@ -510,5 +530,5 @@ public class StringUtil {
             return true;  
         }  
         return false;  
-    }  
+    }
 }
