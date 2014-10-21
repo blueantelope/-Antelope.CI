@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.server.shell.buffer;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;

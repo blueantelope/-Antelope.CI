@@ -60,6 +60,17 @@ public abstract class BusBuffer {
 		return s;
 	}
 	
+	public String read(int start, int end) {
+		int position = buffer.position();
+		int limit = buffer.limit();
+		buffer.position(start);
+		buffer.limit(end);
+		String s = buffer.toString();
+		buffer.position(position);
+		buffer.limit(limit);
+		return s;
+	}
+	
 	public void put(char c) throws CIBusException {
 		buffer.put(c);
 		try {
@@ -74,6 +85,7 @@ public abstract class BusBuffer {
 		while (n < times) {
 			if (!left())
 				break;
+			n++;
 		}
 	}
 
@@ -82,6 +94,7 @@ public abstract class BusBuffer {
 		while (n < times) {
 			if (!right())
 				break;
+			n++;
 		}
 	}
 
@@ -90,6 +103,7 @@ public abstract class BusBuffer {
 		while (n < times) {
 			if (!up())
 				break;
+			n++;
 		}
 	}
 
@@ -98,6 +112,7 @@ public abstract class BusBuffer {
 		while (n < times) {
 			if (!down())
 				break;
+			n++;
 		}
 	}
 
@@ -107,6 +122,7 @@ public abstract class BusBuffer {
 		while (n < times) {
 			if (!delete())
 				break;
+			n++;
 		}
 	}
 		
@@ -116,6 +132,7 @@ public abstract class BusBuffer {
 		while (n < times) {
 			if (!backspace())
 				break;
+			n++;
 		}
 	}
 	

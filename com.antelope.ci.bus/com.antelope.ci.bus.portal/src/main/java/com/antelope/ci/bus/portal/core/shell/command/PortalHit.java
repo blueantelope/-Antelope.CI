@@ -169,9 +169,12 @@ public abstract class PortalHit extends Hit {
 			if (widget.editable()) {
 				String bufferName = genWidgetName(componentName, widget);
 				widget.setIdentity(bufferName);
+				ShellPalette contentPalette = shell.getContentPalette();
+				int x = contentPalette.getX() + widget.getX();
+				int y = contentPalette.getY() + widget.getY();
 				BusPortalInputBuffer buffer = new BusPortalInputBuffer(
 						shell.getIO(), 
-						widget.getX(), widget.getY(), 
+						x, y,
 						widget.width(), widget.getRowSize(),
 						bufferName
 						);

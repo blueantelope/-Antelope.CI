@@ -25,7 +25,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-10		下午3:34:01 
  */
-public class BusAreaBuffer extends BusBuffer {
+public abstract class BusAreaBuffer extends BusBuffer {
 	protected ShellArea area;
 	protected int put_index;
 	protected char[] put_chars;
@@ -67,11 +67,49 @@ public class BusAreaBuffer extends BusBuffer {
 		boolean op = false;
 		if (!area.locateStart()) {
 			try {
-				io.eraseToBeginOfLine();
+				int count = StringUtil.placeholder(read(buffer.position()-1)[0]);
+				int new_position = buffer.position() - 1;
+				int back_count = 1;
+				if (count > 0) {
+					new_position -= count;
+					back_count += 1;
+				}
+				buffer.position(new_position);
+				area.back(back_count);
+				
+				int lines = area.linesToLimit();
+				int distance = 0;
+				if (!area.atLimit())
+					distance = area.distanceToLimit();
+				int x = area.getOriginx();
+				int y = area.getPostiony();
+				do {
+					if (lines > 0) {
+						io.moveUp(1);
+						io.moveRight(area.getWidth());
+						rewriteAhead(x, y-lines);
+					} else if (distance > 0) {
+						right(distance);
+					}
+					rewriteAhead(x, y-lines);
+					io.eraseToBeginOfLine();
+					int lefts = back_count;
+					String rewrite_buffer = null;
+					if (area.index() > 0) {
+						rewrite_buffer = StringUtil.subStringVT(read(), area.headlineIndex(), area.index());
+						lefts += StringUtil.lengthVT(rewrite_buffer);
+					}
+					area.back(lefts);
+					io.moveLeft(lefts);
+					if (rewrite_buffer != null)
+						write(rewrite_buffer.getBytes());
+					if (lines == 0 && distance > 0)
+						left(distance);
+					lines--;
+				} while (lines > 0);
 			} catch (IOException e) {
 				throw new CIBusException("", "backspace error", e);
 			}
-			buffer.position(buffer.position()-1);
 			op = true;
 		}
 		
@@ -237,12 +275,15 @@ public class BusAreaBuffer extends BusBuffer {
 	 */
 	@Override
 	public void put(char c) throws CIBusException {
+		if (area.atEnd())
+			return;
+		
 		try {
 			io.write(c);
 			if (successor_num > 0)
 				successor_num--;
 			if (successor_num == 0 && put_index == 0) {
-				successor_num = StringUtil.successor(c);
+				successor_num = StringUtil.placeholder(c);
 				put_chars = new char[successor_num+1];
 				gen_latter_chars();
 			}
@@ -288,12 +329,18 @@ public class BusAreaBuffer extends BusBuffer {
 					io.moveDown(1);
 					break;
 				case LEFT:
-				case LEFT_UP:
 					io.moveLeft(1);
 					break;
+				case LEFT_UP:
+					io.moveUp(1);
+					io.moveRight(area.getWidth());
+					break;
 				case RIGHT:
-				case RIGTH_DOWN:
 					io.moveRight(1);
+					break;
+				case RIGTH_DOWN:
+					io.moveDown(1);
+					io.moveLeft(area.getWidth());
 					break;
 				default:
 					break;
@@ -303,4 +350,40 @@ public class BusAreaBuffer extends BusBuffer {
 			throw new CIBusException("", "cursor move error", e);
 		}
 	}
+	
+	protected void write(byte[] bs) throws IOException {
+		int n = 0;
+		int size = bs.length;
+		while (n < size) {
+			char c = (char) bs[n++];
+			int placeholder = StringUtil.placeholder(c);
+			if (placeholder == 0) {
+				io.write(c);
+				area.go();
+				headDown();
+			} else {
+				char[] cs = new char[placeholder + 1];
+				cs[0] = c;
+				int m = 1;
+				while (m < placeholder && n < size) {
+					cs[m++] = (char) bs[n++];
+					if (m < placeholder)
+						headDown();
+				}
+				io.write(cs);
+				headDown();
+			}
+		}
+	}
+	
+	protected void headDown() throws IOException {
+		if (area.newLine()) {
+			io.moveDown(1);
+			io.moveLeft(area.getWidth());
+		}
+	}
+	
+	protected abstract void rewriteAhead(int x, int y);
+	
+	protected abstract void rewriteLatter(int x, int y);
 }

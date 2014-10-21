@@ -29,5 +29,19 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	protected void rewriteAhead(int x, int y) {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void rewriteLatter(int x, int y) {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }
 

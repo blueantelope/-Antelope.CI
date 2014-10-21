@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.server.shell.buffer.BusEditBuffer.java
+// com.antelope.ci.bus.server.shell.buffer.SimpleBusEditBuffer.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -15,13 +15,22 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014年10月15日		上午10:12:01 
+ * @Date	 2014年10月21日		下午3:37:41 
  */
-public abstract class BusEditBuffer extends BusAreaBuffer {
-	private static final int BUFFER_SIZE = 10240;
+public class SimpleBusEditBuffer extends BusEditBuffer {
 
-	public BusEditBuffer(TerminalIO io, int x, int y, int width, int height) {
-		super(io, x, y, width, height, BUFFER_SIZE);
+	public SimpleBusEditBuffer(TerminalIO io, int x, int y, int width, int height) {
+		super(io, x, y, width, height);
+	}
+
+	@Override
+	protected void rewriteAhead(int x, int y) {
+		
+	}
+
+	@Override
+	protected void rewriteLatter(int x, int y) {
+		
 	}
 }
 

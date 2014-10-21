@@ -164,6 +164,11 @@ public class TerminalIO {
 			flush();
 		}
 	}// write
+	
+	public synchronized void write(byte[] bs) throws IOException {
+		for (byte b : bs)
+			write(b);
+	}// write(byte[])
 
 	public synchronized void write(char ch) throws IOException {
 		m_io.write(ch);

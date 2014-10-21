@@ -101,7 +101,20 @@ public class ShellArea {
 	}
 	
 	public int index() {
-		return (position.getY() * width + position.getX()) -  (origin.getY() * width + origin.getX());
+		return distance(position, origin);
+	}
+	
+	public int headlineIndex() {
+		return (position.getY() - origin.getY()) * width;
+	}
+	
+	public int distanceToLimit() {
+		return distance(limit, position);
+	}
+	
+	public int linesToLimit() {
+		int distance = distance(limit, position);
+		return distance / width;
 	}
 	
 	public void go() {
@@ -113,6 +126,19 @@ public class ShellArea {
 		int n = 0;
 		while (n < times) {
 			go();
+			n++;
+		}
+	}
+	
+	public void back() {
+		left(limit);
+		left(position);
+	}
+	
+	public void back(int times) {
+		int n = 0;
+		while (n < times) {
+			back();
 			n++;
 		}
 	}
@@ -145,6 +171,18 @@ public class ShellArea {
 		return position.coincident(capacity);
 	}
 	
+	public boolean atEnd() {
+		return limit.coincident(capacity);
+	}
+	
+	public boolean atLimit() {
+		return position.coincident(limit);
+	}
+	
+	public boolean newLine() {
+		return !locateStart() && (position.getX() == 0);
+	}
+	
 	private void right(ShellCursor v_position, ShellCursor v_limit) {
 		switch (directRight(v_position, v_limit)) {
 			case RIGHT:
@@ -153,6 +191,20 @@ public class ShellArea {
 			case RIGTH_DOWN:
 				v_position.setX(0);
 				v_position.down(1);
+				break;
+			default:
+				break;
+		}
+	}
+	
+	private void left(ShellCursor v_position) {
+		switch (directLeft(v_position)) {
+			case LEFT:
+				v_position.left(1);
+				break;
+			case LEFT_UP:
+				v_position.setX(origin.getX()+width);
+				v_position.up(1);
 				break;
 			default:
 				break;
@@ -169,5 +221,9 @@ public class ShellArea {
 		if (v_position.getY() < v_limit.getY())
 			return DIRECTION.DOWN;
 		return DIRECTION.KEEP;
+	}
+	
+	private int distance(ShellCursor position_end, ShellCursor position_start) {
+		return (position_end.getY() * width + position_end.getX()) -  (position_start.getY() * width + position_start.getX());
 	}
 }

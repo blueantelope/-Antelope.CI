@@ -513,7 +513,7 @@ public class StringUtil {
 		return dst;
 	}
 	
-	public static final int successor(char c) {
+	public static int placeholder(char c) {
 		if (((byte) c) >= 0)
 			return 0;
 		return 2;

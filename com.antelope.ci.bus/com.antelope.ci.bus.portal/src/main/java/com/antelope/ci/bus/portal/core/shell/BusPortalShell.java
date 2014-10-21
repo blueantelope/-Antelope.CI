@@ -118,6 +118,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		shellLiving.savePosition(x, y);
 	}
 	
+	public ShellPalette getContentPalette() {
+		return contentPalette;
+	}
+	
 	@Override public void writeContent(Object content) throws CIBusException {
 		clearContent();
 		if (content instanceof ShellLineContentSet) {

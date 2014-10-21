@@ -18,11 +18,10 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2014年10月14日		上午11:58:41 
  */
-public class BusInputBuffer extends BusAreaBuffer {
-	private static final int BUFFER_SIZE = 64;
+public abstract class BusInputBuffer extends BusAreaBuffer {
+	private static final int BUFFER_SIZE = 128;
 
 	public BusInputBuffer(TerminalIO io, int x, int y, int width, int height) {
 		super(io, x, y, width, height, BUFFER_SIZE);
 	}
-
 }

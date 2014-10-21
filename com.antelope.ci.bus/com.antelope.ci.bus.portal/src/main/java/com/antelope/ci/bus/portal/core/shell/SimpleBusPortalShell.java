@@ -12,15 +12,14 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-2-28		下午6:14:27 
  */
-public class BusDefaultPortalShell extends BusPortalShell {
+public class SimpleBusPortalShell extends BusPortalShell {
 	
-	public BusDefaultPortalShell() throws CIBusException {
+	public SimpleBusPortalShell() throws CIBusException {
 		super();
 	}
 
