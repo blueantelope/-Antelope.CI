@@ -173,11 +173,7 @@ public abstract class PortalHit extends Hit {
 				int x = contentPalette.getX() + widget.getX();
 				int y = contentPalette.getY() + widget.getY();
 				BusPortalInputBuffer buffer = new BusPortalInputBuffer(
-						shell.getIO(), 
-						x, y,
-						widget.width(), widget.getRowSize(),
-						bufferName
-						);
+						shell, x, y, widget.width(), widget.getRowSize(), bufferName);
 				formBuffer.addBuffer(buffer);
 			}
 		}

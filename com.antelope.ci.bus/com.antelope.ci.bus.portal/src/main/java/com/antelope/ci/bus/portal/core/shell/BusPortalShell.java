@@ -106,6 +106,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return portal;
 	}
 	
+	public BusPortalShellLiving getLiving() {
+		return shellLiving;
+	}
+	
 	public void addFormBuffer(BusPortalFormBuffer formBuffer) {
 		formBufferList.add(formBuffer);
 	}
@@ -120,6 +124,22 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	public ShellPalette getContentPalette() {
 		return contentPalette;
+	}
+	
+	public void commomIO() {
+		try {
+			io.setUnderlined(!editMode);
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public void editIO() {
+		try {
+			io.setUnderlined(editMode);
+		} catch (IOException e) {
+			DevAssistant.errorln(e);
+		}
 	}
 	
 	@Override public void writeContent(Object content) throws CIBusException {
@@ -1017,6 +1037,16 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			writeFormat(str);
 		else
 			print(str);
+	}
+	
+	public void rewriteUnits(List<BusPortalShellUnit> units) {
+		for (BusPortalShellUnit unit : units) {
+			try {
+				rewriteUnit(unit.getCursor(), unit.getText());
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
+			}
+		}
 	}
 	
 	protected void writeLivingUnit(ShellCursor cursor, String str) throws CIBusException {

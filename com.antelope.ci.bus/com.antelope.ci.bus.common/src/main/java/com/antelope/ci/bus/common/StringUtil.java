@@ -531,4 +531,15 @@ public class StringUtil {
         }  
         return false;  
     }
+    
+    public static String subString(String str, String start_str, String end_str) {
+    	int start_index = str.indexOf(start_str);
+    	if (start_index != -1) {
+    		int end_index = str.indexOf(end_str, start_index+start_str.length());
+    		if (end_index != -1)
+    			return str.substring(start_index, end_index+end_str.length());
+    	}
+    	
+    	return "";
+    }
 }

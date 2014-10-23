@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.core.shell;
 
 import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.ShellText;
 
 
@@ -56,5 +57,28 @@ public class PortalShellText {
 	
 	public static String getName(String str) {
 		return StringUtil.find(str, BLOCK_PREFIX + " name=\"", "\"");
+	}
+	
+	public static String createNewText(String str, String replace) throws CIBusException {
+		StringBuffer newText = new StringBuffer();
+		boolean is_block = false;
+		if (containBlock(str)) {
+			is_block = true;
+			newText.append(StringUtil.subString(str, BLOCK_PREFIX, ">"));
+		}
+		boolean is_focus = false;
+		if (isFocus(str)) {
+			is_focus = true;
+			newText.append(FOCUS_PREFIX);
+		}
+		if (ShellText.isShellText(peel(str)))
+			newText.append(ShellText.toShellText(str, replace));
+		
+		if (is_focus)
+			newText.append(FOCUS_SUFFIX);
+		if (is_block)
+			newText.append(BLOCK_SUFFIX);
+		
+		return newText.toString();
 	}
 }

@@ -8,8 +8,12 @@
 
 package com.antelope.ci.bus.portal.core.shell.buffer;
 
+import java.util.List;
+
+import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
+import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving;
+import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
 import com.antelope.ci.bus.server.shell.buffer.BusInputBuffer;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -20,11 +24,14 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  */
 public class BusPortalInputBuffer extends BusInputBuffer {
 	private String name;
-
-	public BusPortalInputBuffer(TerminalIO io, int x, int y, int width, int height, String name) {
-		super(io, x, y, width, height);
+	private BusPortalShell shell;
+	
+	public BusPortalInputBuffer(BusPortalShell shell, int x, int y, int width, int height, String name) {
+		super(shell.getIO(), x, y, width, height);
 		this.name = name;
+		this.shell = shell;
 	}
+
 	
 	public String getName() {
 		return name;
@@ -32,9 +39,11 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 
 	@Override
 	protected void rewriteAhead(int x, int y) {
-		
-		// TODO Auto-generated method stub
-		
+		shell.commomIO();
+		BusPortalShellLiving shellLiving = shell.getLiving();
+		List<BusPortalShellUnit> units = shellLiving.getAheadLine(x, y);
+		shell.rewriteUnits(units);
+		shell.editIO();
 	}
 
 	@Override

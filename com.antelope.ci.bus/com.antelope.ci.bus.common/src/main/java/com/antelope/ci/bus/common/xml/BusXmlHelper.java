@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.common.xml;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -148,6 +149,23 @@ public class BusXmlHelper {
 		}
 	}
 	
+	public static String replaceValue(String xml, String replace) throws CIBusException {
+		Document document = load(xml);
+		Element root = document.getRootElement();
+		replaceValue(root, replace);
+		
+		return document.asXML();
+	}
+
+	private static void replaceValue(Element parent, String replace) {
+		if (parent.getText() != null) {
+			parent.setText(replace);
+		} else {
+			for (Object child : parent.elements())
+				replaceValue((Element) child, replace);
+		}
+	}
+	
 	private static Document load(InputStream input) throws CIBusException {
 		SAXReader reader = new SAXReader();
 		try {
@@ -156,6 +174,10 @@ public class BusXmlHelper {
 			DevAssistant.errorln(e);
 			throw new CIBusException("", e);
 		}
+	}
+	
+	private static Document load(String str) throws CIBusException {
+		return load(new ByteArrayInputStream(str.getBytes()));
 	}
 	
 	private static void parseXml(Document document, Object parent, String rootQuery, ClassLoader loader) throws CIBusException {

@@ -87,12 +87,11 @@ public abstract class BusAreaBuffer extends BusBuffer {
 					if (lines > 0) {
 						io.moveUp(1);
 						io.moveRight(area.getWidth());
-						rewriteAhead(x, y-lines);
 					} else if (distance > 0) {
 						right(distance);
 					}
-					rewriteAhead(x, y-lines);
 					io.eraseToBeginOfLine();
+					rewriteAhead(x, y-lines);
 					int lefts = back_count;
 					String rewrite_buffer = null;
 					if (area.index() > 0) {
