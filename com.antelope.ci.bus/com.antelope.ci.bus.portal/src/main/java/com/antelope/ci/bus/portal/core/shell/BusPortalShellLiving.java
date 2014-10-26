@@ -182,7 +182,7 @@ public class BusPortalShellLiving {
 					if (end_x <= x) {
 						return this;
 					} else {
-						int subLen = width - end_x + x;
+						int subLen = x - start_x;
 						String s = PortalShellText.peel(text);
 						if (ShellText.isShellText(s))
 							s = ShellText.toShellText(s).getText();

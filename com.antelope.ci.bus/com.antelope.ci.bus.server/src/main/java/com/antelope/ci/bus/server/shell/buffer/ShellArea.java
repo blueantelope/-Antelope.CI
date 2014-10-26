@@ -42,10 +42,10 @@ public class ShellArea {
 		return origin.getY();
 	}
 	
-	public int getPostionx() {
+	public int getPositionx() {
 		return position.getX();
 	}
-	public int getPostiony() {
+	public int getPositiony() {
 		return position.getY();
 	}
 	

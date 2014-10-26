@@ -67,6 +67,8 @@ public abstract class BusAreaBuffer extends BusBuffer {
 		boolean op = false;
 		if (!area.locateStart()) {
 			try {
+				int x = area.getPositionx() + 1;
+				int y = area.getPositiony();
 				int count = StringUtil.placeholder(read(buffer.position()-1)[0]);
 				int new_position = buffer.position() - 1;
 				int back_count = 1;
@@ -81,8 +83,6 @@ public abstract class BusAreaBuffer extends BusBuffer {
 				int distance = 0;
 				if (!area.atLimit())
 					distance = area.distanceToLimit();
-				int x = area.getOriginx();
-				int y = area.getPostiony();
 				do {
 					if (lines > 0) {
 						io.moveUp(1);
@@ -99,7 +99,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 						lefts += StringUtil.lengthVT(rewrite_buffer);
 					}
 					area.back(lefts);
-					io.moveLeft(lefts);
+					io.moveLeft(lefts + 1);
 					if (rewrite_buffer != null)
 						write(rewrite_buffer.getBytes());
 					if (lines == 0 && distance > 0)
