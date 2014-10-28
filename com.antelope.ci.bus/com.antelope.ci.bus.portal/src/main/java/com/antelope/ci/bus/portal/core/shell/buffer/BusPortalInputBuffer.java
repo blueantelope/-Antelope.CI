@@ -37,6 +37,11 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 		return name;
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#rewriteAhead(int, int)
+	 */
 	@Override
 	protected void rewriteAhead(int x, int y) {
 		shell.commomIO();
@@ -46,11 +51,18 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 		shell.editIO();
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#rewriteLatter(int, int)
+	 */
 	@Override
 	protected void rewriteLatter(int x, int y) {
-		
-		// TODO Auto-generated method stub
-		
+		shell.commomIO();
+		BusPortalShellLiving shellLiving = shell.getLiving();
+		List<BusPortalShellUnit> units = shellLiving.getLatterLine(x, y);
+		shell.rewriteUnits(units);
+		shell.editIO();
 	}
 }
 

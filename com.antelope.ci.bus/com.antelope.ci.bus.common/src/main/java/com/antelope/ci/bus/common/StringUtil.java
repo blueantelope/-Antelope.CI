@@ -183,6 +183,10 @@ public class StringUtil {
 		return lineList.toArray(new String[lineList.size()]);
 	}
 	
+	public static char firstCharVT(String str, int index) throws CIBusException {
+		return subStringVT(str, index, lengthVT(str)).charAt(0);
+	}
+	
 	public static String subStringVT(String str, int start) throws CIBusException {
 		return subStringVT(str, start, lengthVT(str));
 	}

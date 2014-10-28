@@ -130,6 +130,21 @@ public class BusPortalShellLiving {
 		
 		return frontUnitList;
 	}
+	
+	public List<BusPortalShellUnit> getLatterLine(int x, int y) {
+		List<BusPortalShellUnit> frontUnitList = new ArrayList<BusPortalShellUnit>();
+		for (BusPortalShellUnit unit : unitList) {
+			try {
+				BusPortalShellUnit shellUnit = unit.makeAfterLineUnit(x, y);
+				if (shellUnit != null)
+					frontUnitList.add(shellUnit);
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		
+		return frontUnitList;
+	}
 
 	public static class BusPortalShellUnit {
 		ShellCursor cursor;
@@ -193,6 +208,33 @@ public class BusPortalShellLiving {
 							DevAssistant.errorln(e);
 						}
 						return new BusPortalShellUnit(cursor, subStr);
+					}
+				}
+			}
+			
+			return null;
+		}
+		
+		public BusPortalShellUnit makeAfterLineUnit(int x, int y) throws CIBusException {
+			if (cursor.getY() == y) {
+				int start_x = cursor.getX();
+				int width = width();
+				int end_x = start_x + width;
+				if (end_x >= x) {
+					if (start_x >= x) {
+						return this;
+					} else {
+						int position = x - start_x;
+						String s = PortalShellText.peel(text);
+						if (ShellText.isShellText(s))
+							s = ShellText.toShellText(s).getText();
+						String subStr = StringUtil.subStringVT(s, position);
+						try {
+							subStr = PortalShellText.createNewText(text, subStr);
+						} catch (CIBusException e) {
+							DevAssistant.errorln(e);
+						}
+						return new BusPortalShellUnit(new ShellCursor(x, y), subStr);
 					}
 				}
 			}

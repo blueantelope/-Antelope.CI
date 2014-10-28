@@ -100,6 +100,10 @@ public class ShellArea {
 		}
 	}
 	
+	public int toLineEnd() {
+		return origin.getX() + width - position.getX();
+	}
+	
 	public int index() {
 		return distance(position, origin);
 	}

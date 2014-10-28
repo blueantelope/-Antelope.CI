@@ -71,6 +71,12 @@ public abstract class BusBuffer {
 		return s;
 	}
 	
+	public void remove(int index, int length) {
+		char[] puts =  read(index+length);
+		buffer.position(index);
+		buffer.put(puts);
+	}
+	
 	public void put(char c) throws CIBusException {
 		buffer.put(c);
 		try {

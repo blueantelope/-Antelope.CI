@@ -66,49 +66,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	public boolean backspace() throws CIBusException {
 		boolean op = false;
 		if (!area.locateStart()) {
-			try {
-				int x = area.getPositionx() + 1;
-				int y = area.getPositiony();
-				int count = StringUtil.placeholder(read(buffer.position()-1)[0]);
-				int new_position = buffer.position() - 1;
-				int back_count = 1;
-				if (count > 0) {
-					new_position -= count;
-					back_count += 1;
-				}
-				buffer.position(new_position);
-				area.back(back_count);
-				
-				int lines = area.linesToLimit();
-				int distance = 0;
-				if (!area.atLimit())
-					distance = area.distanceToLimit();
-				do {
-					if (lines > 0) {
-						io.moveUp(1);
-						io.moveRight(area.getWidth());
-					} else if (distance > 0) {
-						right(distance);
-					}
-					io.eraseToBeginOfLine();
-					rewriteAhead(x, y-lines);
-					int lefts = back_count;
-					String rewrite_buffer = null;
-					if (area.index() > 0) {
-						rewrite_buffer = StringUtil.subStringVT(read(), area.headlineIndex(), area.index());
-						lefts += StringUtil.lengthVT(rewrite_buffer);
-					}
-					area.back(lefts);
-					io.moveLeft(lefts + 1);
-					if (rewrite_buffer != null)
-						write(rewrite_buffer.getBytes());
-					if (lines == 0 && distance > 0)
-						left(distance);
-					lines--;
-				} while (lines > 0);
-			} catch (IOException e) {
-				throw new CIBusException("", "backspace error", e);
-			}
+			backspace_delete(0);
 			op = true;
 		}
 		
@@ -123,17 +81,82 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	@Override
 	public boolean delete() throws CIBusException {
 		boolean op = false;
-		if (!area.locateEnd()) {
-			try {
-				io.eraseToEndOfLine();
-			} catch (IOException e) {
-				throw new CIBusException("", "delete error", e);
-			}
-			buffer.position(buffer.position()-1);
+		if (!area.atLimit()) {
+			backspace_delete(1);
 			op = true;
 		}
 		
 		return op;
+	}
+	
+	private void backspace_delete(int bacOrDel) throws CIBusException {
+		try {
+			int remove_count = removeBuffer(bacOrDel);
+			int lines = area.linesToLimit();
+			boolean firstline = true;
+			do {
+				int lefts = 0;
+				if (firstline) {
+					lefts = remove_count;
+					firstline = false;
+				} else {
+					io.moveDown(1);
+					io.moveLeft(area.getWidth());
+				}
+//				lefts = area.toLineEnd();
+				int x = area.getPositionx();
+				int y = area.getPositiony();
+				io.eraseToEndOfLine();
+				rewriteLatter(x, y-lines);
+//				if (lefts > 0)
+//					io.moveLeft(lefts);
+				
+//				String rewrite_buffer = null;
+//				if (area.index() > 0) {
+//					rewrite_buffer = StringUtil.subStringVT(read(), area.headlineIndex(), area.index());
+//					lefts += StringUtil.lengthVT(rewrite_buffer);
+//				}
+//				area.back(lefts);
+//				io.moveLeft(lefts + 1);
+//				if (rewrite_buffer != null)
+//					write(rewrite_buffer.getBytes());
+//				if (lines == 0 && distance > 0)
+//					left(distance);
+				lines--;
+			} while (lines > 0);
+		} catch (IOException e) {
+			throw new CIBusException("", "delete error", e);
+		}
+	}
+	
+	private int removeBuffer(int bacOrDel) throws CIBusException {
+		String temp_buf = read();
+		int area_index = area.index();
+		if (bacOrDel != 0)
+			area_index++;
+		String latter_half = StringUtil.subStringVT(temp_buf, area_index);
+		int count = StringUtil.placeholder(latter_half.charAt(0));
+		int remove_index = temp_buf.length() - latter_half.length();
+		int remove_count = 1;
+		int remove_length = 1;
+		if (count > 0) {
+			remove_count++;
+			remove_length += count;
+		}
+		remove(remove_index, remove_length);
+		if (bacOrDel == 0)
+			back(remove_count);
+		
+		return remove_count;
+	}
+	
+	private void back(int backs) throws CIBusException {
+		try {
+			io.moveLeft(backs);
+			area.back(backs);
+		} catch (IOException e) {
+			throw new CIBusException("", "buffer back error", e);
+		}
 	}
 
 	/**
