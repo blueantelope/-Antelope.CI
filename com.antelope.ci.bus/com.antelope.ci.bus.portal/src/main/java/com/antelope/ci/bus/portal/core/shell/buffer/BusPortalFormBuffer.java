@@ -49,9 +49,8 @@ public class BusPortalFormBuffer {
 	}
 	
 	public void resetBuffer() {
-		for (BusPortalInputBuffer buffer : bufferList) {
+		for (BusPortalInputBuffer buffer : bufferList)
 			buffer.reset();
-		}
 	}
 }
 

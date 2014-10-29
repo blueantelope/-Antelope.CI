@@ -30,10 +30,19 @@ public class ShellArea {
 		this.origin = origin;
 		this.width = width;
 		this.height = height;
+		init();
+	}
+	
+	private void init() {
 		position = origin.clone();
 		limit = origin.clone();
 		capacity = new ShellCursor(origin.getX()+width, origin.getY()+height);
 	}
+	
+	public void reset() {
+		init();
+	}
+	
 	
 	public int getOriginx() {
 		return origin.getX();

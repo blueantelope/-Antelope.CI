@@ -37,11 +37,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	public BusAreaBuffer(TerminalIO io, ShellArea area) {
 		super(io);
 		this.area = area;
-		this.put_index = 0;
-		this.put_chars = null;
-		this.latter_index = 0;
-		this.latter_chars = null;
-		this.successor_num = 0;
+		init();
 	}
 
 	public BusAreaBuffer(TerminalIO io, int x, int y, int width, int height) {
@@ -51,11 +47,25 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	public BusAreaBuffer(TerminalIO io, ShellArea area, int bufSize) {
 		super(io, bufSize);
 		this.area = area;
+		init();
 	}
 
 	public BusAreaBuffer(TerminalIO io, int x, int y, int width, int height, int bufSize) {
-		super(io, bufSize);
-		this.area = new ShellArea(new ShellCursor(x, y), width, height);
+		this(io, new ShellArea(new ShellCursor(x, y), width, height), bufSize);
+	}
+	
+	public void reset() {
+		super.reset();
+		this.area.reset();
+		init();
+	}
+	
+	private void init() {
+		this.put_index = 0;
+		this.put_chars = null;
+		this.latter_index = 0;
+		this.latter_chars = null;
+		this.successor_num = 0;
 	}
 
 	/**

@@ -1145,10 +1145,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return shellLiving.getPosition();
 	}
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#handleInput(int)
+	 */
 	@Override protected boolean handleInput(int c) {
 		try {
 			BaseMode baseMode = BaseMode.toMode(mode);
-			boolean breakCase = false;
 			switch (baseMode) {
 				case INPUT:
 				case EDIT:
@@ -1165,9 +1169,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						return true;
 					}
 					
-					if (handleInputControl(c)) {
-						break;
-					}
+					if (handleInputControl(c))
+						return false;
 					
 					if (!inputInitialized)
 						initInput();
@@ -1241,6 +1244,11 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#handleMode()
+	 */
 	@Override protected void handleMode() {
 		try {
 			changeMode();
