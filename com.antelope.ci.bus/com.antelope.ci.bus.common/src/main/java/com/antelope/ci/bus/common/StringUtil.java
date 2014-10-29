@@ -192,7 +192,10 @@ public class StringUtil {
 	}
 
 	public static String subStringVT(String str, int start, int end) throws CIBusException {
-		if (start < 0 || end < 0 || end < start || end > lengthVT(str))
+		int str_vtlen = lengthVT(str);
+		if (end > str_vtlen)
+			end = str_vtlen;
+		if (start < 0 || end < 0 || end < start || start >= str_vtlen)
 			throw new CIBusException("", "subString exception occur, index not fit rule");
 		
 		boolean started = false;
@@ -201,13 +204,18 @@ public class StringUtil {
 		int str_end = 0;
 		int length = 0;
 		int str_len = str.length();
-		for (int i = 0; i <= str_len; i++) {
-			if (length >= end && started) {
-				str_end = i;
-				if (length > end)
-					str_end -= 1;
-				ended = true;
-				break;
+		for (int i = 0; i < str_len; i++) {
+			if (started) {
+				if (length >= end) {
+					str_end = i;
+					ended = true;
+					break;
+				}
+			} else {
+				if (length >= start) {
+					str_start = i;
+					started = true;
+				}
 			}
 			
 			int codePoint = Character.codePointAt(str, i);
@@ -215,16 +223,9 @@ public class StringUtil {
 				length++;
 			else
 				length+= 2;
-			
-			if (length >= start && !started) {
-				str_start = i;
-				if (length > start && str_start > 0)
-					str_start -= 1;
-				started = true;
-			}
 		}
 		if (!ended)
-			str_end = length;
+			str_end = str_len;
 		
 		return str.substring(str_start, str_end);
 	}

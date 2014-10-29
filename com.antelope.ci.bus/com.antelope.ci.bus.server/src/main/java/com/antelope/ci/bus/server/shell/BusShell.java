@@ -397,11 +397,7 @@ public abstract class BusShell {
 	}
 	
 	public void move(int x, int y) throws CIBusException {
-		try {
-			ShellUtil.move(io, x, y);
-		} catch (IOException e) {
-			throw new CIBusException("", e);
-		}
+		ShellUtil.move(io, x, y);
 	}
 	
 	protected void shiftTop() throws CIBusException {

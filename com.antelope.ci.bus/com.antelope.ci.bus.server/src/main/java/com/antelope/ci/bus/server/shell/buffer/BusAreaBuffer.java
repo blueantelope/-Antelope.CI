@@ -15,6 +15,7 @@ import com.antelope.ci.bus.common.ASCII;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.ShellUtil;
 import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
@@ -66,7 +67,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	public boolean backspace() throws CIBusException {
 		boolean op = false;
 		if (!area.locateStart()) {
-			backspace_delete(0);
+			earse(0);
 			op = true;
 		}
 		
@@ -81,73 +82,60 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	@Override
 	public boolean delete() throws CIBusException {
 		boolean op = false;
-		if (!area.atLimit()) {
-			backspace_delete(1);
+		if (area.distanceToLimit() > 1) {
+			earse(1);
 			op = true;
 		}
 		
 		return op;
 	}
 	
-	private void backspace_delete(int bacOrDel) throws CIBusException {
+	private void earse(int bacOrDel) throws CIBusException {
 		try {
-			int remove_count = removeBuffer(bacOrDel);
+			String fromBuffer = read();
+			int area_index = area.index();
+			if (bacOrDel == 0)
+				area_index--;
+			String latter_half = StringUtil.subStringVT(fromBuffer, area_index);
+			int count = StringUtil.placeholder(latter_half.charAt(0));
+			int from_index = fromBuffer.length() - latter_half.length();
+			int back_count = 1;
+			int remove_length = 1;
+			if (count > 0) {
+				back_count++;
+				remove_length += count;
+			}
+			remove(from_index, remove_length);
+			if (bacOrDel == 0)
+				back(back_count);
+			else
+				area.decrease(back_count);
+			fromBuffer = read();
+			
 			int lines = area.linesToLimit();
-			boolean firstline = true;
+			int n = 0;
+			int x = area.getPositionx();
+			int y = area.getPositiony();
 			do {
-				int lefts = 0;
-				if (firstline) {
-					lefts = remove_count;
-					firstline = false;
-				} else {
-					io.moveDown(1);
-					io.moveLeft(area.getWidth());
+				if (n != 0) {
+					x = area.getOriginx();
+					ShellUtil.shift(io, x, y);
 				}
-//				lefts = area.toLineEnd();
-				int x = area.getPositionx();
-				int y = area.getPositiony();
 				io.eraseToEndOfLine();
 				rewriteLatter(x, y-lines);
-//				if (lefts > 0)
-//					io.moveLeft(lefts);
-				
-//				String rewrite_buffer = null;
-//				if (area.index() > 0) {
-//					rewrite_buffer = StringUtil.subStringVT(read(), area.headlineIndex(), area.index());
-//					lefts += StringUtil.lengthVT(rewrite_buffer);
-//				}
-//				area.back(lefts);
-//				io.moveLeft(lefts + 1);
-//				if (rewrite_buffer != null)
-//					write(rewrite_buffer.getBytes());
-//				if (lines == 0 && distance > 0)
-//					left(distance);
-				lines--;
-			} while (lines > 0);
+				if (area.distanceToLimit() > 0) {
+					ShellUtil.shift(io, x, y);
+					int rewrite_start =   area.distanceFromOrigin(x, y);
+					int rewrite_end = rewrite_start + area.getWidth();
+					io.write(StringUtil.subStringVT(fromBuffer, rewrite_start, rewrite_end).getBytes());
+				}
+				y++; n++;
+			} while (n < lines);
+			
+			ShellUtil.shift(io, area.getPositionx(), area.getPositiony());
 		} catch (IOException e) {
 			throw new CIBusException("", "delete error", e);
 		}
-	}
-	
-	private int removeBuffer(int bacOrDel) throws CIBusException {
-		String temp_buf = read();
-		int area_index = area.index();
-		if (bacOrDel != 0)
-			area_index++;
-		String latter_half = StringUtil.subStringVT(temp_buf, area_index);
-		int count = StringUtil.placeholder(latter_half.charAt(0));
-		int remove_index = temp_buf.length() - latter_half.length();
-		int remove_count = 1;
-		int remove_length = 1;
-		if (count > 0) {
-			remove_count++;
-			remove_length += count;
-		}
-		remove(remove_index, remove_length);
-		if (bacOrDel == 0)
-			back(remove_count);
-		
-		return remove_count;
 	}
 	
 	private void back(int backs) throws CIBusException {

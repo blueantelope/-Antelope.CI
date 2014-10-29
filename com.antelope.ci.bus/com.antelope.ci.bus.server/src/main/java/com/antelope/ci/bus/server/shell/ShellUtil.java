@@ -95,6 +95,11 @@ public class ShellUtil {
 		}
 	}
 	
+	public static void shift(TerminalIO io, int x, int y) throws CIBusException {
+		shiftTop(io);
+		move(io, x, y);
+	}
+	
 	public static void writeHeader(TerminalIO io, String str) throws CIBusException {
 		shiftTop(io);
 		String[] ss = StringUtil.toLines(str);
@@ -122,14 +127,18 @@ public class ShellUtil {
 		}
 	}
 	
-	public static void move(TerminalIO io, int x, int y) throws IOException {
-		if (x != 0) {
-			if (x > 0) 		io.moveRight(x);
-			else				io.moveLeft(-x);
-		}
-		if (y != 0) {
-			if (y > 0)		io.moveDown(y);
-			else				io.moveUp(-y);
+	public static void move(TerminalIO io, int x, int y) throws CIBusException {
+		try {
+			if (x != 0) {
+				if (x > 0) 		io.moveRight(x);
+				else				io.moveLeft(-x);
+			}
+			if (y != 0) {
+				if (y > 0)		io.moveDown(y);
+				else				io.moveUp(-y);
+			}
+		} catch (IOException e) {
+			throw new CIBusException("", "move error in ShellUtil#move(TerminalIO,int, int)", e);
 		}
 	}
 	

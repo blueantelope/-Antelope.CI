@@ -121,6 +121,14 @@ public class ShellArea {
 		return distance / width;
 	}
 	
+	public int distanceFromOrigin(int x, int y) {
+		return distance(new ShellCursor(x, y), origin);
+	}
+	
+	public int distanceToLimit(int x, int y) {
+		return distance(limit, new ShellCursor(x, y));
+	}
+	
 	public void go() {
 		right(limit, capacity);
 		right(position, limit);
@@ -143,6 +151,14 @@ public class ShellArea {
 		int n = 0;
 		while (n < times) {
 			back();
+			n++;
+		}
+	}
+	
+	public void decrease(int times) {
+		int n = 0;
+		while (n < times) {
+			left(limit);
 			n++;
 		}
 	}
