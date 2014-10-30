@@ -13,7 +13,7 @@
 		</box>
 	</input>
 	<content>
-		<title value="${new.project.title}">
+		<title value="${project.add.title}">
 			<style>
 				<font style="normal" mark="shade" size="medium" />
 				<align position="center" fill=" " margin="before:3,after:3" />
@@ -23,7 +23,7 @@
 		</attribute>
 		<group>
 			<component type="textfield" name="project.name">
-				<label length="100" row_size="0" column_width="20%" name="new.project.name" value="${new.project.name}" edit="close" focus="off">
+				<label length="100" row_size="0" column_width="20%" name="project.add.name" value="${project.add.name}" edit="close" focus="off">
 					<style>
 						<font style="normal" mark="normal" size="medium" />
 						<align position="left" fill=" " margin="before:3,after:3" />
@@ -39,7 +39,7 @@
 		</group>
 		<group>
 			<component type="textfield" name="project.desc" input="_default">
-				<label length="100" row_size="0" column_width="20%" name="new.project.desc" value="${new.project.desc}" edit="close">
+				<label length="100" row_size="0" column_width="20%" name="project.add.desc" value="${project.add.desc}" edit="close">
 					<style>
 						<font style="normal" mark="normal" size="medium" />
 						<align position="left" fill=" " margin="before:3,after:3" />

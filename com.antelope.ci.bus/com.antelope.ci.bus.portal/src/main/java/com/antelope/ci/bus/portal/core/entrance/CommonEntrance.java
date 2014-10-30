@@ -21,7 +21,9 @@ import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter;
 import com.antelope.ci.bus.server.BusCommonServerActivator;
 import com.antelope.ci.bus.server.BusServerCondition;
+import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.ModeClass;
 import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.StatusClass;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
@@ -90,6 +92,9 @@ public abstract class CommonEntrance implements Entrance {
 				
 				if (clz.isAnnotationPresent(StatusClass.class))
 					BusShellStatus.addStatusClass(clz);
+				
+				if (clz.isAnnotationPresent(ModeClass.class))
+					BusShellMode.addModeClass(clz);
 				
 				cmdAdapter.addCommand(clsname);
 			} catch (ClassNotFoundException e) {

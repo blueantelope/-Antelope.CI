@@ -25,10 +25,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)  
 @Documented
 public @interface Mode {
+	public static final String TYPE_MAIN = "main";
+	public static final String TYPE_INPUT = "input";
+	public static final String TYPE_EDIT = "edit";
+	
 	String name();
 	
 	int code();
 	
 	String simple();
+	
+	String type() default TYPE_MAIN;
 }
-

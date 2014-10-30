@@ -12,6 +12,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit;
+import com.antelope.ci.bus.portal.project.BusProjectShellMode;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.command.Command;
@@ -25,15 +26,15 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014-2-27		下午6:10:08 
  */
 @Command(
-		name="new_project", 
+		name="project_add", 
 		commands="n, N", 
 		status=BusProjectShellStatus.PROJECT, 
 		type=CommandType.HIT, 
 		mode=BusShellMode.MAIN,
 		beforeClear=false, 
-		form="classpath:/com/antelope/ci/bus/portal/project/form/new_project.xml",
+		form="classpath:/com/antelope/ci/bus/portal/project/form/project_add.xml",
 		property="com.antelope.ci.bus.portal.project.form.project_form")
-public class NewProjectHit extends MainCommonPortalHit {
+public class ProjectAddHit extends MainCommonPortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -43,6 +44,7 @@ public class NewProjectHit extends MainCommonPortalHit {
 		try {
 			shell.enterEdit();
 			loadForm(shell);
+			shell.setMode(BusProjectShellMode.PROJECT_FORM_ADD);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}

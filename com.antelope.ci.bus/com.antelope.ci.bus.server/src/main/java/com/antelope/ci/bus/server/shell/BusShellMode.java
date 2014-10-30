@@ -8,10 +8,13 @@
 
 package com.antelope.ci.bus.server.shell;
 
-import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.StringUtil;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
 
 
 /**
@@ -22,11 +25,11 @@ import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
  */
 public class BusShellMode {
 	public enum BaseMode {
-		@Mode(code=1, name="shell.mode.main", simple="main")
+		@Mode(code=1, name="shell.mode.main", simple="main", type=Mode.TYPE_MAIN)
 		MAIN(1, "shell.mode.main", "main"),
-		@Mode(code=2, name="shell.mode.input", simple="input")
+		@Mode(code=2, name="shell.mode.input", simple="input", type=Mode.TYPE_INPUT)
 		INPUT(2, "shell.mode.input", "input"),
-		@Mode(code=3, name="shell.mode.edit", simple="edit")
+		@Mode(code=3, name="shell.mode.edit", simple="edit", type=Mode.TYPE_EDIT)
 		EDIT(3, "shell.mode.edit", "edit");
 		
 		private int code;
@@ -59,8 +62,8 @@ public class BusShellMode {
 			throw new CIBusException("", "unknown mode name");
 		}
 		
-		public static BaseStatus toMode(int code) throws CIBusException {
-			for (BaseStatus bs : BaseStatus.values()) {
+		public static BaseMode toMode(int code) throws CIBusException {
+			for (BaseMode bs : BaseMode.values()) {
 				if (bs.getCode() == code)
 					return bs;
 			}
@@ -73,31 +76,67 @@ public class BusShellMode {
 	public static final String INPUT 			= "shell.mode.input";
 	public static final String EDIT				= "shell.mode.edit";
 	
+	private static List<ModeExtenstion> modeList;
+	private static Map<String, Mode> modeMap;
+	
+	static {
+		modeList = new Vector<ModeExtenstion>();
+		modeMap = new ConcurrentHashMap<String, Mode>();
+		addModeToMap(BaseMode.class, false);
+	}
+	
+	public static void	addModeClass(Class modeClass) {
+		addModeToMap(modeClass, true);
+	}
+	
+	public static void addModeToMap(Class modeClass) {
+		addModeToMap(modeClass, true);
+	}
+	
+	private static void addModeToMap(Class modeClass, boolean isExtension) {
+		for (Field f : modeClass.getFields()) {
+			if (f.isAnnotationPresent(Mode.class)) {
+				Mode fMode = f.getAnnotation(Mode.class);
+				modeMap.put(f.getName(), fMode);
+				if (isExtension)
+					modeList.add(new ModeExtenstion(fMode.name(), modeClass));
+			}
+		}
+	}
+	
 	public static boolean isMain(String modeName) {
-		return isBaseMode(modeName, BaseMode.MAIN);
+		return isType(modeName, Mode.TYPE_MAIN);
 	}
 	
 	public static boolean isInput(String modeName) {
-		return isBaseMode(modeName, BaseMode.INPUT);
+		return isType(modeName, Mode.TYPE_INPUT);
 	}
 	
 	public static boolean isEdit(String modeName) {
-		return isBaseMode(modeName, BaseMode.EDIT);
+		return isType(modeName, Mode.TYPE_EDIT);
 	}
 	
-	private static boolean isBaseMode(String modeName, BaseMode mode) {
-		if (!StringUtil.empty(modeName)) {
-			try {
-				if (BaseMode.toMode(modeName) == mode)
-					return true;
-			} catch (CIBusException e) {
-				DevAssistant.errorln(e);
-				return false;
-			}
-			
-			return false;
-		}
-		
+	private static boolean isType(String modeName, String type) {
+		Mode mode = modeMap.get(modeName);
+		if (mode != null)
+			if (mode.type().equalsIgnoreCase(type))
+				return true;
 		return false;
+	}
+	
+	private static class ModeExtenstion {
+		private String name;
+		private Class cls;
+		public ModeExtenstion(String name, Class cls) {
+			super();
+			this.name = name;
+			this.cls = cls;
+		}
+		public String getName() {
+			return name;
+		}
+		public Class getCls() {
+			return cls;
+		}
 	}
 }

@@ -9,7 +9,7 @@
 		
 		<extension point="action">
 			<action>
-				<hit name="new_project" scope="native" mode="main">
+				<hit name="project_add" scope="native" mode="main">
 					<font style="bold" mark="lt" size="medium" />
 				</hit>
 			</action>
@@ -45,10 +45,10 @@
 								<font style="normal" mark="normal" size="medium" />
 								<delimiter value=" " position="middle" margin="after:3" />
 							</render>
-							<block name="new_project" active="on" action="on">
-								<value focus="on"><![CDATA[${project.menu.new}]]></value>
+							<block name="project_add" active="on" action="on">
+								<value focus="on"><![CDATA[${project.menu.add}]]></value>
 							</block>
-							<block name="edit_project" active="on" action="on">
+							<block name="project_edit" active="on" action="on">
 								<value><![CDATA[${project.menu.edit}]]></value>
 							</block>
 						</blocks>

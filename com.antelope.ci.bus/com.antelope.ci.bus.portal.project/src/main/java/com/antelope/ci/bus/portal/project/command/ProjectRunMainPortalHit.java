@@ -11,7 +11,6 @@ package com.antelope.ci.bus.portal.project.command;
 import com.antelope.ci.bus.portal.core.shell.command.RunMainPortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellMode;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandHelper;
 import com.antelope.ci.bus.server.shell.command.CommandType;
@@ -24,13 +23,13 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014年9月29日		下午6:26:24 
  */
 @Command(
-		name="run_project", 
+		name="project_run", 
 		commands=CommandHelper.enterCommand, 
 		status=BusProjectShellStatus.PROJECT, 
 		type=CommandType.HIT, 
 		mode=BusShellMode.MAIN,
 		beforeClear=false, 
-		form="classpath:/com/antelope/ci/bus/portal/project/form/new_project.xml",
+		form="classpath:/com/antelope/ci/bus/portal/project/form/project_add.xml",
 		property="com.antelope.ci.bus.portal.project.form.project_form")
 public class ProjectRunMainPortalHit extends RunMainPortalHit {
 

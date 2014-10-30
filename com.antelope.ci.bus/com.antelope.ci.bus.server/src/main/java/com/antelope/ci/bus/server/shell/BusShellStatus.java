@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -177,4 +176,3 @@ public class BusShellStatus {
 		}
 	}
 }
-
