@@ -14,7 +14,10 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.shell.Mode.BaseModeType;
 
 
 /**
@@ -96,10 +99,10 @@ public class BusShellMode {
 	private static void addModeToMap(Class modeClass, boolean isExtension) {
 		for (Field f : modeClass.getFields()) {
 			if (f.isAnnotationPresent(Mode.class)) {
-				Mode fMode = f.getAnnotation(Mode.class);
-				modeMap.put(f.getName(), fMode);
+				Mode mode = f.getAnnotation(Mode.class);
+				modeMap.put(ProxyUtil.classpathForField(f), mode);
 				if (isExtension)
-					modeList.add(new ModeExtenstion(fMode.name(), modeClass));
+					modeList.add(new ModeExtenstion(mode.name(), modeClass));
 			}
 		}
 	}
@@ -116,12 +119,33 @@ public class BusShellMode {
 		return isType(modeName, Mode.TYPE_EDIT);
 	}
 	
-	private static boolean isType(String modeName, String type) {
-		Mode mode = modeMap.get(modeName);
-		if (mode != null)
-			if (mode.type().equalsIgnoreCase(type))
-				return true;
+	public static BaseModeType getBaseModeType(String name) {
+		Mode mode = searchMode(name);
+		if (mode != null) {
+			try {
+				return BaseModeType.toType(mode.type());
+			} catch (CIBusException e) {
+				DevAssistant.assert_exception(e);
+			}
+		}
+		
+		return null;
+	}
+	
+	private static boolean isType(String name, String type) {
+		Mode mode = searchMode(name);
+		if (mode != null && mode.type().equalsIgnoreCase(type))
+			return true;
 		return false;
+	}
+	
+	private static Mode searchMode(String name) {
+		for (Map.Entry<String, Mode> entry : modeMap.entrySet()) {
+			Mode mode = entry.getValue();
+			if (name.equalsIgnoreCase(mode.name()))
+				return mode;
+		}
+		return null;
 	}
 	
 	private static class ModeExtenstion {

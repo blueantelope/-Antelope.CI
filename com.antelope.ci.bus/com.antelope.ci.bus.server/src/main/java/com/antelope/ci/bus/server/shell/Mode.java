@@ -14,6 +14,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+
 
 /**
  *
@@ -25,6 +27,45 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)  
 @Documented
 public @interface Mode {
+	public enum BaseModeType {
+		MAIN(1, "main"),
+		INPUT(2, "input"),
+		EDIT(3, "edit");
+		
+		private int code;
+		private String name;
+		private BaseModeType(int code, String name) {
+			this.code = code;
+			this.name = name;
+		}
+		
+		public int getCode() {
+			return code;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public static BaseModeType toType(String name) throws CIBusException {
+			for (BaseModeType bs : BaseModeType.values()) {
+				if (bs.getName().equalsIgnoreCase(name))
+					return bs;
+			}
+			
+			throw new CIBusException("", "unknown mode type name");
+		}
+		
+		public static BaseModeType toType(int code) throws CIBusException {
+			for (BaseModeType bs : BaseModeType.values()) {
+				if (bs.getCode() == code)
+					return bs;
+			}
+			
+			throw new CIBusException("", "unknown mode type code");
+		}
+	}
+	
 	public static final String TYPE_MAIN = "main";
 	public static final String TYPE_INPUT = "input";
 	public static final String TYPE_EDIT = "edit";

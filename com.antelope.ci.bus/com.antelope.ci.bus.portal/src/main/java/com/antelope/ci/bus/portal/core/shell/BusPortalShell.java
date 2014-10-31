@@ -34,8 +34,10 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalFormBuffer;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.Mode.BaseModeType;
 import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
@@ -1152,8 +1154,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	 */
 	@Override protected boolean handleInput(int c) {
 		try {
-			BaseMode baseMode = BaseMode.toMode(mode);
-			switch (baseMode) {
+			BaseModeType baseModeType = BusShellMode.getBaseModeType(mode);
+			if (baseModeType == null)
+				return false;
+			switch (baseModeType) {
 				case INPUT:
 				case EDIT:
 					if (c == NetVTKey.ESCAPE) {

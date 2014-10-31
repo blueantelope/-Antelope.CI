@@ -10,12 +10,10 @@ package com.antelope.ci.bus.portal.project.test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.test.portal.TestCommonPortalServer;
-import com.antelope.ci.bus.portal.project.BusProjectPortalShell;
 import com.antelope.ci.bus.server.BusServer;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -23,7 +21,7 @@ import com.antelope.ci.bus.server.BusServer;
  */
 public class TestMainApp {
 	public static void main(String[] args) throws CIBusException {
-		BusServer server = new TestCommonPortalServer(BusProjectPortalShell.class.getName());
+		BusServer server = new TestCommonPortalServer(TestBusProjectPortalShell.class.getName());
 		server.start();
 	}
 }

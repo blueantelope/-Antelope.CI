@@ -17,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -495,5 +496,9 @@ public class ProxyUtil {
 		}
 		
 		return ret;
+	}
+	
+	public static String classpathForField(Field field) {
+		return field.getDeclaringClass() + "." + field.getName();
 	}
 }

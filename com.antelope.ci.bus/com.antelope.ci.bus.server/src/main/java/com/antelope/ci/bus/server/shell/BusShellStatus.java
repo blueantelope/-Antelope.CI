@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.antelope.ci.bus.common.ProxyUtil;
+
 
 /**
  *
@@ -98,13 +100,11 @@ public class BusShellStatus {
 	}
 	
 	public static void removeStatusClass(Class statusClass) {
-		boolean exist = false;
 		int d_index = 0;
 		for (StatusExtenstion se : statusList) {
 			Class sc = se.getCls();
 			if (sc == statusClass) {
 				removeStatusFromMap(sc);
-				exist = true;
 				break;
 			}
 			d_index++;
@@ -115,10 +115,10 @@ public class BusShellStatus {
 	private static void addStatusToMap(Class statusClass, boolean isExtension) {
 		for (Field f : statusClass.getFields()) {
 			if (f.isAnnotationPresent(Status.class)) {
-				Status fStatus = f.getAnnotation(Status.class);
-				statusMap.put(f.getName(), fStatus);
+				Status status = f.getAnnotation(Status.class);
+				statusMap.put(ProxyUtil.classpathForField(f), status);
 				if (isExtension)
-					statusList.add(new StatusExtenstion(fStatus.name(), statusClass));
+					statusList.add(new StatusExtenstion(status.name(), statusClass));
 			}
 		}
 	}
@@ -127,7 +127,6 @@ public class BusShellStatus {
 		List<String> delList = new ArrayList<String>();
 		for (Field f : statusClass.getFields()) {
 			if (f.isAnnotationPresent(Status.class)) {
-				Status fStatus = f.getAnnotation(Status.class);
 				if (statusMap.get(f.getName()) != null)
 					delList.add(f.getName());
 			}
@@ -138,9 +137,9 @@ public class BusShellStatus {
 	
 	public static int code(String name) {
 		for (Map.Entry<String, Status> entry : statusMap.entrySet()) {
-			Status sta = entry.getValue();
-			if (name.equalsIgnoreCase(sta.name()))
-				return sta.code();
+			Status status = entry.getValue();
+			if (name.equalsIgnoreCase(status.name()))
+				return status.code();
 		}
 		return -1;
 	}
