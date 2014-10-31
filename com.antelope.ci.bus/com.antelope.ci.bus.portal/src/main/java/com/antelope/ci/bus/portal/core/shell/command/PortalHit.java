@@ -99,6 +99,7 @@ public abstract class PortalHit extends Hit {
 	}
 	
 	protected void loadForm(BusPortalShell shell) throws CIBusException {
+		shell.enterEdit();
 		reset();
 		if (form != null) {
 			Content content = form.getContent();
