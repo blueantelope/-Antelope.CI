@@ -202,6 +202,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	public boolean down() {
 		DIRECTION direction = area.directMoveDown();
 		try {
+			userDown(direction);
 			move(direction);
 			return true;
 		} catch (CIBusException e) {
@@ -286,6 +287,10 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	public boolean exitSpace() {
 		// nothing
 		return false;
+	}
+	
+	public ShellArea getArea() {
+		return area;
 	}
 	
 	/**
@@ -406,4 +411,6 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	protected abstract void rewriteAhead(int x, int y);
 	
 	protected abstract void rewriteLatter(int x, int y);
+	
+	protected abstract void userDown(DIRECTION direction);
 }

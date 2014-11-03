@@ -20,11 +20,11 @@ import com.antelope.ci.bus.server.shell.command.Command;
  * @version  0.1
  * @Date	 2014年9月29日		下午3:16:25 
  */
-public class RunMainPortalHit extends MainCommonPortalHit {
+public class RunMainPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
 	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
 		Command command = getContent();

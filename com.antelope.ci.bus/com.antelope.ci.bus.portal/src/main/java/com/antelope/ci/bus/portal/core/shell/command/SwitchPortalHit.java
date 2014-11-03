@@ -29,11 +29,11 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 
 		beforeClear=true)
-public class SwitchPortalHit extends MainCommonPortalHit {
+public class SwitchPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
 	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
 		return PortalShellUtil.getNextStatus(shell.getStatus());

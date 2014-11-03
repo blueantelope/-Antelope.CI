@@ -80,9 +80,9 @@ public class ShellUtil {
 			int cy = y > height ? height : y;
 			if (cx != 0) {
 				if (cx > 0)
-					io.moveLeft(cx);
+					io.moveRight(cx);
 				else
-					io.moveRight(-cx);
+					io.moveLeft(-cx);
 			}
 			if (cy != 0) {
 				if (cy > 0)

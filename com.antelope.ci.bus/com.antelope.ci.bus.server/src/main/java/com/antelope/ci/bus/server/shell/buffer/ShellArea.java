@@ -16,7 +16,7 @@ package com.antelope.ci.bus.server.shell.buffer;
  * @Date	 2014年10月14日		下午12:21:29 
  */
 public class ShellArea {
-	public enum DIRECTION{KEEP, UP, DOWN, LEFT, RIGHT, LEFT_UP, RIGTH_DOWN};
+	public enum DIRECTION{OUTSIDE, UP, DOWN, LEFT, RIGHT, LEFT_UP, RIGTH_DOWN};
 	
 	private ShellCursor origin;
 	private ShellCursor position;
@@ -174,7 +174,7 @@ public class ShellArea {
 	
 	public DIRECTION directLeft(ShellCursor v_position) {
 		if (v_position.coincident(origin))
-			return DIRECTION.KEEP;
+			return DIRECTION.OUTSIDE;
 		
 		if (v_position.getX() == origin.getX())
 			return DIRECTION.LEFT_UP;
@@ -184,7 +184,7 @@ public class ShellArea {
 	
 	public DIRECTION directRight(ShellCursor position, ShellCursor limit) {
 		if (position.coincident(limit))
-			return DIRECTION.KEEP;
+			return DIRECTION.OUTSIDE;
 		
 		if (position.getX() == capacity.getX())
 			return DIRECTION.RIGTH_DOWN;
@@ -243,13 +243,13 @@ public class ShellArea {
 	private DIRECTION directUp(ShellCursor v_position) {
 		if (v_position.getY() > origin.getY())
 			return DIRECTION.UP;
-		return DIRECTION.KEEP;
+		return DIRECTION.OUTSIDE;
 	}
 	
 	private DIRECTION directDown(ShellCursor v_position, ShellCursor v_limit) {
 		if (v_position.getY() < v_limit.getY())
 			return DIRECTION.DOWN;
-		return DIRECTION.KEEP;
+		return DIRECTION.OUTSIDE;
 	}
 	
 	private int distance(ShellCursor position_end, ShellCursor position_start) {

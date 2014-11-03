@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.server.shell.buffer;
 
+import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -32,5 +33,9 @@ public class SimpleBusEditBuffer extends BusEditBuffer {
 	protected void rewriteLatter(int x, int y) {
 		
 	}
-}
 
+	@Override
+	protected void userDown(DIRECTION direction) {
+		
+	}
+}

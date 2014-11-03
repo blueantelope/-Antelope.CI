@@ -11,7 +11,7 @@ package com.antelope.ci.bus.portal.project.command;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit;
+import com.antelope.ci.bus.portal.core.shell.command.PortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellMode;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellMode;
@@ -34,15 +34,16 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
 		beforeClear=false, 
 		form="classpath:/com/antelope/ci/bus/portal/project/form/project_add.xml",
 		property="com.antelope.ci.bus.portal.project.form.project_form")
-public class ProjectAddHit extends MainCommonPortalHit {
+public class ProjectAddHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.MainCommonPortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
 	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
 		try {
-			loadForm(shell);
+			ProjectAddHelper helper = ProjectAddHelper.getHelper();
+			helper.loadForm(shell, this.getClass(), getIdentity());
 			shell.setMode(BusProjectShellMode.PROJECT_FORM_ADD);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);

@@ -152,11 +152,6 @@ public abstract class CommandAdapter {
 	public String execute(BusShell shell, boolean refresh, String cmd, Object... args) throws CIBusException {
 		String status = shell.getStatus();
 		String mode = shell.getMode();
-		for (String key : globalCommandMap.keySet()) {
-			String rs = execute(key, globalCommandMap, shell, refresh, cmd, args);
-			if (rs != null)
-				return rs;
-		}
 		
 		for (String key : commandMap.keySet()) {
 			if (key.contains(status + DOT + mode)) {
@@ -165,6 +160,13 @@ public abstract class CommandAdapter {
 					return rs;
 			}
 		}
+		
+		for (String key : globalCommandMap.keySet()) {
+			String rs = execute(key, globalCommandMap, shell, refresh, cmd, args);
+			if (rs != null)
+				return rs;
+		}
+		
 		return BusShellStatus.KEEP;
 	}
 	

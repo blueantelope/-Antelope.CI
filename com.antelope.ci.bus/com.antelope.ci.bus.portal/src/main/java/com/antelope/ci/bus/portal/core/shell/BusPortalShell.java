@@ -32,7 +32,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.Part;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePart;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
-import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalFormBuffer;
+import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalBufferFactory;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
@@ -53,6 +53,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected static final Logger log = Logger.getLogger(BusPortalShell.class);
 	
+	public enum CONTROLAIM{SILENT, ACTION, INPUT};
 	protected static final EU_LAYOUT[] LAYOUT_ORDER		= new EU_LAYOUT[] 
 			{EU_LAYOUT.NORTH, EU_LAYOUT.SOUTH, EU_LAYOUT.WEST, EU_LAYOUT.EAST, EU_LAYOUT.CENTER};
 	protected final static Map<String, Integer> CONTENT_SCALE = new HashMap<String, Integer>();
@@ -70,7 +71,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected Map<String, List<PortalBlock>> blockMap;
 	protected BusPortalShellLiving shellLiving;
 	protected ShellCursor initPosition;
-	protected List<BusPortalFormBuffer> formBufferList;
+	protected List<BusPortalBufferFactory> bufferFactoryList;
 	protected boolean inputInitialized;
 	protected boolean inputFinished;
 	protected final int[] control_keys = new int[]{
@@ -97,7 +98,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		blockMap = new HashMap<String, List<PortalBlock>>();
 		shellLiving = new BusPortalShellLiving();
 		initPosition = new ShellCursor(0, 0);
-		formBufferList = new ArrayList<BusPortalFormBuffer>();
+		bufferFactoryList = new ArrayList<BusPortalBufferFactory>();
 		inputInitialized = false;
 		inputFinished = false;
 		if (portal == null)
@@ -112,8 +113,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return shellLiving;
 	}
 	
-	public void addFormBuffer(BusPortalFormBuffer formBuffer) {
-		formBufferList.add(formBuffer);
+	public void addFormBuffer(BusPortalBufferFactory formBuffer) {
+		bufferFactoryList.add(formBuffer);
 	}
 	
 	public void savePositionFromContent(int x, int y) {
@@ -1164,22 +1165,33 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						exitInput();
 						return true;
 					}
+					
 					if (inputFinished) {
 						inputFinished = false;
 						return false;
 					}
+					
 					if (c == NetVTKey.LF) {
 						finishInput();
 						return true;
 					}
 					
-					if (handleInputControl(c))
-						return false;
+					CONTROLAIM aim = handleInputControl(c);
+					switch (aim) {
+						case SILENT:
+							break;
+						case ACTION:
+							putControlKey(c);
+							action(c);
+							break;
+						case INPUT:
+							input.put((char) c);
+							break;
+					}
 					
 					if (!inputInitialized)
 						initInput();
 					
-					input.put((char) c);
 					return true;
 				case MAIN:
 				default:
@@ -1192,33 +1204,35 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		return false;
 	}
 	
-	protected boolean handleInputControl(int c) throws CIBusException {
+	protected CONTROLAIM handleInputControl(int c) throws CIBusException {
+		CONTROLAIM aim = CONTROLAIM.INPUT;
+		
 		if (c == NetVTKey.BACKSPACE) {
 			input.backspace();
-			return true;
+			aim = CONTROLAIM.SILENT;
 		}
 		if (c == NetVTKey.DELETE) {
 			input.delete();
-			return true;
+			aim = CONTROLAIM.SILENT;
 		}
 		if (c == NetVTKey.LEFT) {
 			input.left();
-			return true;
+			aim = CONTROLAIM.ACTION;
 		}
 		if (c == NetVTKey.RIGHT) {
 			input.right();
-			return true;
+			aim = CONTROLAIM.ACTION;
 		}
 		if (c == NetVTKey.UP) {
 			input.up();
-			return true;
+			aim = CONTROLAIM.ACTION;
 		}
 		if (c == NetVTKey.DOWN) {
 			input.down();
-			return true;
+			aim = CONTROLAIM.ACTION;
 		}
 		
-		return false;
+		return aim;
 	}
 	
 	protected void exitInput() throws CIBusException {

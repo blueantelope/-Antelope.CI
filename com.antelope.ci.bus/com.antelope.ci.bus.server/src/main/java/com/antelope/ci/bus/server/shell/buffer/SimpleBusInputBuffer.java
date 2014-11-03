@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.server.shell.buffer;
 
+import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
@@ -34,5 +35,9 @@ public class SimpleBusInputBuffer extends BusInputBuffer {
 		
 	}
 
-}
 
+	@Override
+	protected void userDown(DIRECTION direction) {
+		
+	}
+}
