@@ -38,4 +38,19 @@ public class SimpleBusEditBuffer extends BusEditBuffer {
 	protected void userDown(DIRECTION direction) {
 		
 	}
+
+	@Override
+	protected void userUp(DIRECTION direction) {
+		
+	}
+
+	@Override
+	protected void userLeft(DIRECTION direction) {
+		
+	}
+
+	@Override
+	protected void userRight(DIRECTION direction) {
+		
+	}
 }

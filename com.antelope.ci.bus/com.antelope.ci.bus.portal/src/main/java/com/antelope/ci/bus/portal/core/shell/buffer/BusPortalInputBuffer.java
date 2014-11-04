@@ -24,21 +24,25 @@ import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
  * @Date	 2014年10月10日		下午4:20:59 
  */
 public class BusPortalInputBuffer extends BusInputBuffer {
-	public enum NEXTBUFFER{KEEP, UP, DOWN, LEFT, RIGHT};
+	public enum NEIGHBOR{KEEP, UP, DOWN, LEFT, RIGHT};
 	protected String name;
 	protected BusPortalShell shell;
-	protected NEXTBUFFER nextbuffer;
+	protected NEIGHBOR neighbor;
+	protected boolean markUp;
 	protected BusPortalInputBuffer up;
+	protected boolean markDown;
 	protected BusPortalInputBuffer down;
 	protected BusPortalInputBuffer left;
+	protected boolean markLeft;
 	protected BusPortalInputBuffer right;
+	protected boolean markRight;
 	
 	
 	public BusPortalInputBuffer(BusPortalShell shell, int x, int y, int width, int height, String name) {
 		super(shell.getIO(), x, y, width, height);
 		this.name = name;
 		this.shell = shell;
-		nextbuffer = NEXTBUFFER.KEEP;
+		neighbor = NEIGHBOR.KEEP;
 		up = null;
 		down = null;
 		left = null;
@@ -53,6 +57,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 		return up;
 	}
 	public void setUp(BusPortalInputBuffer up) {
+		this.markUp = true;
 		this.up = up;
 	}
 
@@ -60,6 +65,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 		return down;
 	}
 	public void setDown(BusPortalInputBuffer down) {
+		this.markDown = true;
 		this.down = down;
 	}
 
@@ -67,6 +73,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 		return left;
 	}
 	public void setLeft(BusPortalInputBuffer left) {
+		this.markLeft = true;
 		this.left = left;
 	}
 
@@ -74,15 +81,32 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 		return right;
 	}
 	public void setRight(BusPortalInputBuffer right) {
+		this.markRight = true;
 		this.right = right;
 	}
 	
-	public boolean next() {
-		return nextbuffer != NEXTBUFFER.KEEP;
+	public boolean isMarkUp() {
+		return markUp;
+	}
+	public boolean isMarkDown() {
+		return markDown;
+	}
+	public boolean isMarkLeft() {
+		return markLeft;
+	}
+	public boolean isMarkRight() {
+		return markRight;
+	}
+	public boolean fullNeighbors() {
+		return markUp && markDown && markLeft && markRight;
+	}
+	
+	public boolean goNeighbor() {
+		return neighbor != NEIGHBOR.KEEP;
 	}
 	
 	public BusPortalInputBuffer nextBuffer() {
-		switch (nextbuffer) {
+		switch (neighbor) {
 			case UP:
 				return up;
 			case DOWN:
@@ -132,6 +156,39 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	@Override
 	protected void userDown(DIRECTION direction) {
 		if (direction == DIRECTION.OUTSIDE)
-			nextbuffer = NEXTBUFFER.DOWN;
+			neighbor = NEIGHBOR.DOWN;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#userUp(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 */
+	@Override
+	protected void userUp(DIRECTION direction) {
+		if (direction == DIRECTION.OUTSIDE)
+			neighbor = NEIGHBOR.UP;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#userLeft(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 */
+	@Override
+	protected void userLeft(DIRECTION direction) {
+		if (direction == DIRECTION.OUTSIDE)
+			neighbor = NEIGHBOR.LEFT;
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#userRight(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 */
+	@Override
+	protected void userRight(DIRECTION direction) {
+		if (direction == DIRECTION.OUTSIDE)
+			neighbor = NEIGHBOR.RIGHT;
 	}
 }

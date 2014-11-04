@@ -167,6 +167,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 		DIRECTION direction = area.directMovetLeft();
 		try {
 			move(direction);
+			userLeft(direction);
 			return true;
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
@@ -185,6 +186,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 		DIRECTION direction = area.directMoveRight();
 		try {
 			move(direction);
+			userRight(direction);
 			return true;
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
@@ -202,8 +204,8 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	public boolean down() {
 		DIRECTION direction = area.directMoveDown();
 		try {
-			userDown(direction);
 			move(direction);
+			userDown(direction);
 			return true;
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
@@ -222,6 +224,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 		DIRECTION direction = area.directMoveUp();
 		try {
 			move(direction);
+			userUp(direction);
 			return true;
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
@@ -412,5 +415,11 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	
 	protected abstract void rewriteLatter(int x, int y);
 	
+	protected abstract void userUp(DIRECTION direction);
+	
 	protected abstract void userDown(DIRECTION direction);
+	
+	protected abstract void userLeft(DIRECTION direction);
+	
+	protected abstract void userRight(DIRECTION direction);
 }

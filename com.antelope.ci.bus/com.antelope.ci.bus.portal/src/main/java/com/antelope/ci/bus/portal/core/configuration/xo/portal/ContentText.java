@@ -80,7 +80,7 @@ public class ContentText extends CommonValue {
 					value = StringUtil.subStringVT(line, start, position);
 					addContentText(innerList, this, value);
 					strList.add(innerList);
-					start += StringUtil.lengthVT(value) + 1;
+					start += StringUtil.lengthVT(value);
 				}
 			}
 		} catch (Exception e) {

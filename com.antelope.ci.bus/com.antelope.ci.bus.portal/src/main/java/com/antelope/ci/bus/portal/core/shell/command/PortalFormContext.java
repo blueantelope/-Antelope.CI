@@ -371,6 +371,7 @@ public class PortalFormContext {
 		try {
 			if (bufferFactory.next()) {
 				BusPortalInputBuffer nextBuffer = bufferFactory.getActiveBuffer();
+				shell.replaceBuffer(nextBuffer);
 				shell.shift(nextBuffer.getArea().getPositionx(), nextBuffer.getArea().getPositiony());
 			}
 		} catch (CIBusException e) {

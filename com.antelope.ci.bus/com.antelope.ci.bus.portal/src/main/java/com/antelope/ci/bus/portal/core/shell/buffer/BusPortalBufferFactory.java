@@ -65,32 +65,30 @@ public class BusPortalBufferFactory {
 		int bufsize = bufferList.size();
 		for (; n < bufsize; n++) {
 			BusPortalInputBuffer rootbuf = bufferList.get(n);
+			if (rootbuf.fullNeighbors())
+				continue;
 			int m = 0;
-			boolean _uped = false;
-			boolean _downed = false;
-			boolean _lefted = false;
-			boolean _righted = false;
 			for (; m < bufsize; m++) {
 				if (m == n)
 					continue;
 				BusPortalInputBuffer childbuf = bufferList.get(m);
 				// set up for root buffer
-				if (!_uped && markUpDownForBuffer(rootbuf, childbuf, 0))
-					_uped = true;
+				if (!rootbuf.isMarkUp())
+					markUpDownForBuffer(rootbuf, childbuf, 0);
 				// set down for root buffer
-				if (!_downed && markUpDownForBuffer(rootbuf, childbuf, 1))
-					_downed = true;
+				if (!rootbuf.isMarkDown())
+					markUpDownForBuffer(rootbuf, childbuf, 1);
 				// set left for root buffer
-				if (!_lefted && markLeftRightForBuffer(rootbuf, childbuf, m, n, 0))
-					_lefted = true;
+				if (!rootbuf.isMarkLeft())
+					markLeftRightForBuffer(rootbuf, childbuf, m, n, 0);
 				// set right for root buffer
-				if (!_righted && markLeftRightForBuffer(rootbuf, childbuf, m, n, 1))
-					_righted = true;
+				if (!rootbuf.isMarkRight())
+					markLeftRightForBuffer(rootbuf, childbuf, m, n, 1);
 			}
 		}
 	}
 	
-	private boolean markUpDownForBuffer(BusPortalInputBuffer rootbuf, BusPortalInputBuffer childbuf, int updown) {
+	private void markUpDownForBuffer(BusPortalInputBuffer rootbuf, BusPortalInputBuffer childbuf, int updown) {
 		// informations of root buffer
 		ShellArea root_area = rootbuf.getArea();
 		int root_startx = root_area.getOriginx();
@@ -106,18 +104,18 @@ public class BusPortalBufferFactory {
 				(updown == 1 && (child_starty > root_endy))) {
 			if ((child_startx >= root_startx && child_startx <= root_endx) ||
 				(child_endx >= root_startx && child_endx <= root_endx)) {
-				if (updown == 0)
+				if (updown == 0) {
 					rootbuf.setUp(childbuf);
-				else
+					childbuf.setDown(rootbuf);
+				} else {
 					rootbuf.setDown(childbuf);
-				return true;
+					childbuf.setUp(rootbuf);
+				}
 			}
 		}
-		
-		return false;
 	}
 	
-	private boolean markLeftRightForBuffer(BusPortalInputBuffer rootbuf, BusPortalInputBuffer childbuf, 
+	private void markLeftRightForBuffer(BusPortalInputBuffer rootbuf, BusPortalInputBuffer childbuf, 
 			int rootindex, int childindex, int leftright) {
 		// informations of root buffer
 		ShellArea root_area = rootbuf.getArea();
@@ -129,15 +127,13 @@ public class BusPortalBufferFactory {
 		if (child_starty == root_endy) {
 			if (leftright == 0 && childindex == (rootindex - 1)) {
 				rootbuf.setLeft(childbuf);
-				return true;
+				childbuf.setRight(rootbuf);
 			}
 			if (leftright == 1 && childindex == (rootindex + 1)) {
 				rootbuf.setRight(childbuf);
-				return true;
+				childbuf.setLeft(rootbuf);
 			}
 		}
-		
-		return false;
 	}
 
 	public BusPortalInputBuffer getActiveBuffer() {
@@ -145,7 +141,7 @@ public class BusPortalBufferFactory {
 	}
 	
 	public boolean next() {
-		if (activeBuffer != null && activeBuffer.next()) {
+		if (activeBuffer != null && activeBuffer.goNeighbor()) {
 			BusPortalInputBuffer nextBuffer = activeBuffer.nextBuffer();
 			if (nextBuffer != null) {
 				activeBuffer = nextBuffer;

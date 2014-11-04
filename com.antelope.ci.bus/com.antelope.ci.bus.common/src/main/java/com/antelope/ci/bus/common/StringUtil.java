@@ -207,7 +207,7 @@ public class StringUtil {
 		for (int i = 0; i < str_len; i++) {
 			if (started) {
 				if (length >= end) {
-					str_end = i;
+					str_end = i - 1;
 					ended = true;
 					break;
 				}

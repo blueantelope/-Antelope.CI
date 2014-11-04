@@ -23,7 +23,6 @@ public class SimpleBusInputBuffer extends BusInputBuffer {
 	public SimpleBusInputBuffer(TerminalIO io, int x, int y, int width, int height) {
 		super(io, x, y, width, height);
 	}
-
 	
 	@Override
 	protected void rewriteAhead(int x, int y) {
@@ -35,9 +34,23 @@ public class SimpleBusInputBuffer extends BusInputBuffer {
 		
 	}
 
-
 	@Override
 	protected void userDown(DIRECTION direction) {
+		
+	}
+
+	@Override
+	protected void userUp(DIRECTION direction) {
+		
+	}
+
+	@Override
+	protected void userLeft(DIRECTION direction) {
+		
+	}
+
+	@Override
+	protected void userRight(DIRECTION direction) {
 		
 	}
 }
