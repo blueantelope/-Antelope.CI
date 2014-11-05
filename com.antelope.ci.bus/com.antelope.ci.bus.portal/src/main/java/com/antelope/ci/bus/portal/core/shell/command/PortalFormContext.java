@@ -69,7 +69,7 @@ public class PortalFormContext {
 			Content content = form.getContent();
 			if (content == null)	return;
 			if (bufferFactory == null) {
-				bufferFactory = new BusPortalBufferFactory(identity);
+				bufferFactory = new BusPortalBufferFactory(identity, shell.getIO());
 			} else {
 				bufferFactory.resetBuffer();
 			}

@@ -76,6 +76,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 		shiftTop();
 		move(cursor.getX(), cursor.getY());
 		input = new BusHitBuffer(io);
+		afterView();
 	}
 	
 	/**
@@ -101,5 +102,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 	protected abstract ShellCursor initCursorPosistion(); 
 	
 	protected abstract void view() throws CIBusException;
+	
+	protected abstract void afterView();
 }
 

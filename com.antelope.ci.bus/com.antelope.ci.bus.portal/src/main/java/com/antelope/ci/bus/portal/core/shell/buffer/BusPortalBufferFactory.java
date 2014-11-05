@@ -11,7 +11,10 @@ package com.antelope.ci.bus.portal.core.shell.buffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellArea;
+import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
@@ -24,10 +27,12 @@ public class BusPortalBufferFactory {
 	private String name;
 	private List<BusPortalInputBuffer> bufferList;
 	private BusPortalInputBuffer activeBuffer;
+	private BusBuffer commandBuffer;
 	
-	public BusPortalBufferFactory(String name) {
+	public BusPortalBufferFactory(String name, TerminalIO io) {
 		this.name = name;
 		bufferList = new ArrayList<BusPortalInputBuffer>();
+		commandBuffer = new BusHitBuffer(io);
 	}
 	
 	public String getName() {
@@ -149,5 +154,9 @@ public class BusPortalBufferFactory {
 			}
 		}
 		return false;
+	}
+	
+	public BusBuffer getCommandBuffer() {
+		return this.commandBuffer;
 	}
 }

@@ -41,6 +41,8 @@ import com.antelope.ci.bus.server.shell.Mode.BaseModeType;
 import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
+import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -53,7 +55,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected static final Logger log = Logger.getLogger(BusPortalShell.class);
 	
-	public enum CONTROLAIM{SILENT, ACTION, INPUT};
+	public enum CONTROLAIM{SILENT, ACTION, COMMAND, INPUT};
 	protected static final EU_LAYOUT[] LAYOUT_ORDER		= new EU_LAYOUT[] 
 			{EU_LAYOUT.NORTH, EU_LAYOUT.SOUTH, EU_LAYOUT.WEST, EU_LAYOUT.EAST, EU_LAYOUT.CENTER};
 	protected final static Map<String, Integer> CONTENT_SCALE = new HashMap<String, Integer>();
@@ -74,6 +76,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected List<BusPortalBufferFactory> bufferFactoryList;
 	protected boolean inputInitialized;
 	protected boolean inputFinished;
+	protected BusBuffer mainBuffer;
+	protected boolean formCommand;
 	protected final int[] control_keys = new int[]{
 			NetVTKey.BACKSPACE,
 			NetVTKey.DELETE,
@@ -101,6 +105,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		bufferFactoryList = new ArrayList<BusPortalBufferFactory>();
 		inputInitialized = false;
 		inputFinished = false;
+		formCommand = false;
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
 	}
@@ -1184,6 +1189,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 							putControlKey(c);
 							action(c);
 							break;
+						case COMMAND:
+							formCommand = true;
+							sdf
+							
+//							cmdArg = new ShellCommandArg(, new String[]{});
+							execute(cmdArg);
+							break;
 						case INPUT:
 							input.put((char) c);
 							break;
@@ -1230,6 +1242,9 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (c == NetVTKey.DOWN) {
 			input.down();
 			aim = CONTROLAIM.ACTION;
+		}
+		if (c== NetVTKey.COLORINIT) {
+			aim = CONTROLAIM.COMMAND;
 		}
 		
 		return aim;
@@ -1284,6 +1299,15 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				throw new CIBusException("", "change into input mode", e);
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusBaseFrameShell#afterView()
+	 */
+	@Override protected void afterView() {
+		mainBuffer = input;
 	}
 	
 	protected abstract void customInit() throws CIBusException;

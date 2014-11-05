@@ -18,7 +18,6 @@ import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
- * TODO 描述
  * 
  * @author blueantelope
  * @version 0.1
@@ -182,6 +181,13 @@ public class TestFrameShell extends BusBaseFrameShell {
 
 	@Override
 	protected void handleMode() {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void afterView() {
 		
 		// TODO Auto-generated method stub
 		
