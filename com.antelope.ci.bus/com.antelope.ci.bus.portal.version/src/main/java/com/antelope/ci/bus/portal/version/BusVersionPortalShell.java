@@ -16,16 +16,19 @@ import com.antelope.ci.bus.server.shell.Shell;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-3-26		下午4:28:20 
  */
-@Shell(name="portal.target", commandAdapter="com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter", status=BusVersionShellStatus.VERSION)
-@PortalConfiguration(xml="classpath:/com/antelope/ci/bus/portal/version/portal_version", properties="classpath:com.antelope.ci.bus.portal.version.portal_version")
+@Shell(
+		name="portal.target", 
+		commandAdapter="com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter", 
+		status=BusVersionShellStatus.VERSION)
+@PortalConfiguration(
+		xml="classpath:/com/antelope/ci/bus/portal/version/portal_version", 
+		properties="classpath:com.antelope.ci.bus.portal.version.portal_version")
 public class BusVersionPortalShell extends BusPortalShell {
-
 	public BusVersionPortalShell() throws CIBusException {
 		super();
 	}
@@ -33,31 +36,20 @@ public class BusVersionPortalShell extends BusPortalShell {
 	@Override
 	protected void customInit() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void custom() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void shutdown() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected PortalBlock loadBlock() {
-		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
 
+	@Override
+	protected void customShutdown() throws CIBusException {
+		
+	}
 }
-
