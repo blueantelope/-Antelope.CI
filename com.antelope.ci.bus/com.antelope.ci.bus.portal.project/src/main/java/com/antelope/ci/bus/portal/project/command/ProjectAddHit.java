@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.portal.project.command;
 
-import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.command.PortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellMode;
@@ -41,13 +39,8 @@ public class ProjectAddHit extends PortalHit {
 	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
 	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
-		try {
-			ProjectAddHelper helper = ProjectAddHelper.getHelper();
-			helper.loadForm(shell, this.getClass(), getIdentity());
-			shell.setMode(BusProjectShellMode.PROJECT_FORM_ADD);
-		} catch (CIBusException e) {
-			DevAssistant.errorln(e);
-		}
+		addFormContext(shell, this.getClass());
+		shell.setMode(BusProjectShellMode.PROJECT_FORM_ADD);
 		return BusProjectShellStatus.PROJECT;
 	}
 

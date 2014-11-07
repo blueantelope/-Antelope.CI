@@ -27,6 +27,8 @@ import com.antelope.ci.bus.server.shell.command.hit.HitAdapter;
  * @Date	 2014-4-14		下午4:43:28 
  */
 public class PortalCommandAdapter extends HitAdapter {
+	private static final String COMMAND_FORM_PREFIX = "command.status.global.shell.mode.form";
+	
 	public PortalCommandAdapter() {
 		super();
 		try {
@@ -55,5 +57,39 @@ public class PortalCommandAdapter extends HitAdapter {
 			portalShell.focus(hit);
 		}
 	}
-}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#showCommands(com.antelope.ci.bus.server.shell.BusShell, java.lang.String, int)
+	 */
+	@Override
+	public void showCommands(BusShell shell, String prCmd, int width) {
+		
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#userExecute(com.antelope.ci.bus.server.shell.BusShell, boolean, java.lang.String, java.lang.Object[])
+	 */
+	@Override
+	protected String userExecute(BusShell shell, boolean refresh, String cmd, Object... args) throws CIBusException {
+		BusPortalShell portalShell = (BusPortalShell) shell;
+		if (portalShell.formCommandMode()) {
+			userFinal = true;
+			for (String key : globalCommandMap.keySet()) {
+				if (key.startsWith(COMMAND_FORM_PREFIX)) {
+					String rs = execute(key, globalCommandMap, shell, refresh, cmd, args);
+					if (rs != null) {
+						userFinal = false;
+						portalShell.finishFormCommandMode();
+						return rs;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+}

@@ -32,8 +32,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
 		beforeClear=false)
 public class ProjectAddDownHit extends PortalHit {
 	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
-		ProjectAddHelper helper = ProjectAddHelper.getHelper();
-		helper.downWidget(shell);
+		downInForm(shell);
 		return BusProjectShellStatus.PROJECT;
 	}
 }

@@ -189,6 +189,7 @@ public class NetVTKey {
 	public static final String CRLF = "\r\n";
 	
 	public static final int[] Set = {
+		ESCAPE,
 		BEL,
 		BS,
 		DEL,

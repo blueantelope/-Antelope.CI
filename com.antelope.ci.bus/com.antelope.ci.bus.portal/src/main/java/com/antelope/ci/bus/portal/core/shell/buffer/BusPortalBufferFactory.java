@@ -27,12 +27,12 @@ public class BusPortalBufferFactory {
 	private String name;
 	private List<BusPortalInputBuffer> bufferList;
 	private BusPortalInputBuffer activeBuffer;
-	private BusBuffer commandBuffer;
+	private BusBuffer command;
 	
 	public BusPortalBufferFactory(String name, TerminalIO io) {
 		this.name = name;
 		bufferList = new ArrayList<BusPortalInputBuffer>();
-		commandBuffer = new BusHitBuffer(io);
+		command = new BusHitBuffer(io);
 	}
 	
 	public String getName() {
@@ -156,7 +156,12 @@ public class BusPortalBufferFactory {
 		return false;
 	}
 	
-	public BusBuffer getCommandBuffer() {
-		return this.commandBuffer;
+	public BusBuffer initCommand() {
+		command.reset();
+		return command;
+	}
+	
+	public BusBuffer getCommand() {
+		return command;
 	}
 }

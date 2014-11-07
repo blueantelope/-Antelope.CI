@@ -16,35 +16,25 @@ import com.antelope.ci.bus.server.shell.Shell;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-2-8		下午2:13:43 
  */
-@Shell(name="portal.test", commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
-@PortalConfiguration(xml="classpath:/com/antelope/ci/bus/portal/test/portal_test", properties="classpath:com.antelope.ci.bus.portal.test.portal_test")
+@Shell(
+		name="portal.test", 
+		commandAdapter="com.antelope.ci.bus.server.shell.command.hit.HitAdapter")
+@PortalConfiguration(
+		xml="classpath:/com/antelope/ci/bus/portal/test/portal_test", 
+		properties="classpath:com.antelope.ci.bus.portal.test.portal_test")
 public class TestBusPortalShell extends BusPortalShell {
-	
-	
-
 	public TestBusPortalShell() throws CIBusException {
-		
 		super();
-		// TODO Auto-generated constructor stub
-		
 	}
 
 	@Override
 	protected void custom() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void shutdown() throws CIBusException {
-
 	}
 
 	@Override
@@ -54,12 +44,11 @@ public class TestBusPortalShell extends BusPortalShell {
 
 	@Override
 	protected PortalBlock loadBlock() {
-		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
 
-	
+	@Override
+	protected void customShutdown() throws CIBusException {
+		
+	}
 }
-

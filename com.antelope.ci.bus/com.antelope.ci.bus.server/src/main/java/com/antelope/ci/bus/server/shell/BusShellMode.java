@@ -139,7 +139,7 @@ public class BusShellMode {
 		return false;
 	}
 	
-	private static Mode searchMode(String name) {
+	public static Mode searchMode(String name) {
 		for (Map.Entry<String, Mode> entry : modeMap.entrySet()) {
 			Mode mode = entry.getValue();
 			if (name.equalsIgnoreCase(mode.name()))

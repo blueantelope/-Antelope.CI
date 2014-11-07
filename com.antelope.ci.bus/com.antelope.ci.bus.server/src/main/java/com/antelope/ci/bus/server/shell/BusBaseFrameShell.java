@@ -49,14 +49,13 @@ public abstract class BusBaseFrameShell extends BusShell {
 	 */
 	@Override protected void action(int c) throws CIBusException {
 		try {
-			if (noActionForContorl()) {
+			if (actionForContorl()) {
 				cmdArg = new ShellCommandArg(String.valueOf(controlKey), new String[]{});
 				execute(cmdArg);
 			} else {
 				input.put((char) c);
 				cmdArg = input.toCommand();
 				execute(cmdArg);
-				input.reset();
 			}
 		} catch (Exception e) {
 			DevAssistant.errorln(e);

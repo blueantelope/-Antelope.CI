@@ -52,7 +52,7 @@ public class BusProjectPortalShell extends BusPortalShell {
 	}
 
 	@Override
-	protected void shutdown() throws CIBusException {
+	protected void customShutdown() throws CIBusException {
 		
 	}
 

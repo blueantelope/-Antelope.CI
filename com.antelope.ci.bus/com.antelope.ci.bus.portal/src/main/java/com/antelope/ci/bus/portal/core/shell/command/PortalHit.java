@@ -15,6 +15,8 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
+import com.antelope.ci.bus.portal.core.shell.form.PortalFormContext;
+import com.antelope.ci.bus.portal.core.shell.form.PortalFormContextFactory;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
@@ -102,6 +104,48 @@ public abstract class PortalHit extends Hit {
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
+	}
+	
+	protected void addFormContext(BusPortalShell shell, Class commandClass) {
+		PortalFormContextFactory factory = PortalFormContextFactory.getFactory();
+		PortalFormContext formContext = factory.add(shell, commandClass);
+		if (formContext != null)
+			shell.replaceActiveFormContext(formContext);
+	}
+	
+	protected PortalFormContext getFormContext(BusPortalShell shell, String identity) {
+		PortalFormContextFactory factory = PortalFormContextFactory.getFactory();
+		return factory.getFormContext(shell, identity);
+	}
+	
+	protected void	upInForm(BusPortalShell shell) {
+		PortalFormContext formContext = shell.getActiveFormContext();
+		if (formContext != null)
+			formContext.upWidget();
+	}
+	
+	protected void downInForm(BusPortalShell shell) {
+		PortalFormContext formContext = shell.getActiveFormContext();
+		if (formContext != null)
+			formContext.downWidget();
+	}
+	
+	protected void leftInForm(BusPortalShell shell) {
+		PortalFormContext formContext = shell.getActiveFormContext();
+		if (formContext != null)
+			formContext.leftWidget();
+	}
+	
+	protected void rightInForm(BusPortalShell shell) {
+		PortalFormContext formContext = shell.getActiveFormContext();
+		if (formContext != null)
+			formContext.rightWidget();
+	}
+	
+	protected void enterFormCommand(BusPortalShell shell) {
+		PortalFormContext formContext = shell.getActiveFormContext();
+		if (formContext != null)
+			formContext.enterFormCommand();
 	}
 	
 	protected abstract String executeOnMain(BusPortalShell shell,  Object... args);

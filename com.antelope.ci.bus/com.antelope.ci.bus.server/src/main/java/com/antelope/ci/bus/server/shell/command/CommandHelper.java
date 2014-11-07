@@ -42,6 +42,8 @@ public class CommandHelper {
 	public final static String rightCommand = NUMBER_PREFIX + NetVTKey.RIGHT + NUMBER_SUFFIX;
 	public final static String tabCommand = NUMBER_PREFIX + NetVTKey.TABULATOR + NUMBER_SUFFIX;
 	public final static String enterCommand = NUMBER_PREFIX + NetVTKey.LF + NUMBER_SUFFIX;
+	public final static String crtlCommand = NUMBER_PREFIX + NetVTKey.COLORINIT + NUMBER_SUFFIX;
+	public final static String escCommand = NUMBER_PREFIX + NetVTKey.ESCAPE + NUMBER_SUFFIX;
 	static {
 		command_sign_map = new HashMap<String, CommandSignPair>();
 		command_sign_map.put("number", new CommandSignPair(NUMBER_PREFIX, NUMBER_SUFFIX));

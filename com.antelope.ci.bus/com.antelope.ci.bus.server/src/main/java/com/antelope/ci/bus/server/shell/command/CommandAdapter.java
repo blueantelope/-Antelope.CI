@@ -40,6 +40,7 @@ public abstract class CommandAdapter {
 	protected Map<String, ICommand> globalCommandMap;
 	protected CommandType cType;
 	protected boolean isQuit;
+	protected boolean userFinal;
 	
 	public CommandAdapter(CommandType cType) {
 		this.cType = cType;
@@ -47,6 +48,7 @@ public abstract class CommandAdapter {
 		commandMap = new ConcurrentHashMap<String, ICommand>();
 		isQuit = false;
 		init();
+		userFinal = false;
 	}
 	
 	public void addCommand(ICommand command) {
@@ -150,19 +152,23 @@ public abstract class CommandAdapter {
 	}
 	
 	public String execute(BusShell shell, boolean refresh, String cmd, Object... args) throws CIBusException {
+		String rs = userExecute(shell, refresh, cmd, args);
+		if (rs != null)	return rs;
+		if (userFinal)	return null;
+		
 		String status = shell.getStatus();
 		String mode = shell.getMode();
 		
 		for (String key : commandMap.keySet()) {
 			if (key.contains(status + DOT + mode)) {
-				String rs = execute(key, commandMap, shell, refresh, cmd, args);
+				rs = execute(key, commandMap, shell, refresh, cmd, args);
 				if (rs != null)
 					return rs;
 			}
 		}
 		
 		for (String key : globalCommandMap.keySet()) {
-			String rs = execute(key, globalCommandMap, shell, refresh, cmd, args);
+			rs = execute(key, globalCommandMap, shell, refresh, cmd, args);
 			if (rs != null)
 				return rs;
 		}
@@ -172,11 +178,14 @@ public abstract class CommandAdapter {
 	
 	protected String execute(String key, Map<String, ICommand> currentCmdMap, 
 			BusShell shell, boolean refresh, String cmd, Object... args) throws CIBusException {
+		String result = null;
 		ICommand command = currentCmdMap.get(key);
 		if (command != null && match(command, cmd))
-			return execute(command, shell, refresh, cmd, args);
+			result =  execute(command, shell, refresh, cmd, args);
+		if (result != null)
+			shell.clearData();
 		
-		return null;
+		return result;
 	}
 	
 	protected String execute(ICommand command,  BusShell shell, boolean refresh, Object... args) throws CIBusException {
@@ -227,5 +236,7 @@ public abstract class CommandAdapter {
 	protected abstract void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException;
 	
 	public abstract void showCommands(BusShell shell, String prCmd, int width);
+	
+	protected abstract String userExecute(BusShell shell, boolean refresh, String cmd, Object... args) throws CIBusException;
 }
 

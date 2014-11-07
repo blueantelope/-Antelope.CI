@@ -6,7 +6,7 @@
  * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal.core.shell.command;
+package com.antelope.ci.bus.portal.core.shell.form;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,15 +53,22 @@ public class PortalFormContext {
 	private final static Logger log = Logger.getLogger(PortalFormContext.class);
 	protected Form form;
 	protected BusPortalBufferFactory bufferFactory;
+	protected BusPortalShell shell;
 	protected Properties properties;
+	protected String name;
 	protected int cursor_x = 0;
 	protected int cursor_y = 0;
 	
-	public PortalFormContext() {
-		
+	public PortalFormContext(BusPortalShell shell, Class commandClass) throws CIBusException {
+		this.shell = shell;
+		loadForm(commandClass);
 	}
 	
-	public void loadForm(BusPortalShell shell, Class commandClass, String identity) throws CIBusException {
+	public String getName() {
+		return name;
+	}
+	
+	protected void loadForm(Class commandClass) throws CIBusException {
 		shell.enterEdit();
 		init(commandClass);
 		reset();
@@ -69,7 +76,7 @@ public class PortalFormContext {
 			Content content = form.getContent();
 			if (content == null)	return;
 			if (bufferFactory == null) {
-				bufferFactory = new BusPortalBufferFactory(identity, shell.getIO());
+				bufferFactory = new BusPortalBufferFactory(name, shell.getIO());
 			} else {
 				bufferFactory.resetBuffer();
 			}
@@ -113,7 +120,7 @@ public class PortalFormContext {
 									break;
 							}
 							if (bufferFactory.getBuffer(componentName) == null)
-								addWidgeBuffer(componentName, shell, new Widget[]{label, field});
+								addWidgeBuffer(componentName, new Widget[]{label, field});
 						} catch (CIBusException e) {
 							DevAssistant.errorln(e);
 							log.error(e);
@@ -124,26 +131,26 @@ public class PortalFormContext {
 			componentToContentInTail(contentSet, textList, widthpercent);
 			
 			shell.writeContent(contentSet);
-			focus(shell, content);
+			focus(content);
 			bufferFactory.initActiveBuffer();
 			shell.enterInputMode();
 		}
 	}
 	
-	public void upWidget(BusPortalShell shell) {
-		enterNextWidget(shell);
+	public void upWidget() {
+		enterNextWidget();
 	}
 	
-	public void downWidget(BusPortalShell shell) {
-		enterNextWidget(shell);
+	public void downWidget() {
+		enterNextWidget();
 	}
 	
-	public void leftWidget(BusPortalShell shell) {
-		enterNextWidget(shell);
+	public void leftWidget() {
+		enterNextWidget();
 	}
 	
-	public void rightWidget(BusPortalShell shell) {
-		enterNextWidget(shell);
+	public void rightWidget() {
+		enterNextWidget();
 	}
 	
 	private void init(Class clazz) {
@@ -174,6 +181,8 @@ public class PortalFormContext {
 					}
 				}
 			}
+			
+			name = cmd.status() + "." + cmd.mode();
 		}
 	}
 	
@@ -182,7 +191,7 @@ public class PortalFormContext {
 		cursor_y = 0;
 	}
 	
-	private void addWidgeBuffer(String componentName, BusPortalShell shell, Widget[] widgets) {
+	private void addWidgeBuffer(String componentName, Widget[] widgets) {
 		for (Widget widget : widgets) {
 			if (widget.editable()) {
 				String bufferName = genWidgetName(componentName, widget);
@@ -344,7 +353,7 @@ public class PortalFormContext {
 		}
 	}
 	
-	private void focus(BusPortalShell shell, Content content) throws CIBusException  {
+	private void focus(Content content) throws CIBusException  {
 		Widget focus_widget = content.getFocusWidget();
 		if (focus_widget != null) {
 			shell.moveContent();
@@ -367,7 +376,7 @@ public class PortalFormContext {
 		return componentName + "." + widget.getDisplayName() + "." + widget.getTypeName();
 	}
 	
-	protected void enterNextWidget(BusPortalShell shell) {
+	protected void enterNextWidget() {
 		try {
 			if (bufferFactory.next()) {
 				BusPortalInputBuffer nextBuffer = bufferFactory.getActiveBuffer();
@@ -377,6 +386,10 @@ public class PortalFormContext {
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
+	}
+	
+	public void enterFormCommand() {
+		shell.replaceBuffer(bufferFactory.initCommand());
 	}
 		
 	private static class XPosition {

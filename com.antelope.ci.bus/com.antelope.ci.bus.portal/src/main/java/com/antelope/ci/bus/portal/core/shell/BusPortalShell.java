@@ -33,6 +33,8 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePart;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalBufferFactory;
+import com.antelope.ci.bus.portal.core.shell.form.PortalFormContext;
+import com.antelope.ci.bus.portal.core.shell.form.PortalFormContextFactory;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
@@ -42,7 +44,6 @@ import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.ShellPalette;
 import com.antelope.ci.bus.server.shell.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
-import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -77,7 +78,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected boolean inputInitialized;
 	protected boolean inputFinished;
 	protected BusBuffer mainBuffer;
-	protected boolean formCommand;
+	protected boolean formCommandMode;
+	protected PortalFormContext activeFormContext;
 	protected final int[] control_keys = new int[]{
 			NetVTKey.BACKSPACE,
 			NetVTKey.DELETE,
@@ -105,9 +107,25 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		bufferFactoryList = new ArrayList<BusPortalBufferFactory>();
 		inputInitialized = false;
 		inputFinished = false;
-		formCommand = false;
+		formCommandMode = false;
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
+	}
+	
+	public boolean formCommandMode() {
+		return formCommandMode;
+	}
+	
+	public void replaceActiveFormContext(PortalFormContext activeFormContext) {
+		this.activeFormContext = activeFormContext;
+	}
+	
+	public PortalFormContext getActiveFormContext() {
+		return activeFormContext;
+	}
+	
+	public void finishFormCommandMode() {
+		formCommandMode = false;
 	}
 	
 	public Portal getPortal() {
@@ -1166,44 +1184,30 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			switch (baseModeType) {
 				case INPUT:
 				case EDIT:
-					if (c == NetVTKey.ESCAPE) {
-						exitInput();
-						return true;
-					}
-					
-					if (inputFinished) {
-						inputFinished = false;
-						return false;
-					}
-					
-					if (c == NetVTKey.LF) {
-						finishInput();
-						return true;
-					}
-					
-					CONTROLAIM aim = handleInputControl(c);
-					switch (aim) {
-						case SILENT:
-							break;
-						case ACTION:
-							putControlKey(c);
-							action(c);
-							break;
-						case COMMAND:
-							formCommand = true;
-							sdf
-							
-//							cmdArg = new ShellCommandArg(, new String[]{});
-							execute(cmdArg);
-							break;
-						case INPUT:
-							input.put((char) c);
-							break;
-					}
-					
 					if (!inputInitialized)
 						initInput();
 					
+					if (formCommandMode) {
+						
+					} else {
+						CONTROLAIM aim = handleInputControl(c);
+						switch (aim) {
+							case SILENT:
+								break;
+							case ACTION:
+								putControlKey(c);
+								action(c);
+								break;
+							case COMMAND:
+								formCommandMode = true;
+								putControlKey(c);
+								action(c);
+								break;
+							case INPUT:
+								input.put((char) c);
+								break;
+						}
+					}
 					return true;
 				case MAIN:
 				default:
@@ -1243,14 +1247,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			input.down();
 			aim = CONTROLAIM.ACTION;
 		}
-		if (c== NetVTKey.COLORINIT) {
+		if (c== NetVTKey.ESCAPE) {
 			aim = CONTROLAIM.COMMAND;
 		}
 		
 		return aim;
 	}
 	
-	protected void exitInput() throws CIBusException {
+	public void exitInput() throws CIBusException {
 		mode = BaseMode.MAIN.getName();
 		activeBlock.enable();
 		lastEditMode = true;
@@ -1310,7 +1314,19 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		mainBuffer = input;
 	}
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#shutdown()
+	 */
+	@Override protected void shutdown() throws CIBusException {
+		PortalFormContextFactory.getFactory().remove(this);
+		customShutdown();
+	}
+	
 	protected abstract void customInit() throws CIBusException;
 	
 	protected abstract PortalBlock loadBlock();
+	
+	protected abstract void customShutdown() throws CIBusException;
 }

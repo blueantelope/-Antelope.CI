@@ -21,7 +21,7 @@ import com.antelope.ci.bus.server.shell.command.ICommand;
  * @version  0.1
  * @Date	 2013-12-2		下午5:15:36 
  */
-public class HitAdapter extends CommandAdapter {
+public abstract class HitAdapter extends CommandAdapter {
 	public HitAdapter() {
 		super(CommandType.HIT);
 	}
@@ -32,13 +32,4 @@ public class HitAdapter extends CommandAdapter {
 		addCommand(new QuitHit());
 		addCommand(new RefreshHit());
 	}
-
-	@Override protected void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException {
-		
-	}
-
-	@Override public void showCommands(BusShell shell, String prCmd, int width) {
-		
-	}
 }
-

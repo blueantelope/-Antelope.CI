@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
@@ -30,7 +29,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @version  0.1
  * @Date	 2013-11-25		下午9:23:21 
  */
-public class EchoAdapter extends  CommandAdapter {
+public abstract class EchoAdapter extends  CommandAdapter {
 	public EchoAdapter() {
 		super(CommandType.ECHO);
 	}
@@ -97,14 +96,4 @@ public class EchoAdapter extends  CommandAdapter {
 			n++;
 		}
 	}
-	
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.command.CommandAdapter#afterExecute(com.antelope.ci.bus.server.shell.BusShell, com.antelope.ci.bus.server.shell.command.ICommand, java.lang.Object[])
-	 */
-	@Override protected void afterExecute(BusShell shell, ICommand command,  Object... args) throws CIBusException {
-
-	}
 }
-

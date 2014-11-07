@@ -12,7 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * TODO 描述
  * 
  * @author blueantelope
  * @version 0.1

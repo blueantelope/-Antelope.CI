@@ -34,7 +34,7 @@ public class SimpleBusPortalShell extends BusPortalShell {
 	}
 
 	@Override
-	protected void shutdown() throws CIBusException {
+	protected void customShutdown() throws CIBusException {
 		
 	}
 

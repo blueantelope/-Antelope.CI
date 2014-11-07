@@ -95,6 +95,10 @@ public abstract class BusShell {
 		lastEditMode = false;
 	}
 	
+	public void clearData() {
+		input.reset();
+	}
+	
 	public void replaceBuffer(BusBuffer buffer) {
 		this.input = buffer;
 	}
@@ -283,6 +287,7 @@ public abstract class BusShell {
 				DevAssistant.assert_exception(e);
 				throw new CIBusException("", e);
 			}
+			controlKey= -1;
 			
 			if (quit) {
 				close();
@@ -707,7 +712,7 @@ public abstract class BusShell {
 		return false;
 	}
 
-	protected boolean noActionForContorl() {
+	protected boolean actionForContorl() {
 		if (controlKey != -1)
 			return true;
 		return false;
