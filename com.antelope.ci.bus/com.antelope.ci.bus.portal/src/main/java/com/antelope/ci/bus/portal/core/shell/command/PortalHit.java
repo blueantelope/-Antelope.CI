@@ -144,8 +144,14 @@ public abstract class PortalHit extends Hit {
 	
 	protected void enterFormCommand(BusPortalShell shell) {
 		PortalFormContext formContext = shell.getActiveFormContext();
-		if (formContext != null)
+		if (formContext != null) {
 			formContext.enterFormCommand();
+			shell.startFormCommand();
+		}
+	}
+	
+	protected void exitFormCommand(BusPortalShell shell) {
+		shell.finishFormCommandMode();
 	}
 	
 	protected abstract String executeOnMain(BusPortalShell shell,  Object... args);

@@ -51,6 +51,10 @@ public abstract class CommandAdapter {
 		userFinal = false;
 	}
 	
+	public void closeUserFinal() {
+		userFinal = false;
+	}
+	
 	public void addCommand(ICommand command) {
 		if (command.getClass().isAnnotationPresent(Command.class)) {
 			Command cmd = command.getClass().getAnnotation(Command.class);
@@ -200,24 +204,24 @@ public abstract class CommandAdapter {
 			if (StringUtil.empty(scmd)) continue;
 			if (scmd.length() > 1) 		scmd = scmd.trim();
 			
-			COMMAND_SIGN csign = COMMAND_SIGN.toSign(scmd);
-			switch (csign) {
-				case NUMBER:
-					try {
-						String c = csign.truncate(scmd);
-						if (StringUtil.isNumeric(c)) {
-							int i = Integer.parseInt(c);
-							if (ValidatorUtil.isNumber(cmdStr) &&  i == Integer.parseInt(cmdStr))
-								return true;
-						}
-					} catch (Exception e) {
-						DevAssistant.errorln(e);
-					}
-					return false;
-				default:
-					if (StringUtil.equalsIgnoreCase(cmdStr, scmd))
-						return true;
+			StringBuffer cmdBuf = new StringBuffer();
+			String[] cmdEntries = CommandHelper.split(scmd);
+			for (String cmdEntry : cmdEntries) {
+				COMMAND_SIGN csign = COMMAND_SIGN.toSign(cmdEntry);
+				switch (csign) {
+					case NUMBER:
+						String c = csign.truncate(cmdEntry);
+						if (StringUtil.isNumeric(c))
+							cmdBuf.append((char) Integer.parseInt(c));
+						break;
+					default:
+						cmdBuf.append(cmdEntry);
+						break;
+				}
 			}
+			if (StringUtil.equalsIgnoreCase(cmdBuf.toString(), cmdStr))
+				return true;
+			
 		}
 		
 		return false;

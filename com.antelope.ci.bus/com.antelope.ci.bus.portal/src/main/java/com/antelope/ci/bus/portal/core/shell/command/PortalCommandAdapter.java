@@ -81,11 +81,8 @@ public class PortalCommandAdapter extends HitAdapter {
 			for (String key : globalCommandMap.keySet()) {
 				if (key.startsWith(COMMAND_FORM_PREFIX)) {
 					String rs = execute(key, globalCommandMap, shell, refresh, cmd, args);
-					if (rs != null) {
-						userFinal = false;
-						portalShell.finishFormCommandMode();
+					if (rs != null)
 						return rs;
-					}
 				}
 			}
 		}

@@ -314,8 +314,7 @@ public class StringUtil {
 	}
 	
 	public static boolean equalsIgnoreCase(String vtStr, String baseStr) {
-		if (vtStr.length() > 1 || baseStr.length() > 1) 		return vtStr.equalsIgnoreCase(baseStr);
-		else																return equalsIgnoreCaseWithChar(vtStr, baseStr);
+		return vtStr.equalsIgnoreCase(baseStr);
 	}
 	
 	public static boolean equalsIgnoreCaseWithChar(String vtStr, String baseStr) {

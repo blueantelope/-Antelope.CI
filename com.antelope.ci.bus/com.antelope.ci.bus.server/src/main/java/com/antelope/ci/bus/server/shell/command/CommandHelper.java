@@ -8,7 +8,9 @@
 
 package com.antelope.ci.bus.server.shell.command;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.antelope.ci.bus.common.DevAssistant;
@@ -96,6 +98,33 @@ public class CommandHelper {
 	
 	public static String genNumberCommand(int cmd) {
 		return genSignCommand("number", String.valueOf(cmd));
+	}
+	
+	public static String[] split(String cmd) {
+		List<String> splitList = new ArrayList<String>();
+		split(splitList, cmd);
+		return splitList.toArray(new String[splitList.size()]);
+	}
+	
+	public static void split(List<String> splitList, String cmd) {
+		int number_start = cmd.indexOf(NUMBER_PREFIX);
+		if (number_start != -1) {
+			int number_end = cmd.indexOf(NUMBER_SUFFIX, number_start);
+			if (number_end != -1) {
+				if (number_start > 0)
+					splitList.add(cmd.substring(0, number_start));
+				number_end += NUMBER_SUFFIX.length();
+				splitList.add(cmd.substring(number_start, number_end));
+				if (number_end < cmd.length()) {
+					String remain = cmd.substring(number_end);
+					split(splitList, remain);
+				}
+			} else {
+				splitList.add(cmd);
+			}
+		} else {
+			splitList.add(cmd);
+		}
 	}
 	
 	private static String genSignCommand(String name, String cmd) {

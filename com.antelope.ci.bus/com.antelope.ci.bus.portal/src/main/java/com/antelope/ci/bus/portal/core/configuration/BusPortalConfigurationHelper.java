@@ -81,7 +81,7 @@ public class BusPortalConfigurationHelper {
 	private boolean inited = false;
 	private EU_ParseType parseType;
 	private static InputStream xsd_in = null;
-	private final static String PARSETYPE_KEY									= "bus.portal.parse";	
+	private final static String PARSETYPE_KEY							= "bus.portal.parse";	
 	private final static String DEFAULT_PARSETYPEVALUE					= "static";
 	private final static EU_ParseType DEFAULT_PARSETYPE 				= EU_ParseType.STATICAL;
 	

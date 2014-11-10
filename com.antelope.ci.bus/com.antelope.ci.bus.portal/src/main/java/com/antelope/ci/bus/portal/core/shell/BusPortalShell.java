@@ -22,6 +22,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
@@ -66,6 +67,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		CONTENT_SCALE.put(EU_LAYOUT.EAST.getName(), 2);
 	}
 	
+	private final static String FORM_COMMAND_WAIT_KEY = "bus.portal.form.command.wait";
+	protected final static long DEFAULT_FORM_COMMAND_WAIT_VALUE = 1;
 	protected Portal portal;
 	protected ShellPalette contentPalette;
 	protected PortalBlock activeBlock;
@@ -80,6 +83,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected BusBuffer mainBuffer;
 	protected boolean formCommandMode;
 	protected PortalFormContext activeFormContext;
+	protected long form_command_wait;
+	protected long lastFormCommandTime;
 	protected final int[] control_keys = new int[]{
 			NetVTKey.BACKSPACE,
 			NetVTKey.DELETE,
@@ -108,8 +113,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		inputInitialized = false;
 		inputFinished = false;
 		formCommandMode = false;
+		lastFormCommandTime = -1;
+		form_command_wait = CommonBusActivator.getLongProp(FORM_COMMAND_WAIT_KEY, DEFAULT_FORM_COMMAND_WAIT_VALUE);
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
+	}
+	
+	public void startFormCommand() {
+		lastFormCommandTime = System.currentTimeMillis();
 	}
 	
 	public boolean formCommandMode() {
@@ -126,6 +137,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	
 	public void finishFormCommandMode() {
 		formCommandMode = false;
+		lastFormCommandTime = -1;
+		commandAdapter.closeUserFinal();
 	}
 	
 	public Portal getPortal() {
@@ -1177,6 +1190,10 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	 * @see com.antelope.ci.bus.server.shell.BusShell#handleInput(int)
 	 */
 	@Override protected boolean handleInput(int c) {
+		if (lastFormCommandTime != -1 && 
+				((System.currentTimeMillis() - lastFormCommandTime) > form_command_wait))
+			activeFormContext.exitFormCommand();
+			
 		try {
 			BaseModeType baseModeType = BusShellMode.getBaseModeType(mode);
 			if (baseModeType == null)
@@ -1188,7 +1205,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						initInput();
 					
 					if (formCommandMode) {
-						
+						action(c);
 					} else {
 						CONTROLAIM aim = handleInputControl(c);
 						switch (aim) {
@@ -1202,6 +1219,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 								formCommandMode = true;
 								putControlKey(c);
 								action(c);
+								input.put((char) c); 
 								break;
 							case INPUT:
 								input.put((char) c);

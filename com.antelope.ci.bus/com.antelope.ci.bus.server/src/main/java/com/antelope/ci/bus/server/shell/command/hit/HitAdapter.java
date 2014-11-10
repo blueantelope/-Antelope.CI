@@ -8,11 +8,8 @@
 
 package com.antelope.ci.bus.server.shell.command.hit;
 
-import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandType;
-import com.antelope.ci.bus.server.shell.command.ICommand;
 
 /**
  * portal命令适配器

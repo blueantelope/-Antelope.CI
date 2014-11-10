@@ -26,7 +26,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  */
 @Command(
 		name="submit_form", 
-		commands="\"" + CommandHelper.escCommand + "q,+" + CommandHelper.escCommand + "Q\"",
+		commands= CommandHelper.escCommand + "q," + CommandHelper.escCommand + "Q",
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 
 		mode=BusPortalShellMode.FORM)
@@ -38,6 +38,7 @@ public class QuitFormPortalHit extends PortalHit {
 	 */
 	@Override
 	protected String executeOnMain(BusPortalShell shell, Object... args) {
+		exitFormCommand(shell);
 		try {
 			shell.exitInput();
 		} catch (CIBusException e) {

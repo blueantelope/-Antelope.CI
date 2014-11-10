@@ -263,6 +263,7 @@ public abstract class BusShell {
 		boolean activeLastShell = false;
 		BusShell activeShell = null;
 		while (true) {
+			controlKey = -1;
 			handleMode();
 			try {
 				c = io.read();
@@ -287,7 +288,6 @@ public abstract class BusShell {
 				DevAssistant.assert_exception(e);
 				throw new CIBusException("", e);
 			}
-			controlKey= -1;
 			
 			if (quit) {
 				close();
@@ -344,6 +344,7 @@ public abstract class BusShell {
 			try {
 				actionStatus = commandAdapter.execute(this, !multiShell(), cmdArg.getCommand(), cmdArg.getArgs());
 			} catch (CIBusException e) {
+				actionStatus = BusShellStatus.KEEP;
 				DevAssistant.errorln(e);
 			}
 			switch (BusShellStatus.toBaseStatus(actionStatus)) {

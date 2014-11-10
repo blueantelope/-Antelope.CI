@@ -391,6 +391,11 @@ public class PortalFormContext {
 	public void enterFormCommand() {
 		shell.replaceBuffer(bufferFactory.initCommand());
 	}
+	
+	public void exitFormCommand() {
+		shell.finishFormCommandMode();
+		shell.replaceBuffer(bufferFactory.getActiveBuffer());
+	}
 		
 	private static class XPosition {
 		int start;
