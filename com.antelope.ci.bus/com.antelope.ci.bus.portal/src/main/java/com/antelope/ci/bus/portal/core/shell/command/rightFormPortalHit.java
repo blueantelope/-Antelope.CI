@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.core.shell.command.ControlPortalHit.java
+// com.antelope.ci.bus.portal.core.shell.command.rightFormPortalHit.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -20,15 +20,15 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014年11月6日		上午11:59:48 
+ * @Date	 2014年11月13日		下午12:50:09 
  */
 @Command(
-		name="esc", 
-		commands=CommandHelper.escCommand,
+		name="right.form", 
+		commands=CommandHelper.rightCommand, 
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 
 		mode=BusPortalShellMode.FORM)
-public class EscPortalHit extends PortalHit {
+public class rightFormPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -36,7 +36,7 @@ public class EscPortalHit extends PortalHit {
 	 */
 	@Override
 	protected String executeOnMain(BusPortalShell shell, Object... args) {
-		enterFormCommand(shell);
+		right(shell);
 		return BusShellStatus.KEEP;
 	}
 }

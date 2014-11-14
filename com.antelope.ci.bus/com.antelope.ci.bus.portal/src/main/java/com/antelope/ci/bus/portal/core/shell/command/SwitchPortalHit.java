@@ -24,7 +24,7 @@ import com.antelope.ci.bus.server.shell.core.TerminalIO;
  * @Date	 2014-3-28		下午5:37:11 
  */
 @Command(
-		name="switch_portal", 
+		name="switch.portal", 
 		commands=CommandHelper.tabCommand,
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 

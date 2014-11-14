@@ -34,6 +34,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Position;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.Margin;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
+import com.antelope.ci.bus.portal.core.shell.PortalShellText;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.portal.core.shell.ShellLineContentSet;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalBufferFactory;
@@ -88,33 +89,35 @@ public class PortalFormContext {
 			// title for shell
 			Title title = content.getTitle();
 			if (title != null) {
-				ShellText text = title.toShellText();
-				Style titleStyle = repairStyle(title, formStyle);
+				FormContent titleContent = new FormContent(false, false, "", title.toShellText());
+				Style titleStyle = supplyStyle(title, formStyle);
 				if (palette != null) {
-					XPosition xPosition = renderText(text,  title.getValue(), titleStyle, width);
+					XPosition xPosition = renderText(titleContent,  title.getValue(), titleStyle, width);
 					if (xPosition != null)
 						cursor_y += 1 + xPosition.end / width;
 				}
-				addShellContent(contentSet, text);
+				addShellContent(contentSet, titleContent);
 			}
 			
 			// group for shell
 			List<Group> groupList = content.getGroupList();
-			List<ShellText> textList = new ArrayList<ShellText>();
+			List<FormContent> contentList = new ArrayList<FormContent>();
 			int widthpercent = 0;
 			for (Group group : groupList) {
-				componentToContentInProcess(contentSet, textList, widthpercent);
+				componentToContentInProcess(contentSet, contentList, widthpercent);
 				List<Component> componentList = group.getComponentList();
 				if (componentList != null) {
 					for (Component component : componentList) {
 						String componentName = component.getName();
 						Label label = component.getLabel();
+						repairWidgetName(componentName, label);
 						Field field = component.getField();
+						repairWidgetName(componentName, field);
 						try {
 							EU_ComponentType ctype = component.toComponentType();
 							switch (ctype) {
 								case textfield:
-									widthpercent = dealTextfield(label, field, contentSet, textList, palette, formStyle, widthpercent);
+									widthpercent = dealTextfield(label, field, contentSet, contentList, palette, formStyle, widthpercent);
 									break;
 								default:
 									break;
@@ -128,13 +131,22 @@ public class PortalFormContext {
 					}
 				}
 			}
-			componentToContentInTail(contentSet, textList, widthpercent);
+			componentToContentInTail(contentSet, contentList, widthpercent);
 			
-			shell.writeContent(contentSet);
+			shell.drawForm(name, contentSet);
 			focus(content);
 			bufferFactory.initActiveBuffer();
 			shell.enterInputMode();
 		}
+	}
+	
+	private void repairWidgetName(String componentName, Widget widget) {
+		if (StringUtil.empty(widget.getName()))
+			widget.setName(componentName + "." + widget.getTypeName());
+	}
+	
+	public boolean nextWidget() {
+		return bufferFactory.next();
 	}
 	
 	public void upWidget() {
@@ -206,15 +218,15 @@ public class PortalFormContext {
 		}
 	}
 	
-	private int dealTextfield(Label label, Field field, ShellLineContentSet contentSet, List<ShellText> textList, 
+	private int dealTextfield(Label label, Field field, ShellLineContentSet contentSet, List<FormContent> contentList, 
 			ShellPalette palette, Style formStyle, int widthpercent) throws CIBusException {
 		// label
 		if (!StringUtil.empty(label.getValue()))
-			widthpercent = dealWidget(label, contentSet, textList, palette, formStyle, label.getValue(), widthpercent);
+			widthpercent = dealWidget(label, contentSet, contentList, palette, formStyle, label.getValue(), widthpercent);
 		// field
 		String boxValue = getBoxValue(field);
 		if (!StringUtil.empty(boxValue))
-			widthpercent = dealWidget(field, contentSet, textList, palette, formStyle, boxValue, widthpercent);
+			widthpercent = dealWidget(field, contentSet, contentList, palette, formStyle, boxValue, widthpercent);
 		return widthpercent;
 	}
 	
@@ -226,7 +238,7 @@ public class PortalFormContext {
 		return null;
 	}
 	
-	private XPosition renderText(ShellText text, String value, Style style, int width) {
+	private XPosition renderText(FormContent content, String value, Style style, int width) {
 		StyleAlign align = style.getAlign();
 		if (align == null) return null;
 		
@@ -248,7 +260,7 @@ public class PortalFormContext {
 			default:
 				break;
 		}
-		text.setIndent(indent);
+		content.text.setIndent(indent);
 		
 		String fill = align.getFill() != null ? align.getFill() :  " ";
 		int n = 0;
@@ -267,12 +279,12 @@ public class PortalFormContext {
 			}
 		}
 		
-		text.setText(value);
+		content.text.setText(value);
 		
 		return new XPosition(before+indent, indent+StringUtil.lengthVT(value));
 	}
 	
-	private Style repairStyle(Object owner, Style formStyle) throws CIBusException {
+	private Style supplyStyle(Object owner, Style formStyle) throws CIBusException {
 		Style curStyle = (Style) ProxyUtil.invokeRet(owner, "getStyle");
 		if (curStyle == null) {
 			ProxyUtil.invoke(owner, "setStyle", new Object[]{formStyle});
@@ -288,29 +300,29 @@ public class PortalFormContext {
 		return width;
 	}
 	
-	private void addShellContent(ShellLineContentSet contentSet, ShellText text) {
+	private void addShellContent(ShellLineContentSet contentSet, FormContent content) {
 		List<String> line = new ArrayList<String>();
-		line.add(text.toString());
+		line.add(content.toString());
 		contentSet.addLine(line);
 	}
 	
-	private void addShellContent(ShellLineContentSet contentSet, List<ShellText> textList) {
+	private void addShellContent(ShellLineContentSet contentSet, List<FormContent> contentList) {
 		List<String> line = new ArrayList<String>();
-		line.add(ShellText.toShellText(textList));
+		line.add(FormContent.fromList(contentList));
 		contentSet.addLine(line);
 	}
 	
-	private int dealWidget(Widget widget, ShellLineContentSet contentSet, List<ShellText> textList, 
+	private int dealWidget(Widget widget, ShellLineContentSet contentSet, List<FormContent> contentList, 
 			ShellPalette palette, Style formStyle, String str, int widthpercent) throws CIBusException {
 		int width = getContentWidth(palette);
 		int length = widget.getComponetWidth(width);
 		int rowSize = widget.getRowSize();
-		ShellText text = widget.toShellText(str);
-		Style style = repairStyle(widget, formStyle);
+		FormContent content = new FormContent(widget.editable(), widget.onfocus(), widget.getDisplayName(), widget.toShellText(str));
+		Style style = supplyStyle(widget, formStyle);
 		XPosition xPosition = null;
 		
 		if (!StringUtil.empty(str) && palette != null) {
-			xPosition = renderText(text,  str, style, length);
+			xPosition = renderText(content,  str, style, length);
 			cursor_x += xPosition.start;
 			widget.setX(cursor_x);
 			cursor_x += xPosition.end - xPosition.start;
@@ -318,16 +330,16 @@ public class PortalFormContext {
 		}
 		
 		if (rowSize > 0) {
-			componentToContentInProcess(contentSet, textList, widthpercent);
-			addShellContent(contentSet, text);
+			componentToContentInProcess(contentSet, contentList, widthpercent);
+			addShellContent(contentSet, content);
 			widthpercent = 0;
 			cursor_x = 0;
 			cursor_y += rowSize;
 		} else {
 			widthpercent += widget.percentForWidth();
-			textList.add(text);
+			contentList.add(content);
 			if (widthpercent >= 100) {
-				componentToContentInProcess(contentSet, textList, widthpercent);
+				componentToContentInProcess(contentSet, contentList, widthpercent);
 				widthpercent = 0;
 				cursor_x = 0;
 				cursor_y += 1;
@@ -337,18 +349,18 @@ public class PortalFormContext {
 		return widthpercent;
 	}
 	
-	private void componentToContentInProcess(ShellLineContentSet contentSet, List<ShellText> textList, int widthpercent) {
-		compoentToContent(contentSet, textList, widthpercent, false);
+	private void componentToContentInProcess(ShellLineContentSet contentSet, List<FormContent> contentList, int widthpercent) {
+		compoentToContent(contentSet, contentList, widthpercent, false);
 	}
 	
-	private void componentToContentInTail(ShellLineContentSet contentSet, List<ShellText> textList, int widthpercent) {
-		compoentToContent(contentSet, textList, widthpercent, true);
+	private void componentToContentInTail(ShellLineContentSet contentSet, List<FormContent> contentList, int widthpercent) {
+		compoentToContent(contentSet, contentList, widthpercent, true);
 	}
 	
-	private void compoentToContent(ShellLineContentSet contentSet, List<ShellText> textList, int widthpercent, boolean tail) {
-		if (!textList.isEmpty() || tail == true) {
-			addShellContent(contentSet, textList);
-			textList.clear();
+	private void compoentToContent(ShellLineContentSet contentSet, List<FormContent> contentList, int widthpercent, boolean tail) {
+		if (!contentList.isEmpty() || tail == true) {
+			addShellContent(contentSet, contentList);
+			contentList.clear();
 			widthpercent = 0;
 		}
 	}
@@ -404,6 +416,40 @@ public class PortalFormContext {
 			super();
 			this.start = start;
 			this.end = end;
+		}
+	}
+	
+	private static class FormContent {
+		boolean isBlock;
+		boolean isFocus;
+		String name;
+		ShellText text;
+		public FormContent(boolean isBlock, boolean isFocus, String name, ShellText text) {
+			super();
+			this.isBlock = isBlock;
+			this.isFocus = isFocus;
+			this.name = name;
+			this.text = text;
+		}
+		
+		@Override public String toString() {
+			String value = text.toString();
+			if (isFocus)
+				value = PortalShellText.genFocusText(value);
+			if (isBlock)
+				value = PortalShellText.genBlockText(value, name);
+			return value;
+		}
+		
+		public static String fromList(List<FormContent> contentList) {
+			StringBuffer buf = new StringBuffer();
+			if (contentList != null && !contentList.isEmpty()) {
+				buf.append(ShellText.P_PREFIX);
+				for (FormContent content : contentList)
+					buf.append(content.toString());
+				buf.append(ShellText.P_SUFFIX);
+			}
+			return buf.toString();
 		}
 	}
 }

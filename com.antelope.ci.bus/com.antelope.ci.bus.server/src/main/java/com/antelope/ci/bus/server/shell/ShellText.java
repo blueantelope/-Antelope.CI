@@ -31,10 +31,10 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
  */
 @XmlEntity(name="text")
 public class ShellText {
-	private static final String TEXT_PREFIX = "<text";
-	private static final String TEXT_SUFFIX= "</text>";
-	private static final String P_PREFIX = "<p>";
-	private static final String P_SUFFIX = "</p>";
+	public static final String TEXT_PREFIX = "<text";
+	public static final String TEXT_SUFFIX= "</text>";
+	public static final String P_PREFIX = "<p>";
+	public static final String P_SUFFIX = "</p>";
 	protected String text;
 	protected int indent = 0; 
 	protected int font_size = 2;			// 1,small 2,medium 3,large
@@ -166,7 +166,7 @@ public class ShellText {
 		}
 	}
 	
-	private static void strToSplitList(List<String> splitList, String str, int start, int end) {
+	public static void strToSplitList(List<String> splitList, String str, int start, int end) {
 		String s = str.substring(start, end);
 		if (!s.startsWith(P_PREFIX) && !s.endsWith(P_SUFFIX))
 			splitList.add(s);

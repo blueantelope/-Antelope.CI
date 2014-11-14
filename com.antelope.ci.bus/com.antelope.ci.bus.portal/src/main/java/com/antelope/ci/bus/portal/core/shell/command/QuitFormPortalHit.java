@@ -25,7 +25,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014年11月6日		下午6:25:56 
  */
 @Command(
-		name="submit_form", 
+		name="submit.form", 
 		commands= CommandHelper.escCommand + "q," + CommandHelper.escCommand + "Q",
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 

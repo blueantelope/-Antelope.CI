@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.portal.core.shell;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.ShellText;
@@ -26,6 +29,53 @@ public class PortalShellText {
 	
 	public static boolean isFocus(String str) {
 		return StringUtil.contain(str, FOCUS_PREFIX, FOCUS_SUFFIX);
+	}
+	
+	public static List<String> splitForP(String str) {
+		List<String> splitList = new ArrayList<String>();
+		splitForP(splitList, str, 0);
+		
+		return splitList;
+	}
+	
+	private static void splitForP(List<String> splitList, String str, int from_index) {
+		if (from_index > str.length())
+			return;
+		
+		int start_index = -1;
+		int end_index = -1;
+		int suffixLength = -1;
+		int text_start_index = str.indexOf(ShellText.TEXT_PREFIX, from_index);
+		int block_start_index = str.indexOf(BLOCK_PREFIX, from_index);
+		if (text_start_index == -1) {
+			start_index = block_start_index;
+			suffixLength = BLOCK_SUFFIX.length();
+			end_index = str.indexOf(BLOCK_SUFFIX, from_index);
+		} else if (block_start_index == -1) {
+			start_index = text_start_index;
+			suffixLength = ShellText.TEXT_SUFFIX.length();
+			end_index = str.indexOf(ShellText.TEXT_SUFFIX, from_index);
+		} else {
+			if (text_start_index < block_start_index) {
+				start_index = text_start_index;
+				end_index = str.indexOf(ShellText.TEXT_SUFFIX, from_index);
+				suffixLength = ShellText.TEXT_SUFFIX.length();
+			} else {
+				start_index = block_start_index;
+				end_index = str.indexOf(BLOCK_SUFFIX, from_index);
+				suffixLength = BLOCK_SUFFIX.length();
+			}
+		}
+		
+		if (start_index != -1 && end_index > start_index) {
+			if (start_index > from_index)
+				ShellText.strToSplitList(splitList, str, from_index, start_index);
+			splitList.add(str.substring(start_index, end_index+suffixLength));
+			from_index = end_index + suffixLength;
+			splitForP(splitList, str, from_index);
+		} else {
+			ShellText.strToSplitList(splitList, str, from_index, str.length());
+		}
 	}
 	
 	public static boolean containBlock(String str) {

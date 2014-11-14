@@ -25,7 +25,6 @@ import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1

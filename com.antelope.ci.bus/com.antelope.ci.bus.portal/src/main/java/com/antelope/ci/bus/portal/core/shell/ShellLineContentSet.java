@@ -13,7 +13,6 @@ import java.util.List;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -38,4 +37,3 @@ public class ShellLineContentSet {
 		contentList.add(line);
 	}
 }
-

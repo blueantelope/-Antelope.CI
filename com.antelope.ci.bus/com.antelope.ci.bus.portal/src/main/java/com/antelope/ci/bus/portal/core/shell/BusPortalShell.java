@@ -68,20 +68,21 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	private final static String FORM_COMMAND_WAIT_KEY = "bus.portal.form.command.wait";
-	protected final static long DEFAULT_FORM_COMMAND_WAIT_VALUE = 1;
+	protected final static long DEFAULT_FORM_COMMAND_WAIT_VALUE = 3 * 1000;
 	protected Portal portal;
 	protected ShellPalette contentPalette;
 	protected PortalBlock activeBlock;
-	protected List<PortalBlock> mainBlockList;
+	protected PortalBlock mainBlock;
+	protected List<PortalBlock> mainBlocks;
 	protected boolean loadMainblock;
-	protected Map<String, List<PortalBlock>> blockMap;
+	protected Map<String, List<PortalBlock>> minorBlocksSet;
 	protected BusPortalShellLiving shellLiving;
 	protected ShellCursor initPosition;
 	protected List<BusPortalBufferFactory> bufferFactoryList;
 	protected boolean inputInitialized;
 	protected boolean inputFinished;
 	protected BusBuffer mainBuffer;
-	protected boolean formCommandMode;
+	protected boolean formControlMode;
 	protected PortalFormContext activeFormContext;
 	protected long form_command_wait;
 	protected long lastFormCommandTime;
@@ -104,15 +105,15 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		} 
 		customInit();
 		parsePortal();
-		mainBlockList = new ArrayList<PortalBlock>();
+		mainBlocks = new ArrayList<PortalBlock>();
 		loadMainblock = true;
-		blockMap = new HashMap<String, List<PortalBlock>>();
+		minorBlocksSet = new HashMap<String, List<PortalBlock>>();
 		shellLiving = new BusPortalShellLiving();
 		initPosition = new ShellCursor(0, 0);
 		bufferFactoryList = new ArrayList<BusPortalBufferFactory>();
 		inputInitialized = false;
 		inputFinished = false;
-		formCommandMode = false;
+		formControlMode = false;
 		lastFormCommandTime = -1;
 		form_command_wait = CommonBusActivator.getLongProp(FORM_COMMAND_WAIT_KEY, DEFAULT_FORM_COMMAND_WAIT_VALUE);
 		if (portal == null)
@@ -124,7 +125,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	public boolean formCommandMode() {
-		return formCommandMode;
+		return formControlMode;
 	}
 	
 	public void replaceActiveFormContext(PortalFormContext activeFormContext) {
@@ -136,7 +137,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	public void finishFormCommandMode() {
-		formCommandMode = false;
+		formControlMode = false;
 		lastFormCommandTime = -1;
 		commandAdapter.closeUserFinal();
 	}
@@ -181,14 +182,35 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
+	public void drawForm(String name, Object content) throws CIBusException {
+		clearContent();
+		if (content instanceof ShellLineContentSet) {
+			ShellLineContentSet contentSet = (ShellLineContentSet) content;
+			List<PortalBlock> formBlocks = writeFormLine(getContentCursor(), contentSet.getContentList());
+			minorBlocksSet.put(name, formBlocks);
+			List<List<PortalBlock>> formMatrix = genMatrix(formBlocks);
+			activeBlock = fromMatrix(formMatrix);
+		}
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#writeContent(java.lang.Object)
+	 */
 	@Override public void writeContent(Object content) throws CIBusException {
 		clearContent();
 		if (content instanceof ShellLineContentSet) {
 			ShellLineContentSet contentSet = (ShellLineContentSet) content;
-			writeLine(getContentCursor(), contentSet.getContentList());
+			writePortalLine(getContentCursor(), contentSet.getContentList());
 		}
 	}
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#clearContent()
+	 */
 	@Override public void clearContent() throws CIBusException {
 		if (contentPalette != null) {
 			int px = contentPalette.getX();
@@ -299,11 +321,19 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		// nothing
 	}
 	
-	protected void initActiveBlock() {
+	public void addMinorBlock(String name, List<PortalBlock> blockList) {
+		if (!minorBlocksSet.containsKey(name))
+			minorBlocksSet.put(name, blockList);
+		List<List<PortalBlock>> minorMatrix = genMatrix(blockList);
+		activeBlock = fromMatrix(minorMatrix);
+	}
+	
+	protected void initMainBlocks() {
 		if (loadMainblock) {
 			loadMainblock = false;
-			List<List<PortalBlock>> mainMatrix = genMatrix(mainBlockList);
-			activeBlock = fromMatrix(mainMatrix);
+			List<List<PortalBlock>> mainMatrix = genMatrix(mainBlocks);
+			mainBlock = fromMatrix(mainMatrix);
+			activeBlock = mainBlock;
 		}
 	}
 	
@@ -641,7 +671,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				if (!contentList.isEmpty()) {
 					moveCursor(cursor);
 					north_height = sizeMatrix(contentList);
-					writeLine(cursor, contentList);
+					writePortalLine(cursor, contentList);
 					content_cursor = cursor.clone();
 				}
 			} catch (Exception e) {
@@ -661,7 +691,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					south_height = sizeMatrix(contentList);
 					cursor.addY(height - north_height - south_height);
 					moveCursor(cursor);
-					writeLine(cursor, contentList);
+					writePortalLine(cursor, contentList);
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -682,7 +712,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 						cursor = content_cursor.clone();
 					moveCursor(cursor);
 					west_width = PortalShellUtil.maxLine(contentList);
-					writeLine(cursor, contentList);
+					writePortalLine(cursor, contentList);
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -703,7 +733,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					moveCursor(cursor);
 					shiftRight(west_width);
 					east_width = PortalShellUtil.maxLine(contentList);
-					writeLine(cursor, contentList);
+					writePortalLine(cursor, contentList);
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -723,7 +753,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					else
 						cursor = content_cursor.clone();
 					moveCursor(cursor);
-					writeLine(cursor, contentList);
+					writePortalLine(cursor, contentList);
 					putContentPalette(centerPart, content_cursor, center_width, center_height);
 				}
 			} catch (Exception e) {
@@ -759,7 +789,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				palette_width = palette_width < width ? palette_width : width;
 				int palette_height = sizeMatrix(contentList);
 				palette.setShapePoint(palette_width, palette_height);
-				writeLine(cursor, contentList);
+				writePortalLine(cursor, contentList);
 			}
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
@@ -947,7 +977,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (northPart != null) {
 			try {
 				List<List<String>> contentList = placePartContent(northPart, width);
-				writeLine(cursor, contentList);
+				writePortalLine(cursor, contentList);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -958,7 +988,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (southPart != null) {
 			try {
 				List<List<String>> contentList = placePartContent(southPart, width);
-				writeLine(cursor, contentList);
+				writePortalLine(cursor, contentList);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -970,7 +1000,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		if (westPart != null) {
 			try {
 				List<List<String>> contentList = placePartContent(westPart, width);
-				writeLine(cursor, contentList);
+				writePortalLine(cursor, contentList);
 				west_width = PortalShellUtil.maxLine(contentList);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
@@ -984,7 +1014,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			try {
 				List<List<String>> contentList = placePartContent(eastPart, width);
 				east_width = PortalShellUtil.maxLine(contentList);
-				writeLine(cursor, contentList);
+				writePortalLine(cursor, contentList);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -996,7 +1026,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			try {
 				int center_width = width - west_width - east_width;
 				List<List<String>> contentList = placePartContent(centerPart, center_width);
-				writeLine(cursor, contentList);
+				writePortalLine(cursor, contentList);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -1009,7 +1039,17 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	protected void writeLine(ShellCursor cursor, List<List<String>> valueList) {
+	protected List<PortalBlock> writeFormLine(ShellCursor cursor, List<List<String>> valueList) {
+		List<PortalBlock> formBlocks = new ArrayList<PortalBlock>();
+		writeLine(formBlocks, cursor, valueList, 1);
+		return formBlocks;
+	}
+	
+	protected void writePortalLine(ShellCursor cursor, List<List<String>> valueList) {
+		writeLine(mainBlocks, cursor, valueList, 0);
+	}
+	
+	protected void writeLine(List<PortalBlock> blocks, ShellCursor cursor, List<List<String>> valueList, int type) {
 		int default_x = cursor.getX();
 		boolean first = true;
 		for (List<String> values : valueList) {
@@ -1021,11 +1061,11 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				int count = 0;
 				for (String value : values) {
 					if (ShellText.containP(value)) {
-						List<String> vList = ShellText.splitForP(value);
+						List<String> vList = PortalShellText.splitForP(value);
 						for (String v : vList)
-							count += writeUnit(cursor, v);
+							count += writeUnit(blocks, cursor, v, type);
 					} else {
-						count += writeUnit(cursor, value);
+						count += writeUnit(blocks, cursor, value, type);
 					}
 				}
 				if (count != 0)
@@ -1038,7 +1078,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		}
 	}
 	
-	protected int writeUnit(ShellCursor cursor, String str) throws CIBusException {
+	protected int writeUnit(List<PortalBlock> blocks, ShellCursor cursor, String str, int type) throws CIBusException {
 		shellLiving.add(cursor, str);
 		ShellCursor blockCursor = cursor.clone();
 		int width = 0;
@@ -1054,14 +1094,28 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			write(cursor, s);
 			width = StringUtil.lengthVT(s);
 		}
-		if (loadMainblock && PortalShellText.containBlock(str)) {
-			PortalBlock portalBlock = new PortalBlock();
+		
+		PortalBlock portalBlock = null;
+		if (PortalShellText.containBlock(str)) {
+			portalBlock = new PortalBlock();
 			portalBlock.setName(PortalShellText.getName(str));
 			portalBlock.setCursor(blockCursor);
 			portalBlock.setWidth(width);
 			portalBlock.setValue(s);
-			mainBlockList.add(portalBlock);
 		}
+		if (portalBlock != null) {
+			switch (type) {
+				case 1:			// form
+					blocks.add(portalBlock);
+					break;
+				case 0:			// portal
+				default:
+					if (loadMainblock)
+						blocks.add(portalBlock);
+					break;
+			}
+	}
+		
 		return width;
 	}
 	
@@ -1163,7 +1217,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	@Override protected void view() throws CIBusException {
 		try {
 			draw();
-			initActiveBlock();
+			initMainBlocks();
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		}
@@ -1204,7 +1258,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 					if (!inputInitialized)
 						initInput();
 					
-					if (formCommandMode) {
+					if (formControlMode) {
 						action(c);
 					} else {
 						CONTROLAIM aim = handleInputControl(c);
@@ -1212,11 +1266,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 							case SILENT:
 								break;
 							case ACTION:
+								formControlMode = true;
 								putControlKey(c);
 								action(c);
+								formControlMode = false;
 								break;
 							case COMMAND:
-								formCommandMode = true;
+								formControlMode = true;
 								putControlKey(c);
 								action(c);
 								input.put((char) c); 
@@ -1239,41 +1295,31 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected CONTROLAIM handleInputControl(int c) throws CIBusException {
-		CONTROLAIM aim = CONTROLAIM.INPUT;
-		
-		if (c == NetVTKey.BACKSPACE) {
-			input.backspace();
-			aim = CONTROLAIM.SILENT;
+		switch (c) {
+			case NetVTKey.BACKSPACE:
+				input.backspace();
+				return CONTROLAIM.SILENT;
+			case NetVTKey.DELETE:
+				input.delete();
+				return CONTROLAIM.SILENT;
+			case NetVTKey.LEFT:
+				return CONTROLAIM.ACTION;
+			case NetVTKey.RIGHT:
+				return CONTROLAIM.ACTION;
+			case NetVTKey.UP:
+				return CONTROLAIM.ACTION;
+			case NetVTKey.DOWN:
+				return CONTROLAIM.ACTION;
+			case NetVTKey.ESCAPE:
+				return CONTROLAIM.COMMAND;
+			default:
+				return CONTROLAIM.INPUT;
 		}
-		if (c == NetVTKey.DELETE) {
-			input.delete();
-			aim = CONTROLAIM.SILENT;
-		}
-		if (c == NetVTKey.LEFT) {
-			input.left();
-			aim = CONTROLAIM.ACTION;
-		}
-		if (c == NetVTKey.RIGHT) {
-			input.right();
-			aim = CONTROLAIM.ACTION;
-		}
-		if (c == NetVTKey.UP) {
-			input.up();
-			aim = CONTROLAIM.ACTION;
-		}
-		if (c == NetVTKey.DOWN) {
-			input.down();
-			aim = CONTROLAIM.ACTION;
-		}
-		if (c== NetVTKey.ESCAPE) {
-			aim = CONTROLAIM.COMMAND;
-		}
-		
-		return aim;
 	}
 	
 	public void exitInput() throws CIBusException {
 		mode = BaseMode.MAIN.getName();
+		activeBlock = mainBlock;
 		activeBlock.enable();
 		lastEditMode = true;
 		editMode = false;
@@ -1290,14 +1336,14 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		inputFinished = true;
 	}
 	
-	protected void writeInput(char c) throws CIBusException {
-		try {
-			activeBlock.getCursor();
-			io.write((char) c);
-		} catch (IOException e) {
-			throw new CIBusException("", e);
-		}
-	}
+//	protected void writeInput(char c) throws CIBusException {
+//		try {
+//			activeBlock.getCursor();
+//			io.write((char) c);
+//		} catch (IOException e) {
+//			throw new CIBusException("", e);
+//		}
+//	}
 	
 	/**
 	 * 
@@ -1320,6 +1366,126 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			} catch (IOException e) {
 				throw new CIBusException("", "change into input mode", e);
 			}
+		}
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#up()
+	 */
+	@Override public void up() {
+		move(1);
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#down()
+	 */
+	@Override public void down() {
+		move(2);
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#left()
+	 */
+	@Override public void left() {
+		move(3);
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#right()
+	 */
+	@Override public void right() {
+		move(4);
+	}
+	
+	protected void move(int direction) {
+		BaseModeType baseModeType = BusShellMode.getBaseModeType(mode);
+		if (baseModeType == null)
+			return;
+		switch (baseModeType) {
+			case INPUT:
+			case EDIT:
+				switch (direction) {
+					case 1:
+						super.up();
+						activeFormContext.upWidget();
+						break;
+					case 2:
+						super.down();
+						activeFormContext.downWidget();
+						break;
+					case 3:
+						super.left();
+						activeFormContext.leftWidget();
+						break;
+					case 4:
+						super.right();
+						activeFormContext.rightWidget();
+						break;
+					default:
+						break;
+				}
+				break;
+			case MAIN:
+			default:
+				moveBlock(direction);
+				break;
+		}
+	}
+	
+	public void upBlock() {
+		moveBlock(1);
+	}
+	
+	public void downBlock() {
+		moveBlock(2);
+	}
+	
+	public void leftBlock() {
+		moveBlock(3);
+	}
+	
+	public void rightBlock() {
+		moveBlock(4);
+	}
+	
+	protected void moveBlock(int direction) {
+		if (null == activeBlock || !activeBlock.available())
+			return;
+		try {
+			lostFocus();
+			PortalBlock moveBlock = null;
+			switch (direction) {
+				case 1:
+					moveBlock = activeBlock.getUp();
+					break;
+				case 2:
+					moveBlock = activeBlock.getDown();
+					break;
+				case 3:
+					moveBlock = activeBlock.getLeft();
+					break;
+				case 4:
+					moveBlock = activeBlock.getRight();
+					break;
+			}
+			if (moveBlock != null) {
+				int x = moveBlock.getCursor().getX();
+				int y = moveBlock.getCursor().getY();
+				shift(x, y);
+				savePosition(x, y);
+				updateBlock(moveBlock);
+				moveBlock.enable();
+			}
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
 		}
 	}
 	

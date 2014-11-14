@@ -12,9 +12,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalBlock;
-import com.antelope.ci.bus.portal.project.command.ProjectAddDownHit;
 import com.antelope.ci.bus.portal.project.command.ProjectAddHit;
-import com.antelope.ci.bus.portal.project.command.ProjectAddUpHit;
 import com.antelope.ci.bus.portal.project.command.ProjectRunMainPortalHit;
 import com.antelope.ci.bus.server.shell.Shell;
 
@@ -47,8 +45,6 @@ public class BusProjectPortalShell extends BusPortalShell {
 	protected void custom() throws CIBusException {
 		commandAdapter.addCommand(new ProjectRunMainPortalHit());		
 		commandAdapter.addCommand(new ProjectAddHit());		
-		commandAdapter.addCommand(new ProjectAddUpHit());		
-		commandAdapter.addCommand(new ProjectAddDownHit());		
 	}
 
 	@Override

@@ -13,7 +13,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContext;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContextFactory;
@@ -57,53 +56,19 @@ public abstract class PortalHit extends Hit {
 	}
 	
 	protected void up(BusPortalShell shell) {
-		move(shell, 1);
+		shell.up();
 	}
 	
 	protected void down(BusPortalShell shell) {
-		move(shell, 2);
+		shell.down();
 	}
 	
 	protected void left(BusPortalShell shell) {
-		move(shell, 3);
+		shell.left();
 	}
 	
 	protected void right(BusPortalShell shell) {
-		move(shell, 4);
-	}
-	
-	private void move(BusPortalShell shell, int direction) {
-		PortalBlock block = shell.getActiveBlock();
-		if (null == block || !block.available())
-			return;
-		try {
-			shell.lostFocus();
-			PortalBlock moveBlock = null;
-			switch (direction) {
-				case 1:
-					moveBlock = block.getUp();
-					break;
-				case 2:
-					moveBlock = block.getDown();
-					break;
-				case 3:
-					moveBlock = block.getLeft();
-					break;
-				case 4:
-					moveBlock = block.getRight();
-					break;
-			}
-			if (moveBlock != null) {
-				int x = moveBlock.getCursor().getX();
-				int y = moveBlock.getCursor().getY();
-				shell.shift(x, y);
-				shell.savePosition(x, y);
-				shell.updateBlock(moveBlock);
-				moveBlock.enable();
-			}
-		} catch (CIBusException e) {
-			DevAssistant.errorln(e);
-		}
+		shell.right();
 	}
 	
 	protected void addFormContext(BusPortalShell shell, Class commandClass) {
@@ -116,30 +81,6 @@ public abstract class PortalHit extends Hit {
 	protected PortalFormContext getFormContext(BusPortalShell shell, String identity) {
 		PortalFormContextFactory factory = PortalFormContextFactory.getFactory();
 		return factory.getFormContext(shell, identity);
-	}
-	
-	protected void	upInForm(BusPortalShell shell) {
-		PortalFormContext formContext = shell.getActiveFormContext();
-		if (formContext != null)
-			formContext.upWidget();
-	}
-	
-	protected void downInForm(BusPortalShell shell) {
-		PortalFormContext formContext = shell.getActiveFormContext();
-		if (formContext != null)
-			formContext.downWidget();
-	}
-	
-	protected void leftInForm(BusPortalShell shell) {
-		PortalFormContext formContext = shell.getActiveFormContext();
-		if (formContext != null)
-			formContext.leftWidget();
-	}
-	
-	protected void rightInForm(BusPortalShell shell) {
-		PortalFormContext formContext = shell.getActiveFormContext();
-		if (formContext != null)
-			formContext.rightWidget();
 	}
 	
 	protected void enterFormCommand(BusPortalShell shell) {

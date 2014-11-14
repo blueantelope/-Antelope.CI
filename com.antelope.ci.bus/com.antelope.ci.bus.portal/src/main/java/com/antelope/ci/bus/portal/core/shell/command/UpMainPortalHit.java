@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014-8-26		上午10:42:15 
  */
 @Command(
-		name="up_portal", 
+		name="up.main", 
 		commands=CommandHelper.upCommand, 
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 

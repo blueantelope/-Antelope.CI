@@ -18,6 +18,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2014-7-30		上午11:21:55 
  */
 public enum EU_ComponentType {
+	label("label"),
+	field("field"),
 	textfield("textfield"),
 	combo("combo"),
 	checkbox("checkbox"),

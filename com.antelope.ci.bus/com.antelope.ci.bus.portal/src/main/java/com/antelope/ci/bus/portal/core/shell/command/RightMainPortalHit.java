@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014-8-26		上午11:33:38 
  */
 @Command(
-		name="right_main", 
+		name="right.main", 
 		commands=CommandHelper.rightCommand, 
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 

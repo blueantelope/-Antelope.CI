@@ -24,7 +24,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014-2-27		下午6:10:08 
  */
 @Command(
-		name="project_add", 
+		name="add.project", 
 		commands="n, N", 
 		status=BusProjectShellStatus.PROJECT, 
 		type=CommandType.HIT, 

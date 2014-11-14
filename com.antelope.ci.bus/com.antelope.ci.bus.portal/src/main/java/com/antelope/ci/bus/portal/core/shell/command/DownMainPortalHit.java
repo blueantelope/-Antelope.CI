@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014-8-26		上午11:28:31 
  */
 @Command(
-		name="down_main", 
+		name="down.main", 
 		commands=CommandHelper.downCommand, 
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 
@@ -38,6 +38,4 @@ public class DownMainPortalHit extends PortalHit {
 		down(shell);
 		return BusShellStatus.KEEP;
 	}
-
 }
-

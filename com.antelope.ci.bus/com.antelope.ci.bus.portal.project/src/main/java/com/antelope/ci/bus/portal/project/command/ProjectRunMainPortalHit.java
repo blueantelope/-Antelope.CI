@@ -23,7 +23,7 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @Date	 2014年9月29日		下午6:26:24 
  */
 @Command(
-		name="project_run", 
+		name="run.project", 
 		commands=CommandHelper.enterCommand, 
 		status=BusProjectShellStatus.PROJECT, 
 		type=CommandType.HIT, 

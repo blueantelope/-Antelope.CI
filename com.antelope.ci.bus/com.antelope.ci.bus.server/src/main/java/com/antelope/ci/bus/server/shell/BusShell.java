@@ -347,6 +347,8 @@ public abstract class BusShell {
 				actionStatus = BusShellStatus.KEEP;
 				DevAssistant.errorln(e);
 			}
+			if (actionStatus == null)
+				actionStatus = BusShellStatus.KEEP;
 			switch (BusShellStatus.toBaseStatus(actionStatus)) {
 				case QUIT:
 					quit = true;
@@ -617,19 +619,19 @@ public abstract class BusShell {
 		return session.getEnv().getEnv().get(key);
 	}
 	
-	protected void left() {
+	public void left() {
 		input.left();
 	}
 	
-	protected void right() {
+	public void right() {
 		input.right();
 	}
 	
-	protected void up() {
+	public void up() {
 		input.up();
 	}
 	
-	protected void down() {
+	public void down() {
 		input.down();
 	}
 	
