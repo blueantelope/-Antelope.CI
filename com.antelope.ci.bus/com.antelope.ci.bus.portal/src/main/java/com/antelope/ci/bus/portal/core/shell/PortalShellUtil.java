@@ -93,12 +93,7 @@ public class PortalShellUtil {
 	}
 	
 	public static boolean isMainMode(BusPortalShell shell) {
-		String mode = null;
-		if (shell.getActiveBlock() != null)
-			mode = shell.getActiveBlock().getMode();
-		if (StringUtil.empty(mode))
-			mode = BusShellMode.MAIN;
-		return BusShellMode.isMain(mode);
+		return BusShellMode.isMain(shell.getActiveBlock().getMode());
 	}
 	
 	public static boolean isInputMode(BusPortalShell shell) {

@@ -1267,13 +1267,13 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 								break;
 							case ACTION:
 								formControlMode = true;
-								putControlKey(c);
+								resetControlKey(c);
 								action(c);
 								formControlMode = false;
 								break;
 							case COMMAND:
 								formControlMode = true;
-								putControlKey(c);
+								resetControlKey(c);
 								action(c);
 								input.put((char) c); 
 								break;
@@ -1335,15 +1335,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		inputInitialized = false;
 		inputFinished = true;
 	}
-	
-//	protected void writeInput(char c) throws CIBusException {
-//		try {
-//			activeBlock.getCursor();
-//			io.write((char) c);
-//		} catch (IOException e) {
-//			throw new CIBusException("", e);
-//		}
-//	}
 	
 	/**
 	 * 
@@ -1506,6 +1497,27 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	@Override protected void shutdown() throws CIBusException {
 		PortalFormContextFactory.getFactory().remove(this);
 		customShutdown();
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.BusShell#clearData()
+	 */
+	@Override public void clearData() {
+		BaseModeType modeType = BusShellMode.getBaseModeType(mode);
+		if (modeType == null)
+			modeType = BaseModeType._DEFAULT;
+		switch (modeType) {
+			case INPUT:
+			case EDIT:
+				break;
+			case MAIN:
+			case _DEFAULT:
+				super.clearData();
+				break;
+		}
+		
 	}
 	
 	protected abstract void customInit() throws CIBusException;

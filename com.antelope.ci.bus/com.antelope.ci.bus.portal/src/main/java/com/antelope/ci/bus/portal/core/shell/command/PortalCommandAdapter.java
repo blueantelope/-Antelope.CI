@@ -14,6 +14,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.server.shell.BusShell;
+import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.ICommand;
@@ -54,7 +55,12 @@ public class PortalCommandAdapter extends HitAdapter {
 					scope = EU_Scope.GLOBAL.getName();
 				hit = portalShell.getPortal().getHit(scope, cmdContent.mode(), cmdContent.name());
 			}
-			portalShell.focus(hit);
+			try {
+				if (BaseMode.toMode(portalShell.getMode()) == BaseMode.MAIN)
+					portalShell.focus(hit);
+			} catch (CIBusException e) {
+				DevAssistant.errorln(e);
+			}
 		}
 	}
 

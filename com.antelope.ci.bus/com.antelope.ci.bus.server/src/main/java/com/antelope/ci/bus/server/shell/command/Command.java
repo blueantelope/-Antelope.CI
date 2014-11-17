@@ -19,7 +19,6 @@ import com.antelope.ci.bus.server.shell.BusShellStatus;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1

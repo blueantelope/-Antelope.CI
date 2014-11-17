@@ -19,7 +19,6 @@ import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
-import com.antelope.ci.bus.common.ValidatorUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.shell.BusShell;
@@ -219,11 +218,9 @@ public abstract class CommandAdapter {
 						break;
 				}
 			}
-			if (StringUtil.equalsIgnoreCase(cmdBuf.toString(), cmdStr))
+			if (cmdBuf.toString().equals(cmdStr))
 				return true;
-			
 		}
-		
 		return false;
 	}
 	

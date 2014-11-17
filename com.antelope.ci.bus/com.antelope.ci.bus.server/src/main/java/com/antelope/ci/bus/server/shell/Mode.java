@@ -28,6 +28,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 @Documented
 public @interface Mode {
 	public enum BaseModeType {
+		_DEFAULT(0, "_default"),
 		MAIN(1, "main"),
 		INPUT(2, "input"),
 		EDIT(3, "edit");

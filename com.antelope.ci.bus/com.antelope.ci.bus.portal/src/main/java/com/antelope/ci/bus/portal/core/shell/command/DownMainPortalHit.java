@@ -32,9 +32,9 @@ public class DownMainPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#commonExecute(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
-	@Override protected String executeOnMain(BusPortalShell shell, Object... args) {
+	@Override protected String commonExecute(BusPortalShell shell, Object... args) {
 		down(shell);
 		return BusShellStatus.KEEP;
 	}

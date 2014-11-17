@@ -11,7 +11,6 @@ package com.antelope.ci.bus.server.shell.core;
 import com.antelope.ci.bus.common.NetVTKey;
 
 /**
- * TODO 描述
  * 
  * @author blueantelope
  * @version 0.1

@@ -8,10 +8,9 @@
 
 package com.antelope.ci.bus.server.shell.command;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Vector;
 
-import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 
@@ -24,23 +23,24 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  */
 public class CommandAdapterFactory {
 	private static final Object locker = new Object();
-	private static Map<String, CommandAdapter> adapterMap = new ConcurrentHashMap<String, CommandAdapter>();
+	private static List<String> adapterClassList = new Vector<String>();
 
 	public static CommandAdapter getAdapter(String className) {
 		synchronized(locker) {
-			try {
-				if (adapterMap.containsKey(className))
-					return adapterMap.get(className);
-				Object o = ProxyUtil.newObject(className);
-				if (o == null)
-					o = ProxyUtil.newObject(className, CommonBusActivator.getClassLoader());
-				adapterMap.put(className, (CommandAdapter) o);
-				return (CommandAdapter) o;
-			} catch (Exception e) {
-				DevAssistant.assert_exception(e);
-				return null;
+			for (String adapterClass : adapterClassList) {
+				if (adapterClass.equals(className))
+					return newAdapter(className);
 			}
+			adapterClassList.add(className);
+			return newAdapter(className);
 		}
+	}
+
+	private static CommandAdapter newAdapter(String className) {
+		Object o = ProxyUtil.newObject(className);
+		if (o == null)
+			o = ProxyUtil.newObject(className, CommonBusActivator.getClassLoader());
+		return (CommandAdapter) o;
 	}
 }
 

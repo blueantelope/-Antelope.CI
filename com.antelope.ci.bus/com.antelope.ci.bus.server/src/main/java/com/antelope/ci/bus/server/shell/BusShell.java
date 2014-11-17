@@ -157,8 +157,7 @@ public abstract class BusShell {
 	
 	private void init() {
 		Class clazz = this.getClass();
-		for (; commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz = clazz
-				.getSuperclass()) {
+		for (; commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
 			fetchShellInfo(clazz);
 		}
 	}
@@ -274,7 +273,7 @@ public abstract class BusShell {
 				break;
 			if (handleInput(c))
 				continue;
-			putControlKey(c);
+			resetControlKey(c);
 			try {
 				boolean ran = false;
 				ran = defaultAction(c);
@@ -721,7 +720,7 @@ public abstract class BusShell {
 		return false;
 	}
 	
-	protected void putControlKey(int c) {
+	protected void resetControlKey(int c) {
 		controlKey = -1;
 		for (int k : NetVTKey.Set) {
 			if (k == c) {

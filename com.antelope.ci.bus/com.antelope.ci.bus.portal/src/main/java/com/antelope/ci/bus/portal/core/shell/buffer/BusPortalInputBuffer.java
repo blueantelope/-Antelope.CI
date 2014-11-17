@@ -8,8 +8,10 @@
 
 package com.antelope.ci.bus.portal.core.shell.buffer;
 
+import java.io.IOException;
 import java.util.List;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
@@ -157,6 +159,8 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	protected void userDown(DIRECTION direction) {
 		if (direction == DIRECTION.OUTSIDE)
 			neighbor = NEIGHBOR.DOWN;
+		else
+			neighbor =  NEIGHBOR.KEEP;
 	}
 
 	/**
@@ -168,6 +172,8 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	protected void userUp(DIRECTION direction) {
 		if (direction == DIRECTION.OUTSIDE)
 			neighbor = NEIGHBOR.UP;
+		else
+			neighbor =  NEIGHBOR.KEEP;
 	}
 
 	/**
@@ -179,6 +185,8 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	protected void userLeft(DIRECTION direction) {
 		if (direction == DIRECTION.OUTSIDE)
 			neighbor = NEIGHBOR.LEFT;
+		else
+			neighbor =  NEIGHBOR.KEEP;
 	}
 
 	/**
@@ -190,5 +198,39 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	protected void userRight(DIRECTION direction) {
 		if (direction == DIRECTION.OUTSIDE)
 			neighbor = NEIGHBOR.RIGHT;
+		else
+			neighbor =  NEIGHBOR.KEEP;
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#move(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 */
+	@Override protected void move(DIRECTION direction) throws CIBusException {
+		try {
+			switch (direction) {
+				case UP:
+					io.moveUp(1);
+					area.move(direction);
+					break;
+				case DOWN:
+					io.moveDown(1);
+					area.move(direction);
+					break;
+				case LEFT:
+					io.moveLeft(1);
+					area.move(direction);
+					break;
+				case RIGHT:
+					io.moveRight(1);
+					area.move(direction);
+					break;
+				default:
+					break;
+			}
+		} catch (IOException e) {
+			throw new CIBusException("", "cursor move error", e);
+		}
 	}
 }

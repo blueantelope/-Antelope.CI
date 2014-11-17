@@ -8,18 +8,10 @@
 
 package com.antelope.ci.bus.portal.core.shell.command;
 
-import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
-import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContext;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContextFactory;
 import com.antelope.ci.bus.server.shell.BusShell;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
-import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.hit.Hit;
 
 
@@ -37,22 +29,7 @@ public abstract class PortalHit extends Hit {
 	 */
 	@Override protected String execute(BusShell shell, Object... args) {
 		BusPortalShell portalShell = (BusPortalShell) shell;
-		CommonHit hit = null;
-		Command cmdContent = getContent();
-		if (cmdContent != null) {
-			String scope = EU_Scope.NATIVE.getName();
-			if (BaseStatus.toStatus(cmdContent.status()) == BaseStatus.GLOBAL)
-				scope = EU_Scope.GLOBAL.getName();
-			hit = portalShell.getPortal().getHit(scope, cmdContent.mode(), cmdContent.name());
-		}
-		try {
-			portalShell.focus(hit);
-		} catch (CIBusException e) {
-			DevAssistant.errorln(e);
-		}
-		if (PortalShellUtil.isMainMode((BusPortalShell) shell))
-			return executeOnMain((BusPortalShell) shell, args);
-		return BusShellStatus.KEEP;
+		return commonExecute(portalShell, args);
 	}
 	
 	protected void up(BusPortalShell shell) {
@@ -95,6 +72,6 @@ public abstract class PortalHit extends Hit {
 		shell.finishFormCommandMode();
 	}
 	
-	protected abstract String executeOnMain(BusPortalShell shell,  Object... args);
+	protected abstract String commonExecute(BusPortalShell shell,  Object... args);
 }
 
