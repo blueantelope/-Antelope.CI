@@ -28,14 +28,14 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
 		status=BusShellStatus.GLOBAL, 
 		type=CommandType.HIT, 
 		mode=BusPortalShellMode.FORM)
-public class rightFormPortalHit extends PortalHit {
+public class RightFormPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#executeOnMain(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#commonExecute(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
 	@Override
-	protected String executeOnMain(BusPortalShell shell, Object... args) {
+	protected String commonExecute(BusPortalShell shell, Object... args) {
 		right(shell);
 		return BusShellStatus.KEEP;
 	}
