@@ -24,9 +24,9 @@ public class RunMainPortalHit extends PortalHit {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#commonExecute(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
+	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#invoke(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
-	@Override protected String commonExecute(BusPortalShell shell, Object... args) {
+	@Override protected String invoke(BusPortalShell shell, Object... args) {
 		Command command = getContent();
 		PortalBlock block = shell.getActiveBlock();
 		if (block != null) {

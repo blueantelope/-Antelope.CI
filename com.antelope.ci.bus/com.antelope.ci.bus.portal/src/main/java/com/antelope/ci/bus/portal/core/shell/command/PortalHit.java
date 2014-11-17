@@ -29,7 +29,7 @@ public abstract class PortalHit extends Hit {
 	 */
 	@Override protected String execute(BusShell shell, Object... args) {
 		BusPortalShell portalShell = (BusPortalShell) shell;
-		return commonExecute(portalShell, args);
+		return invoke(portalShell, args);
 	}
 	
 	protected void up(BusPortalShell shell) {
@@ -72,6 +72,6 @@ public abstract class PortalHit extends Hit {
 		shell.finishFormCommandMode();
 	}
 	
-	protected abstract String commonExecute(BusPortalShell shell,  Object... args);
+	protected abstract String invoke(BusPortalShell shell,  Object... args);
 }
 
