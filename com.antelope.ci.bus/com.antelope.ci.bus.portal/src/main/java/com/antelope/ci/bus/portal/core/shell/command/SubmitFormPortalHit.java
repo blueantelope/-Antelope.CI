@@ -8,9 +8,10 @@
 
 package com.antelope.ci.bus.portal.core.shell.command;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellMode;
-import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandHelper;
@@ -23,7 +24,6 @@ import com.antelope.ci.bus.server.shell.command.CommandType;
  * @version  0.1
  * @Date	 2014年11月6日		上午11:52:17 
  */
-
 @Command(
 		name="submit.form", 
 		commands=CommandHelper.escCommand+CommandHelper.enterCommand,
@@ -38,7 +38,11 @@ public class SubmitFormPortalHit extends PortalHit {
 	 */
 	@Override
 	protected String invoke(BusPortalShell shell, Object... args) {
-		
+		try {
+			return invokeFormAction(shell, args);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
 		return BusShellStatus.KEEP;
 	}
 }

@@ -117,7 +117,7 @@ public class Portal implements Serializable {
 				SetterGetterPair[] pairs = BusXmlHelper.FetchPairOfXml(Base.class);
 				for (SetterGetterPair pair : pairs) {
 					try {
-						Object arg = ProxyUtil.invokeRet(pair.getGetter(), base_ext);
+						Object arg = ProxyUtil.invokeRet(base_ext, pair.getGetter());
 						if (arg != null) ProxyUtil.invoke(base, pair.getSetter(), new Object[]{arg});
 					} catch (CIBusException e) {
 						DevAssistant.errorln(e);

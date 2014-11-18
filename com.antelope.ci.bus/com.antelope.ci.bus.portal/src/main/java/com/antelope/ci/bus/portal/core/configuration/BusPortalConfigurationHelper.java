@@ -736,7 +736,7 @@ public class BusPortalConfigurationHelper {
 					&& !method.getName().startsWith("getOrigin") 
 					&& !ProxyUtil.hasArguments(method)) {
 				try {
-					Object o = ProxyUtil.invokeRet(method, root);
+					Object o = ProxyUtil.invokeRet(root, method);
 					if (o == null)
 						continue;
 					if (List.class.isAssignableFrom(o.getClass())) {
@@ -792,7 +792,7 @@ public class BusPortalConfigurationHelper {
 					&& !method.getName().startsWith("getClass") 
 					&& !ProxyUtil.hasArguments(method)) {
 				try {
-					Object o = ProxyUtil.invokeRet(method, root);
+					Object o = ProxyUtil.invokeRet(root, method);
 					if (o == null)
 						continue;
 					if (List.class.isAssignableFrom(o.getClass())) {

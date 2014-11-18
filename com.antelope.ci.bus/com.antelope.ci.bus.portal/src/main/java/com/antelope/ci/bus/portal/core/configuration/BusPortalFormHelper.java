@@ -133,7 +133,7 @@ public class BusPortalFormHelper {
 					&& !method.getName().startsWith("getClass") 
 					&& !ProxyUtil.hasArguments(method)) {
 				try {
-					Object o = ProxyUtil.invokeRet(method, root);
+					Object o = ProxyUtil.invokeRet(root, method);
 					if (o == null)
 						continue;
 					if (List.class.isAssignableFrom(o.getClass())) {

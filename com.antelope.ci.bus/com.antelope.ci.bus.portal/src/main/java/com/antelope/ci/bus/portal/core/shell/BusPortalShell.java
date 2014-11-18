@@ -68,7 +68,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	private final static String FORM_COMMAND_WAIT_KEY = "bus.portal.form.command.wait";
-	protected final static long DEFAULT_FORM_COMMAND_WAIT_VALUE = 3 * 1000;
+	protected final static long DEFAULT_FORM_COMMAND_WAIT_VALUE = 30 * 1000;
 	protected Portal portal;
 	protected ShellPalette contentPalette;
 	protected PortalBlock activeBlock;

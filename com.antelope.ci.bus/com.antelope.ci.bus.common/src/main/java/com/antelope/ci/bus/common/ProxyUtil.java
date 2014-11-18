@@ -146,7 +146,7 @@ public class ProxyUtil {
 	}
 
 	// 代理执行对像中的方法
-	public static Object invokeRet(Method method, Object obj) throws CIBusException {
+	public static Object invokeRet(Object obj, Method method) throws CIBusException {
 		Object ret = null;
 		try {
 			ret = method.invoke(obj, null);
@@ -472,7 +472,7 @@ public class ProxyUtil {
 		}
 	}
 	
-	public static Object InvokeStatic(String className, String function, Object[] args) throws CIBusException {
+	public static Object invokeStaticRet(String className, String function, Object[] args) throws CIBusException {
 		Object ret = null;
 		try {
 			Class clazz = loadClass(className);
@@ -485,7 +485,7 @@ public class ProxyUtil {
 		return ret;
 	}
 	
-	public static Object InvokeStatic(String className, ClassLoader loader, String function, Object[] args) throws CIBusException {
+	public static Object invokeStaticRet(String className, ClassLoader loader, String function, Object[] args) throws CIBusException {
 		Object ret = null;
 		try {
 			Class clazz = loadClass(className, loader);
