@@ -9,7 +9,9 @@
 package com.antelope.ci.bus.portal.core.shell.buffer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
@@ -163,5 +165,14 @@ public class BusPortalBufferFactory {
 	
 	public BusBuffer getCommand() {
 		return command;
+	}
+	
+	public Map<String, String> getBufferContents() {
+		Map<String, String> contents = new HashMap<String, String>();
+		for (BusPortalInputBuffer buffer : bufferList) {
+			contents.put(buffer.getName(), buffer.toString());
+		}
+		
+		return contents;
 	}
 }

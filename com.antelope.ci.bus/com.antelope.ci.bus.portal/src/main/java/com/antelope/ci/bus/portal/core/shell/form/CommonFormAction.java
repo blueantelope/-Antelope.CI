@@ -21,20 +21,14 @@ import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
  * @Date	 2014年11月18日		下午5:07:59 
  */
 public abstract class CommonFormAction {
-	private BusPortalShell shell;
-	private Object[] args;
-	private Map<String, Object> arguments = new HashMap<String, Object>();
+	protected BusPortalShell shell;
+	protected Object[] args;
+	protected Map<String, Object> arguments = new HashMap<String, Object>();
 	
-	public BusPortalShell getShell() {
-		return shell;
-	}
 	public void setShell(BusPortalShell shell) {
 		this.shell = shell;
 	}
 
-	public Object[] getArgs() {
-		return args;
-	}
 	public void setArgs(Object[] args) {
 		this.args = args;
 	}
@@ -43,7 +37,7 @@ public abstract class CommonFormAction {
 		arguments.put(name, argument);
 	}
 	
-	public Object getArgument(String name) {
+	protected Object getArgument(String name) {
 		if (arguments.containsKey(name))
 			return (BusPortalShell) arguments.get(name);
 		return null;

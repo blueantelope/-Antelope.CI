@@ -1135,7 +1135,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	public void rewriteUnits(List<BusPortalShellUnit> units) {
 		for (BusPortalShellUnit unit : units) {
 			try {
-				rewriteUnit(unit.getCursor(), unit.getText());
+				rewriteUnit(unit.getCursor(), PortalShellText.peel(unit.getText()));
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 			}

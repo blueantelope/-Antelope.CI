@@ -10,6 +10,7 @@ package com.antelope.ci.bus.portal.core.shell.form;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -451,6 +452,10 @@ public class PortalFormContext {
 			}
 			return buf.toString();
 		}
+	}
+	
+	public Map<String, String> getFormContents() {
+		return bufferFactory.getBufferContents();
 	}
 }
 

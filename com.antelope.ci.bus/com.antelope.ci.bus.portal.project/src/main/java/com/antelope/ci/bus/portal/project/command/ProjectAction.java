@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.portal.project.command;
 
+import java.util.Map;
+
 import com.antelope.ci.bus.portal.core.shell.form.CommonFormAction;
 import com.antelope.ci.bus.portal.core.shell.form.FormAction;
 import com.antelope.ci.bus.portal.core.shell.form.FormCommand;
@@ -28,8 +30,12 @@ public class ProjectAction extends CommonFormAction {
 		commands=CommandHelper.escCommand+CommandHelper.enterCommand,
 		mode=BusProjectShellMode.PROJECT_FORM_ADD
 	)
-	public static String addProject() {
+	public String addProject() {
 		System.out.println(">>>>>>>>add project");
+		Map<String, String> contents = shell.getActiveFormContext().getFormContents();
+		for (String name : contents.keySet()) {
+			System.out.println(name + " : " + contents.get(name));
+		}
 		return BusShellStatus.KEEP;
 	}
 }

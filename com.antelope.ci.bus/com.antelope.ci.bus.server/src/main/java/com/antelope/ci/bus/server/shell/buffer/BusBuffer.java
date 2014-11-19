@@ -217,6 +217,10 @@ public abstract class BusBuffer {
 		return chs;
 	}
 	
+	@Override public String toString() {
+		return read();
+	}
+	
 	// 向左删除一个字符
 	public abstract boolean backspace() throws CIBusException;
 	

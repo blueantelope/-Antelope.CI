@@ -121,7 +121,8 @@ public class PortalShellText {
 			is_focus = true;
 			newText.append(FOCUS_PREFIX);
 		}
-		if (ShellText.isShellText(peel(str)))
+		str = peel(str);
+		if (ShellText.isShellText(str))
 			newText.append(ShellText.toShellText(str, replace));
 		
 		if (is_focus)

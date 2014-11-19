@@ -171,8 +171,7 @@ public class BusXmlHelper {
 		try {
 			return reader.read(input);
 		} catch (DocumentException e) {
-			DevAssistant.errorln(e);
-			throw new CIBusException("", e);
+			throw new CIBusException("", "error when load xml from stream", e);
 		}
 	}
 	
