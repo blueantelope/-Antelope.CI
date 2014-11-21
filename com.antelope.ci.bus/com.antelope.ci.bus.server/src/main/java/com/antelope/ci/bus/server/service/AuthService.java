@@ -13,8 +13,8 @@ import java.util.Map;
 import org.apache.sshd.server.PasswordAuthenticator;
 import org.apache.sshd.server.PublickeyAuthenticator;
 
-import com.antelope.ci.bus.model.user.User;
-import com.antelope.ci.bus.model.user.User.AUTH_TYPE;
+import com.antelope.ci.bus.engine.model.user.User;
+import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 
 /**
  * 登录验证service

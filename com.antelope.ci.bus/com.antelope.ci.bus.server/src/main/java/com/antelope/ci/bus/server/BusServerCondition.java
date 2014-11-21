@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.model.user.User;
+import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.server.service.AuthService;
 
 

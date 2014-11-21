@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
@@ -120,6 +121,20 @@ public class Form implements Serializable {
 		}
 		
 		return null;
+	}
+	
+	public List<String> getComponentNameList() {
+		List<String> nameList = new ArrayList<String>();
+		if (content != null) {
+			for (Group group : content.getGroupList()) {
+				for (Component component : group.getComponentList()) {
+					if (!StringUtil.empty(component.getName()))
+						nameList.add(component.getName());
+				}
+			}
+		}
+		
+		return nameList;
 	}
 	
 	private static class InputTypePair {

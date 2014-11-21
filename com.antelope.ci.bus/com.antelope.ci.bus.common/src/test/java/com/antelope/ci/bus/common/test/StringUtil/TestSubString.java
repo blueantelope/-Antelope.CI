@@ -30,6 +30,8 @@ public class TestSubString extends TestCase {
 		String sub = StringUtil.subStringVT(str, 0, 7);
 		System.out.println(sub);
 		System.out.println(sub.getBytes().length);
+		String s = "共#{page.total}行 #{page.current}/#{page.total} 上一页 下一页";
+		System.out.println(s.getBytes().length);
 	}
 	
 	public static void main(String[] args) {

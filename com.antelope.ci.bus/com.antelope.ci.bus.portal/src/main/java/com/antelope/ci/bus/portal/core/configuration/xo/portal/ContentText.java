@@ -68,7 +68,7 @@ public class ContentText extends CommonValue {
 					value = StringUtil.subStringVT(line, start, position);
 					String textValue = genContentText(this, value).toString();
 					lastList.add(textValue);
-					start = position + 1;
+					start = position;
 				}
 				checked = true;
 				

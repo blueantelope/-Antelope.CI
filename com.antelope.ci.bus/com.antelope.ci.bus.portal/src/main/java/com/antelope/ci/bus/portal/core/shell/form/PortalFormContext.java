@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.core.shell.form;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -386,7 +387,10 @@ public class PortalFormContext {
 	}
 	
 	private String genWidgetName(String componentName, Widget widget) {
-		return componentName + "." + widget.getDisplayName() + "." + widget.getTypeName();
+		String widgetName = widget.getDisplayName();
+		if (StringUtil.empty(widgetName))
+			return componentName + "." + widget.getTypeName();
+		return widget.getDisplayName();
 	}
 	
 	protected void enterNextWidget() {
@@ -455,7 +459,22 @@ public class PortalFormContext {
 	}
 	
 	public Map<String, String> getFormContents() {
-		return bufferFactory.getBufferContents();
+		List<String> componentNameList = form.getComponentNameList();
+		Map<String, String> bufferContentMap =  bufferFactory.getBufferContents();
+		Map<String, String> formContentMap = new HashMap<String, String>();
+		for (String bufferName : bufferContentMap.keySet()) {
+			String contentKey = bufferName;
+			String contentValue = bufferContentMap.get(bufferName);
+			for (String componentName : componentNameList) {
+				if (bufferName.startsWith(componentName)) {
+					contentKey = componentName;
+					break;
+				}
+			}
+			formContentMap.put(contentKey, contentValue);
+		}
+		
+		return formContentMap;
 	}
 }
 

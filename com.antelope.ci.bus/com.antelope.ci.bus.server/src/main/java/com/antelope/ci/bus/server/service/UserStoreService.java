@@ -10,7 +10,7 @@ package com.antelope.ci.bus.server.service;
 
 import java.util.Map;
 
-import com.antelope.ci.bus.model.user.User;
+import com.antelope.ci.bus.engine.model.user.User;
 
 
 /**

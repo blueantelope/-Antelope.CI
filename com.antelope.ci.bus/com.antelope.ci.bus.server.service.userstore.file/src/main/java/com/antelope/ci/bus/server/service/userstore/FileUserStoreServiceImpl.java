@@ -13,7 +13,7 @@ import java.util.Map;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.model.user.User;
+import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.service.CommonService;
 import com.antelope.ci.bus.server.service.ServerService;
