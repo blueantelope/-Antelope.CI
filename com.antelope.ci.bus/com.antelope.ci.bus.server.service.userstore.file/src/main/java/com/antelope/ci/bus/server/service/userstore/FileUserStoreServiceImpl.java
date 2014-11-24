@@ -15,9 +15,9 @@ import org.osgi.framework.BundleContext;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
-import com.antelope.ci.bus.server.service.CommonService;
+import com.antelope.ci.bus.server.service.CommonServerService;
 import com.antelope.ci.bus.server.service.ServerService;
-import com.antelope.ci.bus.server.service.UserStoreService;
+import com.antelope.ci.bus.server.service.UserStoreServerService;
 
 
 /**
@@ -27,7 +27,7 @@ import com.antelope.ci.bus.server.service.UserStoreService;
  * @Date	 2013-11-8		下午12:01:44 
  */
 @ServerService(serviceName="com.antelope.ci.bus.server.service.UserStoreService")
-public class FileUserStoreServiceImpl  extends CommonService implements UserStoreService {
+public class FileUserStoreServiceImpl  extends CommonServerService implements UserStoreServerService {
 	public FileUserStoreServiceImpl() {
 		super();
 		init();
@@ -45,7 +45,7 @@ public class FileUserStoreServiceImpl  extends CommonService implements UserStor
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.service.UserStoreService#getUserMap()
+	 * @see com.antelope.ci.bus.server.service.UserStoreServerService#getUserMap()
 	 */
 	@Override
 	public Map<String, User> getUserMap() {
@@ -55,7 +55,7 @@ public class FileUserStoreServiceImpl  extends CommonService implements UserStor
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.service.UserStoreService#getUser(java.lang.String)
+	 * @see com.antelope.ci.bus.server.service.UserStoreServerService#getUser(java.lang.String)
 	 */
 	@Override
 	public User getUser(String username) {

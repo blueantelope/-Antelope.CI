@@ -10,8 +10,8 @@ package com.antelope.ci.bus.engine.access.vcs.git.test;
 
 import org.junit.Test;
 
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsAddBranchModel;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsResult;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsAddBranchModel;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsResult;
 
 
 /**

@@ -23,7 +23,7 @@ import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
  * @version 0.1
  * @Date 2013-10-14 下午4:56:20
  */
-public interface AuthService extends PasswordAuthenticator, PublickeyAuthenticator, Service {
+public interface AuthService extends PasswordAuthenticator, PublickeyAuthenticator, BusServerService {
 	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.AuthService";
 	
 	public void initUserStore(Map<String, User> userStore);

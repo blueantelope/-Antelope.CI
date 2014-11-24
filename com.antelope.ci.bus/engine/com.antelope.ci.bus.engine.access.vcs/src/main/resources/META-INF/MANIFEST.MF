@@ -1,7 +1,10 @@
 Manifest-Version: 1.0
 Bundle-Version: 0.1.0
-Bundle-Name: CI Bus Vcs
+Bundle-Name: com.antelope.ci.bus.engine.access.vcs
 Bundle-ManifestVersion: 2
-Export-Package: com.antelope.ci.bus.vcs, com.antelope.ci.bus.model, com.antelope.ci.bus.result
-Import-Package: org.osgi.framework
-Bundle-SymbolicName: com.antelope.ci.bus.vcs
+Bundle-SymbolicName: com.antelope.ci.bus.engine.access.vcs
+Export-Package: com.antelope.ci.bus.engine.access.vcs
+Import-Package: org.osgi.framework, com.antelope.ci.bus.engine.model.vcs.input,
+ com.antelope.ci.bus.engine.model.vcs.output
+Bundle-Vendor: blueantelope@gmail.com
+Bundle-Activator: com.antelope.ci.bus.engine.access.vcs.BusEngineVcsAccessActivator

@@ -8,15 +8,57 @@
 
 package com.antelope.ci.bus.engine.model.project;
 
+import java.io.Serializable;
+import java.util.Date;
+
+import com.antelope.ci.bus.engine.model.Model;
+import com.antelope.ci.bus.engine.model.ModelData;
+
 
 /**
- * TODO 描述
- *
+ * project model data
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-7-1		下午5:50:11 
  */
-public class Project {
-
+@Model
+public class Project implements Serializable {
+	protected String name;
+	protected String desc;
+	protected Date createDate;
+	protected String creater;
+	
+	
+	public String getName() {
+		return name;
+	}
+	@ModelData(name="name")
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getDesc() {
+		return desc;
+	}
+	@ModelData(name="desc")
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	
+	public Date getCreateDate() {
+		return createDate;
+	}
+	@ModelData(name="createDate")
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+	
+	public String getCreater() {
+		return creater;
+	}
+	@ModelData(name="creater")
+	public void setCreater(String creater) {
+		this.creater = creater;
+	}
 }
 

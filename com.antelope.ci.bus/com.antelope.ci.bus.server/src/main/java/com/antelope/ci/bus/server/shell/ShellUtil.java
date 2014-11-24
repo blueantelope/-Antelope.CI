@@ -12,16 +12,14 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.shell.core.TerminalIO;
 
 
 /**
- * TODO 描述
+ * util for shell
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-12-9		下午5:23:32 
@@ -31,7 +29,6 @@ public class ShellUtil {
 	public enum VER {STATIC, LEFT, RIGHT};
 	public enum HOR{STATIC, UP, DOWN};
 
-	
 	public static void clear(TerminalIO io) throws CIBusException {
 		try {
 			io.eraseScreen ();
@@ -230,19 +227,8 @@ public class ShellUtil {
 		}
 	}
 	
-	public static Class getShellClass(String shellClassName) throws CIBusException {
-		Class shellClass;
-		try {
-			shellClass = ProxyUtil.loadClass(shellClassName);
-		} catch (CIBusException e) {
-			DevAssistant.assert_exception(e);
-			shellClass = ProxyUtil.loadClass(shellClassName, CommonBusActivator.getClassLoader());
-		}
-		return shellClass;
-	}
-	
 	public static String getStatus(String shellClassName) throws CIBusException {
-		Class shellClass = getShellClass(shellClassName);
+		Class shellClass = BusOsgiUtil.loadClass(shellClassName);
 		if (shellClass.isAnnotationPresent(Shell.class))
 			return ((Shell) shellClass.getAnnotation(Shell.class)).status();
 		return null;

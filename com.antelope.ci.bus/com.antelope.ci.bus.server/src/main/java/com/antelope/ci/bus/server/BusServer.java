@@ -29,7 +29,7 @@ import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.server.service.AuthService;
-import com.antelope.ci.bus.server.service.UserStoreService;
+import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.shell.BusShellContainerLauncher;
 import com.antelope.ci.bus.server.shell.BusShellFactory;
 import com.antelope.ci.bus.server.shell.BusShellLauncher;
@@ -108,7 +108,7 @@ public abstract class BusServer {
 				if (pwd_added && key_added)
 					break;
 			} else {
-				UserStoreService userStoreService = (UserStoreService) CommonBusActivator.getUsingService(UserStoreService.SERVICE_NAME);
+				UserStoreServerService userStoreService = (UserStoreServerService) CommonBusActivator.getUsingService(UserStoreServerService.SERVICE_NAME);
 				if (userStoreService == null)
 					continue;
 				condition.setUserMap(userStoreService.getUserMap());

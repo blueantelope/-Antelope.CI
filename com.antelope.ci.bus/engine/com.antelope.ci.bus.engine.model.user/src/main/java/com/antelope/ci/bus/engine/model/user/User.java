@@ -9,15 +9,16 @@
 package com.antelope.ci.bus.engine.model.user;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.engine.model.Model;
 
 
 /**
- * TODO 描述
- *
+ * login user
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-15		上午10:38:57 
  */
+@Model
 public class User {
 	public enum AUTH_TYPE {
 		OPNE(1<<0, "open"),						// 无验证，开放式

@@ -25,7 +25,7 @@ import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
 import com.antelope.ci.bus.server.service.AuthService;
-import com.antelope.ci.bus.server.service.CommonService;
+import com.antelope.ci.bus.server.service.CommonServerService;
 
 /**
  * TODO 描述
@@ -34,7 +34,7 @@ import com.antelope.ci.bus.server.service.CommonService;
  * @version  0.1
  * @Date	 2013-10-15		下午12:55:02 
  */
-public abstract class AbstractAuthService extends CommonService implements AuthService {
+public abstract class AbstractAuthService extends CommonServerService implements AuthService {
 	public static final String SERVICE_AUTH_TYPE = "service.auth.type";
 	protected Map<String, User> userStore = new HashMap<String, User>();
 	protected AUTH_TYPE auth_type = null;
@@ -114,7 +114,7 @@ public abstract class AbstractAuthService extends CommonService implements AuthS
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.service.Service#register(org.osgi.framework.BundleContext, com.antelope.ci.bus.server.service.Service)
+	 * @see com.antelope.ci.bus.server.service.BusServerService#register(org.osgi.framework.BundleContext, com.antelope.ci.bus.server.service.BusServerService)
 	 */
 	@Override
 	public void register(BundleContext m_context) throws CIBusException {

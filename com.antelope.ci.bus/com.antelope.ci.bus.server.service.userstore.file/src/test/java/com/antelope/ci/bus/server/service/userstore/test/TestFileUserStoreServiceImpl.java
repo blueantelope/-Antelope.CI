@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.antelope.ci.bus.engine.model.user.User;
-import com.antelope.ci.bus.server.service.UserStoreService;
+import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.service.userstore.FileUserStoreServiceImpl;
 
 
@@ -30,7 +30,7 @@ public class TestFileUserStoreServiceImpl extends TestCase {
 
 	@Test
 	public void test() {
-		UserStoreService us = new FileUserStoreServiceImpl();
+		UserStoreServerService us = new FileUserStoreServiceImpl();
 		Map<String, User> um = us.getUserMap();
 		for (String un : um.keySet()) {
 			User u = um.get(un);

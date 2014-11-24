@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.antelope.ci.bus</groupId>
-	<artifactId>com.antelope.ci.bus.cvs.git</artifactId>
+	<groupId>com.antelope.ci.bus.engine.access.vcs</groupId>
+	<artifactId>com.antelope.ci.bus.engine.access.vcs.git</artifactId>
 	<version>0.1.0</version>
 	
 	<dependencies>
@@ -17,8 +17,8 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus</groupId>
-			<artifactId>com.antelope.ci.bus.vcs</artifactId>
+			<groupId>com.antelope.ci.bus.engine.access</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.vcs</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
@@ -26,7 +26,6 @@
 			<artifactId>org.eclipse.jgit</artifactId>
 			<version>3.0.0.201306101825-r</version>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

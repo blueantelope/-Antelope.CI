@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsDiffModel;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsDiffResult;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsDiffModel;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsDiffResult;
 
 
 /**

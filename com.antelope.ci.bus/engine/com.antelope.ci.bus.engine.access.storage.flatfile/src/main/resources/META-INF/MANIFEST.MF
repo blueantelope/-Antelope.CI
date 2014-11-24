@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-Version: 0.1.0
-Bundle-Name: com.antelope.ci.bus.storage.database
+Bundle-Name: com.antelope.ci.bus.engine.access.storage.flatfile
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.antelope.ci.bus.storage.database
-Fragment-Host: com.antelope.ci.bus.storage; bundle-version="0.1.0"
-Export-Package: com.antelope.ci.bus.storage.flatfile; version="0.1.0"
+Bundle-SymbolicName: com.antelope.ci.bus.engine.access.storage.flatfile
+Import-Package: com.antelope.ci.bus.engine.access.storage; bundle-version="0.1.0"
+Export-Package: com.antelope.ci.bus.engine.access.storage.flatfile; version="0.1.0"
 Bundle-Vendor: blueantelope@gmail.com

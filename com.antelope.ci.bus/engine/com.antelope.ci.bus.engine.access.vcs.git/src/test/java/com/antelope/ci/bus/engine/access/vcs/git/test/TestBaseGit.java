@@ -19,7 +19,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 
 import com.antelope.ci.bus.engine.access.vcs.git.BusGitVcsServiceImpl;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsModel;
 
 
 /**

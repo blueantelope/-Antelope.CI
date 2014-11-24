@@ -12,11 +12,11 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.ProxyUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -26,6 +26,17 @@ import com.antelope.ci.bus.common.DevAssistant;
  * @Date	 2013-11-13		上午11:33:44 
  */
 public class BusOsgiUtil {
+	
+	public static Class loadClass(String shellClassName) throws CIBusException {
+		Class shellClass;
+		try {
+			shellClass = ProxyUtil.loadClass(shellClassName);
+		} catch (CIBusException e) {
+			DevAssistant.assert_exception(e);
+			shellClass = ProxyUtil.loadClass(shellClassName, CommonBusActivator.getClassLoader());
+		}
+		return shellClass;
+	}
 	
 	public static ClassLoader getBundleClassLoader(BundleContext m_context) {
 		try { 

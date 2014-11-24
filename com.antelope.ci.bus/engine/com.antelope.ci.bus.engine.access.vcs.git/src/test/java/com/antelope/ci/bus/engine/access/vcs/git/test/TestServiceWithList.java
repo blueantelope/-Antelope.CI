@@ -12,9 +12,9 @@ import org.junit.Test;
 
 import com.antelope.ci.bus.common.FileNode;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsListModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsModel.AccessType;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsListResult;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsListModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsModel.AccessType;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsListResult;
 
 
 /**

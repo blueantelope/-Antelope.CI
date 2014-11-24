@@ -8,42 +8,42 @@
 
 package com.antelope.ci.bus.engine.access.vcs.svn;
 
-import com.antelope.ci.bus.engine.access.vcs.BusVcsService;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsAddBranchModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsAddModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsAddTagModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsBranchModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsCatModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsCheckoutModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsCommitModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsDeleteBranchModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsDeleteTagModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsDiffModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsExportModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsFetchModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsListModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsLogModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsMergeModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsMvModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsPullModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsPushModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsRenameBranchModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsRenameTagModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsResetModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsRmModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsShowModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsStatusModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsTagModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsUpdateModel;
-import com.antelope.ci.bus.engine.access.vcs.model.BusVcsVersionResult;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsCatResult;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsDiffResult;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsListResult;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsLogResult;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsResult;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsShowResult;
-import com.antelope.ci.bus.engine.access.vcs.result.BusVcsStatusResult;
+import com.antelope.ci.bus.engine.access.vcs.BusVcsAccess;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsAddBranchModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsAddModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsAddTagModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsBranchModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsCatModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsCheckoutModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsCommitModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsDeleteBranchModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsDeleteTagModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsDiffModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsExportModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsFetchModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsListModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsLogModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsMergeModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsMvModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsPullModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsPushModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsRenameBranchModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsRenameTagModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsResetModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsRmModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsShowModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsStatusModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsTagModel;
+import com.antelope.ci.bus.engine.model.vcs.input.BusVcsUpdateModel;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsCatResult;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsDiffResult;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsListResult;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsLogResult;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsResult;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsShowResult;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsStatusResult;
+import com.antelope.ci.bus.engine.model.vcs.output.BusVcsVersionResult;
 
 
 /**
@@ -53,7 +53,7 @@ import com.antelope.ci.bus.engine.access.vcs.result.BusVcsStatusResult;
  * @version  0.1
  * @Date	 2013-10-20		下午10:14:41 
  */
-public class BusSvnVcsServiceImpl implements BusVcsService {
+public class BusSvnVcsServiceImpl implements BusVcsAccess {
 
 	@Override
 	public BusVcsResult connect(BusVcsModel model) {

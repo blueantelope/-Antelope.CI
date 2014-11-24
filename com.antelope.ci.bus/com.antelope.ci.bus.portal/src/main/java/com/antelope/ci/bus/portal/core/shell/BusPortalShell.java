@@ -1312,6 +1312,8 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 				return CONTROLAIM.ACTION;
 			case NetVTKey.ESCAPE:
 				return CONTROLAIM.COMMAND;
+			case NetVTKey.LF:
+				return CONTROLAIM.SILENT;
 			default:
 				return CONTROLAIM.INPUT;
 		}

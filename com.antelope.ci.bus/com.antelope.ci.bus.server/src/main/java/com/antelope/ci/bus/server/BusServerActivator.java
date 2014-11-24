@@ -12,7 +12,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
-import com.antelope.ci.bus.server.service.ServicePublisher;
+import com.antelope.ci.bus.server.service.BusServerServicePublisher;
 
 /**
  * 持续bus总线服务
@@ -95,7 +95,7 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void addServices() throws CIBusException {
-		ServicePublisher.publish(m_context);
+		BusServerServicePublisher.publish(m_context);
 	}
 
 	/**

@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Version: 0.1.0
-Bundle-Name: com.antelope.ci.bus.service
+Bundle-Name: com.antelope.ci.bus.engine.access.service
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.antelope.ci.bus.service
-Export-Package: com.antelope.ci.bus.service
-Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service
+Bundle-SymbolicName: com.antelope.ci.bus.engine.access.service
+Export-Package: com.antelope.ci.bus.engine.access.service
+Import-Package: org.osgi.framework
 Bundle-Vendor: blueantelope@gmail.com
+Bundle-Activator: com.antelope.ci.bus.engine.access.service.BusEngineServiceActivator
