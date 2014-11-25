@@ -18,7 +18,6 @@ import com.antelope.ci.bus.common.ClassFinder;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -83,4 +82,3 @@ public abstract class ServicePublishHook extends Thread {
 		public String serviceName;
 	}
 }
-

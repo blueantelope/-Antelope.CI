@@ -4,6 +4,7 @@
 	<groupId>com.antelope.ci.bus.engine.model.vcs</groupId>
 	<artifactId>com.antelope.ci.bus.engine.model.vcs.output</artifactId>
 	<version>0.1.0</version>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>

@@ -47,7 +47,7 @@ public class EngineServicePublisher {
 			while (true) {
 				String cls_name = "";
 				try {
-					List<String> classList = ClassFinder.findClasspath("com.antelope.ci.bus.service", 
+					List<String> classList = ClassFinder.findClasspath("com.antelope.ci.bus.engine.service", 
 							BusOsgiUtil.getBundleClassLoader(m_context));
 					List<String> regList = new ArrayList<String>();
 					for (String cls : classList) {
@@ -60,7 +60,7 @@ public class EngineServicePublisher {
 							}
 						}
 						if (needReg) {
-							Class clazz = Class.forName(cls);
+							Class clazz = BusOsgiUtil.loadClass(cls);
 							if (BusEngineService.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(EngineService.class)) {
 								EngineService bs =  (EngineService) clazz.getAnnotation(EngineService.class);
 								BusEngineService service = (BusEngineService) clazz.newInstance();
@@ -73,6 +73,7 @@ public class EngineServicePublisher {
 								if (autoload) {
 									String serviceName = bs.name();
 									BusOsgiUtil.addServiceToContext(m_context, service, serviceName);
+									service.regist(m_context);
 									serviceMap.put(cls, service);
 									log.info("add service :" + cls_name);
 								}
@@ -83,6 +84,7 @@ public class EngineServicePublisher {
 							if (parameters.needUnload()) {
 								ServiceReference ref = m_context.getServiceReference(cls);
 								m_context.ungetService(ref);
+								service.unregist(m_context);
 								serviceMap.remove(cls);
 								log.info("remove service :" + cls_name);
 							}
@@ -100,4 +102,3 @@ public class EngineServicePublisher {
 		}
 	}
 }
-

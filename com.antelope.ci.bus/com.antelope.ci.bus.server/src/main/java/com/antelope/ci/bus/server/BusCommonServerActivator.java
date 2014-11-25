@@ -43,4 +43,3 @@ public abstract class BusCommonServerActivator extends CommonBusActivator {
 		}
 	}
 }
-

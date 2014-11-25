@@ -33,4 +33,3 @@ public class ServiceFuntionResult {
 		this.message = message;
 	}
 }
-

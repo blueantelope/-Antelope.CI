@@ -20,7 +20,7 @@ import com.antelope.ci.bus.engine.model.user.User;
  * @Date	 2013-10-15		下午12:36:18 
  */
 public interface UserStoreServerService extends BusServerService {
-	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.UserStoreService";
+	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.UserStoreServerService";
 	
 	public Map<String, User> getUserMap();
 	

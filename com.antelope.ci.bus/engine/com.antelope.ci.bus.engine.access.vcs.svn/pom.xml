@@ -4,6 +4,7 @@
 	<groupId>com.antelope.ci.bus.engine.access.vcs</groupId>
 	<artifactId>com.antelope.ci.bus.engine.access.vcs.svn</artifactId>
 	<version>0.1.0</version>
+	<packaging>jar</packaging>
 	
 	<dependencies>
 		<dependency>

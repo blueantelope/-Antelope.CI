@@ -26,7 +26,7 @@ import com.antelope.ci.bus.server.service.UserStoreServerService;
  * @version  0.1
  * @Date	 2013-11-8		下午12:01:44 
  */
-@ServerService(serviceName="com.antelope.ci.bus.server.service.UserStoreService")
+@ServerService(serviceName=UserStoreServerService.SERVICE_NAME)
 public class FileUserStoreServiceImpl  extends CommonServerService implements UserStoreServerService {
 	public FileUserStoreServiceImpl() {
 		super();

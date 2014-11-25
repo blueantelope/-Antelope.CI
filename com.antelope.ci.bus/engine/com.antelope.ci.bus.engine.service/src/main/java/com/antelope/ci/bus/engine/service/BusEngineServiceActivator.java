@@ -56,7 +56,7 @@ public class BusEngineServiceActivator extends CommonBusActivator {
 
 	@Override
 	protected void addServices() throws CIBusException {
-		
+		EngineServicePublisher.publish(m_context);
 	}
 
 	@Override

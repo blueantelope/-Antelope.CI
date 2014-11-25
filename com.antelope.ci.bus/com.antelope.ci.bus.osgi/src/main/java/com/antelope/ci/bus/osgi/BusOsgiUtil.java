@@ -49,7 +49,7 @@ public class BusOsgiUtil {
 	
 	public static void addServiceToContext(BundleContext m_context, Object service, String serviceName, ServiceProperty... others) {
 		m_context.registerService(serviceName, service, initServiceProperties(serviceName, service.getClass().getName(), others));
-		System.out.println("register service : " + serviceName + ", " + service.getClass().getName());
+		DevAssistant.assert_out("register service : " + serviceName + ", " + service.getClass().getName());
 	}
 	
 	private static Dictionary initServiceProperties(String serviceName, String className, ServiceProperty... others) {

@@ -77,27 +77,47 @@ public class CIBus {
 	private static Map<String, String> parameters; // 参数， 主要是针对osgi
 	private static List<URL> clsUrlList; // classloader url
 
-	private static String bus_home; // 根目录
-	private static RUN_MODE run_mode; // 运行模式
-	private static String etc_dir; // 配置目录
-	private static String log_dir; // 日志目录
-	private static String system_dir; // osgi系统包目录
-	private static String system_lib_dir;	// osgi system library
-	private static String system_ext_dir; // osgi系统扩展包目录
+	/* 根目录 */
+	private static String bus_home;
+	/* 运行模式 */
+	private static RUN_MODE run_mode;
+	/* 配置目录 */
+	private static String etc_dir;
+	/* 日志目录 */
+	private static String log_dir;
+	/* osgi系统包目录 */
+	private static String system_dir;
+	/* osgi system library */
+	private static String system_lib_dir;
+	/* osgi engine扩展包目录 */
+	private static String system_engine_dir;
+	private static String system_engine_model_dir;
+	private static String system_engine_access_dir;
+	private static String system_engine_service_dir;
+	/* osgi系统扩展包目录 */
+	private static String system_ext_dir;
 	private static String system_ext_server_dir;
 	private static String system_ext_service_dir;
 	private static String system_ext_protal_dir;
-	private static String lib_dir; // 系统jar目录
-	private static String lib_ext_dir; // 系统扩展jar目录
-	private static String cache_dir; // 运行时缓存目录
-	private static String plugin_dir; // osgi plugin目录
-	private static String etc_bus_cfg; // bus.cfg路径
-	private static String etc_custom_cfg; // custom.cfg路径
-	private static String etc_environment_cfg; // environment.cfg路径
-	private static String etc_system_cfg;			 //system.cfg路径
-
+	/* 系统jar目录 */
+	private static String lib_dir;
+	/* 系统扩展jar目录 */
+	private static String lib_ext_dir;
+	/* 运行时缓存目录 */
+	private static String cache_dir;
+	/* osgi plugin目录 */
+	private static String plugin_dir;
+	/* bus.cfg路径 */
+	private static String etc_bus_cfg;
+	/* custom.cfg路径 */
+	private static String etc_custom_cfg;
+	/* environment.cfg路径 */
+	private static String etc_environment_cfg;
+	/* system.cfg路径 */
+	private static String etc_system_cfg;
 	
-	private static BasicConfigrationReader configration; // ect下配置文件参数集合
+	/* ect下配置文件参数集合 */
+	private static BasicConfigrationReader configration;
 	private static Map<String, List<URL>> sysLibMap;
 
 	// 参数属性名
@@ -502,95 +522,98 @@ public class CIBus {
 			List<URL> lib_urlList;
 			if (files != null) {
 				switch (type) {
-				case 1: // 系统包
-					List<File> systemJarList = new ArrayList<File>();
-					for (File systemFile : files) {
-						if (systemFile.getName().endsWith(".jar")) {
-							BundleLoader loader = new BundleLoader(context,
-									systemFile, startLevel, level,
-									JarLoadMethod.START);
-							loaderList.add(loader);
-						}
-					}
-					break;
-				case 2: // 系统扩展包下无依赖库bundle
-					for (File systemExtFile : files) {
-						if (systemExtFile.getName().endsWith(".jar")) {
-							try {
-								JarBusProperty busProperty = JarBusProperty
-										.readJarBus(systemExtFile);
-								lib_urlList = FileUtil.getAllJar(lib_ext_dir);
-								lib_urlList.addAll(busProperty.getLoaderUrlList());
-								attatchSysLibUrls(systemExtFile.getName(), lib_urlList);
+					case 1: // 系统包
+						List<File> systemJarList = new ArrayList<File>();
+						for (File systemFile : files) {
+							if (systemFile.getName().endsWith(".jar")) {
 								BundleLoader loader = new BundleLoader(context,
-										systemExtFile, startLevel,
-										busProperty.getStartLevel(),
-										busProperty.getLoad(), lib_urlList);
+										systemFile, startLevel, level,
+										JarLoadMethod.START);
 								loaderList.add(loader);
+							}
+						}
+						break;
+						
+					case 2: // 系统扩展包下无依赖库bundle
+						for (File systemExtFile : files) {
+							if (systemExtFile.getName().endsWith(".jar")) {
+								try {
+									JarBusProperty busProperty = JarBusProperty
+											.readJarBus(systemExtFile);
+									lib_urlList = FileUtil.getAllJar(lib_ext_dir);
+									lib_urlList.addAll(busProperty.getLoaderUrlList());
+									attatchSysLibUrls(systemExtFile.getName(), lib_urlList);
+									BundleLoader loader = new BundleLoader(context,
+											systemExtFile, startLevel,
+											busProperty.getStartLevel(),
+											busProperty.getLoad(), lib_urlList);
+									loaderList.add(loader);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						break;
+						
+					case 3: // 系统扩展包下有依赖库，在系统扩展下以目录存在
+						for (File systemExtDir : files) {
+							lib_urlList = FileUtil.getAllJar(lib_ext_dir);
+							try {
+								JarBusProperty busProperty = null;
+								File extBundleFile = null;
+								if (systemExtDir.isDirectory() 
+										&& !BusConstants.SYSTEM_EXT_SERVER_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
+										&& !BusConstants.SYSTEM_EXT_SERVICE_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
+										&& !BusConstants.SYSTEM_EXT_PORTAL_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
+										) {
+									for (File extBundle : systemExtDir.listFiles()) {
+										if (extBundle.isFile()
+												&& extBundle.getName().endsWith(
+														".jar")) {
+											extBundleFile = extBundle;
+											busProperty = JarBusProperty
+													.readJarBus(extBundle);
+											continue;
+										}
+										if (extBundle.isDirectory()
+												&& "lib".equalsIgnoreCase(extBundle
+														.getName())) {
+											lib_urlList.addAll(FileUtil
+													.getAllJar(extBundle.getPath()));
+											continue;
+										}
+									}
+									if (extBundleFile != null
+											&& busProperty != null) {
+										lib_urlList.addAll(busProperty
+												.getLoaderUrlList());
+										attatchSysLibUrls(systemExtDir.getName(), lib_urlList);
+										BundleLoader loader = new BundleLoader(
+												context, extBundleFile, startLevel,
+												busProperty.getStartLevel(),
+												busProperty.getLoad(), lib_urlList);
+										loaderList.add(loader);
+									}
+								}
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
+						break;
+						
+					case 4:		// com.antelope.ci.bus.server
+						loadContaintFragments(context, startLevel, loaderList, 
+								root, BusConstants.SYSTEM_EXT_SERVER_DIRNAME, "service", null);
+						break;
+						
+					case 5:		// com.antelope.ci.bus.service
+						
+						break;
+					case 6:		// com.antelope.ci.bus.portal
+						loadContaintFragments(context, startLevel, loaderList, 
+								root, BusConstants.SYSTEM_EXT_PORTAL_DIRNAME, "part", "service");
+						break;
 					}
-					break;
-				case 3: // 系统扩展包下有依赖库，在系统扩展下以目录存在
-					for (File systemExtDir : files) {
-						lib_urlList = FileUtil.getAllJar(lib_ext_dir);
-						try {
-							JarBusProperty busProperty = null;
-							File extBundleFile = null;
-							if (systemExtDir.isDirectory() 
-									&& !BusConstants.SYSTEM_EXT_SERVER_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
-									&& !BusConstants.SYSTEM_EXT_SERVICE_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
-									&& !BusConstants.SYSTEM_EXT_PORTAL_DIRNAME.equalsIgnoreCase(systemExtDir.getName())
-									) {
-								for (File extBundle : systemExtDir.listFiles()) {
-									if (extBundle.isFile()
-											&& extBundle.getName().endsWith(
-													".jar")) {
-										extBundleFile = extBundle;
-										busProperty = JarBusProperty
-												.readJarBus(extBundle);
-										continue;
-									}
-									if (extBundle.isDirectory()
-											&& "lib".equalsIgnoreCase(extBundle
-													.getName())) {
-										lib_urlList.addAll(FileUtil
-												.getAllJar(extBundle.getPath()));
-										continue;
-									}
-								}
-								if (extBundleFile != null
-										&& busProperty != null) {
-									lib_urlList.addAll(busProperty
-											.getLoaderUrlList());
-									attatchSysLibUrls(systemExtDir.getName(), lib_urlList);
-									BundleLoader loader = new BundleLoader(
-											context, extBundleFile, startLevel,
-											busProperty.getStartLevel(),
-											busProperty.getLoad(), lib_urlList);
-									loaderList.add(loader);
-								}
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					break;
-					
-				case 4:		// com.antelope.ci.bus.server
-					loadContaintFragments(context, startLevel, loaderList, 
-							root, BusConstants.SYSTEM_EXT_SERVER_DIRNAME, "service", null);
-					break;
-				case 5:		// com.antelope.ci.bus.service
-					
-					break;
-				case 6:		// com.antelope.ci.bus.portal
-					loadContaintFragments(context, startLevel, loaderList, 
-							root, BusConstants.SYSTEM_EXT_PORTAL_DIRNAME, "part", "service");
-					break;
-				}
 			}
 		}
 		

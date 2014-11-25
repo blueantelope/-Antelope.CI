@@ -14,7 +14,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * 对外发部service接口定义
+ * 对外service接口定义
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-15		下午12:41:51 
@@ -27,7 +27,7 @@ public interface BusEngineService {
 	 * @return void
 	 * @throws
 	 */
-	public void register(BundleContext m_context) throws CIBusException;
+	public void regist(BundleContext m_context) throws CIBusException;
 	
 	/**
 	 * 卸载服务
@@ -36,8 +36,13 @@ public interface BusEngineService {
 	 * @return void
 	 * @throws
 	 */
-	public void unRegister(BundleContext m_context) throws CIBusException;
+	public void unregist(BundleContext m_context) throws CIBusException;
 	
+	/**
+	 * get parameters of service
+	 * @param  @return
+	 * @return ServiceParameters
+	 * @throws
+	 */
 	public ServiceParameters getParameters();
 }
-

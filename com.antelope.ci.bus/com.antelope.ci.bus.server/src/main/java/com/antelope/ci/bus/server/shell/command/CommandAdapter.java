@@ -112,7 +112,7 @@ public abstract class CommandAdapter {
 				ICommand command = (ICommand) cls.newInstance();
 				addCommand(command);
 			} catch (Exception e) {
-				throw new CIBusException("", e);
+				throw new CIBusException("", "add command error", e);
 			}
 		}
 	}

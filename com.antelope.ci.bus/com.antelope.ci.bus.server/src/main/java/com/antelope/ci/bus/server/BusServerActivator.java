@@ -17,7 +17,6 @@ import com.antelope.ci.bus.server.service.BusServerServicePublisher;
 /**
  * 持续bus总线服务
  * 使用ssh方式
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-7-30		下午11:23:33 
@@ -72,8 +71,6 @@ public class BusServerActivator extends CommonBusActivator {
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -83,8 +80,6 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void handleStopAllService() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -105,10 +100,6 @@ public class BusServerActivator extends CommonBusActivator {
 	 */
 	@Override
 	protected void removeServices() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
-	}
-	
-}
 
+	}
+}

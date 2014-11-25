@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.engine.service;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
@@ -36,8 +37,30 @@ public abstract class CommonEngineService implements BusEngineService {
 		}
 	}
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.engine.service.BusEngineService#regist(org.osgi.framework.BundleContext)
+	 */
+	@Override public void regist(BundleContext m_context) throws CIBusException {
+		log.info("regist engine service");
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.engine.service.BusEngineService#unregist(org.osgi.framework.BundleContext)
+	 */
+	@Override public void unregist(BundleContext m_context) throws CIBusException {
+		log.info("unregiste engine service");
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.engine.service.BusEngineService#getParameters()
+	 */
 	@Override public ServiceParameters getParameters() {
 		return parameters;
 	}
 }
-
