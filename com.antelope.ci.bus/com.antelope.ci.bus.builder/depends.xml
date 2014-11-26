@@ -34,17 +34,17 @@
 		</dependency>
 		<dependency>
 			<groupId>com.antelope.ci.bus.engine</groupId>
-			<artifactId>com.antelope.ci.bus.engine.service</artifactId>
+			<artifactId>com.antelope.ci.bus.engine.model</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.engine.service</groupId>
-			<artifactId>com.antelope.ci.bus.engine.service.project</artifactId>
+			<groupId>com.antelope.ci.bus.engine.model</groupId>
+			<artifactId>com.antelope.ci.bus.engine.model.user</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.engine.service.project</groupId>
-			<artifactId>com.antelope.ci.bus.engine.service.project.realization</artifactId>
+			<groupId>com.antelope.ci.bus.engine.model</groupId>
+			<artifactId>com.antelope.ci.bus.engine.model.project</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
@@ -69,17 +69,17 @@
 		</dependency>
 		<dependency>
 			<groupId>com.antelope.ci.bus.engine</groupId>
-			<artifactId>com.antelope.ci.bus.engine.model</artifactId>
+			<artifactId>com.antelope.ci.bus.engine.manager</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.engine.model</groupId>
-			<artifactId>com.antelope.ci.bus.engine.model.user</artifactId>
+			<groupId>com.antelope.ci.bus.engine.manager</groupId>
+			<artifactId>com.antelope.ci.bus.engine.manager.project</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.engine.model</groupId>
-			<artifactId>com.antelope.ci.bus.engine.model.project</artifactId>
+			<groupId>com.antelope.ci.bus.engine.manager.project</groupId>
+			<artifactId>com.antelope.ci.bus.engine.manager.project.realization</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>

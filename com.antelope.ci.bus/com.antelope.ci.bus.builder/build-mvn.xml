@@ -11,55 +11,91 @@
 <project name="maven script" basedir=".">
 	<property file="build.properties" />
 
+	<!-- com.antelope.ci.bus.framework -->
 	<target name="framework.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.framework.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
 	<target name="framework.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.framework.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
+	
+	<!-- com.antelope.ci.bus.common -->
 	<target name="common.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
 	<target name="common.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
+	
+	<!-- com.antelope.ci.bus.common.test -->
+	<target name="common.test.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.common.test.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="common.test.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.common.test.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.osgi -->
 	<target name="osgi.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.osgi.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
 	<target name="osgi.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.osgi.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
+	
+	<!-- com.antelope.ci.bus.logger -->
+	<target name="logger.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="logger.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="logger.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.logger.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
 
+	<!-- com.antelope.ci.bus -->
 	<target name="bus.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.bus.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
 	<target name="bus.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.bus.pom}" />
@@ -67,175 +103,24 @@
 		</exec>
 	</target>
 	
-	<target name="service.compile">
-			<exec executable="${mvn}" failonerror="true">
-				<arg line="-f ${prj.service.pom}" />
-				<arg line="install" />
-			</exec>
-		</target>
-
-	<target name="service.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="service.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="service.project.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.project.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	
-	<target name="service.project.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.project.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="service.project.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.project.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="service.project.realization.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.project.realization.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-
-	<target name="service.project.realization.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.project.realization.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="service.project.realization.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.project.realization.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="storage.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-
-	<target name="storage.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="storage.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="storage.database.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.database.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-
-	<target name="storage.database.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.database.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="storage.database.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.database.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="storage.flatfile.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.flatfile.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-
-	<target name="storage.flatfile.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.flatfile.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="storage.flatfile.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.flatfile.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="storage.ldap.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.ldap.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-
-	<target name="storage.ldap.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.ldap.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="storage.ldap.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.engine.storage.ldap.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
-	<target name="model.compile">
+	<!--
+		com.antelope.ci.bus.engine
+		engine projects
+	-->
+	<!-- com.antelope.ci.bus.engine.model -->
+	<target name="engine.model.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
-	<target name="model.compile.notest" depends="mvn_env">
+	<target name="engine.model.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
-	<target name="model.depends" depends="mvn_env">
+	<target name="engine.model.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.pom}" />
 			<arg line="dependency:copy-dependencies" />
@@ -243,21 +128,20 @@
 		</exec>
 	</target>
 	
-	<target name="model.user.compile">
+	<!-- com.antelope.ci.bus.engine.model.user -->
+	<target name="engine.model.user.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.user.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
-	<target name="model.user.compile.notest" depends="mvn_env">
+	<target name="engine.model.user.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.user.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
-	<target name="model.user.depends" depends="mvn_env">
+	<target name="engine.model.user.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.user.pom}" />
 			<arg line="dependency:copy-dependencies" />
@@ -265,21 +149,20 @@
 		</exec>
 	</target>
 
-	<target name="model.project.compile">
+	<!-- com.antelope.ci.bus.engine.model.project -->
+	<target name="engine.model.project.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.project.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
-	<target name="model.project.compile.notest" depends="mvn_env">
+	<target name="engine.model.project.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.project.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
-	<target name="model.project.depends" depends="mvn_env">
+	<target name="engine.model.project.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.project.pom}" />
 			<arg line="dependency:copy-dependencies" />
@@ -287,20 +170,169 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.engine.access.storage -->
+	<target name="engine.access.storage.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.access.storage.database -->
+	<target name="engine.access.storage.database.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.database.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.database.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.database.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.database.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.database.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.access.storage.flatfile -->
+	<target name="engine.access.storage.flatfile.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.flatfile.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.flatfile.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.flatfile.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.flatfile.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.flatfile.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.access.storage.ldap -->
+	<target name="engine.access.storage.ldap.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.ldap.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.ldap.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.ldap.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.storage.ldap.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.storage.ldap.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.manger -->
+	<target name="engine.manager.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.manager.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.manager.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.manger.project -->
+	<target name="engine.manager.project.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.project.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.manager.project.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.project.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.manager.project.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.project.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.manger.project.realization -->
+	<target name="engine.manager.project.realization.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.project.realization.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.manager.project.realization.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.sengine.manager.project.realization.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.manager.project.realization.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.project.realization.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	<!--
+		end engine projects
+	-->
+	
+	<!-- com.antelope.ci.bus.server -->
 	<target name="server.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
 	<target name="server.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
 	<target name="server.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
@@ -309,42 +341,19 @@
 		</exec>
 	</target>
 
-	<target name="logger.compile" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.logger.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-
-	<target name="logger.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.logger.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-
-	<target name="logger.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.logger.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
+	<!-- com.antelope.ci.bus.portal -->
 	<target name="portal.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
 	<target name="portal.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
 	<target name="portal.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.pom}" />
@@ -352,7 +361,6 @@
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>
 	</target>
-	
 	<target name="common.test.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.test.pom}" />
@@ -360,57 +368,40 @@
 		</exec>
 	</target>
 
-	<target name="common.test.compile.notest" depends="mvn_env">
+	<!-- com.antelope.ci.bus.server.service.userstore.file -->
+	<target name="server.service.userstorefile.compile">
 		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.common.test.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	
-	<target name="common.test.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.common.test.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-
-	<target name="service.userstorefile.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.userstorefile.pom}" />
+			<arg line="-f ${prj.server.service.userstorefile.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-
-	<target name="service.userstorefile.compile.notest" depends="mvn_env">
+	<target name="server.service.userstorefile.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.userstorefile.pom}" />
+			<arg line="-f ${prj.server.service.userstorefile.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
-	<target name="service.userstorefile.depends" depends="mvn_env">
+	<target name="server.service.userstorefile.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.service.userstorefile.pom}" />
+			<arg line="-f ${prj.server.service.userstorefile.pom}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.portal.dashboard -->
 	<target name="portal.dashboard.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.dashboard.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
 	<target name="portal.dashboard.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.dashboard.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
 	<target name="portal.dashboard.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.dashboard.pom}" />
@@ -419,20 +410,19 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.portal.project -->
 	<target name="portal.project.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.project.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
 	<target name="portal.project.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.project.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
 	<target name="portal.project.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.project.pom}" />
@@ -441,20 +431,19 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.portal.usecase -->
 	<target name="portal.usecase.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.usecase.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
 	<target name="portal.usecase.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.usecase.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
 	<target name="portal.usecase.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.usecase.pom}" />
@@ -463,20 +452,19 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.portal.target -->
 	<target name="portal.target.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.target.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
 	<target name="portal.target.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.target.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
 	<target name="portal.target.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.target.pom}" />
@@ -485,20 +473,20 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.portal.version -->
 	<target name="portal.version.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.version.pom}" />
 			<arg line="install" />
 		</exec>
 	</target>
-	
+	<!-- com.antelope.ci.bus.portal.dashboard -->
 	<target name="portal.version.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.version.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>
-
 	<target name="portal.version.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.version.pom}" />
