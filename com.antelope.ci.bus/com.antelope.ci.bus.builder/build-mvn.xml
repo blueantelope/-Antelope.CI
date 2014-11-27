@@ -305,7 +305,7 @@
 	</target>
 	<target name="engine.manager.project.realization.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.sengine.manager.project.realization.pom}" />
+			<arg line="-f ${prj.engine.manager.project.realization.pom}" />
 			<arg line="install ${mvn.notest}" />
 		</exec>
 	</target>

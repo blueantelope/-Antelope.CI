@@ -494,6 +494,7 @@ public class CIBus {
 				framework.start();
 				FrameworkStartLevel sl = framework.adapt(FrameworkStartLevel.class);
 		        sl.setInitialBundleStartLevel(bundle_init_startlevel);
+		        runSystemEngine(); // 启动system引擎bundle
 				runSystemExt(); // 启动system扩展bundle
 			} catch (Exception e) {
 				throw new CIBusException("", e);
@@ -514,10 +515,8 @@ public class CIBus {
 	
 	private void runSystemEngine() {
 		List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
-		loaderList.addAll(
-				loadSystemBundle(system_engine_dir, 7)); // 不带lib库
-		loaderList.addAll(
-				loadSystemBundle(system_engine_dir, 8)); // 带lib库支持
+		loaderList.addAll(loadSystemBundle(system_engine_dir, 7)); // 不带lib库
+		loaderList.addAll(loadSystemBundle(system_engine_dir, 8)); // 带lib库支持
 		loaderList.addAll(loadSystemBundle(system_engine_dir, 9)); // load to container except lib
 		Collections.sort(loaderList, new Comparator() {
 			@Override
@@ -538,16 +537,11 @@ public class CIBus {
 	 */
 	private void runSystemExt() {
 		List<BundleLoader> loaderList = new ArrayList<BundleLoader>();
-		loaderList.addAll(
-				loadSystemBundle(system_ext_dir, 2)); // 不带lib库
-		loaderList.addAll(
-				loadSystemBundle(system_ext_dir, 3)); // 带lib库支持
-		loaderList.addAll(
-				loadSystemBundle(system_ext_dir, 4)); // com.antelope.ci.bus.server支持
-		loaderList.addAll(
-				loadSystemBundle(system_ext_dir, 5)); // com.antelope.ci.bus.service支持
-		loaderList.addAll(
-				loadSystemBundle(system_ext_dir, 6)); // com.antelope.ci.bus.portal支持
+		loaderList.addAll(loadSystemBundle(system_ext_dir, 2)); // 不带lib库
+		loaderList.addAll(loadSystemBundle(system_ext_dir, 3)); // 带lib库支持
+		loaderList.addAll(loadSystemBundle(system_ext_dir, 4)); // com.antelope.ci.bus.server支持
+		loaderList.addAll(loadSystemBundle(system_ext_dir, 5)); // com.antelope.ci.bus.service支持
+		loaderList.addAll(loadSystemBundle(system_ext_dir, 6)); // com.antelope.ci.bus.portal支持
 		Collections.sort(loaderList, new Comparator() {
 			@Override
 			public int compare(Object o1, Object o2) {
@@ -660,12 +654,14 @@ public class CIBus {
 	
 	private List<URL> loadSystemEngineLib() {
 		List<URL> libUrlList = new ArrayList<URL>();
-		libUrlList.addAll(FileUtil.getAllJar(system_ext_lib_dir));
+		libUrlList.addAll(FileUtil.getAllJar(system_lib_dir));
+		libUrlList.addAll(FileUtil.getAllJar(system_engine_lib_dir));
 		return libUrlList;
 	}
 	
 	private List<URL> loadSystemExtLib() {
 		List<URL> libUrlList = new ArrayList<URL>();
+		libUrlList.addAll(FileUtil.getAllJar(system_lib_dir));
 		libUrlList.addAll(FileUtil.getAllJar(system_engine_lib_dir));
 		libUrlList.addAll(FileUtil.getAllJar(system_ext_lib_dir));
 		return libUrlList;

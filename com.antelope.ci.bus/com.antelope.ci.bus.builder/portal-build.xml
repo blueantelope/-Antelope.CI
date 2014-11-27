@@ -4,7 +4,6 @@
 
 	<target name="build" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile" />
@@ -16,9 +15,12 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile" />
@@ -31,7 +33,6 @@
 
 	<target name="build-notest" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile.notest" />
@@ -43,9 +44,12 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.usecase.compile.notest" />
@@ -118,17 +122,15 @@
 		</copy>
 		
 		<!-- /system/ext -->
+		<!--
 		<copy todir="${app.portal.system.ext}">
-			<fileset dir="${target.depends}">
-			</fileset>
 		</copy>
+		-->
 		<!-- /system/ext/lib -->
+		<!--
 		<copy todir="${app.portal.system.ext.lib}">
-			<fileset dir="${target.depends}">
-				<include name="mina*.jar" />
-				<include name="sshd*.jar" />
-			</fileset>
 		</copy>
+		-->
 		<!-- /system/ext/server -->
 		<copy todir="${app.portal.server.bundle}">
 			<fileset dir="${target.depends}">
@@ -138,6 +140,8 @@
 		<!-- /system/ext/server/lib -->
 		<copy todir="${app.portal.server.bundle.lib}">
 			<fileset dir="${target.depends}">
+				<include name="mina*.jar" />
+				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
 		<!-- /system/ext/server/service -->
@@ -147,10 +151,10 @@
 			</fileset>
 		</copy>
 		<!-- /system/ext/service/lib -->
+		<!--
 		<copy todir="${app.portal.service.bundle.lib}">
-			<fileset dir="${target.depends}">
-			</fileset>
 		</copy>
+		 -->
 		<!-- /system/ext/portal -->
 		<copy todir="${app.portal.bundle}">
 			<fileset dir="${target.depends}">
