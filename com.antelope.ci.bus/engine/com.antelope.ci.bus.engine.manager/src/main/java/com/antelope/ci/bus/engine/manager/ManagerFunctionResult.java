@@ -15,7 +15,7 @@ package com.antelope.ci.bus.engine.manager;
  * @version  0.1
  * @Date	 2014-6-24		下午2:24:31 
  */
-public class ManagerFuntionResult {
+public class ManagerFunctionResult {
 	private int code;
 	private String message;
 	

@@ -111,13 +111,41 @@
 		<!-- /system/engine/lib -->
 		<copy todir="${app.portal.system.engine.lib}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.model.user-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.model.project-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.access.storage.database-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.access.storage.flatfile-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.access.storage.ldap-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		
+		<!-- /system/engine/model -->
+		<copy todir="${app.portal.system.engine.model}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.model-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/model/part -->
+		<copy todir="${app.portal.system.engine.model.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.model.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.model.user-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/manager -->
+		<copy todir="${app.portal.system.engine.manager}">
+			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.engine.manager-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/manager/service -->
+		<copy todir="${app.portal.system.engine.manager.service}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.project.realization-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		

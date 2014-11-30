@@ -5,4 +5,6 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.engine.manager.project.realization
 Bundle-Vendor: blueantelope@gmail.com
 Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, 
- com.antelope.ci.bus.engine.manager.project, com.antelope.ci.bus.engine.model.project
+ com.antelope.ci.bus.engine.manager, com.antelope.ci.bus.engine.manager.project,
+ com.antelope.ci.bus.engine.model.project
+Bundle-Activator: com.antelope.ci.bus.engine.manager.project.realization.EngineProjectManagerRealizationActivator

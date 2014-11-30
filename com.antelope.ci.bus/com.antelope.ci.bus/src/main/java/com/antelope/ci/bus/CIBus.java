@@ -579,8 +579,7 @@ public class CIBus {
 						for (File systemFile : files) {
 							if (systemFile.getName().endsWith(".jar")) {
 								BundleLoader loader = new BundleLoader(context,
-										systemFile, startLevel, level,
-										JarLoadMethod.START);
+										systemFile, startLevel, level, JarLoadMethod.START);
 								loaderList.add(loader);
 							}
 						}
@@ -637,11 +636,13 @@ public class CIBus {
 						break;
 						
 					case 9:		// com.antelope.ci.bus.engine
-						// include com.antelope.ci.bus.engine.model, com.antelope.ci.bus.engine.access, com.antelope.ci.bus.engine.manager
+						// com.antelope.ci.bus.engine.model
 						loadContaintFragments(context, startLevel, loaderList, loadSystemEngineLib(),
 								root, BusConstants.SYSTEM_ENGINE_MODEL_DIRNAME, "part", "service");
+						// com.antelope.ci.bus.engine.access
 						loadContaintFragments(context, startLevel, loaderList, loadSystemEngineLib(),
 								root, BusConstants.SYSTEM_ENGINE_ACCESS_DIRNAME, "part", "service");
+						// com.antelope.ci.bus.engine.manager
 						loadContaintFragments(context, startLevel, loaderList, loadSystemEngineLib(),
 								root, BusConstants.SYSTEM_ENGINE_MANAGER_DIRNAME, "part", "service");
 						break;
@@ -729,8 +730,9 @@ public class CIBus {
 	}
 	
 	private void loadContaintFragments(BundleContext context, StartLevel startLevel, 
-			List<BundleLoader> loaderList, List<URL> libUrlList, File root, String dirname, String fragmentdir, String servicedir) {
-		File[] bundle_files = FileUtil.getChildFiles(root, dirname);
+			List<BundleLoader> loaderList, List<URL> libUrlList, File root, 
+			String dirName, String fragmentDir, String serviceDir) {
+		File[] bundle_files = FileUtil.getChildFiles(root, dirName);
 		if (bundle_files != null && bundle_files.length == 1) {
 			try {
 				File bundle_dir = bundle_files[0];
@@ -743,7 +745,7 @@ public class CIBus {
 					}
 					attatchSysLibUrls(bundle_dir.getName(), libUrlList);
 					
-					File[] fragment_files = FileUtil.getChildFiles(bundle_dir, fragmentdir);
+					File[] fragment_files = FileUtil.getChildFiles(bundle_dir, fragmentDir);
 					if (fragment_files != null && fragment_files.length == 1) {
 						for (File fragment_file : fragment_files[0].listFiles()) {
 							 if (fragment_file.isDirectory()) {
@@ -778,8 +780,8 @@ public class CIBus {
 					loaderList.add(loader);
 					
 					// add service to loader
-					if (!StringUtil.empty(servicedir)) {
-						File[] service_files = FileUtil.getChildFiles(bundle_dir, servicedir);
+					if (!StringUtil.empty(serviceDir)) {
+						File[] service_files = FileUtil.getChildFiles(bundle_dir, serviceDir);
 						if (service_files != null && service_files.length == 1) {
 							for (File service_file : service_files[0].listFiles()) {
 								if (service_file.getName().endsWith(".jar")) {

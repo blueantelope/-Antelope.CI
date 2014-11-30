@@ -10,8 +10,8 @@ package com.antelope.ci.bus.engine.manager.project.realization;
 
 import org.apache.log4j.Logger;
 
-import com.antelope.ci.bus.engine.manager.ManagerFuntionResult;
-import com.antelope.ci.bus.engine.manager.project.CommonEngineProjectService;
+import com.antelope.ci.bus.engine.manager.ManagerFunctionResult;
+import com.antelope.ci.bus.engine.manager.project.CommonEngineProjectManager;
 import com.antelope.ci.bus.engine.model.project.Project;
 
 
@@ -21,11 +21,11 @@ import com.antelope.ci.bus.engine.model.project.Project;
  * @version  0.1
  * @Date	 2014年11月24日		下午4:34:22 
  */
-public class EngineProjectServiceRealization extends CommonEngineProjectService {
-	private final static Logger log = Logger.getLogger(EngineProjectServiceRealization.class);
+public class EngineProjectManagerRealization extends CommonEngineProjectManager {
+	private final static Logger log = Logger.getLogger(EngineProjectManagerRealization.class);
 	
 	@Override
-	public ManagerFuntionResult addProject(Project project) {
+	public ManagerFunctionResult addProject(Project project) {
 		log.info("add project from engine");
 		
 		return null;

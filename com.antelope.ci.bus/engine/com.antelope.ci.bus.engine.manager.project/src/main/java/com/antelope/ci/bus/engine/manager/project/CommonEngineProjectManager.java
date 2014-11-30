@@ -17,6 +17,7 @@ import com.antelope.ci.bus.engine.manager.CommonEngineManager;
  * @version  0.1
  * @Date	 2014年11月25日		下午3:19:39 
  */
-public abstract class CommonEngineProjectService extends CommonEngineManager implements EngineProjectService {
+public abstract class CommonEngineProjectManager
+		extends CommonEngineManager implements EngineProjectManager {
 
 }

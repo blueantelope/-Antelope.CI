@@ -7,3 +7,4 @@ Export-Package: com.antelope.ci.bus.engine.manager.project
 Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, 
  com.antelope.ci.bus.engine.manager, com.antelope.ci.bus.engine.model.project
 Bundle-Vendor: blueantelope@gmail.com
+Bundle-Activator: com.antelope.ci.bus.engine.manager.project.EngineProjectManagerActivator
