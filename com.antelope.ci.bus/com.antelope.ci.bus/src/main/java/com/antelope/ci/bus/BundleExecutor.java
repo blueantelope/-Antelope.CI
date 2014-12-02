@@ -42,12 +42,10 @@ class BundleExecutor {
 			if (loader.method == JarLoadMethod.INSTALL || loader.method == JarLoadMethod.START) {
 				Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
 				loader.startLevel.setBundleStartLevel(bundle, loader.level);
-				if (loader.clsUrlList != null) {
+				if (loader.clsUrlList != null)
 					attachBundleUrl(bundle);
-				}
-				if (loader.method == JarLoadMethod.START) {
+				if (loader.method == JarLoadMethod.START)
 					startBundle(bundle);
-				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

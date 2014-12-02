@@ -19,7 +19,40 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * bus.properties中的定义
- * 
+ * load.level:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 		1-5:	preserve
+
+		6-25: com.antelope.ci.bus.engine
+			6-7: preserve
+			8-12: com.antelope.ci.bus.engine.model
+				8-9: part
+				10: com.antelope.ci.bus.engine.model
+				11-12: service
+			13-17: com.antelope.ci.bus.engine.access
+				13-14: part
+				15: com.antelope.ci.bus.engine.access
+				16-17: service
+			18-22: com.antelope.ci.bus.engine.manager
+				18-19: part
+				20: com.antelope.ci.bus.engine.manager
+				21-22: service
+			23-25: preserve
+				
+		26-45: com.antelope.ci.bus.ext
+			26-28: preserve
+			29-35: com.antelope.ci.bus.server
+				29-31: part
+				32: com.antelope.ci.bus.server
+				33-35: service
+			36-42: com.antelope.ci.bus.portal
+				36-38: part
+				39: com.antelope.ci.bus.portal
+				40-42: service
+			43-45: preserve
+			
+		46-50: preserve
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * @author blueantelope
  * @version 0.1
  * @Date 2013-8-2 下午6:20:01
@@ -27,7 +60,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 public class JarBusProperty {
 	private static final String BUS_PROPS = "META-INF/bus.properties";
 	private JarLoadMethod load; // 装载方式: install, start
-	private int startLevel; // 启动级别
+	private int loadLevel; // 加载级别
 	private String services; // 需要加载的osgi serivce列表
 	private List<URL> loaderUrlList; // 加载的url列表
 
@@ -53,12 +86,12 @@ public class JarBusProperty {
 			this.load = JarLoadMethod.IGNORE;
 	}
 
-	public int getStartLevel() {
-		return startLevel;
+	public int getLoadLevel() {
+		return loadLevel;
 	}
 
-	public void setStartLevel(int startLevel) {
-		this.startLevel = startLevel;
+	public void setLoadLevel(int loadLevel) {
+		this.loadLevel = loadLevel;
 	}
 
 	public String getServices() {
@@ -110,7 +143,7 @@ public class JarBusProperty {
 		reader.addConfig(BUS_PROPS);
 		JarBusProperty busProperty = new JarBusProperty();
 		busProperty.setLoad(reader.getString(BusConstants.JAR_LOAD));
-		busProperty.setStartLevel(reader.getInt(BusConstants.JAR_START_LEVEL));
+		busProperty.setLoadLevel(reader.getInt(BusConstants.JAR_LOAD_LEVEL));
 		busProperty.setLoaderUrlList(parseLoaderUrl(reader.getString(BusConstants.JAR_LOADER_URL, null)));
 		busProperty.setServices(reader.getString(BusConstants.JAR_SERVICES));
 

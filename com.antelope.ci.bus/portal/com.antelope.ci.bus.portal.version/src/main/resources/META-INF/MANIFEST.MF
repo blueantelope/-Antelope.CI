@@ -7,5 +7,4 @@ Fragment-Host: com.antelope.ci.bus.portal; bundle-version="0.1.0"
 Bundle-Vendor: blueantelope@gmail.com
 Import-Package: com.antelope.ci.bus.server.shell.command.hit
 Export-Package: com.antelope.ci.bus.portal.version; version="0.1.0",
- com.antelope.ci.bus.portal.project.version; version="0.1.0"
- 
+ com.antelope.ci.bus.portal.version.command; version="0.1.0"

@@ -395,8 +395,7 @@ public class CIBus {
 	private void loadFrameworkFactory() throws CIBusException {
 		if (null != classloader) {
 			try {
-				URL url = classloader
-						.getResource("META-INF/services/org.osgi.framework.launch.FrameworkFactory");
+				URL url = classloader.getResource("META-INF/services/org.osgi.framework.launch.FrameworkFactory");
 				if (null != url) {
 					BufferedReader br = new BufferedReader(
 							new InputStreamReader(url.openStream()));
@@ -404,8 +403,7 @@ public class CIBus {
 					while (null != (line = br.readLine())) {
 						line = line.trim();
 						if (!"".equals(line) && '#' != (line.charAt(0))) {
-							factory = (FrameworkFactory) Class.forName(line)
-									.newInstance();
+							factory = (FrameworkFactory) Class.forName(line).newInstance();
 							break;
 						}
 					}
@@ -454,29 +452,22 @@ public class CIBus {
 		parameters.put(Constants.FRAMEWORK_STORAGE, cache_dir);
 		// boot delegation of osgi
 		String bootdelegation = "";
-		String boot_envs = configration.getString(BOOT_ENVIRONMENT,
-				BOOT_ENVIRONMENT_DEFAULT);
-		bundle_init_startlevel = configration.getInt(INIT_STARTLEVEL, 
-				bundle_init_startlevel);
-		startlevel = configration.getInt(STARTLEVEL,
-				startlevel);
+		String boot_envs = configration.getString(BOOT_ENVIRONMENT, BOOT_ENVIRONMENT_DEFAULT);
+		bundle_init_startlevel = configration.getInt(INIT_STARTLEVEL, bundle_init_startlevel);
+		startlevel = configration.getInt(STARTLEVEL, startlevel);
 		if (boot_envs.equals(BOOT_ENVIRONMENT_DEFAULT)) {
 			bootdelegation = configration.getString(BOOT_ENVIRONMENT_DEFAULT, "");
 		} else {
 			for (String boot_env : boot_envs.split(",")) {
-				if (configration.getString(boot_env.trim()) != null) {
-					bootdelegation += configration.getString(boot_env.trim())
-							+ ", ";
-				}
+				if (configration.getString(boot_env.trim()) != null)
+					bootdelegation += configration.getString(boot_env.trim()) + ", ";
 			}
 			if (bootdelegation.endsWith(", "))
-				bootdelegation = bootdelegation.substring(0,
-						bootdelegation.length() - 2);
+				bootdelegation = bootdelegation.substring(0, bootdelegation.length() - 2);
 		}
 		if (bootdelegation.length() > 0) {
 			parameters.put(Constants.FRAMEWORK_BOOTDELEGATION, bootdelegation);
-			parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT,
-					Constants.FRAMEWORK_BUNDLE_PARENT_APP);
+			parameters.put(Constants.FRAMEWORK_BUNDLE_PARENT, Constants.FRAMEWORK_BUNDLE_PARENT_APP);
 		}
 		parameters.put(Constants.FRAMEWORK_BEGINNING_STARTLEVEL, String.valueOf(startlevel));
 	}
@@ -677,7 +668,7 @@ public class CIBus {
 					attatchSysLibUrls(file.getName(), libUrlList);
 					BundleLoader loader = new BundleLoader(context,
 							file, startLevel,
-							busProperty.getStartLevel(),
+							busProperty.getLoadLevel(),
 							busProperty.getLoad(), libUrlList);
 					loaderList.add(loader);
 				} catch (Exception e) {
@@ -709,7 +700,7 @@ public class CIBus {
 						attatchSysLibUrls(file.getName(), libUrlList);
 						BundleLoader loader = new BundleLoader(
 								context, bundleFile, startLevel,
-								busProperty.getStartLevel(),
+								busProperty.getLoadLevel(),
 								busProperty.getLoad(), libUrlList);
 						loaderList.add(loader);
 					}
@@ -756,7 +747,7 @@ public class CIBus {
 										 	JarBusProperty busProperty = JarBusProperty.readJarBus(fragment);
 											BundleLoader loader = new BundleLoader(
 													context, fragment, startLevel,
-													busProperty.getStartLevel(),
+													busProperty.getLoadLevel(),
 													busProperty.getLoad(), new ArrayList<URL>());
 											loaderList.add(loader);
 									}
@@ -765,7 +756,7 @@ public class CIBus {
 								JarBusProperty busProperty = JarBusProperty.readJarBus(fragment_file);
 								BundleLoader loader = new BundleLoader(
 										context, fragment_file, startLevel,
-										busProperty.getStartLevel(),
+										busProperty.getLoadLevel(),
 										busProperty.getLoad(), new ArrayList<URL>());
 								loaderList.add(loader);
 							}
@@ -775,7 +766,7 @@ public class CIBus {
 					JarBusProperty busProperty = JarBusProperty.readJarBus(bundle_jar_file);
 					BundleLoader loader = new BundleLoader(
 							context, bundle_jar_file, startLevel,
-							busProperty.getStartLevel(),
+							busProperty.getLoadLevel(),
 							busProperty.getLoad(), libUrlList);
 					loaderList.add(loader);
 					
@@ -788,7 +779,7 @@ public class CIBus {
 									busProperty = JarBusProperty.readJarBus(service_file);
 									BundleLoader service_loader = new BundleLoader(
 											context, service_file, startLevel,
-											busProperty.getStartLevel(),
+											busProperty.getLoadLevel(),
 											busProperty.getLoad(), libUrlList);
 									loaderList.add(service_loader);
 								}

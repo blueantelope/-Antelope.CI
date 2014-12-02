@@ -71,7 +71,7 @@ public class BusConstants {
 	 * bus ci jar中定义的bus.properties配置项 
 	 */
 	public static final String JAR_LOAD= "load";
-	public static final String JAR_START_LEVEL= "start.level";
+	public static final String JAR_LOAD_LEVEL= "load.level";
 	public static final String JAR_LOADER_URL= "loader.url";
 	public static final String JAR_SERVICES= "bus.load.services";
 	
