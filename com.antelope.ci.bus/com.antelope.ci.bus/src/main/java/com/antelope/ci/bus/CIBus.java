@@ -509,14 +509,7 @@ public class CIBus {
 		loaderList.addAll(loadSystemBundle(system_engine_dir, 7)); // 不带lib库
 		loaderList.addAll(loadSystemBundle(system_engine_dir, 8)); // 带lib库支持
 		loaderList.addAll(loadSystemBundle(system_engine_dir, 9)); // load to container except lib
-		Collections.sort(loaderList, new Comparator() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				BundleLoader loader1 = (BundleLoader) o1;
-				BundleLoader loader2 = (BundleLoader) o2;
-				return loader1.level - loader2.level;
-			}
-		});
+		Collections.sort(loaderList, new BundleLoaderComparator());
 		// 加载bundle包
 		for (BundleLoader loader : loaderList) {
 			new BundleExecutor(loader).execute();
@@ -533,14 +526,7 @@ public class CIBus {
 		loaderList.addAll(loadSystemBundle(system_ext_dir, 4)); // com.antelope.ci.bus.server支持
 		loaderList.addAll(loadSystemBundle(system_ext_dir, 5)); // com.antelope.ci.bus.service支持
 		loaderList.addAll(loadSystemBundle(system_ext_dir, 6)); // com.antelope.ci.bus.portal支持
-		Collections.sort(loaderList, new Comparator() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				BundleLoader loader1 = (BundleLoader) o1;
-				BundleLoader loader2 = (BundleLoader) o2;
-				return loader1.level - loader2.level;
-			}
-		});
+		Collections.sort(loaderList, new BundleLoaderComparator());
 		// 加载bundle包
 		for (BundleLoader loader : loaderList) {
 			new BundleExecutor(loader).execute();
@@ -569,8 +555,8 @@ public class CIBus {
 						List<File> systemJarList = new ArrayList<File>();
 						for (File systemFile : files) {
 							if (systemFile.getName().endsWith(".jar")) {
-								BundleLoader loader = new BundleLoader(context,
-										systemFile, startLevel, level, JarLoadMethod.START);
+								BundleLoader loader = new BundleLoader(
+										context, systemFile, startLevel, level, level, JarLoadMethod.START);
 								loaderList.add(loader);
 							}
 						}
@@ -668,6 +654,7 @@ public class CIBus {
 					attatchSysLibUrls(file.getName(), libUrlList);
 					BundleLoader loader = new BundleLoader(context,
 							file, startLevel,
+							busProperty.getBundleLevel(),
 							busProperty.getLoadLevel(),
 							busProperty.getLoad(), libUrlList);
 					loaderList.add(loader);
@@ -700,6 +687,7 @@ public class CIBus {
 						attatchSysLibUrls(file.getName(), libUrlList);
 						BundleLoader loader = new BundleLoader(
 								context, bundleFile, startLevel,
+								busProperty.getBundleLevel(),
 								busProperty.getLoadLevel(),
 								busProperty.getLoad(), libUrlList);
 						loaderList.add(loader);
@@ -747,6 +735,7 @@ public class CIBus {
 										 	JarBusProperty busProperty = JarBusProperty.readJarBus(fragment);
 											BundleLoader loader = new BundleLoader(
 													context, fragment, startLevel,
+													busProperty.getBundleLevel(),
 													busProperty.getLoadLevel(),
 													busProperty.getLoad(), new ArrayList<URL>());
 											loaderList.add(loader);
@@ -756,6 +745,7 @@ public class CIBus {
 								JarBusProperty busProperty = JarBusProperty.readJarBus(fragment_file);
 								BundleLoader loader = new BundleLoader(
 										context, fragment_file, startLevel,
+										busProperty.getBundleLevel(),
 										busProperty.getLoadLevel(),
 										busProperty.getLoad(), new ArrayList<URL>());
 								loaderList.add(loader);
@@ -766,6 +756,7 @@ public class CIBus {
 					JarBusProperty busProperty = JarBusProperty.readJarBus(bundle_jar_file);
 					BundleLoader loader = new BundleLoader(
 							context, bundle_jar_file, startLevel,
+							busProperty.getBundleLevel(),
 							busProperty.getLoadLevel(),
 							busProperty.getLoad(), libUrlList);
 					loaderList.add(loader);
@@ -779,6 +770,7 @@ public class CIBus {
 									busProperty = JarBusProperty.readJarBus(service_file);
 									BundleLoader service_loader = new BundleLoader(
 											context, service_file, startLevel,
+											busProperty.getBundleLevel(),
 											busProperty.getLoadLevel(),
 											busProperty.getLoad(), libUrlList);
 									loaderList.add(service_loader);
@@ -837,6 +829,18 @@ public class CIBus {
 					}
 				}
 			}
+		}
+	}
+	
+	private static class BundleLoaderComparator implements Comparator {
+		@Override
+		public int compare(Object o1, Object o2) {
+			BundleLoader loader1 = (BundleLoader) o1;
+			BundleLoader loader2 = (BundleLoader) o2;
+			int ret = loader1.bundleLevel - loader2.bundleLevel;
+			if (ret == 0)
+				ret = loader1.loadLevel - loader2.loadLevel;
+			return ret;
 		}
 	}
 }

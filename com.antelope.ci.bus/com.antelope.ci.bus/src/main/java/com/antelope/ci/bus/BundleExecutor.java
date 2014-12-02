@@ -41,7 +41,7 @@ class BundleExecutor {
 		try {
 			if (loader.method == JarLoadMethod.INSTALL || loader.method == JarLoadMethod.START) {
 				Bundle bundle = loader.context.installBundle(loader.jarFile.toURI().toString());
-				loader.startLevel.setBundleStartLevel(bundle, loader.level);
+				loader.startLevel.setBundleStartLevel(bundle, loader.bundleLevel);
 				if (loader.clsUrlList != null)
 					attachBundleUrl(bundle);
 				if (loader.method == JarLoadMethod.START)

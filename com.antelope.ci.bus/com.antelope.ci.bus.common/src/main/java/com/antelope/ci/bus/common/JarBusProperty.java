@@ -19,7 +19,40 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * bus.properties中的定义
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * load.level:
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+		1-100:	preserve
+		
+		101-200: com.antelope.ci.bus.engine
+			101-120: preserve
+			121-140: com.antelope.ci.bus.engine.model
+				121-129: part
+				130: com.antelope.ci.bus.engine.model
+				131-140: service
+			141-160: com.antelope.ci.bus.engine.access
+				141-149: part
+				150: com.antelope.ci.bus.engine.access
+				151-160: service
+			161-180: com.antelope.ci.bus.engine.manager
+				161-169: part
+				170: com.antelope.ci.bus.engine.manager
+				171-180: service
+			181-200: preserve
+				
+		201-300: com.antelope.ci.bus.ext
+			201-220: preserve
+			221-250: com.antelope.ci.bus.server
+				221-234: part
+				235: com.antelope.ci.bus.server
+				236-250: service
+			251-280: com.antelope.ci.bus.portal
+				251-264: part
+				265: com.antelope.ci.bus.portal
+				266-280: service
+			281-300: preserve
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * bundle.level:
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  		1-5:	preserve
 
@@ -60,6 +93,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 public class JarBusProperty {
 	private static final String BUS_PROPS = "META-INF/bus.properties";
 	private JarLoadMethod load; // 装载方式: install, start
+	private int bundleLevel; // sogi bundle start level
 	private int loadLevel; // 加载级别
 	private String services; // 需要加载的osgi serivce列表
 	private List<URL> loaderUrlList; // 加载的url列表
@@ -68,11 +102,9 @@ public class JarBusProperty {
 	public JarLoadMethod getLoad() {
 		return load;
 	}
-
 	public void setLoad(JarLoadMethod load) {
 		this.load = load;
 	}
-
 	/**
 	 * 由装载方式的字符转换为enum表示， 无匹配时，使用IGNORE，即没有装载动作
 	 * 
@@ -89,15 +121,21 @@ public class JarBusProperty {
 	public int getLoadLevel() {
 		return loadLevel;
 	}
-
 	public void setLoadLevel(int loadLevel) {
 		this.loadLevel = loadLevel;
+	}
+	
+
+	public int getBundleLevel() {
+		return bundleLevel;
+	}
+	public void setBundleLevel(int bundleLevel) {
+		this.bundleLevel = bundleLevel;
 	}
 
 	public String getServices() {
 		return services;
 	}
-
 	public void setServices(String services) {
 		this.services = services;
 	}
@@ -105,7 +143,6 @@ public class JarBusProperty {
 	public List<URL> getLoaderUrlList() {
 		return loaderUrlList;
 	}
-
 	public void setLoaderUrlList(List<URL> loaderUrlList) {
 		this.loaderUrlList = loaderUrlList;
 	}
@@ -144,6 +181,8 @@ public class JarBusProperty {
 		JarBusProperty busProperty = new JarBusProperty();
 		busProperty.setLoad(reader.getString(BusConstants.JAR_LOAD));
 		busProperty.setLoadLevel(reader.getInt(BusConstants.JAR_LOAD_LEVEL));
+		busProperty.setBundleLevel(reader.getInt(BusConstants.JAR_BUNDLE_LEVEL));
+
 		busProperty.setLoaderUrlList(parseLoaderUrl(reader.getString(BusConstants.JAR_LOADER_URL, null)));
 		busProperty.setServices(reader.getString(BusConstants.JAR_SERVICES));
 

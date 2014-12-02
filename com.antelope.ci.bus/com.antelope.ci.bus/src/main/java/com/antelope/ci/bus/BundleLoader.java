@@ -29,23 +29,28 @@ class BundleLoader {
 	BundleContext context;
 	File jarFile;
 	StartLevel startLevel;
-	int level;
+	int bundleLevel;
+	int loadLevel;
 	JarLoadMethod method;
 	List<URL> clsUrlList = null;
 	
-	BundleLoader(BundleContext context, File jarFile, StartLevel startLevel, int level, JarLoadMethod method) {
+	BundleLoader(BundleContext context, File jarFile, StartLevel startLevel, 
+			int bundleLevel, int loadLevel, JarLoadMethod method) {
 		this.context = context;
 		this.jarFile = jarFile;
 		this.startLevel = startLevel;
-		this.level = level;
+		this.bundleLevel = bundleLevel;
+		this.loadLevel = loadLevel;
 		this.method = method;
 	}
 	
-	BundleLoader(BundleContext context, File jarFile, StartLevel startLevel, int level, JarLoadMethod method, List<URL> clsUrlList) {
+	BundleLoader(BundleContext context, File jarFile, StartLevel startLevel,
+			int bundleLevel, int loadLevel, JarLoadMethod method, List<URL> clsUrlList) {
 		this.context = context;
 		this.jarFile = jarFile;
 		this.startLevel = startLevel;
-		this.level = level;
+		this.bundleLevel = bundleLevel;
+		this.loadLevel = loadLevel;
 		this.method = method;
 		this.clsUrlList = clsUrlList;
 	}

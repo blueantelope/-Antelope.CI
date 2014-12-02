@@ -74,6 +74,8 @@ public class BusConstants {
 	public static final String JAR_LOAD_LEVEL= "load.level";
 	public static final String JAR_LOADER_URL= "loader.url";
 	public static final String JAR_SERVICES= "bus.load.services";
+	public static final String JAR_BUNDLE_LEVEL= "bundle.level";
+
 	
 	/* CI BUS中bundle加载的url集合 */
 	public static final String BUS_BUNDLE_URLS= "bus.bundle.urls";

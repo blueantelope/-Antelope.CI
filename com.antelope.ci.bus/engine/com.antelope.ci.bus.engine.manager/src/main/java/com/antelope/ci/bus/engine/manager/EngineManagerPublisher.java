@@ -20,6 +20,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.PropertiesUtil;
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 
 
@@ -60,7 +61,7 @@ public class EngineManagerPublisher {
 							}
 						}
 						if (needReg) {
-							Class clazz = BusOsgiUtil.loadClass(cls);
+							Class clazz = ProxyUtil.loadClass(cls, BusOsgiUtil.getBundleClassLoader(m_context));
 							if (BusEngineManager.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(EngineManager.class)) {
 								EngineManager bs =  (EngineManager) clazz.getAnnotation(EngineManager.class);
 								BusEngineManager service = (BusEngineManager) clazz.newInstance();
