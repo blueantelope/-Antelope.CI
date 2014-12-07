@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.engine.manager.project;
 
-import com.antelope.ci.bus.engine.manager.EngineManager;
 import com.antelope.ci.bus.engine.manager.ManagerFunctionResult;
 import com.antelope.ci.bus.engine.model.project.Project;
 
@@ -19,7 +18,6 @@ import com.antelope.ci.bus.engine.model.project.Project;
  * @version  0.1
  * @Date	 2014-6-24		下午2:23:48 
  */
-@EngineManager(name="com.antelope.ci.bus.engine.manager.project")
 public interface EngineProjectManager {
 	/**
 	 * 建立新工程

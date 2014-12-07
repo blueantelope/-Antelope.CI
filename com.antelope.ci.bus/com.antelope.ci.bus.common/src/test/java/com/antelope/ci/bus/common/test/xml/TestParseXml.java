@@ -20,7 +20,6 @@ import com.antelope.ci.bus.common.xml.BusXmlHelper;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -41,10 +40,7 @@ public class TestParseXml extends TestCase {
 			PortalTerminal pt = (PortalTerminal) BusXmlHelper.parse(PortalTerminal.class, xml_in);
 			System.out.println(pt.toString());
 		} catch (CIBusException e) {
-			
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
 	}
 	
@@ -52,4 +48,3 @@ public class TestParseXml extends TestCase {
 		junit.textui.TestRunner.run(TestParseXml.class);
 	}
 }
-

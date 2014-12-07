@@ -18,6 +18,7 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  *
  * @author   blueantelope
  * @version  0.1
+ * 
  * @Date	 2014年11月24日		下午5:30:37 
  */
 public class BusEngineModelActivator extends CommonBusActivator {

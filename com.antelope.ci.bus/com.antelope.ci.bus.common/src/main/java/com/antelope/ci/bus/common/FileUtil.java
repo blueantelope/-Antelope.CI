@@ -23,7 +23,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * 文件类工具
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-7-31		下午9:46:45 

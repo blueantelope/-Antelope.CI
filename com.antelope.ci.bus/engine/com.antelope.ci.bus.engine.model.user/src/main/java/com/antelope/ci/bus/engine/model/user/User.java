@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.engine.model.user;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.engine.model.BaseModel;
 import com.antelope.ci.bus.engine.model.Model;
 
 
@@ -19,7 +20,7 @@ import com.antelope.ci.bus.engine.model.Model;
  * @Date	 2013-10-15		上午10:38:57 
  */
 @Model
-public class User {
+public class User extends BaseModel {
 	public enum AUTH_TYPE {
 		OPNE(1<<0, "open"),						// 无验证，开放式
 		DEFINE(1<<1, "define"),					// 自定义验证

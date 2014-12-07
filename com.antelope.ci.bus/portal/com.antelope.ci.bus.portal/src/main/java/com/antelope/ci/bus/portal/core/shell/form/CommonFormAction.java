@@ -11,7 +11,11 @@ package com.antelope.ci.bus.portal.core.shell.form;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.antelope.ci.bus.engine.manager.project.EngineProjectManager;
+import com.antelope.ci.bus.engine.manager.project.EngineProjectManagerConstants;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
+import com.antelope.ci.bus.server.service.UserStoreServerService;
 
 
 /**
@@ -41,5 +45,9 @@ public abstract class CommonFormAction {
 		if (arguments.containsKey(name))
 			return (BusPortalShell) arguments.get(name);
 		return null;
+	}
+	
+	protected EngineProjectManager getProjectManager() {
+		return (EngineProjectManager) CommonBusActivator.getUsingService(EngineProjectManagerConstants.SERVICE_NAME);
 	}
 }

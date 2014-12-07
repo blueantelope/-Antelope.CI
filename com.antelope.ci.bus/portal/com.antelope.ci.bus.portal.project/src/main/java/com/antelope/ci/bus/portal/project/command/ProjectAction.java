@@ -10,6 +10,9 @@ package com.antelope.ci.bus.portal.project.command;
 
 import java.util.Map;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.engine.model.project.Project;
 import com.antelope.ci.bus.portal.core.shell.form.CommonFormAction;
 import com.antelope.ci.bus.portal.core.shell.form.FormAction;
 import com.antelope.ci.bus.portal.core.shell.form.FormCommand;
@@ -36,6 +39,14 @@ public class ProjectAction extends CommonFormAction {
 		for (String name : contents.keySet()) {
 			System.out.println(name + " : " + contents.get(name));
 		}
+		Project project = new Project();
+		try {
+			project.fromMap(contents);
+			getProjectManager().addProject(project);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+		
 		return BusShellStatus.KEEP;
 	}
 }

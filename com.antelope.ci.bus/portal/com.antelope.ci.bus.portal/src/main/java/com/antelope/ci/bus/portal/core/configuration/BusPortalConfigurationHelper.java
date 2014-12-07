@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.Constants;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.ResourceUtil;
@@ -407,11 +408,11 @@ public class BusPortalConfigurationHelper {
 	
 	private String trunckConfig(String config) {
 		String new_config = config;
-		if (config.startsWith(ResourceUtil.CP_SUFFIX))
-			new_config = config.substring(ResourceUtil.CP_SUFFIX.length());
+		if (config.startsWith(Constants.CP_SUFFIX))
+			new_config = config.substring(Constants.CP_SUFFIX.length());
 		
-		if (new_config.startsWith(ResourceUtil.FILE_SUFFIX))
-			new_config = config.substring(ResourceUtil.FILE_SUFFIX.length());
+		if (new_config.startsWith(Constants.FILE_SUFFIX))
+			new_config = config.substring(Constants.FILE_SUFFIX.length());
 		
 		return new_config;
 	}

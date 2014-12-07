@@ -63,7 +63,7 @@ public class EngineManagerPublisher {
 						if (needReg) {
 							Class clazz = ProxyUtil.loadClass(cls, BusOsgiUtil.getBundleClassLoader(m_context));
 							if (BusEngineManager.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(EngineManager.class)) {
-								EngineManager bs =  (EngineManager) clazz.getAnnotation(EngineManager.class);
+								EngineManager em =  (EngineManager) clazz.getAnnotation(EngineManager.class);
 								BusEngineManager service = (BusEngineManager) clazz.newInstance();
 								Properties props = new Properties();
 								props.load(service.getClass().getResourceAsStream("manager.properties"));
@@ -72,7 +72,7 @@ public class EngineManagerPublisher {
 								if ("on".equalsIgnoreCase(alStr.trim()))
 									autoload = true;
 								if (autoload) {
-									String serviceName = bs.name();
+									String serviceName = em.service_name();
 									BusOsgiUtil.addServiceToContext(m_context, service, serviceName);
 									service.regist(m_context);
 									serviceMap.put(cls, service);

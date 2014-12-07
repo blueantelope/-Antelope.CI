@@ -21,28 +21,22 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
  * 资源类工具类
- * 
  * @author blueantelope
  * @version 0.1
  * @Date 2013-7-31 下午12:39:34
  */
 public class ResourceUtil {
-	public static final String CP_SUFFIX 										= "classpath:";
-	public static final String FILE_SUFFIX 										= "file:";
-	public static final String LABLE_START 									= "${";
-	public static final String LABLE_END										= "}";
-	
 	public static InputStream getXmlStream(Class cls, String xpath) throws CIBusException {
 		try {
 			if (!StringUtil.endsWithIgnoreCase(xpath, ".xml"))
 				xpath += ".xml";
-			if (xpath.startsWith(CP_SUFFIX)) {
-				String n_xpath = xpath.substring(CP_SUFFIX.length());
+			if (xpath.startsWith(Constants.CP_SUFFIX)) {
+				String n_xpath = xpath.substring(Constants.CP_SUFFIX.length());
 				return cls.getResourceAsStream(n_xpath);
 			}
 			
-			if (xpath.startsWith(FILE_SUFFIX)) {
-				String n_xpath = xpath.substring(FILE_SUFFIX.length());
+			if (xpath.startsWith(Constants.FILE_SUFFIX)) {
+				String n_xpath = xpath.substring(Constants.FILE_SUFFIX.length());
 				return new FileInputStream(n_xpath);
 			}
 			
@@ -65,10 +59,10 @@ public class ResourceUtil {
 		int len = value.length();
 		int index = 0;
 		while (index < len) {
-			int start = value.indexOf(LABLE_START, index);
+			int start = value.indexOf(Constants.LABLE_START, index);
 			if (start == -1)
 				break;
-			int end = value.indexOf(LABLE_END, start);
+			int end = value.indexOf(Constants.LABLE_END, start);
 			String key = value.substring(start+2, end);
 			String v;
 			if (params instanceof BasicConfigrationReader)

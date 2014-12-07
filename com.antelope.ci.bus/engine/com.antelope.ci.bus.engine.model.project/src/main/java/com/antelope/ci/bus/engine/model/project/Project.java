@@ -8,9 +8,9 @@
 
 package com.antelope.ci.bus.engine.model.project;
 
-import java.io.Serializable;
 import java.util.Date;
 
+import com.antelope.ci.bus.engine.model.BaseModel;
 import com.antelope.ci.bus.engine.model.Model;
 import com.antelope.ci.bus.engine.model.ModelData;
 
@@ -22,7 +22,7 @@ import com.antelope.ci.bus.engine.model.ModelData;
  * @Date	 2014-7-1		下午5:50:11 
  */
 @Model
-public class Project implements Serializable {
+public class Project extends BaseModel {
 	protected String name;
 	protected String desc;
 	protected Date createDate;
