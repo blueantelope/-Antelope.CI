@@ -21,21 +21,8 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @version  0.1
  * @Date	 2013-11-8		下午12:21:38 
  */
-public abstract class CommonEngineManager implements BusEngineManager {
-	protected static Logger log;
-	protected ManagerParameters parameters;
-	
-	public void setParameters(ManagerParameters parameters) {
-		this.parameters = parameters;
-	}
-
-	public CommonEngineManager() {
-		try {
-			log = CommonBusActivator.getLog4j(this.getClass());
-		} catch (CIBusException e) {
-			e.printStackTrace();
-		}
-	}
+public abstract class CommonEngineManager extends BusEngineManager {
+	protected static final Logger log = Logger.getLogger(CommonEngineManager.class);
 	
 	/**
 	 * 
@@ -53,14 +40,5 @@ public abstract class CommonEngineManager implements BusEngineManager {
 	 */
 	@Override public void unregist(BundleContext m_context) throws CIBusException {
 		log.info("unregiste engine manager");
-	}
-	
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.engine.manager.BusEngineManager#getParameters()
-	 */
-	@Override public ManagerParameters getParameters() {
-		return parameters;
 	}
 }

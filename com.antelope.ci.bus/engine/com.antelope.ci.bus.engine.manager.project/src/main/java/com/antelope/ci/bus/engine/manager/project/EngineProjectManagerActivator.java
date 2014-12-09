@@ -24,4 +24,3 @@ public class EngineProjectManagerActivator extends BusEngineManagerActivator {
 		// nothing
 	}
 }
-

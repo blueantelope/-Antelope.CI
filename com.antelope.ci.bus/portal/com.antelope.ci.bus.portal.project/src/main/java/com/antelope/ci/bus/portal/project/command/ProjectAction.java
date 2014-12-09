@@ -34,11 +34,7 @@ public class ProjectAction extends CommonFormAction {
 		mode=BusProjectShellMode.PROJECT_FORM_ADD
 	)
 	public String addProject() {
-		System.out.println(">>>>>>>>add project");
 		Map<String, String> contents = shell.getActiveFormContext().getFormContents();
-		for (String name : contents.keySet()) {
-			System.out.println(name + " : " + contents.get(name));
-		}
 		Project project = new Project();
 		try {
 			project.fromMap(contents);
@@ -50,4 +46,3 @@ public class ProjectAction extends CommonFormAction {
 		return BusShellStatus.KEEP;
 	}
 }
-

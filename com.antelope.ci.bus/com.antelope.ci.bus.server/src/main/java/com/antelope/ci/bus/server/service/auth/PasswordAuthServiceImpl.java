@@ -74,12 +74,6 @@ public class PasswordAuthServiceImpl extends AbstractAuthService {
 
 	@Override
 	protected List<ServiceProperty> extendServiceProperties() {
-		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
-
-
 }
-

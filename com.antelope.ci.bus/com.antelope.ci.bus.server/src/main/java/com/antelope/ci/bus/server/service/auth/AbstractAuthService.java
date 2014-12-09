@@ -28,7 +28,6 @@ import com.antelope.ci.bus.server.service.AuthService;
 import com.antelope.ci.bus.server.service.CommonServerService;
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -131,4 +130,3 @@ public abstract class AbstractAuthService extends CommonServerService implements
 	
 	protected abstract List<ServiceProperty> extendServiceProperties();
 }
-

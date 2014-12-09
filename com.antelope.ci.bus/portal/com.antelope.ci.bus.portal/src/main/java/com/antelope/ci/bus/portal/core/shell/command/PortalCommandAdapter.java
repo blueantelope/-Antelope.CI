@@ -59,7 +59,7 @@ public class PortalCommandAdapter extends HitAdapter {
 				if (BaseMode.toMode(portalShell.getMode()) == BaseMode.MAIN)
 					portalShell.focus(hit);
 			} catch (CIBusException e) {
-				DevAssistant.errorln(e);
+				DevAssistant.assert_exception(e);
 			}
 		}
 	}

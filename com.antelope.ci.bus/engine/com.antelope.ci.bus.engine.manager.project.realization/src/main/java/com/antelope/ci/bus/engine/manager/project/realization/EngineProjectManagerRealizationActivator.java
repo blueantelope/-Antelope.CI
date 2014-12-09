@@ -8,7 +8,10 @@
 
 package com.antelope.ci.bus.engine.manager.project.realization;
 
-import com.antelope.ci.bus.engine.manager.BusEngineManagerActivator;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.engine.manager.EngineManagerPublisher;
+import com.antelope.ci.bus.engine.manager.EnginePublishInfo;
+import com.antelope.ci.bus.engine.manager.project.EngineProjectManagerActivator;
 
 
 /**
@@ -17,9 +20,11 @@ import com.antelope.ci.bus.engine.manager.BusEngineManagerActivator;
  * @version  0.1
  * @Date	 2014年11月30日		下午10:51:15 
  */
-public class EngineProjectManagerRealizationActivator extends BusEngineManagerActivator {
-	public EngineProjectManagerRealizationActivator() {
-		System.out.println("Start com.antelope.ci.bus.engine.manager.project.realization...");
+public class EngineProjectManagerRealizationActivator extends EngineProjectManagerActivator {
+	@Override
+	protected void addServices() throws CIBusException {
+		EngineManagerPublisher.publish(m_context, 
+				EnginePublishInfo.createServicePublish("com.antelope.ci.bus.engine.manager.project.realization"));
 	}
 }
 

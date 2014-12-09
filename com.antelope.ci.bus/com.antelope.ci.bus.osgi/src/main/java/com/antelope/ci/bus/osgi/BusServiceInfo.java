@@ -12,7 +12,6 @@ import org.osgi.framework.ServiceReference;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1

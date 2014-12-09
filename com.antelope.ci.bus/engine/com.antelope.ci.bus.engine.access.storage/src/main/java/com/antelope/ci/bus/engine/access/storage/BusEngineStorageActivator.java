@@ -22,25 +22,18 @@ import com.antelope.ci.bus.osgi.ServicePublishHook;
  * @Date	 2014-7-9		上午11:46:26 
  */
 public class BusEngineStorageActivator extends CommonBusActivator {
-
 	@Override
 	protected void customInit() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void run() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void destroy() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -48,36 +41,26 @@ public class BusEngineStorageActivator extends CommonBusActivator {
 	protected void handleLoadService(String clsName, ServiceReference ref,
 			Object service) throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void handleStopAllService() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void addServices() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -103,4 +86,3 @@ public class BusEngineStorageActivator extends CommonBusActivator {
 		}.start();
 	}
 }
-

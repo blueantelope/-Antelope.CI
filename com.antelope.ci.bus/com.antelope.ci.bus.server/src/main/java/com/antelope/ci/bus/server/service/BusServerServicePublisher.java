@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.service;
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.osgi.ServicePublishHook;
 
 
@@ -36,7 +37,8 @@ public class BusServerServicePublisher {
 						info.service = service;
 						info.serviceName = serviceName;
 					} catch (Exception e) {
-						e.printStackTrace();
+						DevAssistant.errorln(e);
+						log.error(e);
 					}
 				}
 				return info;

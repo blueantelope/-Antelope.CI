@@ -19,7 +19,33 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2013-10-15		下午12:41:51 
  */
-public interface BusEngineManager {
+public abstract class BusEngineManager {
+	protected ManagerParameters parameters;
+	
+	public ManagerParameters getParameters() {
+		return parameters;
+	}
+	
+	public void setParameters(ManagerParameters parameters) {
+		this.parameters = parameters;
+	}
+	
+	public void active() {
+		parameters.setState(EU_ManagerState.ACTIVE);
+	}
+	
+	public void load() {
+		parameters.setState(EU_ManagerState.LOAD);
+	}
+	
+	public void unactive() {
+		parameters.setState(EU_ManagerState.UNACTIVE);
+	}
+	
+	public void unload() {
+		parameters.setState(EU_ManagerState.UNLOAD);
+	}
+	
 	/**
 	 * 注册服务
 	 * @param  @param m_context
@@ -27,7 +53,7 @@ public interface BusEngineManager {
 	 * @return void
 	 * @throws
 	 */
-	public void regist(BundleContext m_context) throws CIBusException;
+	public abstract void regist(BundleContext m_context) throws CIBusException;
 	
 	/**
 	 * 卸载服务
@@ -36,13 +62,5 @@ public interface BusEngineManager {
 	 * @return void
 	 * @throws
 	 */
-	public void unregist(BundleContext m_context) throws CIBusException;
-	
-	/**
-	 * get parameters of service
-	 * @param  @return
-	 * @return ServiceParameters
-	 * @throws
-	 */
-	public ManagerParameters getParameters();
+	public abstract void unregist(BundleContext m_context) throws CIBusException;
 }

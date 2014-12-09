@@ -228,7 +228,7 @@ public class ClassFinder {
 			boolean childPackage, boolean searchClass) throws CIBusException {
 		List<String> caList = new ArrayList<String>();
 		Map<String, String> cMap = new HashMap<String, String>();
-		String packagePath = packageName.replace(DOT, SLASH);
+		String packagePath = packageName.replace(DOT, SLASH) + SLASH;
 		try {
 			Enumeration<URL> urls = clsLoader.getResources(packagePath);
 			while (urls.hasMoreElements()) {

@@ -22,7 +22,6 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @Date	 2014年11月24日		下午5:16:30 
  */
 public class BusEngineManagerActivator extends CommonBusActivator {
-
 	@Override
 	protected void customInit() throws CIBusException {
 		
@@ -56,11 +55,17 @@ public class BusEngineManagerActivator extends CommonBusActivator {
 
 	@Override
 	protected void addServices() throws CIBusException {
-		EngineManagerPublisher.publish(m_context);
+		EngineManagerPublisher.publish(m_context, EnginePublishInfo.createPartPublish("com.antelope.ci.bus.engine.manager"));
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
 		
+	}
+	
+	@Override
+	protected void unloadService(String service_name, String servcie_class_name, ServiceReference ref, Object service) throws CIBusException {
+		BusEngineManager engineManager = (BusEngineManager) service;
+		super.unloadService(service_name, servcie_class_name, ref, service);
 	}
 }

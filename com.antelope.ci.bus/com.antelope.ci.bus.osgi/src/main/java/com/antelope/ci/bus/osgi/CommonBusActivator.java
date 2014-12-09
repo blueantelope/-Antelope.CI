@@ -62,6 +62,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 
 	public CommonBusActivator() {
 		super();
+		System.out.println(">>>>>> start bus activator: " + this.getClass().getName() + " <<<<<<");
 		serviceMap = new HashMap<String, List<BusServiceInfo>>();
 		properties = new Properties();
 		serviceList = new ArrayList<String>();
@@ -342,7 +343,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 	/*
 	 * 卸载osgi注册的service
 	 */
-	private void unloadService(String service_name, String servcie_class_name, ServiceReference ref, Object service) throws CIBusException {
+	protected void unloadService(String service_name, String servcie_class_name, ServiceReference ref, Object service) throws CIBusException {
 		m_context.ungetService(ref);
 		ref = null;
 		service = null;
