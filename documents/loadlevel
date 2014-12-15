@@ -1,4 +1,4 @@
-1-100:	preserve
+1-100: preserve
 
 101-200: com.antelope.ci.bus.engine
 	101-120: preserve
@@ -26,6 +26,10 @@
 		251-264: part
 		265: com.antelope.ci.bus.portal
 		266-280: service
+	251-280: com.antelope.ci.bus.gate
+		251-264: part
+		265: com.antelope.ci.bus.gate
+		266-280: service
 	281-300: preserve
 	
-300-400: preserve
+400-500: preserve

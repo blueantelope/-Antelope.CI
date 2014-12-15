@@ -1,4 +1,4 @@
-1-5:	preserve
+1-5: preserve
 
 6-25: com.antelope.ci.bus.engine
 	6-7: preserve
@@ -25,6 +25,10 @@
 	36-42: com.antelope.ci.bus.portal
 		36-38: part
 		39: com.antelope.ci.bus.portal
+		40-42: service
+	36-42: com.antelope.ci.bus.gate
+		36-38: part
+		39: com.antelope.ci.bus.gate
 		40-42: service
 	43-45: preserve
 	

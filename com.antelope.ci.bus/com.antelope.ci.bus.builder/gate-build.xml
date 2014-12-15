@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ant build for gate" basedir="." default="build">
+	<property file="build.properties" />
+
+	<target name="build" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.user.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.project.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.database.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="gate.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
+		<antcall target="make" />
+	</target>
+
+	<target name="build-notest" depends="init">
+		<ant antfile="${basedir}/build-mvn.xml" target="common.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.user.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.project.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.database.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="gate.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
+		<antcall target="make" />
+	</target>
+	
+	<target name="build_gate_notest">
+		<ant antfile="${basedir}/build-mvn.xml" target="gate.compile.notest" />
+		<copy todir="${app.gate.bundle}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.gate-${bus.version}.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="make">
+		<!-- /bin -->
+		<copy todir="${app.gate.bin}">
+			<fileset dir="${script.root}" />
+		</copy>
+		<!-- /etc -->
+		<copy todir="${app.gate.etc}">
+			<fileset dir="${prj.bus.etc}" />
+		</copy>
+		<!-- /lib -->
+		<copy todir="${app.gate.lib}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.framework-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system -->
+		<copy todir="${app.gate.system}">
+			<fileset dir="${target.depends}">
+				<include name="org.apache.felix.bundlerepository*.jar" />
+				<include name="org.apache.felix.gogo*.jar" />
+				<include name="com.antelope.ci.bus.logger-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/lib -->
+		<copy todir="${app.gate.system.lib}">
+			<fileset dir="${target.depends}">
+				<include name="log4j*.jar" />
+				<include name="slf4j*.jar" />
+				<include name="jaxen*.jar" />
+				<include name="dom4j*.jar" />
+				<include name="xml-apis*.jar" />
+				<include name="com.antelope.ci.bus.common-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.osgi-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/lib -->
+		<copy todir="${app.gate.system.engine.lib}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.database-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.flatfile-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.ldap-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		
+		<!-- /system/engine/model -->
+		<copy todir="${app.gate.system.engine.model}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.model-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/model/part -->
+		<copy todir="${app.gate.system.engine.model.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.model.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.model.user-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/manager -->
+		<copy todir="${app.gate.system.engine.manager}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/manager/service -->
+		<copy todir="${app.gate.system.engine.manager.service}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.project.realization-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/ext -->
+		<!--
+		<copy todir="${app.gate.system.ext}">
+		</copy>
+		-->
+		<!-- /system/ext/lib -->
+		<!--
+		<copy todir="${app.gate.system.ext.lib}">
+		</copy>
+		-->
+		<!-- /system/ext/server -->
+		<copy todir="${app.gate.server.bundle}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/server/lib -->
+		<copy todir="${app.gate.server.bundle.lib}">
+			<fileset dir="${target.depends}">
+				<include name="mina*.jar" />
+				<include name="sshd*.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/server/service -->
+		<copy todir="${app.gate.server.bundle.service}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/service/lib -->
+		<!--
+		<copy todir="${app.gate.service.bundle.lib}">
+		</copy>
+		-->
+		<!-- /system/ext/gate-> -->
+		<copy todir="${app.gate.bundle}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.gate-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/gate/part -->
+	</target>
+
+	<target name="init" depends="clean">
+		<!-- /com.antelope.ci.bus -->
+		<mkdir dir="${app.gate.root}" />
+		<!-- /com.antelope.ci.bus/bin -->
+		<mkdir dir="${app.gate.bin}" />
+		<!-- /com.antelope.ci.bus/etc -->
+		<mkdir dir="${app.gate.etc}" />
+		<!-- /com.antelope.ci.bus/lib -->
+		<mkdir dir="${app.gate.lib}" />
+		<!-- /com.antelope.ci.bus/plugin -->
+		<mkdir dir="${app.gate.plugin}" />
+		<!-- /com.antelope.ci.bus/sysetm -->
+		<mkdir dir="${app.gate.system}" />
+		<!-- /com.antelope.ci.bus/sysetm/lib -->
+		<mkdir dir="${app.gate.system.lib}" />
+		<!-- /com.antelope.ci.bus/sysetm/engine -->
+		<mkdir dir="${app.gate.system.engine}" />
+		<mkdir dir="${app.gate.system.engine.lib}" />
+		<mkdir dir="${app.gate.system.engine.model}" />
+		<mkdir dir="${app.gate.system.engine.model.lib}" />
+		<mkdir dir="${app.gate.system.engine.model.service}" />
+		<mkdir dir="${app.gate.system.engine.model.part}" />
+		<mkdir dir="${app.gate.system.engine.access}" />
+		<mkdir dir="${app.gate.system.engine.access.lib}" />
+		<mkdir dir="${app.gate.system.engine.access.service}" />
+		<mkdir dir="${app.gate.system.engine.access.part}" />
+		<mkdir dir="${app.gate.system.engine.manager}" />
+		<mkdir dir="${app.gate.system.engine.manager.lib}" />
+		<mkdir dir="${app.gate.system.engine.manager.service}" />
+		<mkdir dir="${app.gate.system.engine.manager.part}" />
+		<!-- /com.antelope.ci.bus/sysetm/ext -->
+		<mkdir dir="${app.gate.system.ext}" />
+		<mkdir dir="${app.gate.system.ext.lib}" />
+		<mkdir dir="${app.gate.server.bundle}" />
+		<mkdir dir="${app.gate.server.bundle.lib}" />
+		<mkdir dir="${app.gate.server.bundle.service}" />
+		<mkdir dir="${app.gate.service.bundle}" />
+		<mkdir dir="${app.gate.service.bundle.lib}" />
+		<mkdir dir="${app.gate.service.bundle.service}" />
+		<mkdir dir="${app.gate.bundle}" />
+		<mkdir dir="${app.gate.bundle.lib}" />
+		<mkdir dir="${app.gate.bundle.service}" />
+		<mkdir dir="${app.gate.bundle.part}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${app.gate.root}" />
+		<delete dir="${src.gate.root}" />
+		<delete dir="${target.depends}" />
+	</target>
+</project>
