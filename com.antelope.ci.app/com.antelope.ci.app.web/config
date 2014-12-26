@@ -1,0 +1,14 @@
+#************************************************
+# Configuration for Makefile
+#------------------------------------------------
+# blueantelope@gmail.com 2014-12-22
+#************************************************
+
+ROOT_DIR =.
+INCLUDE =$(ROOT_DIR)/include
+SRC =$(ROOT_DIR)/src
+TARGET =$(ROOT_DIR)/antelope.ci.webserver
+BIN =$(TARGET)/bin
+CONF =$(TARGET)/conf
+LIB =$(TARGET)lib
+
