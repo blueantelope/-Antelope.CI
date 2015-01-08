@@ -7,12 +7,12 @@
 #************************************************
 
 
-ROOT_DIR=$(cd "$(dirname ../"$0")"; pwd)
-SRC_DIR=$ROOT_DIR/src
+ROOT_DIR=$(cd "$(dirname "$0")"; pwd)
+SRC_DIR=$ROOT_DIR/src/backend
 LISTENING_IP=0.0.0.0
 LISTENING_PORT=9430
 
-test_start() {
+start() {
   listening=$LISTENING_IP:$LISTENING_PORT
   if [ $# == 2 ]; then
     listenging=$2
@@ -21,23 +21,23 @@ test_start() {
   cd $SRC_DIR;python main.py start $listening &
 }
 
-test_stop() {
+stop() {
   cd $SRC_DIR;python main.py stop
 }
 
 case "$1" in
-  test_start)
-    test_start
-  ;;
-  test_stop)
-    test_stop
-  ;;
-  test_restart)
-    test_stop
-    test_start
-  ;;
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
   *)
     echo "illegal parameters"
-  ;;
+    ;;
 esac
 

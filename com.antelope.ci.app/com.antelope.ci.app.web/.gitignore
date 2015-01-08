@@ -1,6 +1,7 @@
 /logs
 /antelope.ci.webserver
 
+*.swp
 # OS generated files #
 .DS_Store
 .DS_Store?

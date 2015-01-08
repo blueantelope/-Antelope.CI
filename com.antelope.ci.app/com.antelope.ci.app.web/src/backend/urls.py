@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#encoding: utf8
+# -*- coding:utf-8 -*-
 
 """
 url route to access webserver
@@ -14,6 +14,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'action.index'),
+    url(r'^$', 'actions.index'),
 )
 

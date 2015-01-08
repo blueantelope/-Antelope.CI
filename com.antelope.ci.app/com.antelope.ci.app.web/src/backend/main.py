@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-#encoding: utf8
+# -*- coding:utf-8 -*-
 
 """
-main application. start and stop web server 
+main application. start and stop web server
 --
 blueantelope@gmail.com
 blueantelope 2014-12-23
 """
 
-import os
 import sys
+import os
 
 LISTENING = {
     "IP" : "0.0.0.0",
@@ -17,7 +17,12 @@ LISTENING = {
 }
 pidname = ".pid"
 
-def main():
+def verify():
+    if len(sys.argv) < 2:
+        return False
+    return True
+
+def run():
     global pidname
     command = sys.argv[1]
     curdir = os.getcwd()
@@ -36,7 +41,7 @@ def main():
             n = n + 1
         if len(sys.argv) < 3:
             argv.append(LISTENING["IP"] + ":" + str(LISTENING["PORT"]))
-        run(argv)
+        start(argv)
     if command == "stop":
         if os.path.exists(pidfile):
             fp = open(pidfile, "r")
@@ -50,10 +55,16 @@ def main():
             fp.close()
             os.remove(pidfile)
 
-def run(argv):
+def start(argv):
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
     from django.core.management import execute_from_command_line
     execute_from_command_line(argv)
+
+def main():
+    verification = verify()
+    if verification == False:
+        sys.exit()
+    run()
 
 if __name__ == "__main__":
     main()

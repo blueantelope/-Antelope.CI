@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#encoding: utf8
+# -*- coding:utf-8 -*-
 
 """
 http actions
