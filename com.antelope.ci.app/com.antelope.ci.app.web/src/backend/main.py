@@ -8,26 +8,40 @@ blueantelope@gmail.com
 blueantelope 2014-12-23
 """
 
-import sys
-import os
+from __init__ import *
+import util
+import ini
+import error
 
-LISTENING = {
-    "IP" : "0.0.0.0",
-    "PORT" : 9430
-}
+class Feedback():
+    result = False
+    info = None
+
+    def __init__(self, result=None, info=None):
+        if result is not None:
+            self.result = result
+        if info is not None:
+            self.info = info
+
 pidname = ".pid"
+pidfile = None
+runtype = "restart"
 
-def verify():
+def handle_arguments():
+    feedback = Feedback(True)
     if len(sys.argv) < 2:
-        return False
-    return True
+        feedback.result = False
+        feedback.info = error.tooshort
+    return feedback
+
+def initial():
+    global runtype, pidfile
+    runtype = sys.argv[1]
+    pidfile = os.path.join(util.get_parent_dir(), pidname)
 
 def run():
-    global pidname
-    command = sys.argv[1]
-    curdir = os.getcwd()
-    pidfile = os.path.join(curdir, pidname)
-    if command == "start":
+    global runtype, pidfile
+    if runtype == "start":
         fp = open(pidfile, "a")
         fp.write(str(os.getpid()) + " ")
         fp.close()
@@ -40,9 +54,9 @@ def run():
                 argv.append(a)
             n = n + 1
         if len(sys.argv) < 3:
-            argv.append(LISTENING["IP"] + ":" + str(LISTENING["PORT"]))
+            argv.append(listening.ip + ":" + str(listenging.port))
         start(argv)
-    if command == "stop":
+    if runtype == "stop":
         if os.path.exists(pidfile):
             fp = open(pidfile, "r")
             ss = fp.readline()
@@ -61,9 +75,11 @@ def start(argv):
     execute_from_command_line(argv)
 
 def main():
-    verification = verify()
-    if verification == False:
+    handler = handle_arguments()
+    if handler.result == False:
+        print handler.info
         sys.exit()
+    initial()
     run()
 
 if __name__ == "__main__":

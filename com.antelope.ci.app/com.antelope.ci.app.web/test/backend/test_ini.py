@@ -2,24 +2,24 @@
  # -*- coding:utf-8 -*-
 
 """
-test unit for inis.py.
+test unit for ini.py.
 --
 blueantelope@gmail.com
 blueantelope 2015-01-08
 """
 
 from __init__ import *
-from inis import *
+import ini
 
-class InisTestCase(unittest.TestCase):
+class InisTestCase(unittest.TestCase, BaseTestCase):
     def setUp(self):
-        print "Test Start"
+        BaseTestCase.setUp(self, "ini.py")
 
     def tearDown(self):
-        print "Test Finish"
+        BaseTestCase.tearDown(self)
 
     def test_class_listening(self):
-        listening = Listening()
+        listening = ini.Listening()
         print("server listening: %s/%d" % (listening.ip, listening.port))
 
 if __name__ == "__main__":

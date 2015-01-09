@@ -9,10 +9,11 @@ blueantelope@gmail.com
 blueantelope 2015-01-08
 """
 
-import utils
+from __init__ import *
+import util
 
-config_ini_path = utils.get_parent_dir() + "/config.ini"
-config_ini = utils.load_ini(config_ini_path)
+config_ini_path = util.get_parent_dir() + "/config.ini"
+config_ini = util.load_ini(config_ini_path)
 
 # options and items from config.ini
 LISTENING = "listening"
@@ -25,7 +26,8 @@ class Listening:
     port = 9430
 
     def __init__(self):
-        self.ip = utils.get_ini_property(config_ini, LISTENING, LISTENING_IP, self.ip)
-        self.port = utils.get_ini_property(config_ini, LISTENING, LISTENING_PORT, self.port)
+        self.ip = util.get_ini_value(config_ini, LISTENING, LISTENING_IP, self.ip)
+        self.port = util.get_ini_value(config_ini, LISTENING, LISTENING_PORT, self.port)
 
+listening = Listening()
 

@@ -14,6 +14,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^$', 'actions.index'),
+    url(r'^$', 'action.index'),
 )
 
