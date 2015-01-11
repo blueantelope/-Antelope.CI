@@ -16,7 +16,7 @@ LIB =$(TARGET)/lib
 .PHONY : clean
 
 install:
-	pip install django
+	pip install Django==1.7.2
 	mkdir -p $(TARGET)
 	mkdir -p $(BIN)
 	mkdir -p $(CONF)

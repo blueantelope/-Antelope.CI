@@ -54,7 +54,7 @@ def run():
                 argv.append(a)
             n = n + 1
         if len(sys.argv) < 3:
-            argv.append(listening.ip + ":" + str(listenging.port))
+            argv.append(ini.http.ip + ":" + str(ini.http.port))
         start(argv)
     if runtype == "stop":
         if os.path.exists(pidfile):
