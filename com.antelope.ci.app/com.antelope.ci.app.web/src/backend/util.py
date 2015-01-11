@@ -10,6 +10,9 @@ blueantelope 2015-01-08
 
 from __init__ import *
 
+VAR_PREFIX = "{@"
+VAR_SUFFIX = "}"
+
 def get_parent_dir():
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -49,5 +52,21 @@ def read_property(property_path):
     property_file.close()
     return properties
 
+def str_equal(str1, str2):
+    if str1 is None and str2 is None:
+        return True
+    if str1 is not None and str2 is not None and str1.lower().strip() is str2.lower().strip():
+        return True
+    return False
 
+def str_isblank(str):
+    if str is not None and len(str.strip()) > 0:
+        return False
+    return True
+
+def gen_inter_var(str, var):
+    return str.replace(VAR_PREFIX+var+VAR_SUFFIX, str)
+
+def replace_curpath(str):
+    return gen_inter_var("curpath", str)
 

@@ -9,20 +9,22 @@ blueantelope 2015-01-08
 """
 
 from __init__ import *
+from constant import *
 import util
 
-error_path = util.get_parent_dir() + "/error.properties"
-errors = util.read_property(error_path)
-
-
+errors = util.read_property(ERROR_PROP_PATH)
 # parse and objectify option: listening
 class Arguments:
-    tooshort = "arguments too short."
-    illegal = "illegal argument."
+    tooshort = TOOSHORT
+    illegal = ILLEGAL
 
     def __init__(self):
-        self.tooshort = errors["arguments.tooshort"]
-        self.illegal = errors["arguments.illegal"]
+        _tooshort = errors["arguments.tooshort"]
+        if ~util.str_isblank(_tooshort):
+            self.tooshort = _tooshort
+        _illegal = errors["arguments.illegal"]
+        if ~util.str_isblank(_illegal):
+            self.illegal = _illegal
 
 arguments = Arguments()
 
