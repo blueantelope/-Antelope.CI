@@ -24,10 +24,9 @@ from django.core.management.commands import runserver
 from django.conf import settings
 from django.utils import translation, six
 from django.core.management import LaxOptionParser, ManagementUtility
-from django.core.management.base import BaseCommand, handle_default_options
+from django.core.management.base import handle_default_options
 from django.utils.encoding import get_system_encoding
 from django.core.exceptions import ImproperlyConfigured
-from django.contrib.staticfiles.handlers import StaticFilesHandler
 
 class SSLWSGIRequestHandler(WSGIRequestHandler):
     def get_environ(self):
@@ -41,26 +40,13 @@ class SSLHTTPServer(WSGIServer):
         self.socket = ssl.wrap_socket(self.socket, keyfile=key, certfile=cert, server_side=True,
                 ssl_version=ssl.PROTOCOL_TLSv1, cert_reqs=ssl.CERT_NONE)
 
+system_info_printed = False
 class ServerCommand(runserver.Command):
     def before_run(self):
-        self.stdout.write("nothing")
+        return None
 
     def start_service(self, *args, **options):
-        self.stdout.write("no server start")
-
-    def base_info(self):
-        info = (
-            "%(started_at)s\n"
-            "Django version %(version)s, using settings %(settings)r\n"
-            "Starting development server at http://%(addr)s:%(port)s/\n"
-            "Quit the server with %(quit_command)s.\n"
-        ) % {
-            "started_at": now,
-            "version": self.get_version(),
-            "settings": settings.SETTINGS_MODULE,
-            "quit_command": quit_command,
-        }
-        return info
+        return None
 
     def inner_run(self, *args, **options):
         self.before_run()
@@ -76,19 +62,20 @@ class ServerCommand(runserver.Command):
         now = datetime.now().strftime('%B %d, %Y - %X')
         if six.PY2:
             now = now.decode(get_system_encoding())
-        self.stdout.write((
-            "%(started_at)s\n"
-            "Django version %(version)s, using settings %(settings)r\n"
-            "Starting development server at http://%(addr)s:%(port)s/\n"
-            "Quit the server with %(quit_command)s.\n"
-        ) % {
-            "started_at": now,
-            "version": self.get_version(),
-            "settings": settings.SETTINGS_MODULE,
-            "addr": '[%s]' % self.addr if self._raw_ipv6 else self.addr,
-            "port": self.port,
-            "quit_command": quit_command,
-        })
+        global system_info_printed
+        if ~system_info_printed:
+            self.stdout.write((
+                "%(started_at)s\n"
+                "Django version %(version)s, using settings %(settings)r\n"
+                "Quit the server with %(quit_command)s.\n"
+            ) % {
+                "started_at": now,
+                "version": self.get_version(),
+                "settings": settings.SETTINGS_MODULE,
+                "quit_command": quit_command,
+            })
+            system_info_printed = True
+        self.stdout.write(self.server_info)
         # django.core.management.base forces the locale to en-us. We should
         # set it up correctly for the first request (particularly important
         # in the "--noreload" case).
@@ -121,6 +108,12 @@ class HTTPServerCommand(ServerCommand):
         self.switch = ini.http.switch
         self.addr = ini.http.ip
         self.port = ini.http.port
+        self.server_info = (
+            "Starting http server at http://%(addr)s:%(port)s/\n"
+        ) % {
+            "addr": '[%s]' % self.addr if self._raw_ipv6 else self.addr,
+            "port": self.port,
+        }
 
     def start_service(self, *args, **options):
         handler = self.get_handler(*args, **options)
@@ -145,8 +138,8 @@ class SSLHTTPServerCommand(ServerCommand):
         Returns the static files serving handler wrapping the default handler,
         if static files should be served. Otherwise just returns the default
         handler.
-
         """
+        from django.contrib.staticfiles.handlers import StaticFilesHandler
         handler = super(SSLHTTPServerCommand, self).get_handler(*args, **options)
         insecure_serving = options.get('insecure_serving', False)
         if self.should_use_static_handler(options):
@@ -164,17 +157,26 @@ class SSLHTTPServerCommand(ServerCommand):
             return True
         return False
 
-
     def before_run(self):
         self.switch = ini.https.switch
         self.addr = ini.https.ip
         self.port = ini.https.port
         self.keyfile = ini.https.keyfile
         self.certfile = ini.https.keyfile
+        self.server_info = (
+            "Starting https server at https://%(addr)s:%(port)s/\n"
+            "Using Key file is %(keyfile)s\n"
+            "Using certification file is %(certfile)s\n"
+        ) % {
+            "addr": '[%s]' % self.addr if self._raw_ipv6 else self.addr,
+            "port": self.port,
+            "keyfile": ini.https.keyfile,
+            "certfile": ini.https.certfile,
+        }
 
     def start_service(self, *args, **options):
         handler = self.get_handler(*args, **options)
-        server = SSLHTTPServer(self.addr, self.port, self.keyfile, self.certfile)
+        server = SSLHTTPServer(ini.https.ip, ini.https.port, ini.https.keyfile, ini.https.certfile)
         server.set_app(handler)
         server.serve_forever()
 
@@ -189,7 +191,7 @@ class ServerManagementUtility(ManagementUtility):
         # must be processed early.
         parser = LaxOptionParser(usage="%prog subcommand [options] [args]",
                                  version=get_version(),
-                                 option_list=BaseCommand.option_list)
+                                 option_list=ServerCommand.option_list)
         try:
             options, args = parser.parse_args(self.argv)
             handle_default_options(options)
@@ -241,10 +243,10 @@ class ServerManagementUtility(ManagementUtility):
             sys.stdout.write(self.main_help_text() + '\n')
         else:
             # start http server
-            #http_server = multiprocessing.Process(name="http server", target=self.start_http_server)
-            #http_server.start()
+            http_server = multiprocessing.Process(name="http server", target=self.start_http_server)
+            http_server.start()
             # start https server
-            https_server = multiprocessing.Process(name="https server", target=self.start_https_server)
+            https_server = multiprocessing.Process(name="http server", target=self.start_https_server)
             https_server.start()
 
     def start_http_server(self):
