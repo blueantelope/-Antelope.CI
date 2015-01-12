@@ -55,7 +55,9 @@ def read_property(property_path):
 def str_equal(str1, str2):
     if str1 is None and str2 is None:
         return True
-    if str1 is not None and str2 is not None and str1.lower().strip() is str2.lower().strip():
+    if (str1 is not None
+            and str2 is not None
+            and str1.lower().strip() == str2.lower().strip()):
         return True
     return False
 
