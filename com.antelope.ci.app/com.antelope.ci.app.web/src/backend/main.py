@@ -9,9 +9,10 @@ blueantelope 2014-12-23
 """
 
 from __init__ import *
-import util
 import ini
-import error
+import util
+import constant
+import server
 
 class Feedback():
     result = False
@@ -23,10 +24,6 @@ class Feedback():
         if info is not None:
             self.info = info
 
-pidname = ".pid"
-pidfile = None
-runtype = "restart"
-
 def handle_arguments():
     feedback = Feedback(True)
     if len(sys.argv) < 2:
@@ -35,14 +32,16 @@ def handle_arguments():
     return feedback
 
 def initial():
-    global runtype, pidfile
+    global runtype, logger
     runtype = sys.argv[1]
-    pidfile = os.path.join(util.get_parent_dir(), pidname)
+    logging.config.fileConfig(constant.LOGGING_INI_PATH)
+    logger = logging.getLogger("main")
+    logger.debug("startup")
 
 def run():
-    global runtype, pidfile
+    global runtype
     if runtype == "start":
-        fp = open(pidfile, "a")
+        fp = open(constant.PID_PATH, "a")
         fp.write(str(os.getpid()) + " ")
         fp.close()
         argv = []
@@ -57,8 +56,8 @@ def run():
             argv.append(ini.http.ip + ":" + str(ini.http.port))
         start(argv)
     if runtype == "stop":
-        if os.path.exists(pidfile):
-            fp = open(pidfile, "r")
+        if os.path.exists(constant.PID_PATH):
+            fp = open(constant.PID_PATH, "r")
             ss = fp.readline()
             for s in ss.split(" "):
                 try:
@@ -67,12 +66,10 @@ def run():
                 except exception:
                     print("exception when kill " + s)
             fp.close()
-            os.remove(pidfile)
+            os.remove(constant.PID_PATH)
 
 def start(argv):
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
-    from django.core.management import execute_from_command_line
-    execute_from_command_line(argv)
+    server.run()
 
 def main():
     handler = handle_arguments()

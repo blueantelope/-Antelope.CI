@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 """
-http server with ssl.
+web server, includes http and https.
 --
 blueantelope@gmail.com
 blueantelope 2015-01-10
@@ -11,12 +11,13 @@ blueantelope 2015-01-10
 from __init__ import *
 import socket
 import ssl
-import multiprocessing
+import threading
+import logging
 from datetime import datetime
 from optparse import make_option
 import ini
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 import django
 from django import get_version
 from django.core.servers.basehttp import WSGIRequestHandler, WSGIServer, run as basehttp_run
@@ -27,6 +28,8 @@ from django.core.management import LaxOptionParser, ManagementUtility
 from django.core.management.base import handle_default_options
 from django.utils.encoding import get_system_encoding
 from django.core.exceptions import ImproperlyConfigured
+
+logger = logging.getLogger("main.server")
 
 class SSLWSGIRequestHandler(WSGIRequestHandler):
     def get_environ(self):
@@ -40,16 +43,16 @@ class SSLHTTPServer(WSGIServer):
         self.socket = ssl.wrap_socket(self.socket, keyfile=key, certfile=cert, server_side=True,
                 ssl_version=ssl.PROTOCOL_TLSv1, cert_reqs=ssl.CERT_NONE)
 
-system_info_printed = False
+server_checked = False
+server_check_locker = threading.Lock()
 class ServerCommand(runserver.Command):
-    def before_run(self):
+    def set_server(self):
         return None
 
     def start_service(self, *args, **options):
         return None
 
-    def inner_run(self, *args, **options):
-        self.before_run()
+    def check_server(self, *args, **options):
         shutdown_message = options.get('shutdown_message', '')
         quit_command = 'CTRL-BREAK' if sys.platform == 'win32' else 'CONTROL-C'
 
@@ -62,25 +65,37 @@ class ServerCommand(runserver.Command):
         now = datetime.now().strftime('%B %d, %Y - %X')
         if six.PY2:
             now = now.decode(get_system_encoding())
-        global system_info_printed
-        if ~system_info_printed:
-            self.stdout.write((
-                "%(started_at)s\n"
-                "Django version %(version)s, using settings %(settings)r\n"
-                "Quit the server with %(quit_command)s.\n"
-            ) % {
-                "started_at": now,
-                "version": self.get_version(),
-                "settings": settings.SETTINGS_MODULE,
-                "quit_command": quit_command,
-            })
-            system_info_printed = True
-        self.stdout.write(self.server_info)
+        self.stdout.write((
+            "%(started_at)s\n"
+            "Django version %(version)s, using settings %(settings)r\n"
+            "Quit the server with %(quit_command)s.\n"
+        ) % {
+            "started_at": now,
+            "version": self.get_version(),
+            "settings": settings.SETTINGS_MODULE,
+            "quit_command": quit_command,
+        })
         # django.core.management.base forces the locale to en-us. We should
         # set it up correctly for the first request (particularly important
         # in the "--noreload" case).
         translation.activate(settings.LANGUAGE_CODE)
 
+    def run(self, *args, **options):
+        self.inner_run(*args, **options)
+
+    def inner_run(self, *args, **options):
+        self.set_server()
+        if server_check_locker.acquire():
+            global server_checked
+            logger.debug('检查：' + str(server_checked))
+            if not server_checked:
+                self.check_server(args, options)
+                server_checked = True
+            server_check_locker.release()
+        self.run_server(args, options)
+
+    def run_server(self, *args, **options):
+        self.stdout.write(self.server_info)
         try:
             if self.switch:
                 self.start_service(*args, **options)
@@ -101,10 +116,9 @@ class ServerCommand(runserver.Command):
         except KeyboardInterrupt:
             if shutdown_message:
                 self.stdout.write(shutdown_message)
-            sys.exit(0)
 
 class HTTPServerCommand(ServerCommand):
-    def before_run(self):
+    def set_server(self):
         self.switch = ini.http.switch
         self.addr = ini.http.ip
         self.port = ini.http.port
@@ -157,7 +171,7 @@ class SSLHTTPServerCommand(ServerCommand):
             return True
         return False
 
-    def before_run(self):
+    def set_server(self):
         self.switch = ini.https.switch
         self.addr = ini.https.ip
         self.port = ini.https.port
@@ -176,9 +190,26 @@ class SSLHTTPServerCommand(ServerCommand):
 
     def start_service(self, *args, **options):
         handler = self.get_handler(*args, **options)
-        server = SSLHTTPServer(ini.https.ip, ini.https.port, ini.https.keyfile, ini.https.certfile)
-        server.set_app(handler)
-        server.serve_forever()
+        httpsd = SSLHTTPServer(ini.https.ip, ini.https.port, ini.https.keyfile, ini.https.certfile)
+        httpsd.set_app(handler)
+        httpsd.serve_forever()
+
+class ServerThread(threading.Thread):
+    def __init__(self, command, argv):
+        super(ServerThread, self).__init__()
+        self.command = command
+        self.argv = argv
+
+    def run(self):
+        self.command.run_from_argv(self.argv)
+
+class HTTPServerThread(ServerThread):
+    def __init__(self, argv):
+        super(HTTPServerThread, self).__init__(HTTPServerCommand(), argv)
+
+class SSLHTTPServerThread(ServerThread):
+    def __init__(self, argv):
+        super(SSLHTTPServerThread, self).__init__(SSLHTTPServerCommand(), argv)
 
 class ServerManagementUtility(ManagementUtility):
     def execute(self):
@@ -242,27 +273,22 @@ class ServerManagementUtility(ManagementUtility):
             parser.print_lax_help()
             sys.stdout.write(self.main_help_text() + '\n')
         else:
-            # start http server
-            http_server = multiprocessing.Process(name="http server", target=self.start_http_server)
-            http_server.start()
-            # start https server
-            https_server = multiprocessing.Process(name="http server", target=self.start_https_server)
-            https_server.start()
+            self.start_server()
 
-    def start_http_server(self):
-        http_command = HTTPServerCommand()
-        http_command.run_from_argv(self.argv)
-
-    def start_https_server(self):
-        https_command = SSLHTTPServerCommand()
-        https_command.run_from_argv(self.argv)
+    def start_server(self):
+        if ini.http.switch and ini.https.switch:
+            HTTPServerThread(self.argv).start()
+            SSLHTTPServerThread(self.argv).start()
+        else:
+            HTTPServerCommand().run_from_argv(self.argv)
+            SSLHTTPServerCommand().run_from_argv(self.argv)
 
 def run():
     if sys.argv is not None and len(sys.argv) > 0:
         argv = [sys.argv[0]]
     else:
         argv = [None]
-    argv.append("runserver")
+    argv.append("@antelope.ci web server")
     utility = ServerManagementUtility(argv)
     utility.execute()
 
