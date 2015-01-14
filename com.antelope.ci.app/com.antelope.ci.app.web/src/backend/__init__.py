@@ -10,6 +10,8 @@ blueantelope 2015-01-09
 
 # import default modules
 import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 import os
 import logging
 import logging.config

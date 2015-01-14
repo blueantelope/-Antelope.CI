@@ -9,6 +9,7 @@ blueantelope 2015-01-08
 """
 
 from __init__ import *
+import ConfigParser
 
 VAR_PREFIX = "{@"
 VAR_SUFFIX = "}"
@@ -21,21 +22,23 @@ def get_parent_dir():
 
 # load configuration from ini file.
 def load_ini(ini_path):
-    import ConfigParser
     ini = ConfigParser.ConfigParser()
     ini.read(ini_path)
     return ini
 
 def get_ini_value(ini, option, key, default):
-    value = None
-    if isinstance(default, int):
-        value = ini.getint(option, key)
-    else:
-        value = ini.get(option, key)
-    if value is None:
-        return default
-    else:
-        return value
+    try:
+        if isinstance(default, int):
+            value = ini.getint(option, key)
+        else:
+            value = ini.get(option, key)
+        if value is None:
+            return default
+        else:
+            return value
+    except:
+        pass
+    return default
 
 def read_property(property_path):
     property_file = open(property_path, "rU" )

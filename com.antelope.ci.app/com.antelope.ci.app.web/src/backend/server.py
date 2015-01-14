@@ -15,7 +15,7 @@ import threading
 import logging
 from datetime import datetime
 from optparse import make_option
-import ini
+import config
 from constant import MAIN
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
@@ -121,9 +121,9 @@ class ServerCommand(runserver.Command):
 
 class HTTPServerCommand(ServerCommand):
     def set_server(self):
-        self.switch = ini.http.switch
-        self.addr = ini.http.ip
-        self.port = ini.http.port
+        self.switch = config.http.switch
+        self.addr = config.http.ip
+        self.port = config.http.port
         self.server_info = (
             "Starting http server at http://%(addr)s:%(port)s/\n"
         ) % {
@@ -139,9 +139,9 @@ class HTTPServerCommand(ServerCommand):
 
 class SSLHTTPServerCommand(ServerCommand):
     option_list = runserver.Command.option_list + (
-        make_option("--key", default=ini.https.keyfile,
+        make_option("--key", default=config.https.keyfile,
                     help="Path to the key file"),
-        make_option("--certificate", default=ini.https.certfile,
+        make_option("--certificate", default=config.https.certfile,
                     help="Path to the certificate"),
         make_option("--nostatic", dest='use_static_handler',
                     action='store_false', default=None),
@@ -174,11 +174,11 @@ class SSLHTTPServerCommand(ServerCommand):
         return False
 
     def set_server(self):
-        self.switch = ini.https.switch
-        self.addr = ini.https.ip
-        self.port = ini.https.port
-        self.keyfile = ini.https.keyfile
-        self.certfile = ini.https.keyfile
+        self.switch = config.https.switch
+        self.addr = config.https.ip
+        self.port = config.https.port
+        self.keyfile = config.https.keyfile
+        self.certfile = config.https.keyfile
         self.server_info = (
             "Starting https server at https://%(addr)s:%(port)s/\n"
             "Using Key file is %(keyfile)s\n"
@@ -186,13 +186,13 @@ class SSLHTTPServerCommand(ServerCommand):
         ) % {
             "addr": '[%s]' % self.addr if self._raw_ipv6 else self.addr,
             "port": self.port,
-            "keyfile": ini.https.keyfile,
-            "certfile": ini.https.certfile,
+            "keyfile": config.https.keyfile,
+            "certfile": config.https.certfile,
         }
 
     def start_service(self, *args, **options):
         handler = self.get_handler(*args, **options)
-        httpsd = SSLHTTPServer(ini.https.ip, ini.https.port, ini.https.keyfile, ini.https.certfile)
+        httpsd = SSLHTTPServer(config.https.ip, config.https.port, config.https.keyfile, config.https.certfile)
         httpsd.set_app(handler)
         httpsd.serve_forever()
 
@@ -278,7 +278,7 @@ class ServerManagementUtility(ManagementUtility):
             self.start_server()
 
     def start_server(self):
-        if ini.http.switch and ini.https.switch:
+        if config.http.switch and config.https.switch:
             httpd_thread = HTTPServerThread(self.argv)
             httpd_thread.setDaemon(True)
             httpd_thread.start()

@@ -20,7 +20,7 @@ LOGGING_INI_PATH = os.path.join(ROOT_PATH, "logging.ini")
 PID_PATH = os.path.join(ROOT_PATH, ".pid")
 ETC_DIR = os.path.join(util.get_parent_dir(), "etc")
 ERROR_PROP_PATH = os.path.join(ETC_DIR, "error.properties")
-MESSAGE_PROP_PATH = os.path.join(ETC_DIR, "message.properties")
+MESSAGE_INI_PATH = os.path.join(ETC_DIR, "message.ini")
 KEY_PATH = os.path.join(ETC_DIR, "@antelope.ci.key")
 CERT_PATH = os.path.join(ETC_DIR, "@antelope.ci.crt")
 

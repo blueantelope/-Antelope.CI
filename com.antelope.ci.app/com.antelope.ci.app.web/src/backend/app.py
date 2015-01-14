@@ -9,8 +9,6 @@ blueantelope 2014-12-23
 """
 
 from __init__ import *
-import ini
-import util
 import constant
 import server
 import signal

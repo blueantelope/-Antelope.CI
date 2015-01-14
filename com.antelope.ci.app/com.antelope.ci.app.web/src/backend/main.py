@@ -14,6 +14,7 @@ import util
 from app import Feedback
 from app import application
 from constant import APP
+from message import help as message_help
 
 FG = 0
 BG = 1
@@ -39,8 +40,7 @@ def argument_opt():
     parser = OptionParser(usage)
     option_list = (
             make_option("-m", "--mode", action="store", dest="mode", default="fg",
-                type="choice", choices=["fg", "bg"],
-                help="Run mode; fg=run in foregound, bg=run in background"),
+                type="choice", choices=["fg", "bg"], help=message_help.mode),
     )
     for option in option_list:
         parser.add_option(option)
