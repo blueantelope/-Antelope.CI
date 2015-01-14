@@ -2,82 +2,63 @@
 # -*- coding:utf-8 -*-
 
 """
-main application. start and stop web server
+main program interface.
 --
 blueantelope@gmail.com
 blueantelope 2014-12-23
 """
 
 from __init__ import *
-import ini
+from optparse import OptionParser, make_option
 import util
-import constant
-import server
+from app import Feedback
+from app import application
+from constant import APP
 
-class Feedback():
-    result = False
-    info = None
-
-    def __init__(self, result=None, info=None):
-        if result is not None:
-            self.result = result
-        if info is not None:
-            self.info = info
-
-def handle_arguments():
-    feedback = Feedback(True)
-    if len(sys.argv) < 2:
-        feedback.result = False
-        feedback.info = error.tooshort
-    return feedback
-
-def initial():
-    global runtype, logger
-    runtype = sys.argv[1]
-    logging.config.fileConfig(constant.LOGGING_INI_PATH)
-    logger = logging.getLogger("main")
-    logger.debug("startup")
-
-def run():
-    global runtype
-    if runtype == "start":
-        fp = open(constant.PID_PATH, "a")
-        fp.write(str(os.getpid()) + " ")
-        fp.close()
-        argv = []
-        n = 0
-        for a in sys.argv:
-            if n == 1:
-                argv.append("runserver")
-            else:
-                argv.append(a)
-            n = n + 1
-        if len(sys.argv) < 3:
-            argv.append(ini.http.ip + ":" + str(ini.http.port))
-        start(argv)
-    if runtype == "stop":
-        if os.path.exists(constant.PID_PATH):
-            fp = open(constant.PID_PATH, "r")
-            ss = fp.readline()
-            for s in ss.split(" "):
-                try:
-                    if len(s) > 0:
-                        os.system("kill -9 " + s)
-                except exception:
-                    print("exception when kill " + s)
-            fp.close()
-            os.remove(constant.PID_PATH)
-
-def start(argv):
-    server.run()
+FG = 0
+BG = 1
 
 def main():
-    handler = handle_arguments()
-    if handler.result == False:
-        print handler.info
-        sys.exit()
-    initial()
-    run()
+    feedback = argument_opt()
+    if feedback.result == False:
+        sys.stdout.write(handler.info)
+        sys.exit(1)
+    if feedback.mode == FG:
+        # run in foreground
+        application()
+    elif feedback.mode == BG:
+        # run in background
+        run_in_bg(APP)
+
+class ArgsFeedback(Feedback):
+    mode = FG
+
+def argument_opt():
+    feedback = ArgsFeedback(True)
+    usage = "usage: %prog [options] arg1 arg2"
+    parser = OptionParser(usage)
+    option_list = (
+            make_option("-m", "--mode", action="store", dest="mode", default="fg",
+                type="choice", choices=["fg", "bg"],
+                help="Run mode; fg=run in foregound, bg=run in background"),
+    )
+    for option in option_list:
+        parser.add_option(option)
+    (options, args) = parser.parse_args()
+    if util.str_equal(options.mode, "bg"):
+        feedback.mode = BG
+    return feedback
+
+def run_in_bg(app):
+    import subprocess
+    os_type = util.get_os_type()
+    creationflags = 0
+    out_pipe = None
+    if os_type == util.OS_WINDOWS:
+        creationflags = 0x00000008
+    if os_type == util.OS_LINUX or os_type == util.OS_MAC:
+        out_pipe = open('/dev/null','w')
+    subprocess.Popen(["python", app], creationflags=creationflags, stdout=out_pipe, stderr=subprocess.STDOUT)
 
 if __name__ == "__main__":
     main()

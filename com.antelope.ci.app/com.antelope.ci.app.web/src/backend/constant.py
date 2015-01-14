@@ -11,6 +11,9 @@ blueantelope 2015-01-10
 from __init__ import *
 import util
 
+BACKEND_PATH = util.get_current_path()
+MAIN = os.path.join(BACKEND_PATH, "main.pyc")
+APP = os.path.join(BACKEND_PATH, "app.pyc")
 ROOT_PATH = util.get_parent_dir()
 CONFIG_INI_PATH = os.path.join(ROOT_PATH, "config.ini")
 LOGGING_INI_PATH = os.path.join(ROOT_PATH, "logging.ini")
@@ -35,5 +38,4 @@ HTTPS_PORT = 443
 
 TOOSHORT = "arguments too short."
 ILLEGAL = "illegal argument."
-
 

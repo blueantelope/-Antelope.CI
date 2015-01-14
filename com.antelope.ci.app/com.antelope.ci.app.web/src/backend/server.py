@@ -16,6 +16,7 @@ import logging
 from datetime import datetime
 from optparse import make_option
 import ini
+from constant import MAIN
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 import django
@@ -47,13 +48,12 @@ server_checked = False
 server_check_locker = threading.Lock()
 class ServerCommand(runserver.Command):
     def set_server(self):
-        return None
+        raise NotImplementedError("subclasses of ServerCommand must provide a set_server() method")
 
     def start_service(self, *args, **options):
-        return None
+        raise NotImplementedError("subclasses of ServerCommand must provide a start_service() method")
 
     def check_server(self, *args, **options):
-        shutdown_message = options.get('shutdown_message', '')
         quit_command = 'CTRL-BREAK' if sys.platform == 'win32' else 'CONTROL-C'
 
         self.stdout.write("Performing system checks...\n\n")
@@ -95,6 +95,7 @@ class ServerCommand(runserver.Command):
         self.run_server(args, options)
 
     def run_server(self, *args, **options):
+        shutdown_message = options.get('shutdown_message', '')
         self.stdout.write(self.server_info)
         try:
             if self.switch:
@@ -116,6 +117,7 @@ class ServerCommand(runserver.Command):
         except KeyboardInterrupt:
             if shutdown_message:
                 self.stdout.write(shutdown_message)
+            sys.exit(0)
 
 class HTTPServerCommand(ServerCommand):
     def set_server(self):
@@ -277,8 +279,18 @@ class ServerManagementUtility(ManagementUtility):
 
     def start_server(self):
         if ini.http.switch and ini.https.switch:
-            HTTPServerThread(self.argv).start()
-            SSLHTTPServerThread(self.argv).start()
+            httpd_thread = HTTPServerThread(self.argv)
+            httpd_thread.setDaemon(True)
+            httpd_thread.start()
+            time.sleep(2)
+            httpsd_thread = SSLHTTPServerThread(self.argv)
+            httpsd_thread.setDaemon(True)
+            httpsd_thread.start()
+            while 1:
+                alive = False
+                alive = alive or httpd_thread.isAlive() or httpsd_thread.isAlive()
+                if not alive:
+                    break
         else:
             HTTPServerCommand().run_from_argv(self.argv)
             SSLHTTPServerCommand().run_from_argv(self.argv)
@@ -287,7 +299,7 @@ def run():
     if sys.argv is not None and len(sys.argv) > 0:
         argv = [sys.argv[0]]
     else:
-        argv = [None]
+        argv = [MAIN]
     argv.append("@antelope.ci web server")
     utility = ServerManagementUtility(argv)
     utility.execute()

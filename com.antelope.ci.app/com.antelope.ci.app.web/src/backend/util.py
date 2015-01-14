@@ -13,6 +13,9 @@ from __init__ import *
 VAR_PREFIX = "{@"
 VAR_SUFFIX = "}"
 
+def get_current_path():
+    return os.path.dirname(os.path.abspath(__file__))
+
 def get_parent_dir():
     return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -71,4 +74,19 @@ def gen_inter_var(str, var):
 
 def replace_curpath(str):
     return gen_inter_var("curpath", str)
+
+OS_LINUX = 1
+OS_MAC = 2
+OS_WINDOWS = 3
+OS_OTHERS = -1
+def get_os_type():
+    from sys import platform as _platform
+    if _platform == "linux" or _platform == "linux2":
+        return OS_LINUX
+    elif _platform == "darwin":
+        return OS_MAC
+    elif _platform == "win32":
+        return OS_WINDOWS
+    else:
+        return OS_OTHERS
 
