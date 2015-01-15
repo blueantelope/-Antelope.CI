@@ -9,6 +9,7 @@ blueantelope 2014-12-23
 """
 
 from __init__ import *
+import threading.Thread
 import constant
 import server
 import signal
@@ -20,7 +21,24 @@ def application():
         sys.exit(1)
     initial()
     signal_opt()
+    if queue is not None:
+        monitor(queue)
     start()
+
+class MonitorThread(threading.Thread):
+    def __init__(self, queue):
+        super(MonitorThread, self).__init__()
+        self.queue = queue
+
+    def run(self):
+        while True:
+            queue.put("run")
+            time.sleep(30)
+
+def monitor(queue):
+    monitor_thread = MonitorThread(queue)
+    monitor_thread.setDaemon(True)
+    monitor_thread.start()
 
 class Feedback():
     def __init__(self, result=None, info=None):
@@ -48,9 +66,6 @@ def signal_opt():
     signal.signal(signal.SIGINT, signal_handler)
 
 def start():
-    fp = open(constant.PID_PATH, "a")
-    fp.write(str(os.getpid()) + " ")
-    fp.close()
     server.run()
 
 if __name__ == "__main__":

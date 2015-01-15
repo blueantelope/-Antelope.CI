@@ -4,51 +4,45 @@
 # description:	@Antelope.CI is a continue Identity System. It is start script of webserver.
 
 #************************************************
-# start script for @Antelope.CI WebServer
+# launch script for @Antelope.CI WebServer
 #------------------------------------------------
 # blueantelope@gmail.com 2014-12-22
 #************************************************
 
 
 CUR_DIR=$(cd "$(dirname "$0")"; pwd)
-SRC_DIR=$CUR_DIR/src
-INS_DIR=$CUR_DIR/install
+LIB_DIR=$CUR_DIR/lib
+MAIN_APP=$LIB_DIR/main.pyc
+PY=python
 
 start() {
-  echo "@Antelope.CI web server start..."
-  SERVER_SPORT=9430
-  if [ $# == 2 ]; then
-    SERVER_SPORT=$2
-  fi
-  SERVER_NUM=$(ls $INS_DIR|wc -l)
-  s_port=$SERVER_SPORT
-  for d in $(ls $INS_DIR); do
-    cd $INS_DIR/$d;python server.py start $s_port &
-    echo "server run on $s_port, location $INS_DIR/$d"
-    s_port=$(expr $s_port + 1)
-  done
+    echo "@Antelope.CI web server start..."
+    cd $LIB_DIR;$PY $MAIN_APP --mode bg
 }
 
 stop() {
-  echo "@Antelope.CI web server stop..."
-  SERVER_NUM=$(ls $INS_DIR|wc -l)
-  for d in $(ls $INS_DIR); do
-    cd $INS_DIR/$d;python server.py stop
-  done
+    echo "@Antelope.CI web server stop..."
+}
+
+help() {
+    python $MAIN_APP --help
 }
 
 case "$1" in
-  start)
-    start
-  ;;
-  stop)
-    stop
-  ;;
-  restart)
-    stop
-    start
-  ;;
-  *)
-    echo "Invalidate parameter, start | stop | restart"
-  ;;
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    help)
+        help
+        ;;
+    *)
+        echo "invalid arguments, start | stop | restart | help"
+        ;;
 esac

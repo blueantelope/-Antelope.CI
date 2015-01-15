@@ -13,11 +13,14 @@ import util
 
 BACKEND_PATH = util.get_current_path()
 MAIN = os.path.join(BACKEND_PATH, "main.pyc")
-APP = os.path.join(BACKEND_PATH, "app.pyc")
+APP_LIST = (os.path.join(BACKEND_PATH, "app.pyo"),
+        os.path.join(BACKEND_PATH, "app.pyc"),
+        os.path.join(BACKEND_PATH, "app.py")
+)
 ROOT_PATH = util.get_parent_dir()
 CONFIG_INI_PATH = os.path.join(ROOT_PATH, "config.ini")
 LOGGING_INI_PATH = os.path.join(ROOT_PATH, "logging.ini")
-PID_PATH = os.path.join(ROOT_PATH, ".pid")
+WATCHDOG_PATH = os.path.join(ROOT_PATH, ".watchdog")
 ETC_DIR = os.path.join(util.get_parent_dir(), "etc")
 ERROR_PROP_PATH = os.path.join(ETC_DIR, "error.properties")
 MESSAGE_INI_PATH = os.path.join(ETC_DIR, "message.ini")
