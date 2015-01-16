@@ -291,8 +291,9 @@ class ServerManagementUtility(ManagementUtility):
                 alive = alive or httpd_thread.isAlive() or httpsd_thread.isAlive()
                 if not alive:
                     break
-        else:
+        elif config.http.switch:
             HTTPServerCommand().run_from_argv(self.argv)
+        elif config.https.switch:
             SSLHTTPServerCommand().run_from_argv(self.argv)
 
 def run():

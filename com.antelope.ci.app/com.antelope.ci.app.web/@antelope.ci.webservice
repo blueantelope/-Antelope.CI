@@ -8,8 +8,6 @@
 #------------------------------------------------
 # blueantelope@gmail.com 2014-12-22
 #************************************************
-
-
 CUR_DIR=$(cd "$(dirname "$0")"; pwd)
 LIB_DIR=$CUR_DIR/lib
 MAIN_APP=$LIB_DIR/main.pyc
@@ -17,11 +15,12 @@ PY=python
 
 start() {
     echo "@Antelope.CI web server start..."
-    cd $LIB_DIR;$PY $MAIN_APP --mode bg
+    $PY $MAIN_APP --mode bg -w
 }
 
 stop() {
     echo "@Antelope.CI web server stop..."
+    $PY $MAIN_APP shutdown
 }
 
 help() {

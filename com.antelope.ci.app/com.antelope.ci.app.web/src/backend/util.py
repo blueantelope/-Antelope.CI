@@ -40,6 +40,12 @@ def get_ini_value(ini, option, key, default):
         pass
     return default
 
+def get_ini_switch(ini, option):
+    switch_str = get_ini_value(ini, option, "switch", "off")
+    if str_equal(switch_str, "on"):
+        return True
+    return False
+
 def read_property(property_path):
     property_file = open(property_path, "rU" )
     properties = dict()

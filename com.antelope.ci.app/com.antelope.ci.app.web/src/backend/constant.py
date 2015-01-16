@@ -17,6 +17,10 @@ APP_LIST = (os.path.join(BACKEND_PATH, "app.pyo"),
         os.path.join(BACKEND_PATH, "app.pyc"),
         os.path.join(BACKEND_PATH, "app.py")
 )
+WATCHDOG_LIST = (os.path.join(BACKEND_PATH, "watchdog.pyo"),
+        os.path.join(BACKEND_PATH, "watchdog.pyc"),
+        os.path.join(BACKEND_PATH, "watchdog.py")
+)
 ROOT_PATH = util.get_parent_dir()
 CONFIG_INI_PATH = os.path.join(ROOT_PATH, "config.ini")
 LOGGING_INI_PATH = os.path.join(ROOT_PATH, "logging.ini")

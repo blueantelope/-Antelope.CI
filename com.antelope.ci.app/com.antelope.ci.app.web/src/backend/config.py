@@ -21,9 +21,7 @@ class Listening(object):
     port = 0
 
     def __init__(self, option, _port):
-        switch_str = util.get_ini_value(config_ini, option, SWITCH_KEY, SWITCH)
-        if util.str_equal(switch_str, "on"):
-            self.switch = True
+        self.switch = util.get_ini_switch(config_ini, option)
         self.ip = util.get_ini_value(config_ini, option, IP_KEY, LISTENING_IP)
         self.port = util.get_ini_value(config_ini, option, PORT_KEY, _port)
 
@@ -45,6 +43,17 @@ class HTTPS(Listening):
             if ~util.str_isblank(_certfile):
                 certfile = util.replace_curpath(_certfile)
 
+class Shutdown(object):
+    switch = False
+    app = "kill -9 $(ps -ef|grep python|grep antelope|grep 'app.py*'|awk '{print $2}')"
+    watchdog = "kill -9 $(ps -ef|grep python|grep antelope|grep 'watchdog.py*'|awk '{print $2}')"
+
+    def __init__(self):
+        self.switch = util.get_ini_switch(config_ini, "shutdown")
+        self.app = util.get_ini_value(config_ini, "shutdown", "app", self.app)
+        self.watchdog = util.get_ini_value(config_ini, "shutdown", "watchdog", self.watchdog)
+
 http = HTTP()
 https = HTTPS()
+shutdown = Shutdown()
 
