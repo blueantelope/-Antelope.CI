@@ -1,6 +1,7 @@
 .watchdog
 .pid
 *.pyc
+/log
 
 *.swp
 # OS generated files #

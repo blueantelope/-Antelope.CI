@@ -11,7 +11,7 @@ blueantelope 2015-01-08
 from __init__ import *
 import util
 
-class UtilsTestCase(unittest.TestCase, BaseTestCase):
+class UtilTestCase(unittest.TestCase, BaseTestCase):
     def setUp(self):
         BaseTestCase.setUp(self, "util.py")
 
@@ -20,10 +20,10 @@ class UtilsTestCase(unittest.TestCase, BaseTestCase):
 
     def test_load_ini(self):
         ini = util.load_ini(CONFIG_INI_PATH)
-        ini_listening = ini.options("listening")
-        print ini_listening
-        ini_listening_ip = ini.get("listening", "ip")
-        print ini_listening_ip
+        ini_http = ini.options("http")
+        print ini_http
+        ini_http_ip = ini.get("http", "ip")
+        print ini_http_ip
 
     def test_read_property(self):
         properties = util.read_property(ERROR_PROPERTY_PATH)

@@ -19,7 +19,7 @@ def get_src_dir():
 
 SRC_DIR = get_src_dir()
 CONFIG_INI_PATH = SRC_DIR + "/config.ini"
-ERROR_PROPERTY_PATH = SRC_DIR + "/error.properties"
+ERROR_PROPERTY_PATH = SRC_DIR + "/etc/error.properties"
 
 def load_src_module():
     sys.path.insert(0, SRC_DIR + "/backend")
