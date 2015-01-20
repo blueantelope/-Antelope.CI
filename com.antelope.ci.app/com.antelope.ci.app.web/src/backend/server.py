@@ -12,7 +12,6 @@ from __init__ import *
 import socket
 import ssl
 import threading
-import logging
 from datetime import datetime
 from optparse import make_option
 import config

@@ -9,6 +9,7 @@ blueantelope 2015-01-15
 """
 
 from __init__ import *
+import logging
 import struct
 from constant import WATCHDOG_PATH
 
@@ -18,9 +19,9 @@ DogFood Binary Format. byte(4 bits) as unit
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |    Version    |    Sequence   |     Status    |Status Err Len |
+   |    Version    |    Sequence   |            pid                |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |Status Err Len |             Status Error Message              |
+   |    Status     |       Status Error Length     | Status Err Msg|
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |                        Http Sequence                          |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -36,6 +37,8 @@ Version: 1 byte
     indicate format of the pack. default 0
 Sequence: 1 byte
     byte order. 0: antive, 1:litten endian, 2:bit endian, 3: network endian. default 3
+pid: 2 bytes
+    process id of operation system. max 65536
 Status: 1 byte
     application status. 0:normal, 1:warning, 2:exception, 3:error
 Status Err Len: 2 Bytes
@@ -57,7 +60,8 @@ Https Error Message: fixed, according to (Https Error Length)
 
 """
 
-FMT = "!BBBHpIBpIBp"
+logger = logging.getLogger("main.watchdog")
+
 class DogFood(object):
     status = 0
     status_err_msg = ""
@@ -85,64 +89,108 @@ class DogFood(object):
 
     def __str__(self):
         s = (
-            "{pid=%(pid)s,"
-            "version=%(version)s,"
-            "sequence=%(sequence)s,"
-            "status=%(status)s,"
-            "status error length=%(status_err_len)s,"
-            "status error message=%(status_err_msg)s,"
-            "http sequence=%(http_seq)s,"
-            "http error length=%(http_err_len)s,"
-            "http error message=%(http_err_msg)s,"
-            "https sequence=%(https_seq)s,"
-            "https error length=%(https_err_len)s,"
-            "https error message=%(https_err_msg)s}\n"
+            "{version = %(version)s, "
+            "sequence = %(sequence)s, "
+            "pid = %(pid)s, "
+            "status = %(status)s, "
+            "status_err_msg = \"%(status_err_msg)s\", "
+            "http_seq = %(http_seq)s, "
+            "http_err_msg = \"%(http_err_msg)s\", "
+            "https_seq = %(https_seq)s, "
+            "https_err_msg = \"%(https_err_msg)s\"}\n"
         ) % {
-            "pid": self.pid,
             "version": 0,
             "sequence": 3,
+            "pid": self.pid,
             "status": self.status,
-            "status_err_len": len(self.status_err_msg),
             "status_err_msg": self.status_err_msg,
             "http_seq": self.http_seq,
-            "http_err_len": len(self.http_err_msg),
             "http_err_msg": self.http_err_msg,
             "https_seq": self.https_seq,
-            "https_err_len": len(self.https_err_msg),
             "https_err_msg": self.https_err_msg
         }
         return s
 
+    def byte_to_string(self, byte, offset, length):
+        fmt = "!" + str(length) + "s"
+        s = struct.unpack_from(fmt, byte, offset)[0]
+        return s
 
-    def from_stream(self, stream):
-        food_list = struct.unpack(FMT, stream)
-        self.status = food_list[2]
-        if food_list[3] > 0:
-            self.status_err_msg = food_list[4]
-        self.http_seq = food_list[5]
-        if food_list[6] > 0:
-            self.http_err_msg = food_list[7]
-        self.https_seq = food_list[8]
-        if food_list[9] > 0:
-            self.https_err_msg = food_list[10]
+    def from_server_byte(self, byte, offset):
+        fmt = "!IH"
+        food_list = struct.unpack_from(fmt, byte, offset)
+        server_seq = food_list[0]
+        server_err_len = food_list[1]
+        offset = offset + 6
+        server_err_msg = ""
+        if server_err_len > 0:
+            server_err_msg = self.byte_to_string(byte, offset, server_err_len)
+            offset = offset + server_err_len
+        return {"seq":server_seq, "err_msg":server_err_msg}
 
-    def to_stream(self):
+
+    def from_byte(self, byte):
+        fmt = "!HBH"
+        offset = 2
+        food_list = struct.unpack_from(fmt, byte, offset)
+        self.pid = food_list[0]
+        self.status = food_list[1]
+        status_err_len = food_list[2]
+        offset = 7
+        if status_err_len > 0:
+            self.status_err_msg = self.byte_to_string(byte, offset, status_err_len)
+            offset = offset + status_err_len
+
+        server_info = self.from_server_byte(byte, offset)
+        self.http_seq = server_info["seq"]
+        self.http_err_msg = server_info["err_msg"]
+
+        server_info = self.from_server_byte(byte, offset)
+        self.https_seq = server_info["seq"]
+        self.https_err_msg = server_info["err_msg"]
+
+    def format_msg(self, msg):
+        msg_len = len(msg)
+        if msg_len > 0:
+            return str(msg_len) + "s"
+        return ""
+
+    def to_byte(self):
+        fmt = (
+            "!BBHBH%(status_err_len)s"
+            "IH%(http_err_len)s"
+            "IH%(https_err_len)s"
+        ) % {
+            "status_err_len": self.format_msg(self.status_err_msg),
+            "http_err_len": self.format_msg(self.http_err_msg),
+            "https_err_len": self.format_msg(self.https_err_msg)
+        }
+        logger.debug("to_byte() fmt: " + fmt)
         food_list = [0, 3]
+        food_list.append(self.pid)
         food_list.append(self.status)
-        food_list.append(len(self.status_err_msg))
-        food_list.append(self.status_err_msg)
+        status_err_len = len(self.status_err_msg)
+        food_list.append(status_err_len)
+        if status_err_len > 0:
+            food_list.append(self.status_err_msg)
         food_list.append(self.http_seq)
-        food_list.append(len(self.http_err_msg))
-        food_list.append(self.http_err_msg)
+        http_err_len = len(self.http_err_msg)
+        food_list.append(http_err_len)
+        if http_err_len > 0:
+            food_list.append(self.http_err_msg)
         food_list.append(self.https_seq)
-        food_list.append(len(self.https_err_msg))
-        food_list.append(self.https_err_msg)
-        return struct.pack(FMT, food_list)
+        https_err_len = len(self.https_err_msg)
+        food_list.append(https_err_len)
+        if https_err_len > 0:
+            food_list.append(self.https_err_msg)
+        logger.debug("to_byte() food_list: " + str(food_list))
+        return struct.pack(fmt, *food_list)
 
 class FeedDog(object):
     def __init__(self, pid):
         self.wdf = open(WATCHDOG_PATH, "wb")
-        self.food = DogFood(self.pid)
+        self.food = DogFood(pid)
+        self.wdf.write(self.food.to_byte())
 
     def feed(self, **diet):
         if diet is not None:
