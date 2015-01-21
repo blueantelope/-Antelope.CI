@@ -11,6 +11,8 @@ blueantelope 2015-01-10
 from __init__ import *
 import util
 
+ROOT_PATH = util.get_parent_dir()
+# for backend
 BACKEND_PATH = util.get_current_path()
 MAIN = os.path.join(BACKEND_PATH, "main.pyc")
 APP_LIST = (os.path.join(BACKEND_PATH, "app.pyo"),
@@ -21,9 +23,13 @@ WATCHDOG_LIST = (os.path.join(BACKEND_PATH, "watchdog_app.pyo"),
         os.path.join(BACKEND_PATH, "watchdog_app.pyc"),
         os.path.join(BACKEND_PATH, "watchdog_app.py")
 )
-ROOT_PATH = util.get_parent_dir()
+# for frontend
+FRONTEND_DIR = os.path.join(util.get_parent_dir(), "frontend")
+PAGE_DIR = os.path.join(FRONTEND_DIR, "page")
+RESOURCE_DIR = os.path.join(FRONTEND_DIR, "resource")
+# for configuration
 CONFIG_INI_PATH = os.path.join(ROOT_PATH, "config.ini")
-LOGGING_INI_PATH = os.path.join(ROOT_PATH, "logging.ini")
+LOG_INI_PATH = os.path.join(ROOT_PATH, "log.ini")
 WATCHDOG_PATH = os.path.join(ROOT_PATH, ".watchdog")
 ETC_DIR = os.path.join(util.get_parent_dir(), "etc")
 ERROR_PROP_PATH = os.path.join(ETC_DIR, "error.properties")
@@ -31,6 +37,7 @@ MESSAGE_INI_PATH = os.path.join(ETC_DIR, "message.ini")
 KEY_PATH = os.path.join(ETC_DIR, "@antelope.ci.key")
 CERT_PATH = os.path.join(ETC_DIR, "@antelope.ci.crt")
 
+# define in configuration files
 SWITCH_KEY = "switch"
 HTTP_KEY = "http"
 HTTPS_KEY = "https"

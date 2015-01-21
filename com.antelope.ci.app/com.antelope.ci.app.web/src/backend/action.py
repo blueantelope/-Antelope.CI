@@ -12,6 +12,6 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 
 def index(request):
-    msg = 'welcome!</br>'
+    msg = "{'index': 'welcome'}"
     return HttpResponse(msg)
 

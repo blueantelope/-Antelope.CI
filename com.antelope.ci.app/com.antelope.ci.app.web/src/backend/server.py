@@ -296,6 +296,7 @@ class ServerManagementUtility(ManagementUtility):
             SSLHTTPServerCommand().run_from_argv(self.argv)
 
 def run():
+    logger.debug("server startup...")
     if sys.argv is not None and len(sys.argv) > 0:
         argv = [sys.argv[0]]
     else:

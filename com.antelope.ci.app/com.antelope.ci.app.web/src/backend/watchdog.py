@@ -9,7 +9,7 @@ blueantelope 2015-01-15
 """
 
 from __init__ import *
-import logging
+import logging as logger
 import struct
 from constant import WATCHDOG_PATH
 
@@ -60,7 +60,9 @@ Https Error Message: fixed, according to (Https Error Length)
 
 """
 
-logger = logging.getLogger("main.watchdog")
+logger.basicConfig(level=logging.DEBUG,
+        format="%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
 
 class DogFood(object):
     status = 0
@@ -70,7 +72,7 @@ class DogFood(object):
     https_seq = 0
     https_err_msg = ""
 
-    def __init__(self, pid):
+    def __init__(self, pid=None):
         self.pid = pid
 
     def __call__(self, **diet):
@@ -127,7 +129,6 @@ class DogFood(object):
             server_err_msg = self.byte_to_string(byte, offset, server_err_len)
             offset = offset + server_err_len
         return {"seq":server_seq, "err_msg":server_err_msg}
-
 
     def from_byte(self, byte):
         fmt = "!HBH"
@@ -189,12 +190,12 @@ class DogFood(object):
 class FeedDog(object):
     def __init__(self, pid):
         self.wdf = open(WATCHDOG_PATH, "wb")
-        self.food = DogFood(pid)
-        self.wdf.write(self.food.to_byte())
+        self.dogfood = DogFood(pid)
+        self.wdf.write(self.dogfood.to_byte())
 
     def feed(self, **diet):
         if diet is not None:
-            self.food(diet)
+            self.dogfood(diet)
 
     def shut_eye(self):
         if self.wdf:
@@ -203,9 +204,11 @@ class FeedDog(object):
 class WatchDog(object):
     def __init__(self):
         self.call()
-        self.wdf = open(WATCHDOG_PATH, "a")
-        if tag is not None:
-            self.wdf.write(tag)
+        self.wdf = open(WATCHDOG_PATH, "rb")
+        self.dogfood = DogFood()
+        rawfood = self.wdf.read()
+        self.dogfood.from_byte(rawfood)
+        logger.debug("WatchDog dogfood is: %s" % (str(self.dogfood)))
 
     def call(self):
         self.born(1)
@@ -216,8 +219,8 @@ class WatchDog(object):
 
     def born(self, dogs):
         try:
-            tag = os.fork()
-            if tag > 0:
+            pid = os.fork()
+            if pid > 0:
                 sys.exit(0)
         except OSError, e:
             dog_tag = "elder"

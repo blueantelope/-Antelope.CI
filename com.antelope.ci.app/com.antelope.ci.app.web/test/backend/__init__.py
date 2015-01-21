@@ -8,8 +8,10 @@ blueantelope@gmail.com
 blueantelope 2015-01-08
 """
 
-import os
 import sys
+reload(sys)
+import os
+import logging
 import unittest
 from __base__ import *
 

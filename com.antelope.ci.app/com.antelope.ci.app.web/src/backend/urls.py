@@ -9,9 +9,8 @@ blueantelope 2014-12-26
 """
 
 from django.conf.urls import patterns, include, url
-from django.contrib import admin
 
-admin.autodiscover()
+#admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', 'action.index'),

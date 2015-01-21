@@ -9,7 +9,6 @@ blueantelope 2014-12-23
 """
 
 from __init__ import *
-import constant
 import server
 import signal
 
@@ -35,7 +34,7 @@ def argument_opt():
 
 def initial():
     global logger
-    logging.config.fileConfig(constant.LOGGING_INI_PATH)
+    logging.config.fileConfig(constant.LOG_INI_PATH)
     logger = logging.getLogger("main.app")
     logger.debug("startup")
 
