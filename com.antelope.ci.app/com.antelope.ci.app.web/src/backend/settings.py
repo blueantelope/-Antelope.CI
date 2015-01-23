@@ -23,6 +23,9 @@ SECRET_KEY = 'fcq8wf6zx0$48gw1go7vv11h-d1ip3s+rmx^^xix5okqmplwz3'
 DEBUG = True
 
 TEMPLATE_DEBUG = True
+TEMPLATE_DIRS = (
+    constant.PAGE_DIR,
+)
 
 ALLOWED_HOSTS = []
 
@@ -88,5 +91,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-STATIC_URL = constant.RESOURCE_DIR
+STATIC_URL = '/resource/'
+STATIC_ROOT = constant.RESOURCE_DIR
 

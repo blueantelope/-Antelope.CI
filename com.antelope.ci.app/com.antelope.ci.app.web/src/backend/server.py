@@ -15,7 +15,6 @@ import threading
 from datetime import datetime
 from optparse import make_option
 import config
-from constant import MAIN
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 import django
@@ -300,7 +299,7 @@ def run():
     if sys.argv is not None and len(sys.argv) > 0:
         argv = [sys.argv[0]]
     else:
-        argv = [MAIN]
+        argv = [constant.MAIN]
     argv.append("@antelope.ci web server")
     utility = ServerManagementUtility(argv)
     utility.execute()
