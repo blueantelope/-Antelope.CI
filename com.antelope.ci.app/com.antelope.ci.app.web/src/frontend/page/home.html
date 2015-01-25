@@ -1,20 +1,22 @@
-<html ng-app="testapp">
-<head>
+<html>
+  <head>
     <title>This is test page for @antelope.ci web.</title>
-</head>
-<body>
-    <div ng-controller="testController">
-        <p>{{greeting.text}}, @antelope.ci web.</p>
+  </head>
+  <body>
+    {% verbatim %}
+    <div ng-app="testApp" ng-controller="testController">
+      <p>{{greeting.text}}, @antelope.ci web.</p>
     </div>
+    {% endverbatim %}
 
     <script src="/resource/js/angularjs/angular.js"></script>
     <script type="text/javascript">
-    var testapp = angular.module('testapp', []);
+      var app = angular.module("testApp", []);
 
-        function testController($scope) {
-            $scope.greeting = {text : "Hello"};
-        }
+      app.controller("testController", function($scope) {
+        $scope.greeting = {text : "Hello"};
+      });
     </script>
-</body>
+  </body>
 </html>
 
