@@ -53,3 +53,8 @@ HTTPS_PORT = 443
 TOOSHORT = "arguments too short."
 ILLEGAL = "illegal argument."
 
+# for template
+HEADER = "header.html"
+FOOTER = "footer.html"
+ANGULARJS = "/resource/js/angularjs/angular.js"
+
