@@ -9,6 +9,44 @@ blueantelope@gmail.com
 blueantelope 2014-01-26 
 -->
 
-test
+<div class="other-warp login-wrap ng-scope" data-ng-controller="user_login_ctrl">
+    <div data-minheight="58" class="single-panel clearfix" style="min-height: 563px;">
+        <div class="single-panel-inner login-mini ng-scope" ng-if="status.code == 0">
+            <div class="single-panel-header">
+                <h3>登录</h3>
+            </div>
+            <div class="single-panel-body">
+                <div class="single-panel-section">
+                    <form wt-form-validate="{blurTrig:false,showMsg:false}" name="login_form"
+                          class="form-horizontal wt-form ng-pristine ng-invalid ng-invalid-required" novalidate="">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="icon icon-user"></i></span>
+                                <input class="form-control ng-pristine ng-invalid ng-invalid-required valid" type="text"
+                                       placeholder="输入用户名/邮箱" name="login_name" ng-model="signin_user.name" required=""
+                                       wt-autofocus="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon fs_17"><i class="icon icon-lock"></i></span>
+                                <input class="form-control ng-pristine ng-valid-minlength ng-invalid ng-invalid-required valid"
+                                       type="password" placeholder="输入密码" name="login_password"
+                                       ng-model="signin_user.password" required="" ng-minlength="6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button wt-form-submit="signin(login_form)" class="btn btn-success btn-lg btn-block"
+                                    type="button" data-loading-text="登录中..." loading-status="signin_user.is_login_ing">
+                                登 录
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% include footer %}

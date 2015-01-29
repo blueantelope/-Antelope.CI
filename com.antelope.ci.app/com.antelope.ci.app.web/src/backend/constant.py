@@ -56,5 +56,9 @@ ILLEGAL = "illegal argument."
 # for template
 HEADER = "header.html"
 FOOTER = "footer.html"
-ANGULARJS = "/resource/js/angularjs/angular.js"
+ANGULAR_JS = "/resource/js/angularjs/angular.js"
+FONTAWESOME_CSS = "/resource/css/font-awesome.css"
+COMMON_CSS = "/resource/css/common.css"
+OUTER_CSS = "/resource/css/outer.css"
+
 

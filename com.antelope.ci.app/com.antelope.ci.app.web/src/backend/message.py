@@ -23,5 +23,16 @@ class HELP(object):
         self.mode = util.get_ini_value(message_ini, "help", "mode", self.mode)
         self.watchdog = util.get_ini_value(message_ini, "help", "watchdog", self.watchdog)
 
+class PAGE(object):
+    keywords = "Continue System, CI"
+    description = "@antelope.ci -- CI anywhere,Issue  anytime"
+    title = "@antelope.ci -- CI anywhere, Issue anytime"
+
+    def __init__(self):
+        self.keywords = util.get_ini_value(message_ini, "page", "keywords", self.keywords)
+        self.description = util.get_ini_value(message_ini, "page", "description", self.description)
+        self.title = util.get_ini_value(message_ini, "page", "title", self.title)
+
 help = HELP()
+page = PAGE()
 
