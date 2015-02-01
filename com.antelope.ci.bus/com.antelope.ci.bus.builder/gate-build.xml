@@ -64,6 +64,7 @@
 		<copy todir="${app.gate.bin}">
 			<fileset dir="${script.root}" />
 		</copy>
+		<chmod dir="${app.gate.bin}" perm="ugo+rx" includes="**/*.sh"/>
 		<!-- /etc -->
 		<copy todir="${app.gate.etc}">
 			<fileset dir="${prj.bus.etc}" />

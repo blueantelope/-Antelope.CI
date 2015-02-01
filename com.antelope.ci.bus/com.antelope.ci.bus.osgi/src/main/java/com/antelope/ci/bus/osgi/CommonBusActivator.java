@@ -41,7 +41,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-8-29 下午3:17:02
  */
 public abstract class CommonBusActivator implements BundleActivator {
-	protected static Logger log4j = null;			// log4j
+	protected static Logger log4j = null; // log4j
 	protected static final String LOG_SERVICE_NAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	private static final String PACKET_SUFFIX = "com.antelope.ci.bus";
 	private static final String PACKET_SERVICE = "service";

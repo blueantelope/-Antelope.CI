@@ -20,6 +20,7 @@ ETC =$(TARGET)/etc
 LIB =$(TARGET)/lib
 PY =python
 PY_ARGS =-m py_compile
+DEPS =$(ROOT_DIR)/depends
 
 .PHONY : clean
 
@@ -33,7 +34,7 @@ deploy: clean init compile
 	chmod +x $(TARGET)/$(LAUNCH)
 
 depend:
-	pip install Django==1.7.2
+	pip install -r $(DEPS)
 
 compile:
 	$(PY) $(PY_ARGS) $(BACKEND_SRC)/*.py

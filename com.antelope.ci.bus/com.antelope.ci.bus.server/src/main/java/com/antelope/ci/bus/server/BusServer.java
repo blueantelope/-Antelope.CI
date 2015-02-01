@@ -28,6 +28,7 @@ import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.service.AuthService;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.shell.BusShellContainerLauncher;
@@ -45,9 +46,9 @@ import com.antelope.ci.bus.server.shell.BusShellProxyLauncher;
  */
 public abstract class BusServer {
 	protected SshServer sshServer;
-	protected BusServerConfig config;							// server配置项
+	protected BusServerConfig config; // server配置项
 	protected BusServerCondition condition;
-	private static final long waitForInit = 3 * 1000;		// 3 seconds
+	private static final long waitForInit = 3 * 1000; // 3 seconds
 	protected long waitForStart = 0;
 	protected BundleContext m_context;
 	
@@ -77,6 +78,7 @@ public abstract class BusServer {
 	protected void init() throws CIBusException {
 		config = readConfig();
 		condition = new BusServerCondition();
+		condition.setLauncherType(LAUNCHER_TYPE.CONTAINER);
 		long start_tm = System.currentTimeMillis();
 		boolean pwd_added = false;
 		boolean key_added = false;
@@ -158,7 +160,8 @@ public abstract class BusServer {
 		if (shellLauncher == null) {
 			if (condition.getLauncher_class() != null) {
 				shellFactory = new BusShellFactory(condition.getLauncher_class());
-			} else if (condition.getLauncher_className() != null && condition.getLauncher_className().length() > 0) {
+			} else if (condition.getLauncher_className() != null
+					&& condition.getLauncher_className().length() > 0) {
 				shellFactory = new BusShellFactory(condition.getLauncher_className());
 			} else {
 				throw new CIBusException("", "create shell factory error");

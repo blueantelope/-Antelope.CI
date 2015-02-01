@@ -74,6 +74,7 @@
 		<copy todir="${app.portal.bin}">
 			<fileset dir="${script.root}" />
 		</copy>
+		<chmod dir="${app.gate.bin}" perm="ugo+rx" includes="**/*.sh"/>
 		<!-- /etc -->
 		<copy todir="${app.portal.etc}">
 			<fileset dir="${prj.bus.etc}" />

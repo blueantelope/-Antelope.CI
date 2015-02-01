@@ -24,9 +24,9 @@ public class BusGateActivator extends BusCommonServerActivator {
 
 	@Override
 	protected void run() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		log4j.info("启动gate");
+		server = new BusGateServer(m_context);
+		server.start();
 	}
 
 	@Override

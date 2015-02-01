@@ -40,8 +40,7 @@ public class BusPortalActivator extends BusCommonServerActivator {
 		EntranceManager.monitor(m_context, server.getCondition());
 		try {
 			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		}
+		} catch (InterruptedException e) {}
 	}
 
 	/**
