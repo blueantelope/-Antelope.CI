@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.portal;
 
-import java.util.Properties;
-
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -40,13 +38,11 @@ public class BusPortalServer extends BusServer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.BusServer#readConfig()
+	 * @see com.antelope.ci.bus.server.BusServer#customizeConfig(com.antelope.ci.bus.server.BusServerConfig)
 	 */
 	@Override
-	protected BusServerConfig readConfig() throws CIBusException {
-		Properties props = BusPortalActivator.getProperties();
-		BusServerConfig config = BusServerConfig.fromProps(props);
-		return config;
+	protected void customizeConfig(BusServerConfig config) throws CIBusException {
+		
 	}
 
 	/**
@@ -64,10 +60,10 @@ public class BusPortalServer extends BusServer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.BusServer#customInit()
+	 * @see com.antelope.ci.bus.server.BusServer#customizeInit()
 	 */
 	@Override
-	protected void customInit() throws CIBusException {
+	protected void customizeInit() throws CIBusException {
 		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
 		configurationHelper.setClassLoader(BusOsgiUtil.getBundleClassLoader(m_context));
 		configurationHelper.init();
@@ -76,10 +72,10 @@ public class BusPortalServer extends BusServer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.BusServer#customRun()
+	 * @see com.antelope.ci.bus.server.BusServer#customizeRun()
 	 */
 	@Override
-	protected void customRun() throws CIBusException {
+	protected void customizeRun() throws CIBusException {
 		
 	}
 }

@@ -46,16 +46,15 @@ public class TestBusEchoServer extends TestCase {
 		
 		@Override
 		protected void init() throws CIBusException {
-			config = readConfig();
+			BusServerConfig config = new BusServerConfig();
+			customizeConfig(config);
 			condition = new BusServerCondition();
 			attatchCondition(condition);
 		}
 
 		@Override
-		protected BusServerConfig readConfig() throws CIBusException {
-			BusServerConfig config = new BusServerConfig();
+		protected void customizeConfig(BusServerConfig config) throws CIBusException {
 			config.setPort(9427);
-			return config;
 		}
 
 
@@ -130,12 +129,12 @@ public class TestBusEchoServer extends TestCase {
 		}
 
 		@Override
-		protected void customInit() throws CIBusException {
+		protected void customizeInit() throws CIBusException {
 			System.out.println("enter custom init");
 		}
 
 		@Override
-		protected void customRun() throws CIBusException {
+		protected void customizeRun() throws CIBusException {
 			System.out.println("enter custom run");
 		}
 

@@ -8,8 +8,6 @@
 
 package com.antelope.ci.bus.gate;
 
-import java.util.Properties;
-
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -35,10 +33,8 @@ public class BusGateServer extends BusServer {
 
 
 	@Override
-	protected BusServerConfig readConfig() throws CIBusException {
-		Properties props = BusGateActivator.getProperties();
-		BusServerConfig config = BusServerConfig.fromProps(props);
-		return config;
+	protected void customizeConfig(BusServerConfig config) throws CIBusException {
+		
 	}
 
 	@Override
@@ -48,14 +44,13 @@ public class BusGateServer extends BusServer {
 	}
 
 	@Override
-	protected void customInit() throws CIBusException {
+	protected void customizeInit() throws CIBusException {
 		
 		
 	}
 
 	@Override
-	protected void customRun() throws CIBusException {
+	protected void customizeRun() throws CIBusException {
 		
 	}
 }
-

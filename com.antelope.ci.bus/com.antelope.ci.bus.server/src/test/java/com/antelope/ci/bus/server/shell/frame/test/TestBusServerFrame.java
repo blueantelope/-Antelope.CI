@@ -20,13 +20,13 @@ import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
+import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.engine.model.user.UserKey;
 import com.antelope.ci.bus.engine.model.user.UserPassword;
-import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
-import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
+import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.service.auth.PasswordAuthServiceImpl;
 import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
@@ -46,16 +46,15 @@ public class TestBusServerFrame extends TestCase {
 		
 		@Override
 		protected void init() throws CIBusException {
-			config = readConfig();
+			config = new BusServerConfig();
+			customizeConfig(config);
 			condition = new BusServerCondition();
 			attatchCondition(condition);
 		}
 
 		@Override
-		protected BusServerConfig readConfig() throws CIBusException {
-			BusServerConfig config = new BusServerConfig();
+		protected void customizeConfig(BusServerConfig config) throws CIBusException {
 			config.setPort(9427);
-			return config;
 		}
 
 
@@ -130,12 +129,12 @@ public class TestBusServerFrame extends TestCase {
 		}
 
 		@Override
-		protected void customInit() throws CIBusException {
+		protected void customizeInit() throws CIBusException {
 			System.out.println("enter custom init");
 		}
 
 		@Override
-		protected void customRun() throws CIBusException {
+		protected void customizeRun() throws CIBusException {
 			System.out.println("enter custom run");
 		}
 

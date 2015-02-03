@@ -33,7 +33,6 @@ public class BusGateActivator extends BusCommonServerActivator {
 	protected void handleLoadService(String clsName, ServiceReference ref,
 			Object service) throws CIBusException {
 		
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -41,30 +40,20 @@ public class BusGateActivator extends BusCommonServerActivator {
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void handleStopAllService() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void addServices() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
-
 }
-

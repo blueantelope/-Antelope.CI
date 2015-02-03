@@ -25,6 +25,30 @@ import com.antelope.ci.bus.server.service.AuthService;
  * @version  0.1 * @Date	 2013-10-17		下午11:30:48 
  */
 public class BusServerCondition {
+	public enum SERVER_TYPE {
+		SHELL("shell"),
+		COPY("COPY"),
+		FTP("ftp"),
+		OUTFLOW("outflow");
+		
+		private String name;
+		private SERVER_TYPE(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public static SERVER_TYPE fromName(String name) {
+			for (SERVER_TYPE type : SERVER_TYPE.values()) {
+				if (name.equalsIgnoreCase(type.getName())) {
+					return type;
+				}
+			}
+			
+			return SHELL;
+		}
+	}
+	
 	public enum LAUNCHER_TYPE {
 		PROXY("proxy"),
 		CONTAINER("container");
@@ -43,12 +67,13 @@ public class BusServerCondition {
 				}
 			}
 			
-			throw new CIBusException("", "");
+			throw new CIBusException("", "unknow server laucher type.");
 		}
 	}
 	
 	private final static String DEFAULT_SHELL = "shell.default";
 	private Map<String, User> userMap;
+	private SERVER_TYPE serverType;
 	private LAUNCHER_TYPE launcherType;
 	private Map<String, String> shellClassMap;
 	private Class launcher_class;
@@ -61,61 +86,71 @@ public class BusServerCondition {
 		shellClassMap = new ConcurrentHashMap<String, String>();
 	}
 	
-	// getter and setter
+	/* getter and setter */
+	// userMap
 	public Map<String, User> getUserMap() {
 		return userMap;
 	}
 	public void setUserMap(Map<String, User> userMap) {
 		this.userMap = userMap;
 	}
+	public void addUser(User user) {
+		userMap.put(user.getUsername(), user);
+	}
 	
+	// launcher class
 	public Class getLauncher_class() {
 		return launcher_class;
 	}
 	public void setLauncher_class(Class launcher_class) {
 		this.launcher_class = launcher_class;
 	}
-
+	
+	// launcher class name
 	public String getLauncher_className() {
 		return launcher_className;
 	}
-
 	public void setLauncher_className(String launcher_className) {
 		this.launcher_className = launcher_className;
 	}
 
+	// auth service
 	public List<AuthService> getAuthServiceList() {
 		return authServiceList;
 	}
-	
 	public void setAuthServiceList(List<AuthService> authServiceList) {
 		this.authServiceList = authServiceList;
 	}
-	
-	public void addUser(User user) {
-		userMap.put(user.getUsername(), user);
-	}
-	
 	public void addAuthService(AuthService authService) {
 		authServiceList.add(authService);
 	}
+	
+	// server type
+	public SERVER_TYPE getServerType() {
+		return serverType;
+	}
+	public void setServerType(SERVER_TYPE serverType) {
+		this.serverType = serverType;
+	}
+	public void setServerType(String serverTypeName) throws CIBusException {
+		this.serverType = SERVER_TYPE.fromName(serverTypeName);
+	}
 
+	// launcher type
 	public LAUNCHER_TYPE getLauncherType() {
 		return launcherType;
 	}
-
 	public void setLauncherType(LAUNCHER_TYPE launcherType) {
 		this.launcherType = launcherType;
 	}
-
 	public void setLauncherType(String launcherTypeName) throws CIBusException {
 		this.launcherType = LAUNCHER_TYPE.fromName(launcherTypeName);
 	}
-	
+
+	// shell class
 	public Map<String, String> getShellClassMap() {
 		return shellClassMap;
 	}
-
 	public void setShellClassMap(Map<String, String> shellClassMap) {
 		this.shellClassMap = shellClassMap;
 	}
@@ -152,4 +187,3 @@ public class BusServerCondition {
 		return shellClassMap.isEmpty();
 	}
 }
-

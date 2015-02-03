@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.Channel;
 import org.apache.sshd.common.NamedFactory;
@@ -45,6 +47,7 @@ import com.antelope.ci.bus.server.shell.BusShellProxyLauncher;
  * @Date	 2013-9-5		下午10:19:24 
  */
 public abstract class BusServer {
+	private static final Logger log = Logger.getLogger(BusServer.class);
 	protected SshServer sshServer;
 	protected BusServerConfig config; // server配置项
 	protected BusServerCondition condition;
@@ -54,7 +57,7 @@ public abstract class BusServer {
 	
 	public BusServer() throws CIBusException {
 		init();
-		customInit();
+		customizeInit();
 	}
 	
 	public void setWaitForStart(long waitForStart) {
@@ -64,7 +67,7 @@ public abstract class BusServer {
 	public BusServer(BundleContext m_context) throws CIBusException {
 		this.m_context = m_context;
 		init();
-		customInit();
+		customizeInit();
 	}
 	
 	public BusServerConfig getConfig() {
@@ -76,7 +79,15 @@ public abstract class BusServer {
 	}
 
 	protected void init() throws CIBusException {
-		config = readConfig();
+		try {
+			config = parseConfig();
+		} catch (CIBusException e) {
+			log.warn("parse error bus.properties, using with default");
+		}
+		if (config == null)
+			config = new BusServerConfig();
+		customizeConfig(config);
+		
 		condition = new BusServerCondition();
 		condition.setLauncherType(LAUNCHER_TYPE.CONTAINER);
 		long start_tm = System.currentTimeMillis();
@@ -191,7 +202,7 @@ public abstract class BusServer {
 		} catch (IOException e) {
 			throw new CIBusException("", e);
 		}
-		customRun();
+		customizeRun();
 	}
 	
 	public void stop() {
@@ -239,9 +250,18 @@ public abstract class BusServer {
 
 	
 	/*
-	 * 读取服务配置
+	 * 解析bus.properties配置
 	 */
-	protected abstract BusServerConfig readConfig() throws CIBusException;
+	protected BusServerConfig parseConfig() throws CIBusException {
+		Properties props = BusCommonServerActivator.getProperties();
+		BusServerConfig config = BusServerConfig.fromProps(props);
+		return config;
+	}
+	
+	/*
+	 * 定制服务端配置
+	 */
+	protected abstract void customizeConfig(BusServerConfig config) throws CIBusException;
 	
 	/*
 	 * 加入条件变量
@@ -251,10 +271,10 @@ public abstract class BusServer {
 	/*
 	 * 自定义初始化时的动作
 	 */
-	protected abstract void customInit()  throws CIBusException;
+	protected abstract void customizeInit()  throws CIBusException;
 	
 	/*
 	 * 自定义需要在启动时的动作
 	 */
-	protected abstract void customRun() throws CIBusException;
+	protected abstract void customizeRun() throws CIBusException;
 }

@@ -50,7 +50,7 @@
 		<antcall target="make" />
 	</target>
 	
-	<target name="build_gate_notest">
+	<target name="build-gate-notest">
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.compile.notest" />
 		<copy todir="${app.gate.bundle}" overwrite="true">
 			<fileset dir="${target.depends}">

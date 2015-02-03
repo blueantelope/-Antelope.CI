@@ -25,7 +25,6 @@ import com.antelope.ci.bus.server.service.auth.PublickeyAuthServiceImpl;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -43,21 +42,20 @@ public class TestBusPortalServer extends BusPortalServer {
 	
 	@Override
 	protected void init() throws CIBusException {
-		config = readConfig();
+		config = new BusServerConfig();
 		condition = new BusServerCondition();
 		attatchCondition(condition);
 	}
 	
 	@Override
-	protected void customInit() throws CIBusException {
+	protected void customizeInit() throws CIBusException {
 		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
 		configurationHelper.init();
 	}
 	
 	@Override
-	protected BusServerConfig readConfig() throws CIBusException {
-		BusServerConfig config = new BusServerConfig();
-		return config;
+	protected void customizeConfig(BusServerConfig config) throws CIBusException {
+		
 	}
 	
 	@Override
