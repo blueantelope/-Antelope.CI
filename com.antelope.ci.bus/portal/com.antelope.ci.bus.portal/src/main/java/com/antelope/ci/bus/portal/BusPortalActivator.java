@@ -50,9 +50,8 @@ public class BusPortalActivator extends BusCommonServerActivator {
 	 */
 	@Override
 	protected void destroy() throws CIBusException {
-		if (server != null) {
-			server.stop();
-		}
+		if (server != null)
+			server.shutdown();
 	}
 
 	/**

@@ -24,7 +24,6 @@ import com.antelope.ci.bus.engine.model.user.UserPassword;
 import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
-import com.antelope.ci.bus.server.service.AuthService;
 import com.antelope.ci.bus.server.service.CommonServerService;
 
 /**

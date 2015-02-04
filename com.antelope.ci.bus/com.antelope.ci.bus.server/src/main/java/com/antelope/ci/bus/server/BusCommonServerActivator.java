@@ -39,7 +39,7 @@ public abstract class BusCommonServerActivator extends CommonBusActivator {
 	@Override
 	protected void destroy() throws CIBusException {
 		if (server != null) {
-			server.stop();
+			server.shutdown();
 		}
 	}
 }

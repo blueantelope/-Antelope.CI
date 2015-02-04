@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
+import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
 /**
  * 

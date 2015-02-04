@@ -11,27 +11,22 @@ package com.antelope.ci.bus.server.shell;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.sshd.server.Environment;
-import org.apache.sshd.server.ExitCallback;
-
-import com.antelope.ci.bus.server.shell.core.ConnectionData;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
+import com.antelope.ci.bus.server.shell.util.ConnectionData;
+import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
 
 /**
- * TODO 描述
+ * 
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-14		下午2:41:05 
  */
-public class BusShellSession {
-	private InputStream in;
-	private OutputStream out;
-	private OutputStream err;
-	private ExitCallback callback;
-	private Environment env;
-	private TerminalIO io;
-	private ConnectionData setting;
+public abstract class BusShellSession {
+	protected InputStream in;
+	protected OutputStream out;
+	protected OutputStream err;
+	protected TerminalIO io;
+	protected ConnectionData setting;
 	
 	public BusShellSession() {
 	
@@ -42,16 +37,6 @@ public class BusShellSession {
 		this.in = in;
 		this.out = out;
 		this.err = err;
-		init();
-	}
-	
-	public BusShellSession(InputStream in, OutputStream out, OutputStream err, ExitCallback callback, Environment env) {
-		super();
-		this.in = in;
-		this.out = out;
-		this.err = err;
-		this.callback = callback;
-		this.env = env;
 		init();
 	}
 	
@@ -81,18 +66,6 @@ public class BusShellSession {
 	public void setErr(OutputStream err) {
 		this.err = err;
 	}
-	public ExitCallback getCallback() {
-		return callback;
-	}
-	public void setCallback(ExitCallback callback) {
-		this.callback = callback;
-	}
-	public Environment getEnv() {
-		return env;
-	}
-	public void setEnv(Environment env) {
-		this.env = env;
-	}
 	public TerminalIO getIo() {
 		return io;
 	}
@@ -106,12 +79,10 @@ public class BusShellSession {
 		this.setting = setting;
 	}
 
-	public int getWidth() {
-		return Integer.valueOf(env.getEnv().get(Environment.ENV_COLUMNS));
-	}
+	public abstract int getWidth();
 
-	public int getHeigth() {
-		return Integer.valueOf(env.getEnv().get(Environment.ENV_LINES));
-	}
+	public abstract int getHeigth();
+	
+	public abstract void exit();
 }
 

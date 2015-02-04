@@ -16,7 +16,7 @@ import java.util.Map;
 import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellArea;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
+import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
 
 /**

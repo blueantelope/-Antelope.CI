@@ -9,7 +9,7 @@
 package com.antelope.ci.bus.server.shell.buffer;
 
 import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
+import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
 
 /**

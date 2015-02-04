@@ -17,7 +17,7 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.shell.ShellUtil;
 import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
+import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
 
 /**

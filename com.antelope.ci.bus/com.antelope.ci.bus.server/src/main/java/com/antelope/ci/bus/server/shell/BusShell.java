@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.sshd.server.Environment;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
@@ -26,8 +25,8 @@ import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
-import com.antelope.ci.bus.server.shell.core.ConnectionData;
-import com.antelope.ci.bus.server.shell.core.TerminalIO;
+import com.antelope.ci.bus.server.shell.util.ConnectionData;
+import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
 /**
  * shell view template
@@ -391,7 +390,7 @@ public abstract class BusShell {
 			} catch (IOException e) {
 			}
 		}
-		session.getCallback().onExit(0);
+		session.exit();
 	}
 	
 	public void refresh() throws CIBusException {
@@ -607,15 +606,11 @@ public abstract class BusShell {
 	}
 
 	protected int getHeight() {
-		return Integer.valueOf(getEnv(Environment.ENV_LINES));
+		return session.getHeigth();
 	}
 
 	protected int getWidth() {
-		return Integer.valueOf(getEnv(Environment.ENV_COLUMNS));
-	}
-
-	protected String getEnv(String key) {
-		return session.getEnv().getEnv().get(key);
+		return session.getWidth();
 	}
 	
 	public void left() {

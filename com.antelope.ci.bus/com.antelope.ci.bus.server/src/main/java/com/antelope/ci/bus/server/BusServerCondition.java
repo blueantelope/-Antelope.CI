@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
-import com.antelope.ci.bus.server.service.AuthService;
+import com.antelope.ci.bus.server.service.auth.AuthService;
 
 
 /**
@@ -27,9 +27,7 @@ import com.antelope.ci.bus.server.service.AuthService;
 public class BusServerCondition {
 	public enum SERVER_TYPE {
 		SHELL("shell"),
-		COPY("COPY"),
-		FTP("ftp"),
-		OUTFLOW("outflow");
+		API("api");
 		
 		private String name;
 		private SERVER_TYPE(String name) {
@@ -84,6 +82,7 @@ public class BusServerCondition {
 		userMap = new HashMap<String, User>();
 		authServiceList = new ArrayList<AuthService>();
 		shellClassMap = new ConcurrentHashMap<String, String>();
+		serverType = SERVER_TYPE.SHELL;
 	}
 	
 	/* getter and setter */
