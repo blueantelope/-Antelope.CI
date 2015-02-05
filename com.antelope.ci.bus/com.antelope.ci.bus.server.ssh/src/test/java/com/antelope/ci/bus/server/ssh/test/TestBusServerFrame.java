@@ -152,7 +152,7 @@ public class TestBusServerFrame extends TestCase {
 	@Test
 	public void testServer() throws IOException, CIBusException {
 		BusServer server = new MyBusServerPortal();
-		server.start();
+		server.open();
 	}
 	
 	private List<User> fillTestUser() {

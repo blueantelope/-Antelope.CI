@@ -6,18 +6,24 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.portal;
+package com.antelope.ci.bus.portal_ssh;
 
+import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
+import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.osgi.BusPropertiesHelper;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.entrance.EntranceManager;
 import com.antelope.ci.bus.portal.core.shell.SimpleBusPortalShell;
-import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.ssh.BusSshServer;
+
 
 
 /**
@@ -26,12 +32,16 @@ import com.antelope.ci.bus.server.BusServerConfig;
  * @version  0.1
  * @Date	 2013-10-29		下午9:04:32 
  */
-public class BusPortalServer {
-	public BusPortalServer() throws CIBusException {
+public class BusPortalSshServer extends BusSshServer {
+	private static final Logger log = Logger.getLogger(BusPortalSshServer.class);
+	protected final static String WAITFORSTART_KEY = "bus.portal.start.wait";
+	protected final static long WAITFORSTART_DEFAULT = 0;
+	
+	public BusPortalSshServer() throws CIBusException {
 		super();
 	}
 	
-	public BusPortalServer(BundleContext m_context) throws CIBusException {
+	public BusPortalSshServer(BundleContext m_context) throws CIBusException {
 		super(m_context);
 	}
 
@@ -72,11 +82,21 @@ public class BusPortalServer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.BusServer#customizeRun()
+	 * @see com.antelope.ci.bus.server.ssh.BusSshServer#beforeRun()
 	 */
 	@Override
-	protected void customizeRun() throws CIBusException {
-		
+	protected void beforeRun() throws CIBusException {
+		log.info("before run portal");
+		BusPropertiesHelper helper = new BusPropertiesHelper(CommonBusActivator.getContext());
+		waitForStart = PropertiesUtil.getLong(helper.getAll(), WAITFORSTART_KEY, WAITFORSTART_DEFAULT);
+	}
+	
+	protected void afterRun() throws CIBusException {
+		log.info("after run portal");
+		EntranceManager.monitor(m_context, condition);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {}
 	}
 }
 

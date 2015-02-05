@@ -25,7 +25,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -75,8 +74,8 @@ public class BusServiceTrackerCustomizer implements ServiceTrackerCustomizer {
 	@Override
 	public void removedService(ServiceReference reference, Object service) {
 		try {
-			String service_name = (String) reference.getProperty(BusOsgiConstants.SERVICE_NAME);
-			String service_class_name = (String) reference.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+			String service_name = (String) reference.getProperty(BusOsgiConstant.SERVICE_NAME);
+			String service_class_name = (String) reference.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
 			unloadService(service_name, service_class_name,reference, service);
 		} catch (CIBusException e) {
 			DevAssistant.assert_exception(e);
@@ -85,8 +84,8 @@ public class BusServiceTrackerCustomizer implements ServiceTrackerCustomizer {
 	
 	private Object loadService(ServiceReference ref) throws CIBusException {
 		Object service = context.getService(ref);
-		String service_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_NAME);
-		String service_class_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+		String service_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_NAME);
+		String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
 		if (service_name.equals(LOG_SERVICE_NAME)) {
 			if (!provideLogService)
 				loadLogService(ref, service);
@@ -124,7 +123,7 @@ public class BusServiceTrackerCustomizer implements ServiceTrackerCustomizer {
 			DevAssistant.assert_out("加载日志service");
 			service_writeLock.lock();
 			List<BusServiceInfo> logServiceList = new ArrayList<BusServiceInfo>();
-			String service_name = (String) log_ref.getProperty(BusOsgiConstants.SERVICE_NAME);
+			String service_name = (String) log_ref.getProperty(BusOsgiConstant.SERVICE_NAME);
 			BusServiceInfo logInfo = new BusServiceInfo(service_name, logService, log_ref);
 			logServiceList.add(logInfo);
 			serviceMap.put(LOG_SERVICE_NAME, logServiceList);

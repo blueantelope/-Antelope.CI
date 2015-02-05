@@ -122,5 +122,18 @@ public class PropertiesUtil {
 		
 		return value;
 	}
+	
+	/*
+	 * 取得开关属性
+	 * on - 开启 off - 关闭
+	 */
+	public static boolean getSwitcher(Properties props, String key, boolean def) {
+		String defValue = "off";
+		if (def) defValue = "on";
+		String value = getString(props, key, defValue);
+		if ("on".equalsIgnoreCase(value.trim()))
+			return true;
+		return false;
+	}
 }
 

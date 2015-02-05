@@ -9,9 +9,14 @@
 package com.antelope.ci.bus.server;
 
 import java.net.URL;
-import java.util.Properties;
 
-import com.antelope.ci.bus.common.PropertiesUtil;
+import com.antelope.ci.bus.common.PROTOCOL;
+import com.antelope.ci.bus.common.StringUtil;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusOsgiConstant;
+import com.antelope.ci.bus.osgi.BusPropertiesHelper;
+import com.antelope.ci.bus.osgi.BusPropertiesHelper.KT;
+import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
 /**
@@ -21,39 +26,33 @@ import com.antelope.ci.bus.common.PropertiesUtil;
  * @Date	 2013-9-7		下午5:46:51 
  */
 public class BusServerConfig {
-	/* ssh key类型 */
-	public enum KT { 
-		FIXED("fixed"),							// 固定指定方式，指定已存在的key
-		DYNAMIC("dynamic");					// 动态生成方式，自己生成key
-		
-		private String name;
-		private KT(String name) {
-			this.name = name;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public String toString() {
-			return name;
-		}
-		
-		public static KT fromName(String name) {
-			for (KT type : KT.values() ) {
-				if (type.getName().equalsIgnoreCase(name.trim()))
-					return type;
-			}
-			
-			return KT.FIXED;
-		}
+	private PROTOCOL proto;
+	private boolean switcher;
+	private String host;
+	private int port;
+	private KT kt;
+	private String key_name;
+	private URL key_url;
+	private String welcome_banner;
+	
+	public BusServerConfig() {
+		super();
+		init();
 	}
 	
-	private int port = 9426;
-	private KT kt = KT.DYNAMIC;
-	private String key_name = "com.antelope.ci.bus.key";
-	private URL key_url = null;
-	private String welcome_banner = "SSH-2.0-CIBUS";
+	public BusServerConfig(PROTOCOL proto) {
+		this();
+		this.proto = proto;
+	}
+	
+	private void init() {
+		String host = BusOsgiConstant.DEF_SERVER_HOST;
+		int port = BusOsgiConstant.DEF_SERVER_PORT;
+		KT kt = KT.DYNAMIC;
+		String key_name = BusOsgiConstant.DEF_KEY_NAME;
+		String welcome_banner = BusOsgiConstant.DEF_WELCOME_BANNER;
+		proto = PROTOCOL.TCP;
+	}
 	
 	// getter and setter
 	public KT getKt() {
@@ -62,24 +61,52 @@ public class BusServerConfig {
 	public void setKt(KT kt) {
 		this.kt = kt;
 	}
+	
 	public String getKey_name() {
 		return key_name;
 	}
 	public void setKey_name(String key_name) {
 		this.key_name = key_name;
 	}
+	
+	public PROTOCOL getProto() {
+		return proto;
+	}
+	
+	public boolean isSwitcher() {
+		return switcher;
+	}
+	public void setSwitcher(boolean switcher) {
+		this.switcher = switcher;
+	}
+
+	public String getHost() {
+		return host;
+	}
+	public void setHost(String host) {
+		this.host = host;
+	}
+	public boolean anyLocalAddress() {
+		if (StringUtil.empty(host) || "0.0.0.0".equals(host.trim()))
+			return true;
+		
+		return false;
+	}
+
 	public int getPort() {
 		return port;
 	}
 	public void setPort(int port) {
 		this.port = port;
 	}
+	
 	public String getWelcome_banner() {
 		return welcome_banner;
 	}
 	public void setWelcome_banner(String welcome_banner) {
 		this.welcome_banner = welcome_banner;
 	}
+	
 	public URL getKey_url() {
 		return key_url;
 	}
@@ -87,46 +114,25 @@ public class BusServerConfig {
 		this.key_url = key_url;
 	}
 
-
-	/*
-	 * 读配置文件
-	 * 
-	 */
-	private static final String SERVER_PORT = "bus.server.port";
-	private static final int DEF_SERVER_PORT = 9426;
-	private static final String KEY_TYPE = "bus.key.type";
-	private static final String DEF_KEY_TYPE = "static";
-	private static final String KEY_NAME = "bus.key.name";
-	private static final String DEF_KEY_NAME = "com.antelope.bus.ci.key";
-	private static final String WELCOME_BANNER = "bus.welcome.banner";
-	private static final String DEF_WELCOME_BANNER = "SSH-2.0-CIBUS";
-	
-	
 	/**
 	 * 取得属性中的server配置部分
 	 * 拼装成server的配置项类
 	 * @param  @param props
 	 * @param  @return
 	 * @return BusServerConfig
-	 * @throws
+	 * @throws CIBusException 
 	 */
-	public static BusServerConfig fromProps(Properties props) {
+	public static BusServerConfig load() throws CIBusException {
 		BusServerConfig config = new BusServerConfig();
-		config.setPort(
-				PropertiesUtil.getInt(props, SERVER_PORT, DEF_SERVER_PORT)
-		);
-		config.setKt(
-				KT.fromName(PropertiesUtil.getString(props, KEY_TYPE, DEF_KEY_TYPE))
-		);
-		config.setKey_name(
-				PropertiesUtil.getString(props, KEY_NAME, DEF_KEY_NAME)
-		);
-		config.setWelcome_banner(
-				PropertiesUtil.getString(props, WELCOME_BANNER, DEF_WELCOME_BANNER)
-		);
+		BusPropertiesHelper helper = new BusPropertiesHelper(CommonBusActivator.getContext());
+		config.setSwitcher(helper.switchServer());
+		config.setHost(helper.getServerHost());
+		config.setPort(helper.getServerPort());
+		config.setKt(helper.getKeyType());
+		config.setKey_name(helper.getKeyName());
+		config.setWelcome_banner(helper.getWelcomeBanner());
 		
 		return config;
 	}
 						
 }
-

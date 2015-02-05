@@ -26,7 +26,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-11-13		上午11:33:44 
  */
 public class BusOsgiUtil {
-	
 	public static Class loadClass(String shellClassName) throws CIBusException {
 		Class shellClass;
 		try {
@@ -54,8 +53,8 @@ public class BusOsgiUtil {
 	
 	private static Dictionary initServiceProperties(String serviceName, String className, ServiceProperty... others) {
 		Dictionary<String, Object> properties = new Hashtable<String, Object>();
-		properties.put(BusOsgiConstants.SERVICE_NAME, serviceName);
-		properties.put(BusOsgiConstants.SERVICE_CLASS_NAME, className);
+		properties.put(BusOsgiConstant.SERVICE_NAME, serviceName);
+		properties.put(BusOsgiConstant.SERVICE_CLASS_NAME, className);
 		for (ServiceProperty other : others) {
 			properties.put(other.getKey(), other.getValue());
 		}

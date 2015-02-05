@@ -9,7 +9,9 @@
 package com.antelope.ci.bus.server;
 
 import java.util.List;
-import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
@@ -29,26 +31,30 @@ import com.antelope.ci.bus.server.service.auth.AuthService;
  * @Date	 2013-9-5		下午10:19:24 
  */
 public abstract class BusServer {
-	private static final Logger log = Logger.getLogger(BusServer.class);
+	private static final Logger log = Logger.getLogger(BusServer.class);	// log4j
 	protected BusServerConfig config; // server配置项
 	protected BusServerCondition condition;
-	private static final long waitForInit = 3 * 1000; // 3 seconds
-	protected long waitForStart = 0;
+	protected static final long waitForInit = 3 * 1000; // 3 seconds
+	protected long waitForStart;
 	protected BundleContext m_context;
+	protected boolean running;
+	private ReadWriteLock locker = new ReentrantReadWriteLock();
+	private Lock readLocker = locker.readLock();
+	private Lock writeLocker = locker.writeLock();
 	
 	public BusServer() throws CIBusException {
 		init();
 		customizeInit();
 	}
 	
-	public void setWaitForStart(long waitForStart) {
-		this.waitForStart = waitForStart;
-	}
-
 	public BusServer(BundleContext m_context) throws CIBusException {
 		this.m_context = m_context;
 		init();
 		customizeInit();
+	}
+	
+	public void setWaitForStart(long waitForStart) {
+		this.waitForStart = waitForStart;
 	}
 	
 	public BusServerConfig getConfig() {
@@ -58,8 +64,53 @@ public abstract class BusServer {
 	public BusServerCondition getCondition() {
 		return condition;
 	}
+	
+	public void open() throws CIBusException {
+		writeLocker.lock();
+		try {
+			if (!running) {
+				log.info(toSummary() + " starting");
+				start();
+				running= true;
+			}
+		} finally {
+			writeLocker.unlock();
+		}
+	}
+	
+	public void close() throws CIBusException {
+		writeLocker.lock();
+		try {
+			if (running) {
+				log.info(toSummary() + " shutdowning");
+				shutdown();
+			}
+		} finally {
+			writeLocker.unlock();
+		}
+	}
+	
+	public boolean running() {
+		readLocker.lock();
+		try {
+			return running;
+		} finally {
+			readLocker.unlock();
+		}
+	}
+	
+	public BusServerIdentity refreshIdentity() {
+		BusServerIdentity identity = new BusServerIdentity();
+		identity.setHost(config.getHost());
+		identity.setPort(config.getPort());
+		identity.setProto(config.getProto());
+		identity.setSummary(toSummary());
+		return identity;
+	}
 
 	protected void init() throws CIBusException {
+		running = false;
+		waitForStart = 0;
 		try {
 			config = parseConfig();
 		} catch (CIBusException e) {
@@ -121,8 +172,7 @@ public abstract class BusServer {
 	 * 解析bus.properties配置
 	 */
 	protected BusServerConfig parseConfig() throws CIBusException {
-		Properties props = BusCommonServerActivator.getProperties();
-		BusServerConfig config = BusServerConfig.fromProps(props);
+		BusServerConfig config = BusServerConfig.load();
 		return config;
 	}
 	
@@ -144,10 +194,15 @@ public abstract class BusServer {
 	/*
 	 * 启动服务
 	 */
-	public abstract void start() throws CIBusException;
+	protected abstract void start() throws CIBusException;
 	
 	/*
 	 * 关闭服务
 	 */
-	public abstract void shutdown() throws CIBusException;
+	protected abstract void shutdown() throws CIBusException;
+	
+	/*
+	 * 取得服务描述
+	 */
+	public abstract String toSummary();
 }

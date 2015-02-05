@@ -22,6 +22,7 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.channel.ChannelDirectTcpip;
 import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
@@ -48,6 +49,10 @@ public abstract class BusSshServer extends BusServer {
 	
 	public BusSshServer() throws CIBusException {
 		super();
+	}
+	
+	public BusSshServer(BundleContext m_context) throws CIBusException {
+		super(m_context);
 	}
 	
 	/**
@@ -123,6 +128,7 @@ public abstract class BusSshServer extends BusServer {
 	}
 	
 	protected void runServer() throws CIBusException {
+		beforeRun();
 		if (waitForStart != 0)
 			try {
 				Thread.sleep(waitForStart * 1000);
@@ -133,7 +139,7 @@ public abstract class BusSshServer extends BusServer {
 		} catch (IOException e) {
 			throw new CIBusException("", "server start failure", e);
 		}
-		customizeRun();
+		afterRun();
 	}
 	
 	private void configShell() throws CIBusException {
@@ -198,8 +204,23 @@ public abstract class BusSshServer extends BusServer {
 		}
 	}
 	
-	/*
-	 * 自定义需要在启动时的动作
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.BusServer#toSummary()
 	 */
-	protected abstract void customizeRun() throws CIBusException;
+	@Override
+	public String toSummary() {
+		return "SSH Server";
+	}
+	
+	/*
+	 * 启动前的动作
+	 */
+	protected abstract void beforeRun() throws CIBusException;
+	
+	/*
+	 * 启动后的动作
+	 */
+	protected abstract void afterRun() throws CIBusException;
 }

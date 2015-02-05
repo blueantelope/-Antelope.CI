@@ -30,8 +30,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.ProxyUtil;
-import com.antelope.ci.bus.common.configration.BasicConfigrationReader;
-import com.antelope.ci.bus.common.configration.URLResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 /**
@@ -75,6 +73,10 @@ public abstract class CommonBusActivator implements BundleActivator {
 
 	public static Properties getProperties() {
 		return properties;
+	}
+	
+	public static BundleContext getContext() {
+		return m_context;
 	}
 	
 	public static ClassLoader getClassLoader() {
@@ -219,12 +221,8 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 * 加载bundle默认配置文件bus.properties
 	 */
 	private void loadProps() throws CIBusException {
-		URL props_url = m_context.getBundle().getResource(PROPS_FILE);
-		if (props_url != null) {
-			BasicConfigrationReader reader = new URLResourceReader();
-			reader.addConfig(props_url.toString());
-			properties.putAll(reader.getProps());
-		}
+		BusPropertiesHelper helper = new BusPropertiesHelper(m_context);
+		properties.putAll(helper.getAll());
 	}
 
 	/*
@@ -301,8 +299,8 @@ public abstract class CommonBusActivator implements BundleActivator {
 		@Override
 		public void removedService(ServiceReference reference, Object service) {
 			try {
-				String service_name = (String) reference.getProperty(BusOsgiConstants.SERVICE_NAME);
-				String service_class_name = (String) reference.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+				String service_name = (String) reference.getProperty(BusOsgiConstant.SERVICE_NAME);
+				String service_class_name = (String) reference.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
 				unloadService(service_name, service_class_name,reference, service);
 			} catch (CIBusException e) {
 				DevAssistant.assert_exception(e);
@@ -315,8 +313,8 @@ public abstract class CommonBusActivator implements BundleActivator {
 	 */
 	private Object loadService(ServiceReference ref) throws CIBusException {
 		Object service = m_context.getService(ref);
-		String service_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_NAME);
-		String service_class_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+		String service_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_NAME);
+		String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
 		if (service_name.equals(LOG_SERVICE_NAME)) {
 			if (!logServiceProvider)
 				loadLogService(ref, service);
@@ -386,7 +384,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 			DevAssistant.assert_out("加载日志service");
 			service_writeLock.lock();
 			List<BusServiceInfo> logServiceList = new ArrayList<BusServiceInfo>();
-			String service_name = (String) log_ref.getProperty(BusOsgiConstants.SERVICE_NAME);
+			String service_name = (String) log_ref.getProperty(BusOsgiConstant.SERVICE_NAME);
 			BusServiceInfo logInfo = new BusServiceInfo(service_name, logService, log_ref);
 			logServiceList.add(logInfo);
 			serviceMap.put(LOG_SERVICE_NAME, logServiceList);
@@ -409,7 +407,7 @@ public abstract class CommonBusActivator implements BundleActivator {
 						}
 						ServiceReference ref = info.ref;
 						Object service = info.service;
-						String service_class_name = (String) ref.getProperty(BusOsgiConstants.SERVICE_CLASS_NAME);
+						String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
 						unloadService(service_name, service_class_name, ref, service);
 					}
 				}

@@ -155,7 +155,7 @@ public class TestBusEchoServer extends TestCase {
 	@Test
 	public void testServer() throws IOException, CIBusException {
 		BusServer server = new BusEchoSshServer();
-		server.start();
+		server.open();
 	}
 	
 	private List<User> fillTestUser() {
