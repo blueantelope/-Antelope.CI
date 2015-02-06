@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-Version: 0.1.0
-Bundle-Name: com.antelope.ci.bus.portal_ssh
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.antelope.ci.bus.portal_ssh
-Fragment-Host: com.antelope.ci.bus.portal; bundle-version="0.1.0"
-Import-Package: com.antelope.ci.bus.server.ssh; version="0.1.0", com.antelope.ci.bus.portal; version="0.1.0", 
-Export-Package: com.antelope.ci.bus.portal_ssh; version="0.1.0"
-Bundle-Vendor: blueantelope@gmail.com

@@ -32,7 +32,7 @@ public class BusOsgiUtil {
 			shellClass = ProxyUtil.loadClass(shellClassName);
 		} catch (CIBusException e) {
 			DevAssistant.assert_exception(e);
-			shellClass = ProxyUtil.loadClass(shellClassName, CommonBusActivator.getClassLoader());
+			shellClass = ProxyUtil.loadClass(shellClassName, BusActivator.getClassLoader());
 		}
 		return shellClass;
 	}

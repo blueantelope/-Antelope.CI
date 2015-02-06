@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.service;
 import java.util.Map;
 
 import com.antelope.ci.bus.engine.model.user.User;
+import com.antelope.ci.bus.osgi.IService;
 
 
 /**
@@ -19,11 +20,10 @@ import com.antelope.ci.bus.engine.model.user.User;
  * @version  0.1
  * @Date	 2013-10-15		下午12:36:18 
  */
-public interface UserStoreServerService extends BusServerService {
+public interface UserStoreServerService extends IService {
 	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.UserStoreServerService";
 	
 	public Map<String, User> getUserMap();
 	
 	public User getUser(String username);
 }
-

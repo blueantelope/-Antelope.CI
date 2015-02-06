@@ -135,11 +135,19 @@ public class TestBusServerFrame extends TestCase {
 		}
 
 		@Override
-		protected void customizeRun() throws CIBusException {
-			System.out.println("enter custom run");
+		protected void beforeRun() throws CIBusException {
+			
+			// TODO Auto-generated method stub
+			
 		}
 
-		
+		@Override
+		protected void afterRun() throws CIBusException {
+			
+			// TODO Auto-generated method stub
+			
+		}
+
 	}
 	
 	/**

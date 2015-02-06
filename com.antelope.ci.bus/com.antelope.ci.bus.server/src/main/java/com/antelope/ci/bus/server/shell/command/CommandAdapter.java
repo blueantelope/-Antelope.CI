@@ -20,7 +20,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
@@ -71,7 +71,7 @@ public abstract class CommandAdapter {
 	public void addCommands(String packpath) throws CIBusException {
 		ClassLoader cl = null;
 		try {
-			cl = CommonBusActivator.getClassLoader();
+			cl = BusActivator.getClassLoader();
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 		}
@@ -88,7 +88,7 @@ public abstract class CommandAdapter {
 	}
 	
 	public void addCommands(String packpath, String status) throws CIBusException {
-		List<String>  classList = ClassFinder.findClasspath(packpath, CommonBusActivator.getClassLoader());
+		List<String>  classList = ClassFinder.findClasspath(packpath, BusActivator.getClassLoader());
 		for (String clsname : classList) {
 			addCommand(clsname);
 			try {
@@ -104,7 +104,7 @@ public abstract class CommandAdapter {
 		try {
 			cls = ProxyUtil.loadClass(clsname);
 		} catch (CIBusException e) {
-			cls = ProxyUtil.loadClass(clsname, CommonBusActivator.getClassLoader());
+			cls = ProxyUtil.loadClass(clsname, BusActivator.getClassLoader());
 		}
 		
 		if (ICommand.class.isAssignableFrom(cls)) {

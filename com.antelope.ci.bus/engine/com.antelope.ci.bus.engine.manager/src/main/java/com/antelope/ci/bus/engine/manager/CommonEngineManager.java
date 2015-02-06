@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**

@@ -23,7 +23,7 @@ import com.antelope.ci.bus.common.configration.IsolateResourceReader;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.Form;
 
 
@@ -200,7 +200,7 @@ public class BusPortalFormHelper {
 	
 	private static ClassLoader getClassLoader() {
 		try {
-			return CommonBusActivator.getClassLoader();
+			return BusActivator.getClassLoader();
 		} catch(Exception e) {
 			DevAssistant.errorln(e);
 			return BusPortalFormHelper.class.getClassLoader();

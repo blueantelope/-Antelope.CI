@@ -18,7 +18,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
-import com.antelope.ci.bus.server.service.ServerService;
+import com.antelope.ci.bus.osgi.Service;
 
 
 /**
@@ -27,7 +27,7 @@ import com.antelope.ci.bus.server.service.ServerService;
  * @version  0.1
  * @Date	 2013-10-14		下午4:58:51 
  */
-@ServerService(serviceName="com.antelope.ci.bus.server.service.AuthService")
+@Service(name="com.antelope.ci.bus.server.service.AuthService")
 public class PasswordAuthServiceImpl extends SshAuthService {
 	
 	public PasswordAuthServiceImpl() {

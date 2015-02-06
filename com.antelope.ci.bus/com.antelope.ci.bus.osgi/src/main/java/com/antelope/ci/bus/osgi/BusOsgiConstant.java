@@ -25,6 +25,6 @@ public class BusOsgiConstant {
 	public static final int DEF_SERVER_PORT = 9426;
 	public static final String DEF_KEY_TYPE = "fixed";
 	public static final String DEF_KEY_NAME = "com.antelope.bus.ci.key";
-	public static final String DEF_WELCOME_BANNER = "@ANTELOPE CI SYSTEM";
+	public static final String DEF_BANNER = "@ANTELOPE CI SYSTEM";
 }
 

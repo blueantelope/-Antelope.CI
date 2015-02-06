@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.server.MainServer.java
+// com.antelope.ci.bus.server.BusCommonServerActivator.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -8,98 +8,35 @@
 
 package com.antelope.ci.bus.server;
 
-import org.osgi.framework.ServiceReference;
-
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
-import com.antelope.ci.bus.server.service.BusServerServicePublisher;
+import com.antelope.ci.bus.osgi.BusActivator;
+import com.antelope.ci.bus.osgi.ServicePublisher;
+
 
 /**
- * 持续bus总线服务
- * 使用ssh方式
+ * common server activator, for all ssh sever
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-7-30		下午11:23:33 
+ * @Date	 2013-11-7		下午6:14:57 
  */
-public class BusServerActivator extends CommonBusActivator {
+public abstract class BusServerActivator extends BusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#customInit()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#customInit()
 	 */
 	@Override
 	protected void customInit() throws CIBusException {
-		// nothing
+		log4j();
 	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#run()
-	 */
-	@Override
-	protected void run() throws CIBusException {
-
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#destroy()
-	 */
-	@Override
-	protected void destroy() throws CIBusException {
 	
-	}
-
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleLoadService(java.lang.String, org.osgi.framework.ServiceReference, java.lang.Object)
-	 */
-	@Override
-	protected void handleLoadService(String clsName, ServiceReference ref, Object service) throws CIBusException {
-		
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleUnloadService(org.osgi.framework.ServiceReference)
-	 */
-	@Override
-	protected void handleUnloadService(ServiceReference ref)
-			throws CIBusException {
-		
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#handleStopAllService()
-	 */
-	@Override
-	protected void handleStopAllService() throws CIBusException {
-		
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#addServices()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#addServices()
 	 */
 	@Override
 	protected void addServices() throws CIBusException {
-		BusServerServicePublisher.publish(m_context);
-	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#removeServices()
-	 */
-	@Override
-	protected void removeServices() throws CIBusException {
-
+		ServicePublisher.publish(m_context, "com.antelope.ci.bus.server.service");
 	}
 }

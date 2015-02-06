@@ -13,7 +13,7 @@ import java.util.Map;
 
 import com.antelope.ci.bus.engine.manager.project.EngineProjectManager;
 import com.antelope.ci.bus.engine.manager.project.EngineProjectManagerConstants;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 
@@ -48,6 +48,6 @@ public abstract class CommonFormAction {
 	}
 	
 	protected EngineProjectManager getProjectManager() {
-		return (EngineProjectManager) CommonBusActivator.getUsingService(EngineProjectManagerConstants.SERVICE_NAME);
+		return (EngineProjectManager) BusActivator.getUsingService(EngineProjectManagerConstants.SERVICE_NAME);
 	}
 }

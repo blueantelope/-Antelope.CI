@@ -53,6 +53,7 @@ public class BusPropertiesHelper {
 		}
 	}
 	
+	private BundleContext m_context;
 	private static final String PROPS_FILE = "/META-INF/bus.properties";
 	/* 
 	 * bundle configuration
@@ -61,6 +62,7 @@ public class BusPropertiesHelper {
 	private static final String LOAD_LEVEL = "load.level";
 	private static final String BUNDLE_LEVEL = "bundle.level";
 	private static final String BUS_LOAD_SERVICES = "bus.load.services";
+	private static final String BUS_BANNER = "bus.banner";
 	/* 
 	 * server configuration
 	 */
@@ -69,22 +71,25 @@ public class BusPropertiesHelper {
 	private static final String SERVER_PORT = "bus.server.port";
 	private static final String KEY_TYPE = "bus.key.type";
 	private static final String KEY_NAME = "bus.key.name";
-	private static final String WELCOME_BANNER = "bus.welcome.banner";
 	
 	private Properties props; // 属性
-	
 	public BusPropertiesHelper(BundleContext m_context) throws CIBusException {
-		props = load(m_context);
+		this.m_context = m_context;
+		props = load();
 	}
 	
 	public Properties getAll() {
 		return props;
 	}
 	
+	public void refresh() throws CIBusException {
+		props = load();
+	}
+	
 	/*
 	 * 加载bundle默认配置文件bus.properties
 	 */
-	private Properties load(BundleContext m_context) throws CIBusException {
+	private Properties load() throws CIBusException {
 		URL props_url = m_context.getBundle().getResource(PROPS_FILE);
 		if (props_url != null) {
 			BasicConfigrationReader reader = new URLResourceReader();
@@ -93,6 +98,10 @@ public class BusPropertiesHelper {
 		}
 		
 		return new Properties();
+	}
+	
+	public String getBanner() {
+		return PropertiesUtil.getString(props, BUS_BANNER, BusOsgiConstant.DEF_BANNER);
 	}
 	
 	public boolean switchServer() {
@@ -113,9 +122,5 @@ public class BusPropertiesHelper {
 	
 	public String getKeyName() {
 		return PropertiesUtil.getString(props, KEY_NAME, BusOsgiConstant.DEF_KEY_NAME);
-	}
-	
-	public String getWelcomeBanner() {
-		return PropertiesUtil.getString(props, WELCOME_BANNER, BusOsgiConstant.DEF_WELCOME_BANNER);
 	}
 }

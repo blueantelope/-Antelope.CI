@@ -35,7 +35,8 @@ import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.common.xml.XmlEntity;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
+import com.antelope.ci.bus.portal.BusPortalActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ORIGIN;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
@@ -80,24 +81,22 @@ public class BusPortalConfigurationHelper {
 	private Map<String, Portal> portalExtMap;
 	private static int null_name_index;
 	private boolean inited = false;
-	private EU_ParseType parseType;
+	private PARSER_TYPE parserType;
 	private static InputStream xsd_in = null;
-	private final static String PARSETYPE_KEY							= "bus.portal.parse";	
-	private final static String DEFAULT_PARSETYPEVALUE					= "static";
-	private final static EU_ParseType DEFAULT_PARSETYPE 				= EU_ParseType.STATICAL;
+	private final static PARSER_TYPE DEF_PARSER_TYPE = PARSER_TYPE.STATICAL;
 	
 	private BusPortalConfigurationHelper() {
 		try {
-			log = CommonBusActivator.getLog4j(this.getClass());
+			log = BusActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
 		} 
 		try {
-			String parTypeValue = CommonBusActivator.getStringProp(PARSETYPE_KEY, DEFAULT_PARSETYPEVALUE);
-			parseType = EU_ParseType.toType(parTypeValue);
+			String parserValue = BusPortalActivator.getParser();
+			parserType = PARSER_TYPE.toType(parserValue);
 		} catch (CIBusException e) {
 			DevAssistant.errorln(e);
-			parseType = DEFAULT_PARSETYPE;
+			parserType = DEF_PARSER_TYPE;
 		} 
 		configPairMap = new ConcurrentHashMap<String, PortalPair>();
 		classLoader = this.getClass().getClassLoader();
@@ -116,7 +115,7 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	public Portal parse(String shellClass) throws CIBusException {
-		switch (parseType) {
+		switch (parserType) {
 			case DYNAMICAL:
 				return parseDynamic(shellClass);
 			case STATICAL:
@@ -326,7 +325,7 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	public synchronized void init() throws CIBusException {
-		if (!inited && parseType == EU_ParseType.STATICAL) {
+		if (!inited && parserType == PARSER_TYPE.STATICAL) {
 			portal = parsePortal(PORTAL_XML);
 			reader = parseResource(PORTAL_RESOURCE, classLoader);
 			usablePortal = portal.clonePortal();

@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.service.auth.AuthService;
@@ -53,6 +53,10 @@ public abstract class BusServer {
 		customizeInit();
 	}
 	
+	public void setContext(BundleContext m_context) {
+		this.m_context = m_context;
+	}
+	
 	public void setWaitForStart(long waitForStart) {
 		this.waitForStart = waitForStart;
 	}
@@ -68,7 +72,7 @@ public abstract class BusServer {
 	public void open() throws CIBusException {
 		writeLocker.lock();
 		try {
-			if (!running) {
+			if (config.isSwitcher() && !running) {
 				log.info(toSummary() + " starting");
 				start();
 				running= true;
@@ -128,7 +132,7 @@ public abstract class BusServer {
 		boolean userstore_added = false;
 		while ((System.currentTimeMillis()-start_tm) < waitForInit) {
 			if (userstore_added) {
-				List authServices = CommonBusActivator.getServices(AuthService.SERVICE_NAME);
+				List authServices = BusActivator.getServices(AuthService.SERVICE_NAME);
 				if (authServices == null)
 					continue;
 				for (Object service : authServices) {
@@ -154,7 +158,7 @@ public abstract class BusServer {
 					break;
 			} else {
 				UserStoreServerService userStoreService = 
-						(UserStoreServerService) CommonBusActivator.getUsingService(UserStoreServerService.SERVICE_NAME);
+						(UserStoreServerService) BusActivator.getUsingService(UserStoreServerService.SERVICE_NAME);
 				if (userStoreService == null)
 					continue;
 				condition.setUserMap(userStoreService.getUserMap());

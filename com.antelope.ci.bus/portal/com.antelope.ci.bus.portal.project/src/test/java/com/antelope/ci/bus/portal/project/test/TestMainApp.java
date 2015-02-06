@@ -22,7 +22,7 @@ import com.antelope.ci.bus.server.BusServer;
 public class TestMainApp {
 	public static void main(String[] args) throws CIBusException {
 		BusServer server = new TestCommonPortalServer(TestBusProjectPortalShell.class.getName());
-		server.start();
+		server.open();
 	}
 }
 

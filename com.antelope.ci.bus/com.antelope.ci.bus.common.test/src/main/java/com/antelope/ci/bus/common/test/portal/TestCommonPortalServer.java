@@ -15,8 +15,8 @@ import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.engine.model.user.UserKey;
 import com.antelope.ci.bus.engine.model.user.UserPassword;
-import com.antelope.ci.bus.portal.BusPortalServer;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.service.ssh.BusPortalSshServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;
@@ -30,7 +30,7 @@ import com.antelope.ci.bus.server.ssh.service.auth.PublickeyAuthServiceImpl;
  * @version  0.1
  * @Date	 2014-5-1		下午4:44:27 
  */
-public class TestCommonPortalServer extends BusPortalServer {
+public class TestCommonPortalServer extends BusPortalSshServer {
 	private final static String username = "blueantelope";
 	private final static String password = "blueantelope";
 	

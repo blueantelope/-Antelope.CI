@@ -19,7 +19,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter;
-import com.antelope.ci.bus.server.BusCommonServerActivator;
+import com.antelope.ci.bus.server.BusServerActivator;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
@@ -70,10 +70,10 @@ public abstract class CommonEntrance implements Entrance {
 	private void initMount() throws CIBusException {
 		// mount shell status class
 		List<String> classList = ClassFinder.findClasspath(this.getClass().getPackage().getName(), 
-				BusCommonServerActivator.getClassLoader());
+				BusServerActivator.getClassLoader());
 		for (String clsname : classList) {
 			try {
-				Class clz = Class.forName(clsname, false, BusCommonServerActivator.getClassLoader());
+				Class clz = Class.forName(clsname, false, BusServerActivator.getClassLoader());
 				if (clz.isAnnotationPresent(Shell.class))
 					if (server_condition != null)
 						server_condition.addShellClass(clz.getName());
@@ -83,9 +83,9 @@ public abstract class CommonEntrance implements Entrance {
 					BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), pc.properties(), pc.xml(), pc.validate());
 				} else {
 					List<URL> xml_url = ClassFinder.findXmlUrl(this.getClass().getPackage().getName(), 
-							BusCommonServerActivator.getClassLoader());
+							BusServerActivator.getClassLoader());
 					List<URL> props_url =ClassFinder.findResourceUrl(this.getClass().getPackage().getName(), 
-							BusCommonServerActivator.getClassLoader());
+							BusServerActivator.getClassLoader());
 					if (!xml_url.isEmpty() && !props_url.isEmpty())
 						BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), xml_url.get(0).toString(), props_url.get(0).toString(), false);
 				}

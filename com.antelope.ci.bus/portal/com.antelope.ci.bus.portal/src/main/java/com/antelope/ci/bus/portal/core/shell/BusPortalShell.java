@@ -22,7 +22,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.portal.BusPortalActivator;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
@@ -67,8 +67,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		CONTENT_SCALE.put(EU_LAYOUT.EAST.getName(), 2);
 	}
 	
-	private final static String FORM_COMMAND_WAIT_KEY = "bus.portal.form.command.wait";
-	protected final static long DEFAULT_FORM_COMMAND_WAIT_VALUE = 30 * 1000;
 	protected Portal portal;
 	protected ShellPalette contentPalette;
 	protected PortalBlock activeBlock;
@@ -115,7 +113,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 		inputFinished = false;
 		formControlMode = false;
 		lastFormCommandTime = -1;
-		form_command_wait = CommonBusActivator.getLongProp(FORM_COMMAND_WAIT_KEY, DEFAULT_FORM_COMMAND_WAIT_VALUE);
+		form_command_wait = BusPortalActivator.getFormCommandWait();
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
 	}

@@ -10,8 +10,10 @@ package com.antelope.ci.bus.engine.manager;
 
 import org.osgi.framework.ServiceReference;
 
+import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
+import com.antelope.ci.bus.osgi.BusOsgiConstant;
 
 
 
@@ -21,7 +23,14 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @version  0.1
  * @Date	 2014年11月24日		下午5:16:30 
  */
-public class BusEngineManagerActivator extends CommonBusActivator {
+public class BusEngineManagerActivator extends BusActivator {
+	private static final String PUBLISH_PERIOD = "publish.period";
+	private static final long DEF_PUBLISH_PERIOD = 1 * 1000;
+	
+	public static long getPublishPeriod() {
+		return PropertiesUtil.getLong(properties, PUBLISH_PERIOD, DEF_PUBLISH_PERIOD);
+	}
+	
 	@Override
 	protected void customInit() throws CIBusException {
 		

@@ -11,7 +11,7 @@ package com.antelope.ci.bus.engine.access.storage;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.ServicePublishHook;
 
 
@@ -21,7 +21,7 @@ import com.antelope.ci.bus.osgi.ServicePublishHook;
  * @version  0.1
  * @Date	 2014-7-9		上午11:46:26 
  */
-public class BusEngineStorageActivator extends CommonBusActivator {
+public class BusEngineStorageActivator extends BusActivator {
 	@Override
 	protected void customInit() throws CIBusException {
 		

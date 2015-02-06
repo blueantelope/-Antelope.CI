@@ -15,8 +15,8 @@ import org.osgi.framework.BundleContext;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.osgi.Service;
 import com.antelope.ci.bus.server.service.CommonServerService;
-import com.antelope.ci.bus.server.service.ServerService;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 
 
@@ -26,7 +26,7 @@ import com.antelope.ci.bus.server.service.UserStoreServerService;
  * @version  0.1
  * @Date	 2013-11-8		下午12:01:44 
  */
-@ServerService(serviceName=UserStoreServerService.SERVICE_NAME)
+@Service(name=UserStoreServerService.SERVICE_NAME)
 public class FileUserStoreServiceImpl  extends CommonServerService implements UserStoreServerService {
 	public FileUserStoreServiceImpl() {
 		super();

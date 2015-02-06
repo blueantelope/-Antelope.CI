@@ -12,7 +12,7 @@ import java.util.Map;
 
 import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
-import com.antelope.ci.bus.server.service.BusServerService;
+import com.antelope.ci.bus.osgi.IService;
 
 /**
  * 登录验证service
@@ -21,7 +21,7 @@ import com.antelope.ci.bus.server.service.BusServerService;
  * @version 0.1
  * @Date 2013-10-14 下午4:56:20
  */
-public interface AuthService extends BusServerService {
+public interface AuthService extends IService {
 	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.AuthService";
 	
 	public void initUserStore(Map<String, User> userStore);

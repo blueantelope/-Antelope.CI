@@ -15,7 +15,7 @@ import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.form.CommonFormAction;
 import com.antelope.ci.bus.portal.core.shell.form.FormAction;
@@ -140,7 +140,7 @@ public abstract class PortalHit extends Hit {
 		String[] commands = splitCommand();
 		ClassLoader loader = null;
 		try {
-			loader = CommonBusActivator.getClassLoader();
+			loader = BusActivator.getClassLoader();
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 		}

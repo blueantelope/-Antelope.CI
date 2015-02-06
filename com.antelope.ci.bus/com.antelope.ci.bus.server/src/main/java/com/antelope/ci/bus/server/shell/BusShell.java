@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
 import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
@@ -68,8 +68,8 @@ public abstract class BusShell {
 		this();
 		this.session = session;
 		this.sort = -1;
-		cloader = CommonBusActivator.getClassLoader() != null 
-						? CommonBusActivator.getClassLoader() 
+		cloader = BusActivator.getClassLoader() != null 
+						? BusActivator.getClassLoader() 
 						: this.getClass().getClassLoader();
 	}
 	

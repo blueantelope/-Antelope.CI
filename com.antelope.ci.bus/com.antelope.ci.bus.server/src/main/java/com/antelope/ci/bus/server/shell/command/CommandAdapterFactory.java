@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Vector;
 
 import com.antelope.ci.bus.common.ProxyUtil;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
@@ -39,7 +39,7 @@ public class CommandAdapterFactory {
 	private static CommandAdapter newAdapter(String className) {
 		Object o = ProxyUtil.newObject(className);
 		if (o == null)
-			o = ProxyUtil.newObject(className, CommonBusActivator.getClassLoader());
+			o = ProxyUtil.newObject(className, BusActivator.getClassLoader());
 		return (CommandAdapter) o;
 	}
 }

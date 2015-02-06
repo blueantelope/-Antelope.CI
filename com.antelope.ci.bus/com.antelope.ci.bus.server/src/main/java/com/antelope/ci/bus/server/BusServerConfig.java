@@ -13,10 +13,10 @@ import java.net.URL;
 import com.antelope.ci.bus.common.PROTOCOL;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.BusOsgiConstant;
 import com.antelope.ci.bus.osgi.BusPropertiesHelper;
 import com.antelope.ci.bus.osgi.BusPropertiesHelper.KT;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
 
 
 /**
@@ -33,7 +33,7 @@ public class BusServerConfig {
 	private KT kt;
 	private String key_name;
 	private URL key_url;
-	private String welcome_banner;
+	private String banner;
 	
 	public BusServerConfig() {
 		super();
@@ -50,7 +50,7 @@ public class BusServerConfig {
 		int port = BusOsgiConstant.DEF_SERVER_PORT;
 		KT kt = KT.DYNAMIC;
 		String key_name = BusOsgiConstant.DEF_KEY_NAME;
-		String welcome_banner = BusOsgiConstant.DEF_WELCOME_BANNER;
+		String welcome_banner = BusOsgiConstant.DEF_BANNER;
 		proto = PROTOCOL.TCP;
 	}
 	
@@ -100,11 +100,11 @@ public class BusServerConfig {
 		this.port = port;
 	}
 	
-	public String getWelcome_banner() {
-		return welcome_banner;
+	public String getBanner() {
+		return banner;
 	}
-	public void setWelcome_banner(String welcome_banner) {
-		this.welcome_banner = welcome_banner;
+	public void setBanner(String banner) {
+		this.banner = banner;
 	}
 	
 	public URL getKey_url() {
@@ -124,13 +124,13 @@ public class BusServerConfig {
 	 */
 	public static BusServerConfig load() throws CIBusException {
 		BusServerConfig config = new BusServerConfig();
-		BusPropertiesHelper helper = new BusPropertiesHelper(CommonBusActivator.getContext());
+		BusPropertiesHelper helper = new BusPropertiesHelper(BusActivator.getContext());
 		config.setSwitcher(helper.switchServer());
 		config.setHost(helper.getServerHost());
 		config.setPort(helper.getServerPort());
 		config.setKt(helper.getKeyType());
 		config.setKey_name(helper.getKeyName());
-		config.setWelcome_banner(helper.getWelcomeBanner());
+		config.setBanner(helper.getBanner());
 		
 		return config;
 	}

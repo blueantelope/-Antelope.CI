@@ -11,7 +11,7 @@ package com.antelope.ci.bus.gate;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.BusCommonServerActivator;
+import com.antelope.ci.bus.server.BusServerActivator;
 
 
 /**
@@ -20,7 +20,7 @@ import com.antelope.ci.bus.server.BusCommonServerActivator;
  * @version  0.1
  * @Date	 2014年12月13日		下午8:00:59 
  */
-public class BusGateActivator extends BusCommonServerActivator {
+public class BusGateActivator extends BusServerActivator {
 
 	@Override
 	protected void run() throws CIBusException {

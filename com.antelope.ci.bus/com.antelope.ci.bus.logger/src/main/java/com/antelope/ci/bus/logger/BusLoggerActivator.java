@@ -14,7 +14,7 @@ import org.osgi.framework.ServiceReference;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.logger.service.BusLogServiceImpl;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
@@ -25,11 +25,11 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * @version  0.1
  * @Date	 2013-7-31		上午10:56:57 
  */
-public class BusLoggerActivator extends CommonBusActivator {
+public class BusLoggerActivator extends BusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#customInit()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#customInit()
 	 */
 	@Override
 	protected void customInit() throws CIBusException {
@@ -40,7 +40,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#run()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#run()
 	 */
 	@Override
 	protected void run() throws CIBusException {
@@ -79,7 +79,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#addServices()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#addServices()
 	 */
 	@Override
 	protected void addServices() throws CIBusException {
@@ -92,7 +92,7 @@ public class BusLoggerActivator extends CommonBusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.CommonBusActivator#removeServices()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#removeServices()
 	 */
 	@Override
 	protected void removeServices() throws CIBusException {

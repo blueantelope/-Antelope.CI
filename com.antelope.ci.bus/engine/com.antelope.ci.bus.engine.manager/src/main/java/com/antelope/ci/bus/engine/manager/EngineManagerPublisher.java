@@ -23,7 +23,7 @@ import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
@@ -34,8 +34,6 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  */
 public class EngineManagerPublisher {
 	private static final Logger log = Logger.getLogger(EngineManagerPublisher.class);
-	private static final String PERIODFORPUBLISH = "publish.period";
-	private static final long PERIODFORPUBLISH_DEFAULT = 1000;
 	private static Map<String, BusEngineManager> managerMap = new ConcurrentHashMap<String, BusEngineManager>();
 	private static Map<String, ManagerParameters> parametersMap = new ConcurrentHashMap<String, ManagerParameters>();
 
@@ -59,7 +57,7 @@ public class EngineManagerPublisher {
 				if (info.isCheckService())
 					publish(info.getServiceClasspath(), 2);
 				try {
-					Thread.sleep(CommonBusActivator.getLongProp(PERIODFORPUBLISH, PERIODFORPUBLISH_DEFAULT));
+					Thread.sleep(BusEngineManagerActivator.getPublishPeriod());
 				} catch (InterruptedException e) { }
 			}
 		}
@@ -77,7 +75,7 @@ public class EngineManagerPublisher {
 					String serviceName = getServiceName(clazz);
 					if (serviceName == null)
 						continue;
-					ServiceReference serviceReference = CommonBusActivator.getServiceReference(serviceName, className);
+					ServiceReference serviceReference = BusActivator.getServiceReference(serviceName, className);
 					
 					if (serviceReference == null && !parametersMap.containsKey(className)) {
 						loadManager(clazz, type, true);

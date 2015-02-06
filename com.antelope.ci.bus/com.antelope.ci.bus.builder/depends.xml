@@ -88,6 +88,11 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
+		<groupId>com.antelope.ci.bus.server</groupId>
+			<artifactId>com.antelope.ci.bus.server.ssh</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.antelope.ci.bus</groupId>
 			<artifactId>com.antelope.ci.bus.server.service.userstore.file</artifactId>
 			<version>0.1.0</version>
@@ -95,6 +100,11 @@
 		<dependency>
 			<groupId>com.antelope.ci.bus</groupId>
 			<artifactId>com.antelope.ci.bus.portal</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus.portal.service</groupId>
+			<artifactId>com.antelope.ci.bus.portal.service.ssh</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>

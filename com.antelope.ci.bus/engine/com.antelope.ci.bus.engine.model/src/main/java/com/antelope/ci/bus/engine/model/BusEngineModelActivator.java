@@ -11,7 +11,7 @@ package com.antelope.ci.bus.engine.model;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
@@ -21,7 +21,7 @@ import com.antelope.ci.bus.osgi.CommonBusActivator;
  * 
  * @Date	 2014年11月24日		下午5:30:37 
  */
-public class BusEngineModelActivator extends CommonBusActivator {
+public class BusEngineModelActivator extends BusActivator {
 
 	@Override
 	protected void customInit() throws CIBusException {

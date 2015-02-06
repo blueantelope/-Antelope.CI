@@ -11,7 +11,7 @@ package com.antelope.ci.bus.server.service;
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.CommonBusActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
@@ -25,7 +25,7 @@ public abstract class CommonServerService {
 	
 	public CommonServerService() {
 		try {
-			log = CommonBusActivator.getLog4j(this.getClass());
+			log = BusActivator.getLog4j(this.getClass());
 		} catch (CIBusException e) {
 			e.printStackTrace();
 		}

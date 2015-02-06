@@ -43,6 +43,11 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.antelope.ci.bus.portal.service</groupId>
+			<artifactId>com.antelope.ci.bus.portal.service.ssh</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
