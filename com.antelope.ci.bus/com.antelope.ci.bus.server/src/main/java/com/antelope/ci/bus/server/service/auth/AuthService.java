@@ -22,7 +22,7 @@ import com.antelope.ci.bus.osgi.IService;
  * @Date 2013-10-14 下午4:56:20
  */
 public interface AuthService extends IService {
-	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.AuthService";
+	public static final String NAME = "com.antelope.ci.bus.server.service.auth.AuthService";
 	
 	public void initUserStore(Map<String, User> userStore);
 	

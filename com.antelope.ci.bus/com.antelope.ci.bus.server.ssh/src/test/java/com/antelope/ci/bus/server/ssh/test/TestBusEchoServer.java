@@ -27,9 +27,9 @@ import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.service.auth.ssh.PasswordAuthServiceImpl;
+import com.antelope.ci.bus.server.service.auth.ssh.PublickeyAuthServiceImpl;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
-import com.antelope.ci.bus.server.ssh.service.auth.PasswordAuthServiceImpl;
-import com.antelope.ci.bus.server.ssh.service.auth.PublickeyAuthServiceImpl;
 
 
 /**

@@ -22,7 +22,6 @@ import com.antelope.ci.bus.common.FileUtil;
 
 /**
  * 日志对外服务实现
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-8-7		下午4:39:44 
@@ -62,7 +61,5 @@ public class BusLogServiceImpl implements BusLogService {
 	@Override
 	public Logger getLog4j(Class clazz) {
 		return Logger.getLogger(clazz);
-		
 	}
 }
-

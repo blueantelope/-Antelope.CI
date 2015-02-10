@@ -410,27 +410,26 @@
 		</exec>
 	</target>
 	
-	
-	<!-- com.antelope.ci.bus.portal.service.ssh -->
-		<target name="portal.service.ssh.compile" depends="mvn_env">
-			<exec executable="${mvn}" failonerror="true">
-				<arg line="-f ${prj.portal.service.ssh.pom}" />
-				<arg line="install" />
-			</exec>
-		</target>
-		<target name="portal.service.ssh.compile.notest" depends="mvn_env">
-			<exec executable="${mvn}" failonerror="true">
-				<arg line="-f ${prj.portal.service.ssh.pom}" />
-				<arg line="install ${mvn.notest}" />
-			</exec>
-		</target>
-		<target name="portal.service.ssh.depends" depends="mvn_env">
-			<exec executable="${mvn}" failonerror="true">
-				<arg line="-f ${prj.service.ssh.pom}" />
-				<arg line="dependency:copy-dependencies" />
-				<arg value="-DexcludeGroupIds=junit" />
-			</exec>
-		</target>
+	<!-- com.antelope.ci.bus.portal.ssh -->
+	<target name="portal.ssh.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.ssh.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="portal.ssh.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.ssh.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="portal.ssh.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.ssh.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
 	
 	<!-- com.antelope.ci.bus.portal.dashboard -->
 	<target name="portal.dashboard.compile" depends="mvn_env">
@@ -447,7 +446,7 @@
 	</target>
 	<target name="portal.dashboard.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.dashboard.pom}" />
+			<arg line="-f ${prj.portal.dashboard.pom}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>

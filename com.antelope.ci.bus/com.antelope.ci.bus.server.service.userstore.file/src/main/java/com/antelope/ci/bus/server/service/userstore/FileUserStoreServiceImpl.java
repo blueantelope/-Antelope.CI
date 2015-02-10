@@ -26,8 +26,8 @@ import com.antelope.ci.bus.server.service.UserStoreServerService;
  * @version  0.1
  * @Date	 2013-11-8		下午12:01:44 
  */
-@Service(name=UserStoreServerService.SERVICE_NAME)
-public class FileUserStoreServiceImpl  extends CommonServerService implements UserStoreServerService {
+@Service(name=UserStoreServerService.NAME)
+public class FileUserStoreServiceImpl extends CommonServerService implements UserStoreServerService {
 	public FileUserStoreServiceImpl() {
 		super();
 		init();
@@ -39,7 +39,7 @@ public class FileUserStoreServiceImpl  extends CommonServerService implements Us
 
 	@Override
 	public void register(BundleContext m_context) throws CIBusException {
-		BusOsgiUtil.addServiceToContext(m_context, this, SERVICE_NAME);
+		BusOsgiUtil.addServiceToContext(m_context, this, NAME);
 	}
 
 	/**
@@ -61,6 +61,4 @@ public class FileUserStoreServiceImpl  extends CommonServerService implements Us
 	public User getUser(String username) {
 		return PasswordHelper.getHelper().userMap.get(username);
 	}
-
 }
-

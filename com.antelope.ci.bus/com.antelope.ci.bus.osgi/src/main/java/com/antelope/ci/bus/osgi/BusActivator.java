@@ -10,13 +10,11 @@ package com.antelope.ci.bus.osgi;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 import org.osgi.framework.BundleActivator;
@@ -38,6 +36,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date 2013-8-29 下午3:17:02
  */
 public abstract class BusActivator implements BundleActivator {
+	protected static final int FETCH_SERVICE_TIMES = 3;
+	protected static final long FETCH_SERVICE_SLEEP = 500;
 	protected static Logger log4j = null; // log4j
 	protected static final String LOG_SERVICE_NAME = "com.antelope.ci.bus.logger.service.BusLogService";
 	private static final String PACKET_SUFFIX = "com.antelope.ci.bus";
@@ -48,28 +48,37 @@ public abstract class BusActivator implements BundleActivator {
 	protected static BusPropertiesHelper propsHelper;
 	protected static Map<String, List<BusServiceInfo>> serviceMap;
 	protected static Properties properties; // bundle的属性
-	protected List<String> serviceList; // 需要加载的service列表
+	protected static List<String> serviceList; // 需要加载的service列表
 	protected static ServiceReference log_ref = null;
 	protected static Object logService = null;
 	private List<ServiceTracker> trackerList;
 	protected boolean logServiceProvider = false;
-	protected final static ReadWriteLock service_lock = new ReentrantReadWriteLock();
-	protected final static Lock service_readLock = service_lock.readLock();
-	protected final static Lock service_writeLock = service_lock.writeLock();
 
 	public BusActivator() {
 		super();
 		System.out.println(">>>>>> start bus activator: " + this.getClass().getName() + " <<<<<<");
-		serviceMap = new HashMap<String, List<BusServiceInfo>>();
+		serviceMap = new ConcurrentHashMap<String, List<BusServiceInfo>>();
 		properties = new Properties();
-		serviceList = new ArrayList<String>();
+		serviceList = new Vector<String>();
 		trackerList = new ArrayList<ServiceTracker>();
 	}
-
+	
 	public BusActivator(Properties props) {
 		properties = props;
 	}
 
+	public static void addLoadService(String serviceName) {
+		boolean loaded = false;
+		for (String service : serviceList) {
+			if (service.equals(serviceName)) {
+				loaded = true;
+				break;
+			}
+		}
+		if (!loaded)
+			serviceList.add(serviceName);
+	}
+	
 	public static Properties getActivatorProps() {
 		return properties;
 	}
@@ -86,6 +95,17 @@ public abstract class BusActivator implements BundleActivator {
 		return serviceMap;
 	}
 	
+	public static void mapService(String serviceName, BusServiceInfo serviceInfo) {
+		if (getService(serviceName, serviceInfo.getClassName()) != null)
+			return;
+		List<BusServiceInfo> serviceList = serviceMap.get(serviceName);
+		if (serviceList == null) {
+			serviceList = new ArrayList<BusServiceInfo>();
+			serviceMap.put(serviceName, serviceList);
+		}
+		serviceList.add(serviceInfo);
+	}
+	
 	public static ServiceReference getServiceReference(String serviceName, String className) {
 		BusServiceInfo info;
 		if ((info=getBusServiceInfo(serviceName, className)) != null)
@@ -94,67 +114,40 @@ public abstract class BusActivator implements BundleActivator {
 	}
 
 	public static Object getService(String serviceName, String className) {
-		BusServiceInfo info;
-		if ((info=getBusServiceInfo(serviceName, className)) != null)
+		BusServiceInfo info = getBusServiceInfo(serviceName, className);
+		if (info != null)
 			return info.service;
 		return null;
 	}
 	
 	public static Object getUsingService(String serviceName) {
-		service_readLock.lock();
-		Object service = null;
-		try {
-			List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
-			if (infoList != null) {
-				service = infoList.get(0).getService();
-			}
-		} catch (Exception e) {
-			
-		} finally {
-			service_readLock.unlock();
-			return service;
-		}
+		List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
+		if (infoList != null && !infoList.isEmpty())
+			return infoList.get(0).getService();
+		return null;
 	}
 	
 	public static List<Object> getServices(String serviceName) {
-		service_readLock.lock();
 		List<Object> sList = null;
-		try {
-			List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
-			if (infoList != null) {
-				sList = new ArrayList<Object>();
-				for (BusServiceInfo info : infoList) {
-					sList.add(info.getService());
-				}
-				
+		List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
+		if (infoList != null) {
+			sList = new ArrayList<Object>();
+			for (BusServiceInfo info : infoList) {
+				sList.add(info.getService());
 			}
-		} catch (Exception e) {
-			
-		} finally {
-			service_readLock.unlock();
-			return sList;
 		}
+		return sList;
 	}
 	
 	private static BusServiceInfo getBusServiceInfo(String serviceName, String className) {
-		service_readLock.lock();
-		BusServiceInfo BusServiceInfo = null;
-		try {
-			List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
-			if (infoList != null) {
-				for (BusServiceInfo info : infoList) {
-					if (info.className.equals(className)) {
-						BusServiceInfo = info;
-						break;
-					}
-				}
+		List<BusServiceInfo> infoList =  serviceMap.get(serviceName);
+		if (infoList != null) {
+			for (BusServiceInfo info : infoList) {
+				if (info.className.equals(className))
+					return info;
 			}
-		} catch (Exception e) {
-			
-		} finally {
-			service_readLock.unlock();
-			return BusServiceInfo;
 		}
+		return null;
 	}
 
 	protected URL getResource(String name) {
@@ -239,9 +232,8 @@ public abstract class BusActivator implements BundleActivator {
 		if (properties != null) {
 			String load_services = properties.getProperty(BUS_LOAD_SERVICES);
 			if (load_services != null) {
-				for (String load_service : load_services.split(DIVISION)) {
+				for (String load_service : load_services.split(DIVISION))
 					serviceList.add(load_service.trim());
-				}
 			}
 		}
 	}
@@ -300,7 +292,7 @@ public abstract class BusActivator implements BundleActivator {
 			try {
 				String service_name = (String) reference.getProperty(BusOsgiConstant.SERVICE_NAME);
 				String service_class_name = (String) reference.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
-				unloadService(service_name, service_class_name,reference, service);
+				unloadService(service_name, service_class_name, reference, service);
 			} catch (CIBusException e) {
 				DevAssistant.assert_exception(e);
 			}
@@ -318,19 +310,12 @@ public abstract class BusActivator implements BundleActivator {
 			if (!logServiceProvider)
 				loadLogService(ref, service);
 		} else {
-			service_writeLock.lock();
-			try {
-				BusServiceInfo info = new BusServiceInfo(service_class_name, service, ref);
-				if (serviceMap.get(service_name) == null) {
-					serviceMap.put(service_name, new ArrayList<BusServiceInfo>());
-				}
-				List<BusServiceInfo> infoList = serviceMap.get(service_name);
-				infoList.add(info);
-			} catch (Exception e) {
-				
-			} finally {
-				service_writeLock.unlock();
+			BusServiceInfo info = new BusServiceInfo(service_class_name, service, ref);
+			if (serviceMap.get(service_name) == null) {
+				serviceMap.put(service_name, new ArrayList<BusServiceInfo>());
 			}
+			List<BusServiceInfo> infoList = serviceMap.get(service_name);
+			infoList.add(info);
 		}
 		handleLoadService(service_class_name, ref, service);
 		DevAssistant.assert_out("service类：" + service.getClass().getName() +", 调用者：" + this.getClass().getName());
@@ -345,25 +330,18 @@ public abstract class BusActivator implements BundleActivator {
 		ref = null;
 		service = null;
 		if (serviceMap.get(service_name) != null) {
-			service_writeLock.lock();
-			try {
-				int del_index = -1;
-				for (BusServiceInfo info : serviceMap.get(service_name)) {
-					if (info.equals(servcie_class_name)) {
-						break;
-					}
-					del_index++;
+			int del_index = -1;
+			for (BusServiceInfo info : serviceMap.get(service_name)) {
+				if (info.equals(servcie_class_name)) {
+					break;
 				}
-				if (del_index != -1) {
-					serviceMap.get(service_name).remove(del_index);
-				}
-				if (serviceMap.get(service_name).isEmpty())
-					serviceMap.remove(service_name);
-			} catch (Exception e) {
-				
-			} finally {
-				service_writeLock.unlock();
+				del_index++;
 			}
+			if (del_index != -1) {
+				serviceMap.get(service_name).remove(del_index);
+			}
+			if (serviceMap.get(service_name).isEmpty())
+				serviceMap.remove(service_name);
 		}
 		handleUnloadService(ref);
 	}
@@ -372,49 +350,33 @@ public abstract class BusActivator implements BundleActivator {
 	 * 加载日志service
 	 */
 	private void loadLogService(ServiceReference ref, Object service) {
-		if (log_ref == null) {
+		if (log_ref == null)
 			log_ref = ref;
-		}
-		if (logService == null) {
+		if (logService == null)
 			logService = service;
-		}
 		DevAssistant.assert_out("logService : " + logService);
-		if (serviceMap.get(LOG_SERVICE_NAME) == null) {
-			DevAssistant.assert_out("加载日志service");
-			service_writeLock.lock();
-			List<BusServiceInfo> logServiceList = new ArrayList<BusServiceInfo>();
-			String service_name = (String) log_ref.getProperty(BusOsgiConstant.SERVICE_NAME);
-			BusServiceInfo logInfo = new BusServiceInfo(service_name, logService, log_ref);
-			logServiceList.add(logInfo);
-			serviceMap.put(LOG_SERVICE_NAME, logServiceList);
-			service_writeLock.unlock();
-		}
+		String service_name = (String) log_ref.getProperty(BusOsgiConstant.SERVICE_NAME);
+		BusServiceInfo log_service_info = new BusServiceInfo(service_name, logService, log_ref);
+		mapService(LOG_SERVICE_NAME, log_service_info);
 	}
 
 	/*
 	 * 停止注册的service
 	 */
 	private void stopAllService() throws CIBusException {
-		service_writeLock.lock();
-		try {
-			for (String service_name : serviceMap.keySet()) {
-				if (serviceMap.get(service_name) != null) {
-					for (BusServiceInfo info : serviceMap.get(service_name)) {
-						if (service_name.equals(LOG_SERVICE_NAME)) {
-							log_ref = null;
-							logService = null;
-						}
-						ServiceReference ref = info.ref;
-						Object service = info.service;
-						String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
-						unloadService(service_name, service_class_name, ref, service);
+		for (String service_name : serviceMap.keySet()) {
+			if (serviceMap.get(service_name) != null) {
+				for (BusServiceInfo info : serviceMap.get(service_name)) {
+					if (service_name.equals(LOG_SERVICE_NAME)) {
+						log_ref = null;
+						logService = null;
 					}
+					ServiceReference ref = info.ref;
+					Object service = info.service;
+					String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
+					unloadService(service_name, service_class_name, ref, service);
 				}
 			}
-		} catch (Exception e) {
-			
-		} finally {
-			service_writeLock.unlock();
 		}
 		for (ServiceTracker tracker : trackerList) {
 			tracker.close();
@@ -428,6 +390,20 @@ public abstract class BusActivator implements BundleActivator {
 		return propsHelper.getBanner();
 	}
 
+	protected Object fetchService(String serviceName) {
+		int n = 0;
+		while (n < FETCH_SERVICE_TIMES) {
+			Object service = getUsingService(serviceName);
+			if (service != null)
+				return service;
+			n++;
+			try {
+				Thread.sleep(FETCH_SERVICE_SLEEP);
+			} catch (InterruptedException e) {}
+		}
+		
+		return null;
+	}
 	
 	/**
 	 * 各个activator自定义的初始化

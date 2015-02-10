@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: com.antelope.ci.bus.portal.ssh
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.portal.ssh
+Bundle-Vendor: blueantelope@gmail.com
+Import-Package: org.osgi.framework, com.antelope.ci.bus.server,
+ com.antelope.ci.bus.portal.core.shell, com.antelope.ci.bus.portal.core.configuration, 
+ com.antelope.ci.bus.portal.core.service
+DynamicImport-Package: com.antelope.ci.bus.server.*, com.antelope.ci.bus.portal.*
+Bundle-Activator: com.antelope.ci.bus.portal.ssh.BusPortalSshActivator

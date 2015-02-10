@@ -14,10 +14,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
-import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.service.auth.AuthService;
@@ -34,9 +32,9 @@ public abstract class BusServer {
 	private static final Logger log = Logger.getLogger(BusServer.class);	// log4j
 	protected BusServerConfig config; // server配置项
 	protected BusServerCondition condition;
-	protected static final long waitForInit = 3 * 1000; // 3 seconds
+	protected static final long WAIT_INIT = 10 * 1000; // 10 seconds
+	protected static final long SLEEP_WAIT_INIT = 500; // 500 millisecond 
 	protected long waitForStart;
-	protected BundleContext m_context;
 	protected boolean running;
 	private ReadWriteLock locker = new ReentrantReadWriteLock();
 	private Lock readLocker = locker.readLock();
@@ -45,16 +43,6 @@ public abstract class BusServer {
 	public BusServer() throws CIBusException {
 		init();
 		customizeInit();
-	}
-	
-	public BusServer(BundleContext m_context) throws CIBusException {
-		this.m_context = m_context;
-		init();
-		customizeInit();
-	}
-	
-	public void setContext(BundleContext m_context) {
-		this.m_context = m_context;
 	}
 	
 	public void setWaitForStart(long waitForStart) {
@@ -130,13 +118,13 @@ public abstract class BusServer {
 		boolean pwd_added = false;
 		boolean key_added = false;
 		boolean userstore_added = false;
-		while ((System.currentTimeMillis()-start_tm) < waitForInit) {
+		while ((System.currentTimeMillis()-start_tm) < WAIT_INIT) {
+			try {
+				Thread.sleep(SLEEP_WAIT_INIT);
+			} catch (InterruptedException e) {}
 			if (userstore_added) {
-				List authServices = BusActivator.getServices(AuthService.SERVICE_NAME);
-				if (authServices == null)
-					continue;
-				for (Object service : authServices) {
-					AuthService authService = (AuthService) service;
+				List<AuthService> authServices = BusServerTemplateActivator.getAuthServices();
+				for (AuthService authService : authServices) {
 					switch (authService.getAuthType()) {
 						case PASSWORD:
 							if (!pwd_added) {
@@ -157,8 +145,7 @@ public abstract class BusServer {
 				if (pwd_added && key_added)
 					break;
 			} else {
-				UserStoreServerService userStoreService = 
-						(UserStoreServerService) BusActivator.getUsingService(UserStoreServerService.SERVICE_NAME);
+				UserStoreServerService userStoreService = BusServerTemplateActivator.getUserStoreService();
 				if (userStoreService == null)
 					continue;
 				condition.setUserMap(userStoreService.getUserMap());

@@ -100,19 +100,19 @@ public abstract class CommandAdapter {
 	}
 	
 	public void addCommand(String clsname) throws CIBusException {
-		Class cls;
+		Class cmdClass;
 		try {
-			cls = ProxyUtil.loadClass(clsname);
+			cmdClass = ProxyUtil.loadClass(clsname);
 		} catch (CIBusException e) {
-			cls = ProxyUtil.loadClass(clsname, BusActivator.getClassLoader());
+			cmdClass = ProxyUtil.loadClass(clsname, BusActivator.getClassLoader());
 		}
 		
-		if (ICommand.class.isAssignableFrom(cls)) {
+		if (ICommand.class.isAssignableFrom(cmdClass) && cmdClass.isAnnotationPresent(Command.class)) {
 			try {
-				ICommand command = (ICommand) cls.newInstance();
+				ICommand command = (ICommand) cmdClass.newInstance();
 				addCommand(command);
 			} catch (Exception e) {
-				throw new CIBusException("", "add command error", e);
+				throw new CIBusException("", "add command [" + cmdClass + "] error\n", e);
 			}
 		}
 	}

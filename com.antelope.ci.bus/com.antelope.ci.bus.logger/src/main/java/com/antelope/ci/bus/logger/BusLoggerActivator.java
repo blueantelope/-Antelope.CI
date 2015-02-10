@@ -20,7 +20,6 @@ import com.antelope.ci.bus.osgi.BusActivator;
 /**
  * 启动日志服务
  * 使用log4j
- *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-7-31		上午10:56:57 

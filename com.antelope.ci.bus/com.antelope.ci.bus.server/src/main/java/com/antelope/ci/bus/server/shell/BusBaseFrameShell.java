@@ -41,7 +41,6 @@ public abstract class BusBaseFrameShell extends BusShell {
 		cmd = new String();
 	}
 	
-	
 	/**
 	 * 
 	 * (non-Javadoc)

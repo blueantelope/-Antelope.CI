@@ -10,10 +10,13 @@ package com.antelope.ci.bus.osgi;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
 
+import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -26,6 +29,10 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2013-11-13		上午11:33:44 
  */
 public class BusOsgiUtil {
+	public static List<String> getPackages(String rootPackage) throws CIBusException {
+		return ClassFinder.findPacketResource(rootPackage, BusActivator.getClassLoader());
+	}
+	
 	public static Class loadClass(String shellClassName) throws CIBusException {
 		Class shellClass;
 		try {
@@ -46,8 +53,13 @@ public class BusOsgiUtil {
 		}
 	}
 	
+	public static ServiceReference<?> getServiceReference(String clazz) {
+		return BusActivator.getContext().getServiceReference(clazz);
+	}
+	
 	public static void addServiceToContext(BundleContext m_context, Object service, String serviceName, ServiceProperty... others) {
-		m_context.registerService(serviceName, service, initServiceProperties(serviceName, service.getClass().getName(), others));
+		String clazz =  service.getClass().getName();
+		m_context.registerService(serviceName, service, initServiceProperties(serviceName, clazz, others));
 		DevAssistant.assert_out("register service : " + serviceName + ", " + service.getClass().getName());
 	}
 	
@@ -84,4 +96,3 @@ public class BusOsgiUtil {
 		}
 	}
 }
-

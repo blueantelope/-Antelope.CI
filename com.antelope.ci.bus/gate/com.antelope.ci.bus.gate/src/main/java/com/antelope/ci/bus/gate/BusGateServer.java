@@ -27,13 +27,11 @@ public class BusGateServer extends BusServer {
 		super();
 	}
 	
-	public BusGateServer(BundleContext m_context) throws CIBusException {
-		super(m_context);
-	}
-
-
 	@Override
-	protected void customizeConfig(BusServerConfig config) throws CIBusException {
+	protected void customizeConfig(BusServerConfig config)
+			throws CIBusException {
+		
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -41,16 +39,37 @@ public class BusGateServer extends BusServer {
 	protected void attatchCondition(BusServerCondition server_condition)
 			throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void customizeInit() throws CIBusException {
 		
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	protected void customizeRun() throws CIBusException {
+	protected void start() throws CIBusException {
+		
+		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	protected void shutdown() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String toSummary() {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
 }

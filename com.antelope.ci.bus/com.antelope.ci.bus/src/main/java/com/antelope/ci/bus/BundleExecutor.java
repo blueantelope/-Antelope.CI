@@ -11,6 +11,7 @@ package com.antelope.ci.bus;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.JarLoadMethod;
 import com.antelope.ci.bus.common.StringUtil;
 
@@ -48,7 +49,7 @@ class BundleExecutor {
 					startBundle(bundle);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			DevAssistant.errorln(loader.jarFile + " load error\n" + e);
 		}
 	}
 	

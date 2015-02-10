@@ -58,7 +58,7 @@ public class JarResourceReader extends BasicConfigrationReader {
 		Properties jarProps = new Properties();
 		try {
 			jarProps.load(jarFile.getInputStream(entry));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new CIBusException("", e);
 		}
 		configMap.put(config, jarProps);

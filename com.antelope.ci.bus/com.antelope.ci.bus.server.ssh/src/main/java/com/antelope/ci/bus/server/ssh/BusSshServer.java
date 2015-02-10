@@ -22,14 +22,13 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.channel.ChannelDirectTcpip;
 import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.service.auth.AuthService;
-import com.antelope.ci.bus.server.ssh.service.auth.SshAuthService;
+import com.antelope.ci.bus.server.service.auth.ssh.SshAuthService;
 import com.antelope.ci.bus.server.ssh.shell.BusSshShellContainerLauncher;
 import com.antelope.ci.bus.server.ssh.shell.BusSshShellFactory;
 import com.antelope.ci.bus.server.ssh.shell.BusSshShellLauncher;
@@ -51,17 +50,13 @@ public abstract class BusSshServer extends BusServer {
 		super();
 	}
 	
-	public BusSshServer(BundleContext m_context) throws CIBusException {
-		super(m_context);
-	}
-	
 	/**
 	 * 
 	 * (non-Javadoc)
 	 * @see com.antelope.ci.bus.server.BusServer#start()
 	 */
 	@Override
-	public void start() throws CIBusException {
+	protected void start() throws CIBusException {
 		initServer();
 		configServer();
 		runServer();
@@ -73,7 +68,7 @@ public abstract class BusSshServer extends BusServer {
 	 * @see com.antelope.ci.bus.server.BusServer#shutdown()
 	 */
 	@Override
-	public void shutdown() {
+	protected void shutdown() {
 		if (sshServer != null) {
 			try {
 				sshServer.stop(false);

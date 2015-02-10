@@ -34,6 +34,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePart;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.PlacePartTree;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalBufferFactory;
+import com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContext;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContextFactory;
 import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
@@ -53,7 +54,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
  * @version 0.1
  * @Date 2013-10-29 下午9:15:32
  */
-@Shell(name="base.frame", commandAdapter="com.antelope.ci.bus.portal.shell.command.PortalCommandAdapter")
+@Shell(name="base.frame", commandAdapter=PortalCommandAdapter.CLASS_NAME)
 public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected static final Logger log = Logger.getLogger(BusPortalShell.class);
 	

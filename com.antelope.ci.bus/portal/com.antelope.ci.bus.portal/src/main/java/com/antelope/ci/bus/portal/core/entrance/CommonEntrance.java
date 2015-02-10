@@ -16,16 +16,17 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter;
-import com.antelope.ci.bus.server.BusServerActivator;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.shell.BusShellMode;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.ModeClass;
 import com.antelope.ci.bus.server.shell.Shell;
 import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
 
@@ -69,11 +70,10 @@ public abstract class CommonEntrance implements Entrance {
 	
 	private void initMount() throws CIBusException {
 		// mount shell status class
-		List<String> classList = ClassFinder.findClasspath(this.getClass().getPackage().getName(), 
-				BusServerActivator.getClassLoader());
+		List<String> classList = ClassFinder.findClasspath(this.getClass().getPackage().getName(), BusActivator.getClassLoader());
 		for (String clsname : classList) {
 			try {
-				Class clz = Class.forName(clsname, false, BusServerActivator.getClassLoader());
+				Class clz = Class.forName(clsname, false, BusActivator.getClassLoader());
 				if (clz.isAnnotationPresent(Shell.class))
 					if (server_condition != null)
 						server_condition.addShellClass(clz.getName());
@@ -82,10 +82,8 @@ public abstract class CommonEntrance implements Entrance {
 					PortalConfiguration pc = (PortalConfiguration) clz.getAnnotation(PortalConfiguration.class);
 					BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), pc.properties(), pc.xml(), pc.validate());
 				} else {
-					List<URL> xml_url = ClassFinder.findXmlUrl(this.getClass().getPackage().getName(), 
-							BusServerActivator.getClassLoader());
-					List<URL> props_url =ClassFinder.findResourceUrl(this.getClass().getPackage().getName(), 
-							BusServerActivator.getClassLoader());
+					List<URL> xml_url = ClassFinder.findXmlUrl(this.getClass().getPackage().getName(), BusActivator.getClassLoader());
+					List<URL> props_url =ClassFinder.findResourceUrl(this.getClass().getPackage().getName(), BusActivator.getClassLoader());
 					if (!xml_url.isEmpty() && !props_url.isEmpty())
 						BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), xml_url.get(0).toString(), props_url.get(0).toString(), false);
 				}
@@ -96,7 +94,8 @@ public abstract class CommonEntrance implements Entrance {
 				if (clz.isAnnotationPresent(ModeClass.class))
 					BusShellMode.addModeClass(clz);
 				
-				cmdAdapter.addCommand(clsname);
+				if (clz.isAnnotationPresent(Command.class))
+					cmdAdapter.addCommand(clsname);
 			} catch (ClassNotFoundException e) {
 				DevAssistant.errorln(e);
 			}

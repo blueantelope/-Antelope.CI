@@ -27,9 +27,9 @@ import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.service.auth.ssh.PasswordAuthServiceImpl;
+import com.antelope.ci.bus.server.service.auth.ssh.PublickeyAuthServiceImpl;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
-import com.antelope.ci.bus.server.ssh.service.auth.PasswordAuthServiceImpl;
-import com.antelope.ci.bus.server.ssh.service.auth.PublickeyAuthServiceImpl;
 
 
 /**
@@ -63,7 +63,7 @@ public class TestBusServerFrame extends TestCase {
 		protected void attatchCondition(BusServerCondition server_condition)
 				throws CIBusException {
 			server_condition.setLauncherType(LAUNCHER_TYPE.CONTAINER);
-			server_condition.addShellClass(FrameShell.class.getName());
+//			server_condition.addShellClass(FrameShell.class.getName());
 			server_condition.addUser(createUser());
 			server_condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
 			server_condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));

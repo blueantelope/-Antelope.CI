@@ -11,7 +11,9 @@ package com.antelope.ci.bus.gate;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.BusServerActivator;
+import com.antelope.ci.bus.osgi.BusActivator;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.osgi.ServicePublisher;
 
 
 /**
@@ -20,19 +22,34 @@ import com.antelope.ci.bus.server.BusServerActivator;
  * @version  0.1
  * @Date	 2014年12月13日		下午8:00:59 
  */
-public class BusGateActivator extends BusServerActivator {
+public class BusGateActivator extends BusActivator {
+
+	@Override
+	protected void customInit() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	protected void run() throws CIBusException {
-		log4j.info("启动gate");
-		server = new BusGateServer(m_context);
-		server.start();
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void destroy() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void handleLoadService(String clsName, ServiceReference ref,
 			Object service) throws CIBusException {
 		
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -40,20 +57,27 @@ public class BusGateActivator extends BusServerActivator {
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void handleStopAllService() throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void addServices() throws CIBusException {
-		
+		ServicePublisher.publish(m_context, "com.antelope.ci.bus.gate.service");
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
+
 }

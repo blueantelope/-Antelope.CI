@@ -21,7 +21,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="server.ssh.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="portal.service.ssh.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.ssh.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile" />
@@ -52,7 +52,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="server.ssh.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="portal.service.ssh.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="portal.ssh.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.dashboard.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.project.compile.notest" />
@@ -171,14 +171,12 @@
 			</fileset>
 		</copy>
 		<!-- /system/ext/server/lib -->
-		<!--
 		<copy todir="${app.portal.server.bundle.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
-		-->
 		<!-- /system/ext/server/service -->
 		<copy todir="${app.portal.server.bundle.service}">
 			<fileset dir="${target.depends}">
@@ -186,13 +184,15 @@
 				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		<!-- /system/ext/service/lib -->
-		<copy todir="${app.portal.service.bundle.lib}">
+		<!--  /system/ext/server/service/lib -->
+		<!--
+		<copy todir="${app.portal.server.bundle.service.lib}">
 			<fileset dir="${target.depends}">
 				<include name="mina*.jar" />
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
+		-->
 		<!-- /system/ext/portal -->
 		<copy todir="${app.portal.bundle}">
 			<fileset dir="${target.depends}">
@@ -202,7 +202,7 @@
 		<!-- /system/ext/portal/service -->
 		<copy todir="${app.portal.bundle.service}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.portal.service.ssh-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.portal.ssh-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		<!-- /system/ext/portal/part -->
@@ -253,6 +253,7 @@
 		<mkdir dir="${app.portal.server.bundle}" />
 		<mkdir dir="${app.portal.server.bundle.lib}" />
 		<mkdir dir="${app.portal.server.bundle.service}" />
+		<mkdir dir="${app.portal.server.bundle.service.lib}" />
 		<mkdir dir="${app.portal.service.bundle}" />
 		<mkdir dir="${app.portal.service.bundle.lib}" />
 		<mkdir dir="${app.portal.service.bundle.service}" />

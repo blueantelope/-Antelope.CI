@@ -8,8 +8,9 @@
 
 package com.antelope.ci.bus.server;
 
+import org.osgi.framework.ServiceReference;
+
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.ServicePublisher;
 
 
@@ -19,15 +20,25 @@ import com.antelope.ci.bus.osgi.ServicePublisher;
  * @version  0.1
  * @Date	 2013-11-7		下午6:14:57 
  */
-public abstract class BusServerActivator extends BusActivator {
+public class BusServerActivator extends BusServerTemplateActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.BusActivator#customInit()
+	 * @see com.antelope.ci.bus.server.BusServerTemplateActivator#beforeCustomInit()
 	 */
 	@Override
-	protected void customInit() throws CIBusException {
+	protected void beforeCustomInit() throws CIBusException {
 		log4j();
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.BusServerTemplateActivator#afterCustomInit()
+	 */
+	@Override
+	protected void afterCustomInit() throws CIBusException {
+		
 	}
 	
 	/**
@@ -38,5 +49,45 @@ public abstract class BusServerActivator extends BusActivator {
 	@Override
 	protected void addServices() throws CIBusException {
 		ServicePublisher.publish(m_context, "com.antelope.ci.bus.server.service");
+	}
+
+	@Override
+	protected void run() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void destroy() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void handleLoadService(String clsName, ServiceReference ref,
+			Object service) throws CIBusException {
+		
+	}
+
+	@Override
+	protected void handleUnloadService(ServiceReference ref)
+			throws CIBusException {
+		
+	}
+
+	@Override
+	protected void handleStopAllService() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void removeServices() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -21,7 +21,7 @@ import com.antelope.ci.bus.osgi.IService;
  * @Date	 2013-10-15		下午12:36:18 
  */
 public interface UserStoreServerService extends IService {
-	public static final String SERVICE_NAME = "com.antelope.ci.bus.server.service.UserStoreServerService";
+	public static final String NAME = "com.antelope.ci.bus.server.service.UserStoreServerService";
 	
 	public Map<String, User> getUserMap();
 	

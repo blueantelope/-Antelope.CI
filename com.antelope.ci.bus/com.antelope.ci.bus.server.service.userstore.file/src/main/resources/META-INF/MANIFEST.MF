@@ -3,6 +3,6 @@ Bundle-Version: 0.1.0
 Bundle-Name: com.antelope.ci.bus.server.service.userstore.file
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.server.service.userstore.file
+Bundle-Vendor: blueantelope@gmail.com
 Fragment-Host: com.antelope.ci.bus.server;bundle-version="0.1.0"
 Export-Package: com.antelope.ci.bus.server.service.userstore
-Bundle-Vendor: blueantelope@gmail.com
