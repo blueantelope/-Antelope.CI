@@ -16,7 +16,6 @@ import com.antelope.ci.bus.portal.core.entrance.PortalEntrance;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
@@ -48,4 +47,3 @@ public class PortalTargetEntrance extends CommonEntrance {
 		log.debug("after unmount of target portal");
 	}
 }
-

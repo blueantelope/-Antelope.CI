@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: com.antelope.ci.bus.api
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.api
+Bundle-Vendor: blueantelope@gmail.com
+Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service
+Export-Package: com.antelope.ci.bus.api
+

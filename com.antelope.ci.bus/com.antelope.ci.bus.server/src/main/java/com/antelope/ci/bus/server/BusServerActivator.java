@@ -48,7 +48,7 @@ public class BusServerActivator extends BusServerTemplateActivator {
 	 */
 	@Override
 	protected void addServices() throws CIBusException {
-		ServicePublisher.publish(m_context, "com.antelope.ci.bus.server.service");
+		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.server.service");
 	}
 
 	@Override

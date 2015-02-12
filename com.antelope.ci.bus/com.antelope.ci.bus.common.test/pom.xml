@@ -43,8 +43,8 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.portal.service</groupId>
-			<artifactId>com.antelope.ci.bus.portal.service.ssh</artifactId>
+			<groupId>com.antelope.ci.bus.portal</groupId>
+			<artifactId>com.antelope.ci.bus.portal.ssh</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>

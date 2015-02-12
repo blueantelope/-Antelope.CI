@@ -84,7 +84,7 @@ public class BusLoggerActivator extends BusActivator {
 	protected void addServices() throws CIBusException {
 		if (logService == null) {
 			logService = new BusLogServiceImpl();
-			BusOsgiUtil.addServiceToContext(m_context, logService, LOG_SERVICE_NAME);
+			BusOsgiUtil.addServiceToContext(bundle_context, logService, LOG_SERVICE_NAME);
 		}
 	}
 

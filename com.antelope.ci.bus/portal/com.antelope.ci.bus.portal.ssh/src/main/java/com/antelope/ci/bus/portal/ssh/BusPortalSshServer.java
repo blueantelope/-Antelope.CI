@@ -11,17 +11,11 @@ package com.antelope.ci.bus.portal.ssh;
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusPropertiesHelper;
-import com.antelope.ci.bus.osgi.BusActivator;
-import com.antelope.ci.bus.portal.BusPortalActivator;
-import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.shell.SimpleBusPortalShell;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
-
-
 
 /**
  * portal server extend to server
@@ -66,9 +60,7 @@ public class BusPortalSshServer extends BusSshServer {
 	 */
 	@Override
 	protected void customizeInit() throws CIBusException {
-		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
-		configurationHelper.setClassLoader(BusActivator.getClassLoader());
-		configurationHelper.init();
+		
 	}
 
 	/**

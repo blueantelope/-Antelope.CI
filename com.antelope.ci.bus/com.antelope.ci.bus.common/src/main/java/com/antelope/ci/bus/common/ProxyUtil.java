@@ -485,6 +485,19 @@ public class ProxyUtil {
 		return ret;
 	}
 	
+	public static Object invokeStaticRet(ClassLoader loader, String className, String function) throws CIBusException {
+		Object ret = null;
+		try {
+			Class clazz = loadClass(className, loader);
+			Method method = getMethod(clazz, function, null);
+			ret = method.invoke(null, null);
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+		
+		return ret;
+	}
+	
 	public static Object invokeStaticRet(String className, ClassLoader loader, String function, Object[] args) throws CIBusException {
 		Object ret = null;
 		try {

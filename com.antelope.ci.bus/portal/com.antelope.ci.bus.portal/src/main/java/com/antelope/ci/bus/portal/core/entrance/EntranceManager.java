@@ -104,7 +104,7 @@ public class EntranceManager {
 					if (Entrance.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(PortalEntrance.class)) {
 						if (entranceMap.get(cls) == null) {
 							final Entrance entrance = (Entrance) clazz.newInstance();
-							entrance.init(server_condition);
+							entrance.init(server_condition, BusOsgiUtil.getBundleClassLoader(m_context));
 							log.info("mount entrance of portal : " + cls);
 							new Thread() {
 								public void run() {

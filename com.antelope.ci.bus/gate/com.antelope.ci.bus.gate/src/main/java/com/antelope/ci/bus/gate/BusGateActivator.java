@@ -70,7 +70,7 @@ public class BusGateActivator extends BusActivator {
 
 	@Override
 	protected void addServices() throws CIBusException {
-		ServicePublisher.publish(m_context, "com.antelope.ci.bus.gate.service");
+		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.gate.service");
 	}
 
 	@Override

@@ -17,6 +17,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.ServicePublisher;
+import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.entrance.EntranceManager;
 import com.antelope.ci.bus.portal.core.service.ConfigurationService;
 import com.antelope.ci.bus.server.BusServerCondition;
@@ -64,21 +65,21 @@ public class BusPortalActivator extends BusActivator {
 			Properties configProps = new Properties();
 			configProps.put(START_WAIT, getStartWait());
 			configurationService = new ConfigurationService(configProps);
-			BusOsgiUtil.addServiceToContext(m_context, configurationService, ConfigurationService.NAME);
+			BusOsgiUtil.addServiceToContext(bundle_context, configurationService, ConfigurationService.NAME);
 		}
-		ServicePublisher.publish(m_context, "com.antelope.ci.bus.portal.service");
+		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.portal.service");
 	}
 
 	@Override
 	protected void customInit() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
+		configurationHelper.setClassLoader(getClassLoader());
+		configurationHelper.init();
 	}
 
 	@Override
 	protected void run() throws CIBusException {
-		EntranceManager.monitor(m_context, new BusServerCondition());
+		EntranceManager.monitor(bundle_context, new BusServerCondition());
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {}

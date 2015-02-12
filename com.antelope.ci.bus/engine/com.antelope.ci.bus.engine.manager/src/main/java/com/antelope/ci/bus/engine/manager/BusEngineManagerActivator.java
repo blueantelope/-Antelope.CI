@@ -64,7 +64,7 @@ public class BusEngineManagerActivator extends BusActivator {
 
 	@Override
 	protected void addServices() throws CIBusException {
-		EngineManagerPublisher.publish(m_context, EnginePublishInfo.createPartPublish("com.antelope.ci.bus.engine.manager"));
+		EngineManagerPublisher.publish(bundle_context, EnginePublishInfo.createPartPublish("com.antelope.ci.bus.engine.manager"));
 	}
 
 	@Override

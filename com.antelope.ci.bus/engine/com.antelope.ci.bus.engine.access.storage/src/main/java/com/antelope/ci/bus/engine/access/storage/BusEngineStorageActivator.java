@@ -65,7 +65,7 @@ public class BusEngineStorageActivator extends BusActivator {
 	}
 
 	private void serviceHook() {
-		new ServicePublishHook(m_context, "com.antelope.ci.bus.storage") {
+		new ServicePublishHook(bundle_context, "com.antelope.ci.bus.storage") {
 			@Override protected ServicePublishInfo fetchService(Class clazz) {
 				ServicePublishInfo info = new ServicePublishInfo();
 				if (StorageAcesss.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(StorageService.class)) {

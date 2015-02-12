@@ -83,7 +83,7 @@ public class BusPortalSshActivator extends BusServerTemplateActivator {
 	protected void addServices() throws CIBusException {
 		if (sshServer == null) {
 			sshServer = new BusPortalSshServer();
-			BusOsgiUtil.addServiceToContext(m_context, sshServer, BusPortalSshServer.NAME);
+			BusOsgiUtil.addServiceToContext(bundle_context, sshServer, BusPortalSshServer.NAME);
 			Object service = fetchService(ConfigurationService.NAME);
 			if (service != null)
 				sshServer.setWaitForStart(((ConfigurationService)service).getStartWait()) ;

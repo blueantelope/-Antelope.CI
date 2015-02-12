@@ -44,7 +44,7 @@ public abstract class BusActivator implements BundleActivator {
 	private static final String PACKET_SERVICE = "service";
 	private static final String BUS_LOAD_SERVICES = "bus.load.services";
 	private static final String DIVISION = ",";
-	protected static BundleContext m_context;
+	protected static BundleContext bundle_context;
 	protected static BusPropertiesHelper propsHelper;
 	protected static Map<String, List<BusServiceInfo>> serviceMap;
 	protected static Properties properties; // bundle的属性
@@ -84,11 +84,11 @@ public abstract class BusActivator implements BundleActivator {
 	}
 	
 	public static BundleContext getContext() {
-		return m_context;
+		return bundle_context;
 	}
 	
 	public static ClassLoader getClassLoader() {
-		return BusOsgiUtil.getBundleClassLoader(m_context);
+		return BusOsgiUtil.getBundleClassLoader(bundle_context);
 	}
 
 	public static Map<String, List<BusServiceInfo>> getServiceMap() {
@@ -151,8 +151,8 @@ public abstract class BusActivator implements BundleActivator {
 	}
 
 	protected URL getResource(String name) {
-		if (m_context != null)
-			return m_context.getBundle().getResource("/" + name);
+		if (bundle_context != null)
+			return bundle_context.getBundle().getResource("/" + name);
 
 		return null;
 	}
@@ -192,7 +192,7 @@ public abstract class BusActivator implements BundleActivator {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-		m_context = context;
+		bundle_context = context;
 		init(); // 初始化
 		loadServices();
 		addServices(); // 增加service
@@ -213,7 +213,7 @@ public abstract class BusActivator implements BundleActivator {
 	 * 加载bundle默认配置文件bus.properties
 	 */
 	private void loadProps() throws CIBusException {
-		propsHelper = new BusPropertiesHelper(m_context);
+		propsHelper = new BusPropertiesHelper(bundle_context);
 		properties.putAll(propsHelper.getAll());
 	}
 
@@ -257,8 +257,8 @@ public abstract class BusActivator implements BundleActivator {
 	private void loadServices() throws CIBusException {
 		for (String  service : serviceList) {
 			try {
-				Filter filter = m_context.createFilter("(objectClass=" + service + ")");
-				ServiceTracker tracker = new ServiceTracker(m_context, filter, new BusServiceTrackerCustomizer());  
+				Filter filter = bundle_context.createFilter("(objectClass=" + service + ")");
+				ServiceTracker tracker = new ServiceTracker(bundle_context, filter, new BusServiceTrackerCustomizer());  
 				tracker.open();
 				trackerList.add(tracker);
 			} catch (InvalidSyntaxException e) {
@@ -303,12 +303,14 @@ public abstract class BusActivator implements BundleActivator {
 	 * 加载osgi注册的service
 	 */
 	private Object loadService(ServiceReference ref) throws CIBusException {
-		Object service = m_context.getService(ref);
+		Object service = bundle_context.getService(ref);
 		String service_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_NAME);
 		String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
 		if (service_name.equals(LOG_SERVICE_NAME)) {
-			if (!logServiceProvider)
+			if (!logServiceProvider) {
 				loadLogService(ref, service);
+				logServiceProvider = true;
+			}
 		} else {
 			BusServiceInfo info = new BusServiceInfo(service_class_name, service, ref);
 			if (serviceMap.get(service_name) == null) {
@@ -326,7 +328,7 @@ public abstract class BusActivator implements BundleActivator {
 	 * 卸载osgi注册的service
 	 */
 	protected void unloadService(String service_name, String servcie_class_name, ServiceReference ref, Object service) throws CIBusException {
-		m_context.ungetService(ref);
+		bundle_context.ungetService(ref);
 		ref = null;
 		service = null;
 		if (serviceMap.get(service_name) != null) {

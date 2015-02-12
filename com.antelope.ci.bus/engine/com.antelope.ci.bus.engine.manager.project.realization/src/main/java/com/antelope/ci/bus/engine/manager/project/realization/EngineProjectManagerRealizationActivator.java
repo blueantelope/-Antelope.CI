@@ -23,7 +23,7 @@ import com.antelope.ci.bus.engine.manager.project.EngineProjectManagerActivator;
 public class EngineProjectManagerRealizationActivator extends EngineProjectManagerActivator {
 	@Override
 	protected void addServices() throws CIBusException {
-		EngineManagerPublisher.publish(m_context, 
+		EngineManagerPublisher.publish(bundle_context, 
 				EnginePublishInfo.createServicePublish("com.antelope.ci.bus.engine.manager.project.realization"));
 	}
 }
