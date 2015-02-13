@@ -46,8 +46,8 @@ public abstract class BusSshServer extends BusServer {
 	private static final Logger log = Logger.getLogger(BusSshServer.class);
 	protected SshServer sshServer;
 	
-	public BusSshServer() throws CIBusException {
-		super();
+	public BusSshServer(ClassLoader classloader) throws CIBusException {
+		super(classloader);
 	}
 	
 	/**

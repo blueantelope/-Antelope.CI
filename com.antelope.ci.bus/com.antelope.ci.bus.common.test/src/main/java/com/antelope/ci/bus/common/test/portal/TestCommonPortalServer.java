@@ -80,7 +80,7 @@ public class TestCommonPortalServer extends BusPortalSshServer {
 	private String shellClass;
 
 	public TestCommonPortalServer(String shellClass) throws CIBusException {
-		super();
+		super(TestCommonPortalServer.class.getClassLoader());
 		this.shellClass  = shellClass;
 		attatchCondition(condition);
 	}

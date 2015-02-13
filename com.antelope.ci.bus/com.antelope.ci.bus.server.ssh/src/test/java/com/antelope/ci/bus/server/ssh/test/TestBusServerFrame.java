@@ -42,7 +42,7 @@ public class TestBusServerFrame extends TestCase {
 	public static class MyBusServerPortal extends BusSshServer {
 		
 		public MyBusServerPortal() throws CIBusException {
-			super();
+			super(MyBusServerPortal.class.getClassLoader());
 		}
 		
 		@Override

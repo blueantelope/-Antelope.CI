@@ -82,7 +82,7 @@ public class BusPortalSshActivator extends BusServerTemplateActivator {
 	@Override
 	protected void addServices() throws CIBusException {
 		if (sshServer == null) {
-			sshServer = new BusPortalSshServer();
+			sshServer = new BusPortalSshServer(BusOsgiUtil.getBundleClassLoader(bundle_context));
 			BusOsgiUtil.addServiceToContext(bundle_context, sshServer, BusPortalSshServer.NAME);
 			Object service = fetchService(ConfigurationService.NAME);
 			if (service != null)

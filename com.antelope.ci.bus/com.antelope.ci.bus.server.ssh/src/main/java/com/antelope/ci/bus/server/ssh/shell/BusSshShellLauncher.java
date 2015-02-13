@@ -18,7 +18,6 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellLauncher;
 
@@ -37,7 +36,7 @@ public abstract class BusSshShellLauncher extends BusShellLauncher implements Co
 	protected Environment env;
 	
 	public BusSshShellLauncher() {
-		
+		super();
 	}
 
 	protected List<String> getShellList() {

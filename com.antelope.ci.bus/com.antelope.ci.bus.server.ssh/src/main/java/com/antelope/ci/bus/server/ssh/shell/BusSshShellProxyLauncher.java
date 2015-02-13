@@ -10,7 +10,6 @@ package com.antelope.ci.bus.server.ssh.shell;
 
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.server.shell.BusShell;
 
 
@@ -37,7 +36,7 @@ public class BusSshShellProxyLauncher extends BusSshShellLauncher {
 		String shellClass = getShellList().get(0);
 		BusShell shell = (BusShell) ProxyUtil.newObject(shellClass);
 		if (shell == null)
-			shell = (BusShell) ProxyUtil.newObject(shellClass, BusActivator.getClassLoader());
+			shell = (BusShell) ProxyUtil.newObject(shellClass, condition.getLauncher_classloader());
 		shell.attatchSession(createShellSession());
 		return shell;
 	}

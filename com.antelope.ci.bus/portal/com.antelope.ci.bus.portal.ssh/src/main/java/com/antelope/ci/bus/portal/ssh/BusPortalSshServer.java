@@ -11,6 +11,7 @@ package com.antelope.ci.bus.portal.ssh;
 import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.shell.SimpleBusPortalShell;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
@@ -27,8 +28,8 @@ public class BusPortalSshServer extends BusSshServer {
 	private static final Logger log = Logger.getLogger(BusPortalSshServer.class);
 	public static final String NAME = "com.antelope.ci.bus.portal.ssh.BusPortalSshServer";
 	
-	public BusPortalSshServer() throws CIBusException {
-		super();
+	public BusPortalSshServer(ClassLoader classloader) throws CIBusException {
+		super(classloader);
 	}
 	
 	/**
@@ -60,7 +61,9 @@ public class BusPortalSshServer extends BusSshServer {
 	 */
 	@Override
 	protected void customizeInit() throws CIBusException {
-		
+		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
+		configurationHelper.setClassLoader(launcher_classloader);
+		configurationHelper.init();
 	}
 
 	/**

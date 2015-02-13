@@ -15,12 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.log4j.Logger;
+
 import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.server.shell.BusShell;
 import com.antelope.ci.bus.server.shell.BusShellStatus;
 import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
@@ -34,12 +35,14 @@ import com.antelope.ci.bus.server.shell.command.CommandHelper.COMMAND_SIGN;
  * @Date	 2013-12-3		上午10:18:19 
  */
 public abstract class CommandAdapter {
+	private static final Logger log = Logger.getLogger(CommandAdapter.class);
 	protected static final String DOT = ".";
 	protected Map<String, ICommand> commandMap;
 	protected Map<String, ICommand> globalCommandMap;
 	protected CommandType cType;
 	protected boolean isQuit;
 	protected boolean userFinal;
+	protected ClassLoader classLoader;
 	
 	public CommandAdapter(CommandType cType) {
 		this.cType = cType;
@@ -48,6 +51,11 @@ public abstract class CommandAdapter {
 		isQuit = false;
 		init();
 		userFinal = false;
+	}
+	
+	public void initClassLoader(ClassLoader classLoader) {
+		if (this.classLoader == null)
+			this.classLoader = classLoader;
 	}
 	
 	public void closeUserFinal() {
@@ -68,43 +76,41 @@ public abstract class CommandAdapter {
 		}
 	}
 	
-	public void addCommands(String packpath) throws CIBusException {
-		ClassLoader cl = null;
-		try {
-			cl = BusActivator.getClassLoader();
-		} catch (Exception e) {
-			DevAssistant.errorln(e);
-		}
-		if (cl == null)
-			cl = CommandAdapter.class.getClassLoader();
-		List<String>  classList = ClassFinder.findClasspath(packpath, cl);
+	public void loadCommands(String packpath) throws CIBusException {
+		ClassLoader loader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
+		List<String>  classList = ClassFinder.findClasspath(packpath, loader);
 		for (String clsname : classList) {
 			try {
-				addCommand(clsname);
+				loadCommand(loader, clsname);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
 		}
 	}
 	
-	public void addCommands(String packpath, String status) throws CIBusException {
-		List<String>  classList = ClassFinder.findClasspath(packpath, BusActivator.getClassLoader());
+	public void loadCommands(String packpath, String status) throws CIBusException {
+		ClassLoader loader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
+		List<String>  classList = ClassFinder.findClasspath(packpath, loader);
 		for (String clsname : classList) {
-			addCommand(clsname);
+			loadCommand(loader, clsname);
 			try {
-				addCommand(clsname);
+				loadCommand(loader, clsname);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
 		}
 	}
 	
-	public void addCommand(String clsname) throws CIBusException {
-		Class cmdClass;
-		try {
-			cmdClass = ProxyUtil.loadClass(clsname);
-		} catch (CIBusException e) {
-			cmdClass = ProxyUtil.loadClass(clsname, BusActivator.getClassLoader());
+	public void loadCommand(String clsname) throws CIBusException {
+		ClassLoader loader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
+		loadCommand(loader, clsname);
+	}
+	
+	private void loadCommand(ClassLoader classloader, String clsname) throws CIBusException {
+		Class cmdClass = ProxyUtil.loadClass(clsname, classloader);
+		if (cmdClass == null) {
+			log.warn("unable load command class : " + clsname);
+			return;
 		}
 		
 		if (ICommand.class.isAssignableFrom(cmdClass) && cmdClass.isAnnotationPresent(Command.class)) {

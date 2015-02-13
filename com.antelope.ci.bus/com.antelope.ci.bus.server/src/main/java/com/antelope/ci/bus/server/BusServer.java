@@ -36,11 +36,20 @@ public abstract class BusServer {
 	protected static final long SLEEP_WAIT_INIT = 500; // 500 millisecond 
 	protected long waitForStart;
 	protected boolean running;
+	protected ClassLoader launcher_classloader;
 	private ReadWriteLock locker = new ReentrantReadWriteLock();
 	private Lock readLocker = locker.readLock();
 	private Lock writeLocker = locker.writeLock();
 	
-	public BusServer() throws CIBusException {
+//	private BusServer() throws CIBusException {
+//		super();
+//		init();
+//		customizeInit();
+//	}
+	
+	public BusServer(ClassLoader launcher_classloader) throws CIBusException {
+		super();
+		this.launcher_classloader = launcher_classloader;
 		init();
 		customizeInit();
 	}
@@ -113,6 +122,7 @@ public abstract class BusServer {
 		customizeConfig(config);
 		
 		condition = new BusServerCondition();
+		condition.setLauncher_classloader(launcher_classloader);
 		condition.setLauncherType(LAUNCHER_TYPE.CONTAINER);
 		long start_tm = System.currentTimeMillis();
 		boolean pwd_added = false;

@@ -33,7 +33,7 @@ import com.antelope.ci.bus.server.service.auth.ssh.PublickeyAuthServiceImpl;
 public class TestBusPortalServer extends BusPortalSshServer {
 
 	public TestBusPortalServer() throws CIBusException {
-		super();
+		super(TestBusPortalServer.class.getClassLoader());
 	}
 
 	

@@ -69,8 +69,8 @@ public class BusPortalConfigurationHelper {
 		return helper;
 	}
 	
-	private static final String PORTAL_XSD= "/com/antelope/ci/bus/portal/core/configuration/portal.xsd";
-	private static final String PORTAL_XML= "/com/antelope/ci/bus/portal/core/configuration/portal.xml";
+	private static final String PORTAL_XSD = "/com/antelope/ci/bus/portal/core/configuration/portal.xsd";
+	private static final String PORTAL_XML = "/com/antelope/ci/bus/portal/core/configuration/portal.xml";
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.core.configuration.portal";
 	private static Logger log;
 	private Portal portal;

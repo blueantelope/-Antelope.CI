@@ -15,7 +15,6 @@ import java.util.Map;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
@@ -25,36 +24,46 @@ import com.antelope.ci.bus.osgi.BusActivator;
  * @Date	 2013-12-3		上午9:31:43 
  */
 public class BusShellContainer {
+	protected ClassLoader shellLoader;
 	protected Map<String, String> shellClassMap;
 	
 	public BusShellContainer() {
 		shellClassMap = new HashMap<String, String>();
 	}
-
-	public BusShellContainer(List<String> shellClsList) throws CIBusException {
+	
+	public BusShellContainer(ClassLoader shellLoader) {
+		this.shellLoader = shellLoader;
 		shellClassMap = new HashMap<String, String>();
+	}
+	
+	public BusShellContainer(ClassLoader shellLoader, List<String> shellClsList) throws CIBusException {
+		this(shellLoader);
 		addShell(shellClsList);
+	}
+	
+	public void setShellLoader(ClassLoader shellLoader) {
+		this.shellLoader = shellLoader;
 	}
 	
 	public void addShell(List<String> shellClsList) throws CIBusException {
 		shellClassMap.clear();
 		for (String shellCls : shellClsList) {
 			try {
-				addShell(shellCls);
+				addShell(shellCls, shellLoader);
 			} catch (Exception e) {
 				throw new CIBusException("", e);
 			}
 		}
 	}
 	
-	public void addShell(String shellClass) throws CIBusException {
+	public void addShell(String shellClass, ClassLoader classloader) throws CIBusException {
 		String status = BusShellStatus.ROOT;
 		Class clazz;
 		try {
 			clazz = Class.forName(shellClass);
 		} catch (ClassNotFoundException e) {
 			try {
-				clazz = Class.forName(shellClass, false, BusActivator.getClassLoader());
+				clazz = Class.forName(shellClass, false, classloader);
 			} catch (ClassNotFoundException e1) {
 				DevAssistant.errorln(e1);
 				throw new CIBusException("", e1);
@@ -82,10 +91,10 @@ public class BusShellContainer {
 		return null;
 	}
 	
-	public BusShell createShell(String status) throws CIBusException {
+	public BusShell createShell(String status, ClassLoader classloader) throws CIBusException {
 		String clsName = shellClassMap.get(status);
-		if (BusActivator.getClassLoader() != null)
-			return (BusShell) ProxyUtil.newObject(clsName, BusActivator.getClassLoader());
+		if (classloader != null)
+			return (BusShell) ProxyUtil.newObject(clsName, classloader);
 		return (BusShell) ProxyUtil.newObject(clsName);
 	}
 

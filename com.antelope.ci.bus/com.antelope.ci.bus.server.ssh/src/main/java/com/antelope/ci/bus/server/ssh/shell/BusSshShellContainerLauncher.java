@@ -28,6 +28,7 @@ public class BusSshShellContainerLauncher extends BusSshShellLauncher {
 	private BusShellContainer container;
 	
 	public BusSshShellContainerLauncher() {
+		super();
 		container = new BusShellContainer();
 	}
 	
@@ -38,13 +39,14 @@ public class BusSshShellContainerLauncher extends BusSshShellLauncher {
 	 */
 	@Override
 	public BusShell createShell() throws CIBusException {
+		container.setShellLoader(condition.getLauncher_classloader());
 		container.addShell(getShellList());
 		BusShellSession session = createShellSession();
 		BusShell startShell = null;
 		Map<String, BusShell> shellMap = new HashMap<String, BusShell>();
 		Map<String, String> scmap = container.getShellClassMap();
 		for (String status : scmap.keySet()) {
-			BusShell shell = container.createShell(status);
+			BusShell shell = container.createShell(status, condition.getLauncher_classloader());
 			shell.attatchSession(session);
 			shellMap.put(status, shell);
 			

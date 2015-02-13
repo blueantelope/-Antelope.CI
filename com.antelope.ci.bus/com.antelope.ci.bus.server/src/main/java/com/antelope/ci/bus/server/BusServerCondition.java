@@ -74,6 +74,7 @@ public class BusServerCondition {
 	private SERVER_TYPE serverType;
 	private LAUNCHER_TYPE launcherType;
 	private Map<String, String> shellClassMap;
+	private ClassLoader launcher_classloader;
 	private Class launcher_class;
 	private String launcher_className;
 	private List<AuthService> authServiceList;
@@ -105,6 +106,17 @@ public class BusServerCondition {
 		this.launcher_class = launcher_class;
 	}
 	
+	// launcher class loader
+	public ClassLoader getLauncher_classloader() {
+		if (launcher_classloader == null)
+			return Thread.currentThread().getContextClassLoader();
+		return launcher_classloader;
+	}
+
+	public void setLauncher_classloader(ClassLoader launcher_classloader) {
+		this.launcher_classloader = launcher_classloader;
+	}
+
 	// launcher class name
 	public String getLauncher_className() {
 		return launcher_className;

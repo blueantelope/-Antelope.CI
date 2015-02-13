@@ -72,9 +72,12 @@ public class ClassFinder {
 	
 	public static List<URL> findResourceUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
 		List<URL> urlList = new ArrayList<URL>();
-		for (String resourceName : findResource(packageName, clsLoader)) {
+		List<String> resourceList = findResource(packageName, clsLoader);
+		for (String resource : resourceList) {
 			try {
-				urlList.add(classNameToUrl(resourceName, false));
+				URL url = toUrl(clsLoader, resource, false, false);
+				if (url != null)
+					urlList.add(url);
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
@@ -97,17 +100,22 @@ public class ClassFinder {
 	}
 	
 	public static List<URL> findXmlUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
-		List<URL> urlList = new ArrayList<URL>();
-		for (String resourceName : findResource(packageName, clsLoader)) {
+		List<URL> xmlUrlList = new ArrayList<URL>();
+		List<String> resourceList = findResource(packageName, clsLoader);
+		String packageExpression = packageName.replace(DOT, SLASH);
+		for (String resource : resourceList) {
 			try {
-				if (resourceName.endsWith(XML_SUFFIX))
-					urlList.add(classNameToUrl(resourceName, false));
+				if (resource.startsWith(packageExpression) && resource.endsWith(XML_SUFFIX)) {
+					URL xmlUrl = toUrl(clsLoader, resource, false, false);
+					if (xmlUrl != null)
+						xmlUrlList.add(xmlUrl);
+				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
 		}
 
-		return urlList;
+		return xmlUrlList;
 	}
 	
 	public static List<URL> findPacketXmlUrl(String packageName, ClassLoader clsLoader) throws CIBusException {
@@ -212,17 +220,15 @@ public class ClassFinder {
 	public static List<String> findPacketResource(String packageName, ClassLoader clsLoader) throws CIBusException {
 		return findClasspath(packageName, clsLoader, false, false);
 	}
-
 	
 	/**
-	 * @throws CIBusException 
 	 * 获取指定类加载器某包下所有类
 	 * @param  @param packageName
 	 * @param  @param clsLoader
 	 * @param  @param childPackage
 	 * @param  @return
 	 * @return List<String>
-	 * @throws
+	 * @throws CIBusException 
 	 */
 	public static List<String> findClasspath(String packageName, ClassLoader clsLoader, 
 			boolean childPackage, boolean searchClass) throws CIBusException {
@@ -261,7 +267,7 @@ public class ClassFinder {
 	 * 在一个url路径中找包下的所有类，返回这些类的url列表
 	 */
 	private static List<String> searchClasspath(URL url, String packageName, boolean childPackage, boolean searchClass) throws CIBusException {
-		List<String> classNames = new ArrayList<String>();
+		List<String> searchList = new ArrayList<String>();
 		String type = url.getProtocol();
 		if (type.equals("bundle")) {
 			try {
@@ -271,14 +277,13 @@ public class ClassFinder {
 			} catch (Exception e) {
 				throw new CIBusException("", e);
 			}
-		} 
-		if (type.equals("file")) {
-			classNames = searchClassNameByFile(url.getPath(), packageName.replace(DOT, File.separator), childPackage, searchClass);
-		} else if (type.equals("jar")) {
-			List<String> cnList = searchClassNameByJar(url.getPath(), childPackage, searchClass);
-			classNames = fetchAndTrimClassName(cnList, packageName);
 		}
-		return classNames;
+		if (type.equals("file")) {
+			searchList = searchClassNameByFile(url.getPath(), packageName.replace(DOT, File.separator), childPackage, searchClass);
+		} else if (type.equals("jar")) {
+			searchList = searchClassNameByJar(url.getPath(), childPackage, searchClass);
+		}
+		return searchList;
 	}
 	
 	private static List<String> fetchAndTrimClassName(List<String> cnList, String packageName) {
@@ -328,7 +333,7 @@ public class ClassFinder {
 	 * 从jar获取某包下所有类
 	 */
 	private static List<String> searchClassNameByJar(String jarPath, boolean childPackage, boolean searchClass) {
-		List<String> classNameList = new ArrayList<String>();
+		List<String> classpathList = new ArrayList<String>();
 		String[] jarInfo = jarPath.split("!");
 		String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf(SLASH));
 		String packagePath = jarInfo[1].substring(1);
@@ -338,33 +343,44 @@ public class ClassFinder {
 			while (entrys.hasMoreElements()) {
 				JarEntry jarEntry = entrys.nextElement();
 				String entryName = jarEntry.getName();
-				if (!(entryName.endsWith(CLASS_SUFFIX) ^ searchClass)) {
-					if (childPackage) {
-						entryName = entryName.replace(SLASH, DOT);
-						if (entryName.startsWith(packagePath) && searchClass) {
-							entryName = entryName.substring(0, entryName.lastIndexOf(DOT));
-						}
-						classNameList.add(entryName);
-					} else {
-						int index = entryName.lastIndexOf(SLASH);
-						String myPackagePath;
-						if (index != -1) {
-							myPackagePath = entryName.substring(0, index);
-						} else {
-							myPackagePath = entryName;
-						}
-						entryName = entryName.replace(SLASH, DOT);
-						if (entryName.startsWith(packagePath) && searchClass) {
-							entryName = entryName.substring(0, entryName.lastIndexOf(DOT));
-						}
-						classNameList.add(entryName);
-					}
+				if (childPackage) {
+					String classpath = expressClasspath(packagePath, entryName, searchClass);
+					if (!StringUtil.empty(classpath))
+						classpathList.add(classpath);
+				} else {
+					int index = entryName.lastIndexOf(SLASH);
+					String myPackagePath = entryName;
+					if (index != -1)
+						myPackagePath = entryName.substring(0, index);
+					String classpath = expressClasspath(packagePath, entryName, searchClass);
+					if (!StringUtil.empty(classpath))
+						classpathList.add(classpath);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return classNameList;
+		return classpathList;
+	}
+	
+	private static String expressClasspath(String rootpath, String classpath, boolean isClass) {
+		if (classpath.startsWith(rootpath)) {
+			if (isClass)
+				return toClassExpression(classpath);
+			else
+				return classpath;
+		}
+		
+		return null;
+	}
+	
+	private static String toClassExpression(String classpath) {
+		int classIndex = classpath.lastIndexOf(CLASS_SUFFIX);
+		if (classIndex != -1) {
+			String classExpression = classpath.substring(0, classpath.lastIndexOf(CLASS_SUFFIX));
+			return classExpression.replace(SLASH, DOT);
+		}
+		return null;
 	}
 
 	/*
@@ -378,9 +394,8 @@ public class ClassFinder {
 				URL url = urls[i];
 				String urlPath = url.getPath();
 				// 不必搜索classes文件夹
-				if (urlPath.endsWith("classes/") || urlPath.equals(SLASH)) {
+				if (urlPath.endsWith("classes/") || urlPath.equals(SLASH))
 					continue;
-				}
 				String jarPath = urlPath + "!/" + packagePath;
 				myClassName.addAll(searchClassNameByJar(jarPath, childPackage, searchClass));
 			}
@@ -430,18 +445,15 @@ public class ClassFinder {
 	/*
 	 * class名称转换为所在URL表示
 	 */
-	private static URL classNameToUrl(ClassLoader loader, String className, boolean isClass) throws CIBusException {
+	private static URL toUrl(ClassLoader loader, String resource, boolean isClass, boolean searchEnv) throws CIBusException {
 		try {
-			String class_name = className;
 			if (isClass) {
-				class_name = className.replace(DOT, SLASH) + CLASS_SUFFIX;
-			} else {
-				class_name = className.replace(File.separator, SLASH);
+				resource = resource.replace(DOT, SLASH);
+				resource += CLASS_SUFFIX;
 			}
-			URL url = loader.getResource(class_name);
-			if (url == null) {
-				url = searchClassInJreEnv(class_name);
-			}
+			URL url = loader.getResource(resource);
+			if (url == null && searchEnv)
+				url = searchClassInJreEnv(resource);
 			return url;
 		} catch (Exception e) {
 			throw new CIBusException("", e);
@@ -450,7 +462,7 @@ public class ClassFinder {
 	
 	private static URL classNameToUrl(String className, boolean isClass) throws CIBusException {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		return classNameToUrl(loader, className, isClass);
+		return toUrl(loader, className, isClass, true);
 	}
 	
 	/*

@@ -42,7 +42,7 @@ public class TestBusEchoServer extends TestCase {
 	public static class BusEchoSshServer extends BusSshServer {
 		
 		public BusEchoSshServer() throws CIBusException {
-			super();
+			super(BusEchoSshServer.class.getClassLoader());
 		}
 		
 		@Override

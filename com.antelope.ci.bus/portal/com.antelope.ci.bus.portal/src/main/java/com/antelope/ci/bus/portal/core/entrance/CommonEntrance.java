@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.portal.core.entrance;
 
-import java.net.URL;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -53,6 +52,8 @@ public abstract class CommonEntrance implements Entrance {
 		
 		if (classLoader == null)
 			classLoader = Thread.currentThread().getContextClassLoader();
+		
+		cmdAdapter.initClassLoader(classLoader);
 	}
 	
 	@Override
@@ -75,7 +76,9 @@ public abstract class CommonEntrance implements Entrance {
 	
 	private void initMount() throws CIBusException {
 		// mount shell status class
-		List<String> classList = ClassFinder.findClasspath(this.getClass().getPackage().getName(), classLoader);
+		String packageName = this.getClass().getPackage().getName();
+		List<String> classList = ClassFinder.findClasspath(packageName, classLoader);
+		
 		for (String clsname : classList) {
 			try {
 				Class clz = Class.forName(clsname, false, classLoader);
@@ -86,11 +89,6 @@ public abstract class CommonEntrance implements Entrance {
 				if (clz.isAnnotationPresent(PortalConfiguration.class)) {
 					PortalConfiguration pc = (PortalConfiguration) clz.getAnnotation(PortalConfiguration.class);
 					BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), pc.properties(), pc.xml(), pc.validate());
-				} else {
-					List<URL> xml_url = ClassFinder.findXmlUrl(this.getClass().getPackage().getName(), classLoader);
-					List<URL> props_url =ClassFinder.findResourceUrl(this.getClass().getPackage().getName(), classLoader);
-					if (!xml_url.isEmpty() && !props_url.isEmpty())
-						BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), xml_url.get(0).toString(), props_url.get(0).toString(), false);
 				}
 				
 				if (clz.isAnnotationPresent(StatusClass.class))
@@ -100,7 +98,7 @@ public abstract class CommonEntrance implements Entrance {
 					BusShellMode.addModeClass(clz);
 				
 				if (clz.isAnnotationPresent(Command.class))
-					cmdAdapter.addCommand(clsname);
+					cmdAdapter.loadCommand(clsname);
 			} catch (ClassNotFoundException e) {
 				DevAssistant.errorln(e);
 			}
