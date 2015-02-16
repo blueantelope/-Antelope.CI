@@ -18,6 +18,7 @@ import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.ServicePublisher;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.configuration.BusPortalFormHelper;
 import com.antelope.ci.bus.portal.core.entrance.EntranceManager;
 import com.antelope.ci.bus.portal.core.service.ConfigurationService;
 import com.antelope.ci.bus.portal.core.service.ShellService;
@@ -84,6 +85,7 @@ public class BusPortalActivator extends BusActivator {
 		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
 		configurationHelper.setClassLoader(getClassLoader());
 		configurationHelper.init();
+		BusPortalFormHelper.initClassLoader(getClassLoader());
 	}
 
 	@Override

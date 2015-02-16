@@ -23,7 +23,6 @@ import com.antelope.ci.bus.common.configration.IsolateResourceReader;
 import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
-import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.Form;
 
 
@@ -35,16 +34,22 @@ import com.antelope.ci.bus.portal.core.configuration.xo.Form;
  */
 public class BusPortalFormHelper {
 	private static final String FORM_XSD = "/com/antelope/ci/bus/portal/core/configuration/form.xsd";
-	private static InputStream FORM_XSD_IN = null;
+	private static InputStream FORM_XSD_IN;
 	private static Map<String, Form> formMap;
 	private static Map<String, Properties> propsMap;
 	private static ResourceReader reader;
+	private static ClassLoader _classLoader;
 	
 	static {
 		FORM_XSD_IN = BusPortalFormHelper.class.getResourceAsStream(FORM_XSD);
 		formMap = new ConcurrentHashMap<String, Form>();
 		propsMap = new ConcurrentHashMap<String, Properties>();
 		reader = new IsolateResourceReader();
+	}
+	
+	public static void initClassLoader(ClassLoader classLoader) {
+		if (_classLoader == null)
+			_classLoader = classLoader;
 	}
 	
 	public static Form getForm(String name) {
@@ -63,12 +68,11 @@ public class BusPortalFormHelper {
 	}
 	
 	public static Properties loadProperties(String name) throws CIBusException {
-		ClassLoader cl = getClassLoader();
 		try {
 			reader.addConfig(name);
 		} catch(Exception e) {
 			DevAssistant.errorln(e);
-			reader.addConfig(name, cl);
+			reader.addConfig(name, _classLoader);
 		}
 		Properties properties = reader.getIsolateProps(name);
 		return properties;
@@ -196,15 +200,6 @@ public class BusPortalFormHelper {
 		
 		for (Object child : tree.getChildren())
 			genFormReplaceList(replaceList, (FormReplaceTree) child);
-	}
-	
-	private static ClassLoader getClassLoader() {
-		try {
-			return BusActivator.getClassLoader();
-		} catch(Exception e) {
-			DevAssistant.errorln(e);
-			return BusPortalFormHelper.class.getClassLoader();
-		}
 	}
 	
 	private static class FormReplaceTree<R extends FormReplace, Tree extends FormReplaceTree> extends XOReplaceTree {
