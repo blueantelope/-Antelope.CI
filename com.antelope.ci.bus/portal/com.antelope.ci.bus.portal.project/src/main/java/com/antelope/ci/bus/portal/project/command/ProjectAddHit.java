@@ -12,7 +12,7 @@ import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.command.PortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellMode;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
-import com.antelope.ci.bus.server.shell.BusShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellMode;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandType;
 

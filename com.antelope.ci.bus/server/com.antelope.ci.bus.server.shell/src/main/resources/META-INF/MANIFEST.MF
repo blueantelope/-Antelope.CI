@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: com.antelope.ci.bus.server.shell
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.server.shell
+Bundle-Vendor: blueantelope@gmail.com
+Fragment-Host: com.antelope.ci.bus.server; bundle-version="0.1.0"
+Export-Package: com.antelope.ci.bus.server.shell, com.antelope.ci.bus.server.shell.base,
+ com.antelope.ci.bus.server.shell.buffer, com.antelope.ci.bus.server.shell.command,
+ com.antelope.ci.bus.server.shell.command.echo, com.antelope.ci.bus.server.shell.command.hit,
+ com.antelope.ci.bus.server.shell.util, com.antelope.ci.bus.server.shell.launcher

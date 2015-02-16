@@ -8,20 +8,20 @@
 
 package com.antelope.ci.bus.portal.dashboard;
 
-import com.antelope.ci.bus.server.shell.Status;
-import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.base.ShellStatus;
+import com.antelope.ci.bus.server.shell.base.ShellStatusClass;
+
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-3-26		下午3:09:00 
  */
-@StatusClass
+@ShellStatusClass
 public class BusDashboardShellStatus {
-	@Status(code=6, name="command.status.dashboard")
-	public static final String DAHSBOARD 			= "command.status.dashboard";
+	@ShellStatus(code=6, name="command.status.dashboard")
+	public static final String DAHSBOARD = "command.status.dashboard";
 }
 

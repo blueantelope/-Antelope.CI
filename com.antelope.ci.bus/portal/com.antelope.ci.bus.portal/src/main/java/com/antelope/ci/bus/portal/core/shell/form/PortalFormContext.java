@@ -41,8 +41,8 @@ import com.antelope.ci.bus.portal.core.shell.PortalShellUtil;
 import com.antelope.ci.bus.portal.core.shell.ShellLineContentSet;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalBufferFactory;
 import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalInputBuffer;
-import com.antelope.ci.bus.server.shell.ShellPalette;
-import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.base.ShellPalette;
+import com.antelope.ci.bus.server.shell.base.ShellText;
 import com.antelope.ci.bus.server.shell.command.Command;
 
 

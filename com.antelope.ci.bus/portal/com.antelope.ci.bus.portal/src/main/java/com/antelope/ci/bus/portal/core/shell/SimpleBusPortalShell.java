@@ -43,4 +43,3 @@ public class SimpleBusPortalShell extends BusPortalShell {
 		return null;
 	}
 }
-

@@ -8,20 +8,23 @@
 
 package com.antelope.ci.bus.portal.version;
 
-import com.antelope.ci.bus.server.shell.Status;
-import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.base.ShellStatus;
+import com.antelope.ci.bus.server.shell.base.ShellStatusClass;
+
+import com.antelope.ci.bus.server.shell.base.ShellStatus;
+import com.antelope.ci.bus.server.shell.base.ShellStatusClass;
+
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-3-26		下午4:28:36 
  */
-@StatusClass
+@ShellStatusClass
 public class BusVersionShellStatus {
-	@Status(code=10, name="command.status.version")
-	public static final String VERSION			= "command.status.version";
+	@ShellStatus(code=10, name="command.status.version")
+	public static final String VERSION = "command.status.version";
 }
 

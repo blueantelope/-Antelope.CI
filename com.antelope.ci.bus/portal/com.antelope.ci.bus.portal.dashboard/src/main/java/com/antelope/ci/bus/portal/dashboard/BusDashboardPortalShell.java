@@ -12,7 +12,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalBlock;
-import com.antelope.ci.bus.server.shell.Shell;
+import com.antelope.ci.bus.server.shell.base.Shell;
 
 
 

@@ -14,7 +14,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.antelope.ci.bus.server.shell.BusShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellMode;
 
 
 /**

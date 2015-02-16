@@ -10,7 +10,7 @@ package com.antelope.ci.bus.portal.core.shell.command;
 
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalBlock;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.base.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 
 

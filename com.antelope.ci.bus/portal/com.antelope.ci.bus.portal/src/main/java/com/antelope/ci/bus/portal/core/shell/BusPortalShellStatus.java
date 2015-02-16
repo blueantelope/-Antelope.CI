@@ -8,7 +8,7 @@
 
 package com.antelope.ci.bus.portal.core.shell;
 
-import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.base.BusShellStatus;
 
 
 /**

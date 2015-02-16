@@ -74,7 +74,7 @@ public class BusPortalConfigurationHelper {
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.core.configuration.portal";
 	private static Logger log;
 	private Portal portal;
-	private Portal usablePortal;					// 配置文件转换后
+	private Portal usablePortal; // 配置文件转换后
 	private ResourceReader reader;
 	private ClassLoader classLoader;
 	private Map<String, PortalPair> configPairMap;
@@ -213,9 +213,13 @@ public class BusPortalConfigurationHelper {
 			
 			Part majorPart = majorExt.getPart(placePart.getName());
 			if (majorPart == null) {
-				majorPart = new Part();
-				majorPart.setName(renderName);
-				majorExt.addPart(majorPart);
+				try {
+					majorPart = new Part();
+					majorPart.setName(renderName);
+					majorExt.addPart(majorPart);
+				} catch (CIBusException e) {
+					log.warn(e);
+				}
 			}
 			majorPart.addContentsFont(hit_font);
 			
@@ -240,12 +244,16 @@ public class BusPortalConfigurationHelper {
 			if (!added)
 				portalClassPartList.add(new PortalclassPart("", majorPart));
 			
-			Collections.sort(portalClassPartList, new Comparator<PortalclassPart>() {
-				@Override
-				public int compare(PortalclassPart p1, PortalclassPart p2) {
-					return p1.getPart().getSort() - p2.getPart().getSort();
-				}
-			});
+			try {
+				Collections.sort(portalClassPartList, new Comparator<PortalclassPart>() {
+					@Override
+					public int compare(PortalclassPart p1, PortalclassPart p2) {
+						return p1.getPart().getSort() - p2.getPart().getSort();
+					}
+				});
+			} catch (Exception e) {
+				log.warn(e);
+			}
 		
 			int extList_count = 0;
 			EU_Position position = EU_Position.START;

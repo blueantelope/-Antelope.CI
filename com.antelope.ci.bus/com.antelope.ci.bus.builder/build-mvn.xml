@@ -341,6 +341,48 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.server.shell -->
+	<target name="server.shell.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.shell.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="server.shell.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.shell.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="server.shell.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.shell.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.server.api -->
+	<target name="server.api.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.api.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="server.api.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.api.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="server.api.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.api.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
 	<!-- com.antelope.ci.bus.server.ssh -->
 	<target name="server.ssh.compile">
 		<exec executable="${mvn}" failonerror="true">
@@ -357,6 +399,27 @@
 	<target name="server.ssh.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.ssh.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.server.service.userstore.file -->
+	<target name="server.service.userstorefile.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.service.userstorefile.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="server.service.userstorefile.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.service.userstorefile.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="server.service.userstorefile.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.service.userstorefile.pom}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>
@@ -389,27 +452,6 @@
 		</exec>
 	</target>
 
-	<!-- com.antelope.ci.bus.server.service.userstore.file -->
-	<target name="server.service.userstorefile.compile">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.server.service.userstorefile.pom}" />
-			<arg line="install" />
-		</exec>
-	</target>
-	<target name="server.service.userstorefile.compile.notest" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.server.service.userstorefile.pom}" />
-			<arg line="install ${mvn.notest}" />
-		</exec>
-	</target>
-	<target name="server.service.userstorefile.depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.server.service.userstorefile.pom}" />
-			<arg line="dependency:copy-dependencies" />
-			<arg value="-DexcludeGroupIds=junit" />
-		</exec>
-	</target>
-	
 	<!-- com.antelope.ci.bus.portal.ssh -->
 	<target name="portal.ssh.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
@@ -642,7 +684,47 @@
 			<arg line="clean" />
 		</exec>
 		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.shell.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.api.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.service.userstorefile.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.server.ssh.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.project.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.target.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.versioin.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.usecase.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.dashboard.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.portal.ssh.pom}" />
 			<arg line="clean" />
 		</exec>
 	</target>

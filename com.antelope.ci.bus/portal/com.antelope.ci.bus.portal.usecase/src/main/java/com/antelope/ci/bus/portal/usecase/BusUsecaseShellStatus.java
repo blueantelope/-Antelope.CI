@@ -1,7 +1,8 @@
 package com.antelope.ci.bus.portal.usecase;
 
-import com.antelope.ci.bus.server.shell.Status;
-import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.base.ShellStatus;
+import com.antelope.ci.bus.server.shell.base.ShellStatusClass;
+
 // .BusUsecaseShellStatus.java
 /**
  * Antelope CI平台，持续集成平台
@@ -11,15 +12,14 @@ import com.antelope.ci.bus.server.shell.StatusClass;
  */
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-3-26		下午4:19:25 
  */
-@StatusClass
+@ShellStatusClass
 public class BusUsecaseShellStatus {
-	@Status(code=8, name="command.status.usecase")
-	public static final String USECASE			= "command.status.usecase";
+	@ShellStatus(code=8, name="command.status.usecase")
+	public static final String USECASE = "command.status.usecase";
 }
 

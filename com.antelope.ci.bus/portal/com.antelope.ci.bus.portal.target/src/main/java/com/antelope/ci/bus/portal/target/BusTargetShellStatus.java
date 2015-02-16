@@ -8,20 +8,20 @@
 
 package com.antelope.ci.bus.portal.target;
 
-import com.antelope.ci.bus.server.shell.Status;
-import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.base.ShellStatus;
+import com.antelope.ci.bus.server.shell.base.ShellStatusClass;
+
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-4-12		下午9:50:01 
  */
-@StatusClass
+@ShellStatusClass
 public class BusTargetShellStatus {
-	@Status(code=8, name="command.status.target")
-	public static final String TARGET			= "command.status.target";
+	@ShellStatus(code=8, name="command.status.target")
+	public static final String TARGET = "command.status.target";
 }
 

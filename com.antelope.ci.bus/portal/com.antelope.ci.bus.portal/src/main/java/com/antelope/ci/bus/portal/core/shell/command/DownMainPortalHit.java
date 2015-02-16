@@ -9,8 +9,8 @@
 package com.antelope.ci.bus.portal.core.shell.command;
 
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.server.shell.BusShellMode;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.base.BusShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandHelper;
 import com.antelope.ci.bus.server.shell.command.CommandType;

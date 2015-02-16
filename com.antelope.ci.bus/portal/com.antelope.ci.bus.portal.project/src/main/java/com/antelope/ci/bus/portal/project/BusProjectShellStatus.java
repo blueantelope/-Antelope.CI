@@ -8,8 +8,9 @@
 
 package com.antelope.ci.bus.portal.project;
 
-import com.antelope.ci.bus.server.shell.Status;
-import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.base.ShellStatus;
+import com.antelope.ci.bus.server.shell.base.ShellStatusClass;
+
 
 
 /**
@@ -18,9 +19,9 @@ import com.antelope.ci.bus.server.shell.StatusClass;
  * @version  0.1
  * @Date	 2014-2-27		下午6:40:23 
  */
-@StatusClass
+@ShellStatusClass
 public class BusProjectShellStatus {
-	@Status(code=7, name="command.status.project")
-	public static final String PROJECT 			= "command.status.project";
+	@ShellStatus(code=7, name="command.status.project")
+	public static final String PROJECT = "command.status.project";
 }
 

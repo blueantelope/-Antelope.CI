@@ -19,7 +19,7 @@ import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.XOUtil;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
 import com.antelope.ci.bus.portal.core.shell.PortalShellText;
-import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.base.ShellText;
 
 
 /**

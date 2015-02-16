@@ -12,9 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
-import com.antelope.ci.bus.portal.core.shell.SimpleBusPortalShell;
 import com.antelope.ci.bus.server.BusServerCondition;
-import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
 
@@ -28,8 +26,8 @@ public class BusPortalSshServer extends BusSshServer {
 	private static final Logger log = Logger.getLogger(BusPortalSshServer.class);
 	public static final String NAME = "com.antelope.ci.bus.portal.ssh.BusPortalSshServer";
 	
-	public BusPortalSshServer(ClassLoader classloader) throws CIBusException {
-		super(classloader);
+	public BusPortalSshServer() throws CIBusException {
+		super();
 	}
 	
 	/**
@@ -49,9 +47,7 @@ public class BusPortalSshServer extends BusSshServer {
 	 */
 	@Override
 	protected void attatchCondition(BusServerCondition server_condition) throws CIBusException {
-		server_condition.setLauncherType(LAUNCHER_TYPE.CONTAINER);
-		if (server_condition.isShellEmpty())
-			server_condition.addDefaultShellClass(SimpleBusPortalShell.class.getName());
+		
 	}
 
 	/**
@@ -62,7 +58,6 @@ public class BusPortalSshServer extends BusSshServer {
 	@Override
 	protected void customizeInit() throws CIBusException {
 		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
-		configurationHelper.setClassLoader(launcher_classloader);
 		configurationHelper.init();
 	}
 

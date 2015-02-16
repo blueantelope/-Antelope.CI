@@ -20,7 +20,9 @@ import com.antelope.ci.bus.osgi.ServicePublisher;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.entrance.EntranceManager;
 import com.antelope.ci.bus.portal.core.service.ConfigurationService;
-import com.antelope.ci.bus.server.BusServerCondition;
+import com.antelope.ci.bus.portal.core.service.ShellService;
+import com.antelope.ci.bus.server.shell.launcher.BusMultiShellCondition;
+import com.antelope.ci.bus.server.shell.launcher.BusShellCondition;
 
 /**
  *
@@ -37,6 +39,8 @@ public class BusPortalActivator extends BusActivator {
 	protected final static String FORM_COMMAND_WAIT = "bus.portal.form.command.wait";
 	private final static long DEF_FORM_COMMAND_WAIT = 30 * 1000;
 	protected ConfigurationService configurationService;
+	protected ShellService shellService;
+	protected BusShellCondition condition;
 	
 	public static String getPortalBanner() {
 		return PropertiesUtil.getString(properties, BANNER, getBanner());
@@ -61,6 +65,10 @@ public class BusPortalActivator extends BusActivator {
 	 */
 	@Override
 	protected void addServices() throws CIBusException {
+		if (shellService == null) {
+			shellService = new ShellService(condition);
+			BusOsgiUtil.addServiceToContext(bundle_context, shellService, ShellService.NAME);
+		}
 		if (configurationService == null) {
 			Properties configProps = new Properties();
 			configProps.put(START_WAIT, getStartWait());
@@ -72,6 +80,7 @@ public class BusPortalActivator extends BusActivator {
 
 	@Override
 	protected void customInit() throws CIBusException {
+		condition = new BusMultiShellCondition(getClassLoader());
 		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
 		configurationHelper.setClassLoader(getClassLoader());
 		configurationHelper.init();
@@ -79,7 +88,7 @@ public class BusPortalActivator extends BusActivator {
 
 	@Override
 	protected void run() throws CIBusException {
-		EntranceManager.monitor(bundle_context, new BusServerCondition());
+		EntranceManager.monitor(condition, bundle_context);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {}

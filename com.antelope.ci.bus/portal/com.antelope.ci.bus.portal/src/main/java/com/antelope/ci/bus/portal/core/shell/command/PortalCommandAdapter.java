@@ -13,9 +13,9 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.CommonHit;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.server.shell.BusShell;
-import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
-import com.antelope.ci.bus.server.shell.BusShellStatus.BaseStatus;
+import com.antelope.ci.bus.server.shell.base.BusShell;
+import com.antelope.ci.bus.server.shell.base.BusShellMode.BaseShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellStatus.BaseStatus;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.ICommand;
 import com.antelope.ci.bus.server.shell.command.hit.HitAdapter;
@@ -33,14 +33,10 @@ public class PortalCommandAdapter extends HitAdapter {
 	
 	public PortalCommandAdapter() {
 		super();
-		try {
-			init_add();
-		} catch (CIBusException e) {
-			DevAssistant.errorln(e);
-		}
 	}
 	
-	private void init_add() throws CIBusException {
+	@Override
+	protected void initCommands() throws CIBusException {
 		loadCommands("com.antelope.ci.bus.portal.core.shell.command");
 	}
 	
@@ -57,7 +53,7 @@ public class PortalCommandAdapter extends HitAdapter {
 				hit = portalShell.getPortal().getHit(scope, cmdContent.mode(), cmdContent.name());
 			}
 			try {
-				if (BaseMode.toMode(portalShell.getMode()) == BaseMode.MAIN)
+				if (BaseShellMode.toMode(portalShell.getMode()) == BaseShellMode.MAIN)
 					portalShell.focus(hit);
 			} catch (CIBusException e) {
 				DevAssistant.assert_exception(e);

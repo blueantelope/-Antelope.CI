@@ -12,11 +12,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Scope;
-import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
+import com.antelope.ci.bus.server.shell.base.BusShellMode.BaseShellMode;
 
 
 /**
@@ -113,10 +112,10 @@ public class Action implements Serializable {
 	}
 	
 	public RenderFont getSwitchHitFont() {
-		RenderFont font = getHitFont(EU_Scope.GLOBAL.getName(), BaseMode.MAIN.getSimple(), "switch_portal");
+		RenderFont font = getHitFont(EU_Scope.GLOBAL.getName(), BaseShellMode.MAIN.getSimple(), "switch_portal");
 		if (font != null)
 			return font;
-		font = getHitGroupFont(EU_Scope.GLOBAL.getName(), BaseMode.MAIN.getSimple(), "switch_portal");
+		font = getHitGroupFont(EU_Scope.GLOBAL.getName(), BaseShellMode.MAIN.getSimple(), "switch_portal");
 		if (font != null)
 			return font;
 		

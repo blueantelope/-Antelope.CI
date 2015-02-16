@@ -14,8 +14,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.portal.BusPortalActivator;
 import com.antelope.ci.bus.portal.core.service.ConfigurationService;
+import com.antelope.ci.bus.portal.core.service.ShellService;
 import com.antelope.ci.bus.server.BusServerTemplateActivator;
-
 
 /**
  *
@@ -43,6 +43,7 @@ public class BusPortalSshActivator extends BusServerTemplateActivator {
 	 */
 	@Override
 	protected void afterCustomInit() throws CIBusException {
+		serviceList.add(ShellService.NAME);
 		serviceList.add(ConfigurationService.NAME);
 	}
 
@@ -75,28 +76,29 @@ public class BusPortalSshActivator extends BusServerTemplateActivator {
 	@Override
 	protected void handleStopAllService() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void addServices() throws CIBusException {
 		if (sshServer == null) {
-			sshServer = new BusPortalSshServer(BusOsgiUtil.getBundleClassLoader(bundle_context));
+			sshServer = new BusPortalSshServer();
+			Object shellService = fetchService(ShellService.NAME);
+			if (shellService != null)
+				sshServer.initShellLauncher(((ShellService)shellService).getManager().getContainerLauncher()) ;
 			BusOsgiUtil.addServiceToContext(bundle_context, sshServer, BusPortalSshServer.NAME);
 			Object service = fetchService(ConfigurationService.NAME);
 			if (service != null)
 				sshServer.setWaitForStart(((ConfigurationService)service).getStartWait()) ;
 			else
 				sshServer.setWaitForStart(BusPortalActivator.DEF_START_WAIT);
+			System.out.println("*********************** @antelope.ci ssh server start, wait a moment... ***********************");
 			sshServer.open();
+			System.out.println("*********************** @antelope.ci ssh server finish stsart, enjoy it! ***********************");
 		}
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 

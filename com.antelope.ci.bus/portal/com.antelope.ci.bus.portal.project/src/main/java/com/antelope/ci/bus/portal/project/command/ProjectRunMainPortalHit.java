@@ -10,7 +10,7 @@ package com.antelope.ci.bus.portal.project.command;
 
 import com.antelope.ci.bus.portal.core.shell.command.RunMainPortalHit;
 import com.antelope.ci.bus.portal.project.BusProjectShellStatus;
-import com.antelope.ci.bus.server.shell.BusShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellMode;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandHelper;
 import com.antelope.ci.bus.server.shell.command.CommandType;

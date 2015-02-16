@@ -16,12 +16,12 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
-import com.antelope.ci.bus.server.shell.BusShell;
-import com.antelope.ci.bus.server.shell.BusShellMode;
-import com.antelope.ci.bus.server.shell.ShellPalette;
-import com.antelope.ci.bus.server.shell.ShellText;
-import com.antelope.ci.bus.server.shell.ShellUtil;
-import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
+import com.antelope.ci.bus.server.shell.base.BusShell;
+import com.antelope.ci.bus.server.shell.base.BusShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellMode.BaseShellMode;
+import com.antelope.ci.bus.server.shell.base.ShellPalette;
+import com.antelope.ci.bus.server.shell.base.ShellText;
+import com.antelope.ci.bus.server.shell.util.ShellUtil;
 
 
 /**
@@ -100,8 +100,7 @@ public class PortalShellUtil {
 		return BusShellMode.isInput(shell.getActiveBlock().getMode());
 	}
 	
-	public static BaseMode getPortalMode(BusPortalShell shell) throws CIBusException {
-		return BaseMode.toMode(shell.getActiveBlock().getMode());
+	public static BaseShellMode getPortalMode(BusPortalShell shell) throws CIBusException {
+		return BaseShellMode.toMode(shell.getActiveBlock().getMode());
 	}
 }
-

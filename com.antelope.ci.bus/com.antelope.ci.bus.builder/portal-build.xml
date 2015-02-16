@@ -18,6 +18,8 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.ssh.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile" />
@@ -49,6 +51,8 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.ssh.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
@@ -180,6 +184,8 @@
 		<!-- /system/ext/server/service -->
 		<copy todir="${app.portal.server.bundle.service}">
 			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.api-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.server.ssh-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
 			</fileset>

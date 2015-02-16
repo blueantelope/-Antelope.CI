@@ -27,7 +27,7 @@ import com.antelope.ci.bus.portal.core.configuration.xo.meta.CommonValue;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_BlockMode;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.FontExpression;
 import com.antelope.ci.bus.portal.core.shell.PortalShellText;
-import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.base.ShellText;
 
 
 /**

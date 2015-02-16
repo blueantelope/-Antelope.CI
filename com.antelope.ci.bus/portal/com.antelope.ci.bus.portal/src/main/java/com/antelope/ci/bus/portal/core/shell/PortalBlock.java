@@ -8,7 +8,7 @@
 
 package com.antelope.ci.bus.portal.core.shell;
 
-import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
+import com.antelope.ci.bus.server.shell.base.ShellMode.BaseShellModeType;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 
@@ -34,7 +34,7 @@ public class PortalBlock {
 	private boolean  _available;
 	
 	public PortalBlock() {
-		this(BaseMode.MAIN.getName());
+		this(BaseShellModeType.MAIN.getName());
 	}
 	
 	public PortalBlock(String mode) {

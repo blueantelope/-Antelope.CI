@@ -48,7 +48,4 @@ public class PortalProjectEntrance extends CommonEntrance {
 		log.debug("after unmount of project portal");
 		
 	}
-
-
 }
-

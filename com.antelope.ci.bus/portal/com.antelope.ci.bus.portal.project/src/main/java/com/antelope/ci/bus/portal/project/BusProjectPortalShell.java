@@ -14,7 +14,7 @@ import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.PortalBlock;
 import com.antelope.ci.bus.portal.project.command.ProjectAddHit;
 import com.antelope.ci.bus.portal.project.command.ProjectRunMainPortalHit;
-import com.antelope.ci.bus.server.shell.Shell;
+import com.antelope.ci.bus.server.shell.base.Shell;
 
 
 /**

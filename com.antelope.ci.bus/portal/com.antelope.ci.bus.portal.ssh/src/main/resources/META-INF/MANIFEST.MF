@@ -5,6 +5,6 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.portal.ssh
 Bundle-Vendor: blueantelope@gmail.com
 Import-Package: org.osgi.framework, com.antelope.ci.bus.server,
- com.antelope.ci.bus.server.ssh, com.antelope.ci.bus.portal.core.shell
+ com.antelope.ci.bus.server.ssh
 DynamicImport-Package: com.antelope.ci.bus.server.*, com.antelope.ci.bus.portal.*
 Bundle-Activator: com.antelope.ci.bus.portal.ssh.BusPortalSshActivator

@@ -19,7 +19,7 @@ import com.antelope.ci.bus.common.xml.XmlAttribute;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ComponentType;
-import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.base.ShellText;
 
 
 /**

@@ -20,7 +20,10 @@ import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
-import com.antelope.ci.bus.server.BusServerCondition;
+import com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter;
+import com.antelope.ci.bus.server.shell.command.CommandAdapter;
+import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
+import com.antelope.ci.bus.server.shell.launcher.BusShellCondition;
 
 
 /**
@@ -32,18 +35,26 @@ import com.antelope.ci.bus.server.BusServerCondition;
 public class EntranceManager {
 	private static final Logger log = Logger.getLogger(EntranceManager.class);
 	private static Map<String, Entrance> entranceMap = new HashMap<String, Entrance>();
+	private static CommandAdapter cmdAdapter;
 	
-	public static void monitor(BundleContext m_context, BusServerCondition server_condition) {
-		new EntranceMonitor(m_context, server_condition).start();
+	public static CommandAdapter getCmdAdapter() {
+		return cmdAdapter;
+	}
+	
+	public static void monitor(BusShellCondition condition, BundleContext m_context) {
+		cmdAdapter = CommandAdapterFactory.getAdapter(
+				PortalCommandAdapter.class.getName(), 
+				BusOsgiUtil.getBundleClassLoader(m_context));
+		new EntranceMonitor(condition, m_context).start();
 	}
 	
 	private static class EntranceMonitor extends Thread {
+		private BusShellCondition condition;
 		private BundleContext m_context;
-		private BusServerCondition server_condition;
 		
-		private EntranceMonitor(BundleContext m_context, BusServerCondition server_condition) {
+		private EntranceMonitor(BusShellCondition condition, BundleContext m_context) {
+			this.condition = condition;
 			this.m_context = m_context;
-			this.server_condition = server_condition;
 		}
 		
 		@Override
@@ -104,7 +115,7 @@ public class EntranceManager {
 					if (Entrance.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(PortalEntrance.class)) {
 						if (entranceMap.get(cls) == null) {
 							final Entrance entrance = (Entrance) clazz.newInstance();
-							entrance.init(server_condition, BusOsgiUtil.getBundleClassLoader(m_context));
+							entrance.init(cmdAdapter, condition, BusOsgiUtil.getBundleClassLoader(m_context));
 							log.info("mount entrance of portal : " + cls);
 							new Thread() {
 								public void run() {

@@ -15,7 +15,6 @@ import com.antelope.ci.bus.engine.manager.project.EngineProjectManager;
 import com.antelope.ci.bus.engine.manager.project.EngineProjectManagerConstants;
 import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
-import com.antelope.ci.bus.server.service.UserStoreServerService;
 
 
 /**

@@ -37,14 +37,14 @@ import com.antelope.ci.bus.portal.core.shell.buffer.BusPortalBufferFactory;
 import com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContext;
 import com.antelope.ci.bus.portal.core.shell.form.PortalFormContextFactory;
-import com.antelope.ci.bus.server.shell.BusBaseFrameShell;
-import com.antelope.ci.bus.server.shell.BusShellMode;
-import com.antelope.ci.bus.server.shell.BusShellMode.BaseMode;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.Mode.BaseModeType;
-import com.antelope.ci.bus.server.shell.Shell;
-import com.antelope.ci.bus.server.shell.ShellPalette;
-import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.base.BusBaseFrameShell;
+import com.antelope.ci.bus.server.shell.base.BusShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellMode.BaseShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellStatus;
+import com.antelope.ci.bus.server.shell.base.Shell;
+import com.antelope.ci.bus.server.shell.base.ShellMode.BaseShellModeType;
+import com.antelope.ci.bus.server.shell.base.ShellPalette;
+import com.antelope.ci.bus.server.shell.base.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
@@ -1248,7 +1248,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 			activeFormContext.exitFormCommand();
 			
 		try {
-			BaseModeType baseModeType = BusShellMode.getBaseModeType(mode);
+			BaseShellModeType baseModeType = BusShellMode.getBaseModeType(mode);
 			if (baseModeType == null)
 				return false;
 			switch (baseModeType) {
@@ -1319,7 +1319,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	public void exitInput() throws CIBusException {
-		mode = BaseMode.MAIN.getName();
+		mode = BaseShellMode.MAIN.getName();
 		activeBlock = mainBlock;
 		activeBlock.enable();
 		lastEditMode = true;
@@ -1398,7 +1398,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected void move(int direction) {
-		BaseModeType baseModeType = BusShellMode.getBaseModeType(mode);
+		BaseShellModeType baseModeType = BusShellMode.getBaseModeType(mode);
 		if (baseModeType == null)
 			return;
 		switch (baseModeType) {
@@ -1506,9 +1506,9 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	 * @see com.antelope.ci.bus.server.shell.BusShell#clearData()
 	 */
 	@Override public void clearData() {
-		BaseModeType modeType = BusShellMode.getBaseModeType(mode);
+		BaseShellModeType modeType = BusShellMode.getBaseModeType(mode);
 		if (modeType == null)
-			modeType = BaseModeType._DEFAULT;
+			modeType = BaseShellModeType._DEFAULT;
 		switch (modeType) {
 			case INPUT:
 			case EDIT:

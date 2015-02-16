@@ -21,15 +21,14 @@ import com.antelope.ci.bus.server.BusServerConfig;
  * @Date	 2015年1月31日		下午1:14:49 
  */
 public class BusGateServer extends BusServer {
-	public BusGateServer(ClassLoader classloader) throws CIBusException {
-		super(classloader);
+	public BusGateServer() throws CIBusException {
+		super();
 	}
 	
 	@Override
 	protected void customizeConfig(BusServerConfig config)
 			throws CIBusException {
 		
-		// TODO Auto-generated method stub
 		
 	}
 

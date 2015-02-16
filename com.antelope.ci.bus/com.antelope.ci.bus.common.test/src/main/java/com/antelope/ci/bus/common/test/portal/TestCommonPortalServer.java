@@ -18,7 +18,6 @@ import com.antelope.ci.bus.engine.model.user.UserPassword;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.ssh.BusPortalSshServer;
 import com.antelope.ci.bus.server.BusServerCondition;
-import com.antelope.ci.bus.server.BusServerCondition.LAUNCHER_TYPE;
 import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.service.auth.ssh.PasswordAuthServiceImpl;
 import com.antelope.ci.bus.server.service.auth.ssh.PublickeyAuthServiceImpl;
@@ -80,7 +79,7 @@ public class TestCommonPortalServer extends BusPortalSshServer {
 	private String shellClass;
 
 	public TestCommonPortalServer(String shellClass) throws CIBusException {
-		super(TestCommonPortalServer.class.getClassLoader());
+		super();
 		this.shellClass  = shellClass;
 		attatchCondition(condition);
 	}
@@ -123,8 +122,6 @@ public class TestCommonPortalServer extends BusPortalSshServer {
 	@Override
 	protected void attatchCondition(BusServerCondition server_condition)
 			throws CIBusException {
-		server_condition.setLauncherType(LAUNCHER_TYPE.PROXY);
-		server_condition.addShellClass(shellClass);
 		server_condition.addUser(createUser());
 		server_condition.addAuthService(new PasswordAuthServiceImpl(condition.getUserMap()));
 		server_condition.addAuthService(new PublickeyAuthServiceImpl(condition.getUserMap()));

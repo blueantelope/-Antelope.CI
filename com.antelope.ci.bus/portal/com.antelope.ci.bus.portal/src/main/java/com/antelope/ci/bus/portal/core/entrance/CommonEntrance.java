@@ -17,16 +17,14 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
-import com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter;
-import com.antelope.ci.bus.server.BusServerCondition;
-import com.antelope.ci.bus.server.shell.BusShellMode;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
-import com.antelope.ci.bus.server.shell.ModeClass;
-import com.antelope.ci.bus.server.shell.Shell;
-import com.antelope.ci.bus.server.shell.StatusClass;
+import com.antelope.ci.bus.server.shell.base.BusShellMode;
+import com.antelope.ci.bus.server.shell.base.BusShellStatus;
+import com.antelope.ci.bus.server.shell.base.Shell;
+import com.antelope.ci.bus.server.shell.base.ShellModeClass;
+import com.antelope.ci.bus.server.shell.base.ShellStatusClass;
 import com.antelope.ci.bus.server.shell.command.Command;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
-import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
+import com.antelope.ci.bus.server.shell.launcher.BusShellCondition;
 
 
 /**
@@ -37,23 +35,23 @@ import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
  */
 public abstract class CommonEntrance implements Entrance {
 	private static final Logger log = Logger.getLogger(CommonEntrance.class);
-	private static final CommandAdapter cmdAdapter = CommandAdapterFactory.getAdapter(PortalCommandAdapter.class.getName());
-	protected BusServerCondition server_condition;
+	private CommandAdapter cmdAdapter;
+	protected BusShellCondition condition;
 	protected ClassLoader classLoader;
 	
 	@Override
 	public void init(Object... args) throws CIBusException {
 		for (Object arg : args) {
-			if (arg instanceof BusServerCondition)
-				this.server_condition = (BusServerCondition) arg;
+			if (arg instanceof CommandAdapter)
+				this.cmdAdapter = (CommandAdapter) arg;
+			if (arg instanceof BusShellCondition)
+				this.condition = (BusShellCondition) arg;
 			if (arg instanceof ClassLoader)
 				this.classLoader = (ClassLoader) arg;
 		}
 		
 		if (classLoader == null)
 			classLoader = Thread.currentThread().getContextClassLoader();
-		
-		cmdAdapter.initClassLoader(classLoader);
 	}
 	
 	@Override
@@ -83,18 +81,18 @@ public abstract class CommonEntrance implements Entrance {
 			try {
 				Class clz = Class.forName(clsname, false, classLoader);
 				if (clz.isAnnotationPresent(Shell.class))
-					if (server_condition != null)
-						server_condition.addShellClass(clz.getName());
+					if (condition != null)
+						condition.addShellClass(clz.getName());
 				
 				if (clz.isAnnotationPresent(PortalConfiguration.class)) {
 					PortalConfiguration pc = (PortalConfiguration) clz.getAnnotation(PortalConfiguration.class);
 					BusPortalConfigurationHelper.getHelper().addConfigPair(clz.getName(), pc.properties(), pc.xml(), pc.validate());
 				}
 				
-				if (clz.isAnnotationPresent(StatusClass.class))
+				if (clz.isAnnotationPresent(ShellStatusClass.class))
 					BusShellStatus.addStatusClass(clz);
 				
-				if (clz.isAnnotationPresent(ModeClass.class))
+				if (clz.isAnnotationPresent(ShellModeClass.class))
 					BusShellMode.addModeClass(clz);
 				
 				if (clz.isAnnotationPresent(Command.class))

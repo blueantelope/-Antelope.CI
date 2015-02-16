@@ -14,8 +14,8 @@ import java.util.List;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.ShellPalette;
-import com.antelope.ci.bus.server.shell.ShellText;
+import com.antelope.ci.bus.server.shell.base.ShellPalette;
+import com.antelope.ci.bus.server.shell.base.ShellText;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 

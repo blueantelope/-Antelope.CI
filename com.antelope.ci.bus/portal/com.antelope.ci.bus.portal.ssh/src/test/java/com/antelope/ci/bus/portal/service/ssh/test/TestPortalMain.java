@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.portal.ssh.BusPortalSshServer;
 import com.antelope.ci.bus.server.BusServer;
 
 
@@ -26,7 +27,7 @@ public class TestPortalMain extends TestCase {
 
 	@Test
 	public void test() throws CIBusException {
-		BusServer server = new TestBusPortalServer();
+		BusServer server = new BusPortalSshServer();
 		server.open();
 	}
 	

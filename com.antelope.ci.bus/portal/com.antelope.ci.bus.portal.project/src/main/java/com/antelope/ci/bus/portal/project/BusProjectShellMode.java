@@ -8,8 +8,9 @@
 
 package com.antelope.ci.bus.portal.project;
 
-import com.antelope.ci.bus.server.shell.Mode;
-import com.antelope.ci.bus.server.shell.ModeClass;
+import com.antelope.ci.bus.server.shell.base.ShellMode;
+import com.antelope.ci.bus.server.shell.base.ShellModeClass;
+
 
 
 /**
@@ -18,9 +19,9 @@ import com.antelope.ci.bus.server.shell.ModeClass;
  * @version  0.1
  * @Date	 2014年10月30日		下午5:06:47 
  */
-@ModeClass
+@ShellModeClass
 public class BusProjectShellMode {
-	@Mode(code=11, name="shell.mode.project.form.add", simple="project_add", type=Mode.TYPE_INPUT)
-	public static final String PROJECT_FORM_ADD				= "shell.mode.project.form.add";
+	@ShellMode(code=11, name="shell.mode.project.form.add", simple="project_add", type=ShellMode.TYPE_INPUT)
+	public static final String PROJECT_FORM_ADD = "shell.mode.project.form.add";
 }
 

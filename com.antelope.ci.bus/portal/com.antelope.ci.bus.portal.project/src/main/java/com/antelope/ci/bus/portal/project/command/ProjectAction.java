@@ -17,7 +17,7 @@ import com.antelope.ci.bus.portal.core.shell.form.CommonFormAction;
 import com.antelope.ci.bus.portal.core.shell.form.FormAction;
 import com.antelope.ci.bus.portal.core.shell.form.FormCommand;
 import com.antelope.ci.bus.portal.project.BusProjectShellMode;
-import com.antelope.ci.bus.server.shell.BusShellStatus;
+import com.antelope.ci.bus.server.shell.base.BusShellStatus;
 import com.antelope.ci.bus.server.shell.command.CommandHelper;
 
 

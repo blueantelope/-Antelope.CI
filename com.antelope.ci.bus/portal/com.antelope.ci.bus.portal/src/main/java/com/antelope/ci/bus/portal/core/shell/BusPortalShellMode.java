@@ -8,7 +8,8 @@
 
 package com.antelope.ci.bus.portal.core.shell;
 
-import com.antelope.ci.bus.server.shell.Mode;
+import com.antelope.ci.bus.server.shell.base.ShellMode;
+
 
 
 /**
@@ -18,6 +19,6 @@ import com.antelope.ci.bus.server.shell.Mode;
  * @Date	 2014年11月6日		下午12:02:59 
  */
 public class BusPortalShellMode {
-	@Mode(code=5, name="shell.mode.form", simple="form", type=Mode.TYPE_INPUT)
+	@ShellMode(code=5, name="shell.mode.form", simple="form", type=ShellMode.TYPE_INPUT)
 	public static final String FORM				= "shell.mode.form";
 }
