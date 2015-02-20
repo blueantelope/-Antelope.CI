@@ -44,14 +44,10 @@ public class BusLoggerActivator extends BusActivator {
 	@Override
 	protected void run() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void destroy() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -78,13 +74,13 @@ public class BusLoggerActivator extends BusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.BusActivator#addServices()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#publishServices()
 	 */
 	@Override
-	protected void addServices() throws CIBusException {
+	protected void publishServices() throws CIBusException {
 		if (logService == null) {
 			logService = new BusLogServiceImpl();
-			BusOsgiUtil.addServiceToContext(bundle_context, logService, LOG_SERVICE_NAME);
+			BusOsgiUtil.publishService(bundle_context, logService, LOG_SERVICE_NAME);
 		}
 	}
 
@@ -95,7 +91,12 @@ public class BusLoggerActivator extends BusActivator {
 	 */
 	@Override
 	protected void removeServices() throws CIBusException {
-		LogManager.shutdown();			// 关闭log4j日志服务
+		LogManager.shutdown(); // 关闭log4j日志服务
+	}
+
+
+	@Override
+	protected String[] customLoadServices() {
+		return null;
 	}
 }
-

@@ -10,10 +10,11 @@ package com.antelope.ci.bus.server;
 
 import java.net.URL;
 
+import org.osgi.framework.BundleContext;
+
 import com.antelope.ci.bus.common.PROTOCOL;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.BusOsgiConstant;
 import com.antelope.ci.bus.osgi.BusPropertiesHelper;
 import com.antelope.ci.bus.osgi.BusPropertiesHelper.KT;
@@ -122,9 +123,9 @@ public class BusServerConfig {
 	 * @return BusServerConfig
 	 * @throws CIBusException 
 	 */
-	public static BusServerConfig load() throws CIBusException {
+	public static BusServerConfig load(BundleContext bundle_context) throws CIBusException {
 		BusServerConfig config = new BusServerConfig();
-		BusPropertiesHelper helper = new BusPropertiesHelper(BusActivator.getContext());
+		BusPropertiesHelper helper = new BusPropertiesHelper(bundle_context);
 		config.setSwitcher(helper.switchServer());
 		config.setHost(helper.getServerHost());
 		config.setPort(helper.getServerPort());

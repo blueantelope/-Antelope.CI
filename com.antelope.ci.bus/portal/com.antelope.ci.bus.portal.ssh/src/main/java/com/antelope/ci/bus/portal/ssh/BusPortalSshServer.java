@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.portal.ssh;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
@@ -28,6 +29,10 @@ public class BusPortalSshServer extends BusSshServer {
 	
 	public BusPortalSshServer() throws CIBusException {
 		super();
+	}
+	
+	public BusPortalSshServer(BundleContext bundle_context) throws CIBusException {
+		super(bundle_context);
 	}
 	
 	/**

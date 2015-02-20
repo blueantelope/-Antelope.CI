@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import com.antelope.ci.bus.common.Constants;
+import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.StringUtil;
 
 
@@ -25,7 +25,7 @@ import com.antelope.ci.bus.common.StringUtil;
 public class TestGetLastName extends TestCase {
 	@Test public void test() {
 		System.out.println(
-				StringUtil.getLastName(this.getClass().getName(), "\\" + Constants.DOT));
+				StringUtil.getLastName(this.getClass().getName(), "\\" + BusConstants.DOT));
 	}
 	
 	public static void main(String[] args) {

@@ -579,13 +579,6 @@
 		</exec>
 	</target>
 	
-	<target name="depends" depends="mvn_env">
-		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${depends.pom}" />
-			<arg line="dependency:copy-dependencies" />
-		</exec>
-	</target>
-	
 	<!-- com.antelope.ci.bus.gate -->
 	<target name="gate.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
@@ -607,6 +600,26 @@
 		</exec>
 	</target>
 
+	<!-- com.antelope.ci.bus.gate.ssh -->
+	<target name="gate.ssh.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.ssh.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="gate.ssh.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.ssh.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="gate.ssh.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.ssh.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
 
 	<target name="all" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
@@ -661,6 +674,13 @@
 			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
+	
+	<target name="depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${depends.pom}" />
+			<arg line="dependency:copy-dependencies" />
+		</exec>
+	</target>
 
 	<target name="clean" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
@@ -712,7 +732,7 @@
 			<arg line="clean" />
 		</exec>
 		<exec executable="${mvn}" failonerror="true">
-			<arg line="-f ${prj.portal.versioin.pom}" />
+			<arg line="-f ${prj.portal.version.pom}" />
 			<arg line="clean" />
 		</exec>
 		<exec executable="${mvn}" failonerror="true">
@@ -725,6 +745,14 @@
 		</exec>
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.ssh.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.pom}" />
+			<arg line="clean" />
+		</exec>
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.ssh.pom}" />
 			<arg line="clean" />
 		</exec>
 	</target>

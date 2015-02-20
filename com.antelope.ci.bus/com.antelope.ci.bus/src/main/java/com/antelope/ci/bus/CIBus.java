@@ -97,6 +97,7 @@ public class CIBus {
 	private static String system_ext_server_dir;
 	private static String system_ext_service_dir;
 	private static String system_ext_portal_dir;
+	private static String system_ext_gate_dir;
 	private static String system_ext_lib_dir;
 	/* 系统jar目录 */
 	private static String lib_dir;
@@ -265,6 +266,9 @@ public class CIBus {
 			    │   │   ├── lib
 			    │   │   ├── part
 			    │   │   └── service
+			    │   ├── com.antelope.ci.bus.gate
+			    │   │   ├── lib
+			    │   │   └── service
 			    │   ├── com.antelope.ci.bus.server
 			    │   │   ├── lib
 			    │   │   └── service
@@ -331,6 +335,9 @@ public class CIBus {
 		// system/ext/com.antelope.ci.bus.portal
 		system_ext_portal_dir = system_ext_dir + File.separator + BusConstants.SYSTEM_EXT_PORTAL_DIRNAME;
 		System.setProperty(BusConstants.SYSTEM_EXT_PORTAL_DIR, system_ext_portal_dir);
+		// system/ext/com.antelope.ci.bus.gate
+		system_ext_gate_dir = system_ext_dir + File.separator + BusConstants.SYSTEM_EXT_GATE_DIRNAME;
+		System.setProperty(BusConstants.SYSTEM_EXT_GATE_DIR, system_ext_gate_dir);
 		// system/ext/lib
 		system_ext_lib_dir = system_ext_dir + File.separator + BusConstants.SYSTEM_EXT_LIB_DIRNAME;
 		System.setProperty(BusConstants.SYSTEM_EXT_LIB_DIR, system_ext_lib_dir);
@@ -526,6 +533,7 @@ public class CIBus {
 		loaderList.addAll(loadSystemBundle(system_ext_dir, 4)); // com.antelope.ci.bus.server支持
 		loaderList.addAll(loadSystemBundle(system_ext_dir, 5)); // com.antelope.ci.bus.service支持
 		loaderList.addAll(loadSystemBundle(system_ext_dir, 6)); // com.antelope.ci.bus.portal支持
+		loaderList.addAll(loadSystemBundle(system_ext_dir, 10)); // com.antelope.ci.bus.gate支持
 		Collections.sort(loaderList, new BundleLoaderComparator());
 		// 加载bundle包
 		for (BundleLoader loader : loaderList) {
@@ -580,16 +588,16 @@ public class CIBus {
 						);
 						break;
 						
-					case 4:		// com.antelope.ci.bus.server
+					case 4: // com.antelope.ci.bus.server
 						loadContaintFragments(context, startLevel, loaderList, loadSystemExtLib(),
 								root, BusConstants.SYSTEM_EXT_SERVER_DIRNAME, "service", null);
 						break;
 						
-					case 5:		// com.antelope.ci.bus.service
+					case 5: // com.antelope.ci.bus.service
 						
 						break;
 						
-					case 6:		// com.antelope.ci.bus.portal
+					case 6: // com.antelope.ci.bus.portal
 						loadContaintFragments(context, startLevel, loaderList, loadSystemExtLib(),
 								root, BusConstants.SYSTEM_EXT_PORTAL_DIRNAME, "part", "service");
 						break;
@@ -612,7 +620,7 @@ public class CIBus {
 						);
 						break;
 						
-					case 9:		// com.antelope.ci.bus.engine
+					case 9: // com.antelope.ci.bus.engine
 						// com.antelope.ci.bus.engine.model
 						loadContaintFragments(context, startLevel, loaderList, loadSystemEngineLib(),
 								root, BusConstants.SYSTEM_ENGINE_MODEL_DIRNAME, "part", "service");
@@ -622,6 +630,10 @@ public class CIBus {
 						// com.antelope.ci.bus.engine.manager
 						loadContaintFragments(context, startLevel, loaderList, loadSystemEngineLib(),
 								root, BusConstants.SYSTEM_ENGINE_MANAGER_DIRNAME, "part", "service");
+						break;
+					case 10: // com.antelope.ci.bus.gate
+						loadContaintFragments(context, startLevel, loaderList, loadSystemExtLib(),
+								root, BusConstants.SYSTEM_EXT_GATE_DIRNAME, "part", "service");
 						break;
 				}
 			}

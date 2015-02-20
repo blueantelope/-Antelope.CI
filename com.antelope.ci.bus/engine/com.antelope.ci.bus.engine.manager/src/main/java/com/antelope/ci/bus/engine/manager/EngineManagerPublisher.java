@@ -166,7 +166,7 @@ public class EngineManagerPublisher {
 					if (load) {
 						String serviceName = getServiceName(clazz);
 						if (serviceName != null) {
-							BusOsgiUtil.addServiceToContext(m_context, manager, serviceName);
+							BusOsgiUtil.publishService(m_context, manager, serviceName);
 							manager.regist(m_context);
 							managerMap.put(clazzName, manager);
 							log.info("add engine manager: " + clazzName);
@@ -181,7 +181,7 @@ public class EngineManagerPublisher {
 		private void registToContext(BusEngineManager service) {
 			Class clazz = service.getClass();
 			EngineManager em =  (EngineManager) clazz.getAnnotation(EngineManager.class);
-			BusOsgiUtil.addServiceToContext(m_context, service, em.service_name());
+			BusOsgiUtil.publishService(m_context, service, em.service_name());
 		}
 	}
 }

@@ -11,7 +11,7 @@ package com.antelope.ci.bus.engine.model;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.antelope.ci.bus.common.Constants;
+import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -26,7 +26,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 public abstract class BaseModel implements Serializable {
 
 	public void fromMap(Map<String, String> modelMap) throws CIBusException {
-		String className = StringUtil.getLastName(this.getClass().getName(), "//"+Constants.DOT);
+		String className = StringUtil.getLastName(this.getClass().getName(), "//"+BusConstants.DOT);
 		for (String name : modelMap.keySet()) {
 			String[] ns = name.split(".");
 			if (ns.length == 2) {

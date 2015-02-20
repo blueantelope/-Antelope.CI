@@ -14,6 +14,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
+import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
@@ -35,12 +36,20 @@ public abstract class BusServer {
 	protected static final long SLEEP_WAIT_INIT = 500; // 500 millisecond 
 	protected long waitForStart;
 	protected boolean running;
+	protected BundleContext bundle_context;
 	private ReadWriteLock locker = new ReentrantReadWriteLock();
 	private Lock readLocker = locker.readLock();
 	private Lock writeLocker = locker.writeLock();
 	
 	public BusServer() throws CIBusException {
 		super();
+		init();
+		customizeInit();
+	}
+	
+	public BusServer(BundleContext bundle_context) throws CIBusException {
+		super();
+		this.bundle_context = bundle_context;
 		init();
 		customizeInit();
 	}
@@ -162,7 +171,7 @@ public abstract class BusServer {
 	 * 解析bus.properties配置
 	 */
 	protected BusServerConfig parseConfig() throws CIBusException {
-		BusServerConfig config = BusServerConfig.load();
+		BusServerConfig config = BusServerConfig.load(bundle_context);
 		return config;
 	}
 	

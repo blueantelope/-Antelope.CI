@@ -1,36 +1,37 @@
-// com.antelope.ci.bus.gate.BusGateActivator.java
+// com.antelope.ci.bus.gate.ssh.BusGateActivator.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
  * ------------------------------------------------------------------------
- * Copyright (c) 2014, Antelope CI Team All Rights Reserved.
+ * Copyright (c) 2015, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.gate;
+package com.antelope.ci.bus.gate.ssh;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
-import com.antelope.ci.bus.osgi.ServicePublisher;
+import com.antelope.ci.bus.server.BusServerTemplateActivator;
 
 
 /**
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2014年12月13日		下午8:00:59 
+ * @Date	 2015年2月19日		下午1:13:08 
  */
-public class BusGateActivator extends BusActivator {
-
-	@Override
-	protected void customInit() throws CIBusException {
-		
-	}
-
+public class BusGateSshActivator extends BusServerTemplateActivator {
+	private BusGateSshServer sshServer; 
+	
 	@Override
 	protected void run() throws CIBusException {
-		
+		if (sshServer == null) {
+			sshServer = new BusGateSshServer(bundle_context);
+			System.out.println("*********************** @antelope.ci ssh gate server start, wait a moment... ***********************");
+			sshServer.open();
+			System.out.println("*********************** @antelope.ci ssh gate server finish stsart, enjoy it! ***********************");
+		}
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class BusGateActivator extends BusActivator {
 
 	@Override
 	protected void publishServices() throws CIBusException {
-		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.gate.service");
+		
 	}
 
 	@Override
@@ -68,5 +69,10 @@ public class BusGateActivator extends BusActivator {
 	@Override
 	protected String[] customLoadServices() {
 		return null;
+	}
+
+	@Override
+	protected void customInit() throws CIBusException {
+		
 	}
 }

@@ -10,6 +10,7 @@ package com.antelope.ci.bus.osgi;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -107,16 +108,14 @@ public abstract class BusActivator implements BundleActivator {
 	}
 	
 	public static ServiceReference getServiceReference(String serviceName, String className) {
-		BusServiceInfo info;
-		if ((info=getBusServiceInfo(serviceName, className)) != null)
-			return info.ref;
+		BusServiceInfo info = getBusServiceInfo(serviceName, className);
+		if (info != null) return info.ref;
 		return null;
 	}
 
 	public static Object getService(String serviceName, String className) {
 		BusServiceInfo info = getBusServiceInfo(serviceName, className);
-		if (info != null)
-			return info.service;
+		if (info != null) return info.service;
 		return null;
 	}
 	
@@ -195,7 +194,7 @@ public abstract class BusActivator implements BundleActivator {
 		bundle_context = context;
 		init(); // 初始化
 		loadServices();
-		addServices(); // 增加service
+		publishServices(); // 发布service
 		run(); // 自定义运行
 	}
 
@@ -206,6 +205,9 @@ public abstract class BusActivator implements BundleActivator {
 		loadProps();
 		initDefaultService();
 		initLoadServices();
+		String[] services = customLoadServices();
+		if (services != null)
+			serviceList.addAll(Arrays.asList(services));
 		customInit();
 	}
 
@@ -228,7 +230,7 @@ public abstract class BusActivator implements BundleActivator {
 	/*
 	 * 初始化service列表 由bus.properties中的bus.load.services一项中得到
 	 */
-	private void initLoadServices() {
+	protected void initLoadServices() {
 		if (properties != null) {
 			String load_services = properties.getProperty(BUS_LOAD_SERVICES);
 			if (load_services != null) {
@@ -255,7 +257,7 @@ public abstract class BusActivator implements BundleActivator {
 	 * 使用serviceTrack加载所有定义的service
 	 */
 	private void loadServices() throws CIBusException {
-		for (String  service : serviceList) {
+		for (String service : serviceList) {
 			try {
 				Filter filter = bundle_context.createFilter("(objectClass=" + service + ")");
 				ServiceTracker tracker = new ServiceTracker(bundle_context, filter, new BusServiceTrackerCustomizer());  
@@ -407,6 +409,8 @@ public abstract class BusActivator implements BundleActivator {
 		return null;
 	}
 	
+	protected abstract String[] customLoadServices();
+	
 	/**
 	 * 各个activator自定义的初始化
 	 * @param  @throws CIBusException
@@ -454,7 +458,6 @@ public abstract class BusActivator implements BundleActivator {
 
 	/**
 	 * 处理停止所有serivice后的操作
-	 * 
 	 * @param @throws CIBusException
 	 * @return void
 	 * @throws
@@ -462,17 +465,15 @@ public abstract class BusActivator implements BundleActivator {
 	protected abstract void handleStopAllService() throws CIBusException;
 
 	/**
-	 * 增加osgi service
-	 * 
+	 * publish osgi services
 	 * @param @throws CIBusException
 	 * @return void
 	 * @throws
 	 */
-	protected abstract void addServices() throws CIBusException;
+	protected abstract void publishServices() throws CIBusException;
 
 	/**
 	 * 清除osgi service
-	 * 
 	 * @param @throws CIBusException
 	 * @return void
 	 * @throws

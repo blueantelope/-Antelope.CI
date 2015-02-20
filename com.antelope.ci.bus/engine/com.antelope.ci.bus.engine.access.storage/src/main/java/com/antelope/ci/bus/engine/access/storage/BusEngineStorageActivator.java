@@ -55,16 +55,7 @@ public class BusEngineStorageActivator extends BusActivator {
 	}
 
 	@Override
-	protected void addServices() throws CIBusException {
-		
-	}
-
-	@Override
-	protected void removeServices() throws CIBusException {
-		
-	}
-
-	private void serviceHook() {
+	protected void publishServices() throws CIBusException {
 		new ServicePublishHook(bundle_context, "com.antelope.ci.bus.storage") {
 			@Override protected ServicePublishInfo fetchService(Class clazz) {
 				ServicePublishInfo info = new ServicePublishInfo();
@@ -84,5 +75,20 @@ public class BusEngineStorageActivator extends BusActivator {
 			}
 			
 		}.start();
+	}
+
+	@Override
+	protected void removeServices() throws CIBusException {
+		
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.BusActivator#customLoadServices()
+	 */
+	@Override
+	protected String[] customLoadServices() {
+		return null;
 	}
 }

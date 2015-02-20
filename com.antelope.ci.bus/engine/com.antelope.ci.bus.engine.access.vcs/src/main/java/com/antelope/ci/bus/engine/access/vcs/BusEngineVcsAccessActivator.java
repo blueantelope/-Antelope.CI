@@ -55,7 +55,7 @@ public class BusEngineVcsAccessActivator extends BusActivator {
 	}
 
 	@Override
-	protected void addServices() throws CIBusException {
+	protected void publishServices() throws CIBusException {
 		
 	}
 
@@ -63,4 +63,9 @@ public class BusEngineVcsAccessActivator extends BusActivator {
 	protected void removeServices() throws CIBusException {
 		
 	}
-}	
+
+	@Override
+	protected String[] customLoadServices() {
+		return null;
+	}
+}

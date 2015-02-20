@@ -3,10 +3,7 @@ Bundle-Version: 0.1.0
 Bundle-Name: com.antelope.ci.bus.gate
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.gate
-Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service, 
- com.antelope.ci.bus.server, com.antelope.ci.bus.server.shell,
- com.antelope.ci.bus.server.shell.core, com.antelope.ci.bus.server.shell.buffer,
- com.antelope.ci.bus.server.shell.command
+Bundle-Vendor: blueantelope@gmail.com
+Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service
 DynamicImport-Package: com.antelope.ci.bus.server.service.*, com.antelope.ci.bus.engine.manager.project.*
 Bundle-Activator: com.antelope.ci.bus.gate.BusGateActivator
-Bundle-Vendor: blueantelope@gmail.com

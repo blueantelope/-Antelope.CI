@@ -116,7 +116,7 @@ public class Part implements Serializable {
 		try {
 			return EU_BlockMode.toMode(mode);
 		} catch (CIBusException e) {
-			DevAssistant.errorln(e);
+			DevAssistant.assert_exception(e);
 		}
 		return EU_BlockMode.VERTICAL;
 	}

@@ -121,7 +121,7 @@ public abstract class AbstractAuthService extends CommonServerService implements
 			otherList.add(new ServiceProperty(SERVICE_AUTH_TYPE, auth_type.getName()));
 		}
 		otherList.addAll(extendServiceProperties());
-		BusOsgiUtil.addServiceToContext(m_context, this, "com.antelope.ci.bus.server.service.AuthService", 
+		BusOsgiUtil.publishService(m_context, this, "com.antelope.ci.bus.server.service.AuthService", 
 				otherList.toArray(new ServiceProperty[otherList.size()]));
 	}
 

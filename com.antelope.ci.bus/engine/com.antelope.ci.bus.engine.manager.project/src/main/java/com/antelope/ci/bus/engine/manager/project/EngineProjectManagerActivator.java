@@ -19,8 +19,13 @@ import com.antelope.ci.bus.engine.manager.BusEngineManagerActivator;
  * @Date	 2014年11月30日		下午11:38:02 
  */
 public class EngineProjectManagerActivator extends BusEngineManagerActivator {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.engine.manager.BusEngineManagerActivator#publishServices()
+	 */
 	@Override
-	protected void addServices() throws CIBusException {
+	protected void publishServices() throws CIBusException {
 		// nothing
 	}
 }

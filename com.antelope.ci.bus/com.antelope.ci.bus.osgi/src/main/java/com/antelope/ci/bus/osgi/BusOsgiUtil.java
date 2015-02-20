@@ -57,10 +57,11 @@ public class BusOsgiUtil {
 		return BusActivator.getContext().getServiceReference(clazz);
 	}
 	
-	public static void addServiceToContext(BundleContext m_context, Object service, String serviceName, ServiceProperty... others) {
+	public static void publishService(BundleContext m_context, Object service, 
+			String serviceName, ServiceProperty... others) {
 		String clazz =  service.getClass().getName();
 		m_context.registerService(serviceName, service, initServiceProperties(serviceName, clazz, others));
-		DevAssistant.assert_out("register service : " + serviceName + ", " + service.getClass().getName());
+		DevAssistant.assert_out("publish service : " + serviceName + ", " + service.getClass().getName());
 	}
 	
 	private static Dictionary initServiceProperties(String serviceName, String className, ServiceProperty... others) {

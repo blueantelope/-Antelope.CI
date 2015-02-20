@@ -21,8 +21,13 @@ import com.antelope.ci.bus.engine.manager.project.EngineProjectManagerActivator;
  * @Date	 2014年11月30日		下午10:51:15 
  */
 public class EngineProjectManagerRealizationActivator extends EngineProjectManagerActivator {
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.engine.manager.project.EngineProjectManagerActivator#publishServices()
+	 */
 	@Override
-	protected void addServices() throws CIBusException {
+	protected void publishServices() throws CIBusException {
 		EngineManagerPublisher.publish(bundle_context, 
 				EnginePublishInfo.createServicePublish("com.antelope.ci.bus.engine.manager.project.realization"));
 	}

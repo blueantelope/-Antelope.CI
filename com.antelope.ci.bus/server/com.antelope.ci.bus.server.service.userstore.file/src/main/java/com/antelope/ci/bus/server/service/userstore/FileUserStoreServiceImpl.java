@@ -39,7 +39,7 @@ public class FileUserStoreServiceImpl extends CommonServerService implements Use
 
 	@Override
 	public void register(BundleContext m_context) throws CIBusException {
-		BusOsgiUtil.addServiceToContext(m_context, this, NAME);
+		BusOsgiUtil.publishService(m_context, this, NAME);
 	}
 
 	/**

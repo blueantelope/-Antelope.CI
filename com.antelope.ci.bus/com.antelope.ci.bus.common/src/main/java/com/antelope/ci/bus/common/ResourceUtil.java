@@ -30,13 +30,13 @@ public class ResourceUtil {
 		try {
 			if (!StringUtil.endsWithIgnoreCase(xpath, ".xml"))
 				xpath += ".xml";
-			if (xpath.startsWith(Constants.CP_SUFFIX)) {
-				String n_xpath = xpath.substring(Constants.CP_SUFFIX.length());
+			if (xpath.startsWith(BusConstants.CP_SUFFIX)) {
+				String n_xpath = xpath.substring(BusConstants.CP_SUFFIX.length());
 				return cls.getResourceAsStream(n_xpath);
 			}
 			
-			if (xpath.startsWith(Constants.FILE_SUFFIX)) {
-				String n_xpath = xpath.substring(Constants.FILE_SUFFIX.length());
+			if (xpath.startsWith(BusConstants.FILE_SUFFIX)) {
+				String n_xpath = xpath.substring(BusConstants.FILE_SUFFIX.length());
 				return new FileInputStream(n_xpath);
 			}
 			
@@ -59,10 +59,10 @@ public class ResourceUtil {
 		int len = value.length();
 		int index = 0;
 		while (index < len) {
-			int start = value.indexOf(Constants.LABLE_START, index);
+			int start = value.indexOf(BusConstants.LABLE_START, index);
 			if (start == -1)
 				break;
-			int end = value.indexOf(Constants.LABLE_END, start);
+			int end = value.indexOf(BusConstants.LABLE_END, start);
 			String key = value.substring(start+2, end);
 			String v;
 			if (params instanceof BasicConfigrationReader)

@@ -54,12 +54,17 @@ public class BusEngineModelActivator extends BusActivator {
 	}
 
 	@Override
-	protected void addServices() throws CIBusException {
+	protected void publishServices() throws CIBusException {
 		
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
 		
+	}
+
+	@Override
+	protected String[] customLoadServices() {
+		return null;
 	}
 }

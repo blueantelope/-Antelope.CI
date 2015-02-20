@@ -62,19 +62,19 @@ public class BusPortalActivator extends BusActivator {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.BusActivator#addServices()
+	 * @see com.antelope.ci.bus.osgi.BusActivator#publishServices()
 	 */
 	@Override
-	protected void addServices() throws CIBusException {
+	protected void publishServices() throws CIBusException {
 		if (shellService == null) {
 			shellService = new ShellService(condition);
-			BusOsgiUtil.addServiceToContext(bundle_context, shellService, ShellService.NAME);
+			BusOsgiUtil.publishService(bundle_context, shellService, ShellService.NAME);
 		}
 		if (configurationService == null) {
 			Properties configProps = new Properties();
 			configProps.put(START_WAIT, getStartWait());
 			configurationService = new ConfigurationService(configProps);
-			BusOsgiUtil.addServiceToContext(bundle_context, configurationService, ConfigurationService.NAME);
+			BusOsgiUtil.publishService(bundle_context, configurationService, ConfigurationService.NAME);
 		}
 		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.portal.service");
 	}
@@ -99,8 +99,6 @@ public class BusPortalActivator extends BusActivator {
 	@Override
 	protected void destroy() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -113,21 +111,20 @@ public class BusPortalActivator extends BusActivator {
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	protected void handleStopAllService() throws CIBusException {
-		
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
 		
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	protected String[] customLoadServices() {
+		return null;
 	}
 }

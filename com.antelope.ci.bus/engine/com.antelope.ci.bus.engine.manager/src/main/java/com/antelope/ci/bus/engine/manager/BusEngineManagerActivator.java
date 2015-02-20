@@ -63,7 +63,7 @@ public class BusEngineManagerActivator extends BusActivator {
 	}
 
 	@Override
-	protected void addServices() throws CIBusException {
+	protected void publishServices() throws CIBusException {
 		EngineManagerPublisher.publish(bundle_context, EnginePublishInfo.createPartPublish("com.antelope.ci.bus.engine.manager"));
 	}
 
@@ -76,5 +76,10 @@ public class BusEngineManagerActivator extends BusActivator {
 	protected void unloadService(String service_name, String servcie_class_name, ServiceReference ref, Object service) throws CIBusException {
 		BusEngineManager engineManager = (BusEngineManager) service;
 		super.unloadService(service_name, servcie_class_name, ref, service);
+	}
+
+	@Override
+	protected String[] customLoadServices() {
+		return null;
 	}
 }
