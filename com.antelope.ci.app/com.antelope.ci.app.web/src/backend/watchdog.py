@@ -34,6 +34,8 @@ DogFood Binary Format. byte(4 bits) as unit
 
 
 Version: 1 byte
+Version: 1 byte
+    indicate format of the pack. default 0
     indicate format of the pack. default 0
 Sequence: 1 byte
     byte order. 0: antive, 1:litten endian, 2:bit endian, 3: network endian. default 3

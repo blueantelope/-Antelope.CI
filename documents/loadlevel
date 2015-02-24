@@ -18,18 +18,18 @@
 		
 201-300: com.antelope.ci.bus.ext
 	201-220: preserve
-	221-250: com.antelope.ci.bus.server
-		221-234: part
-		235: com.antelope.ci.bus.server
-		236-250: service
-	251-280: com.antelope.ci.bus.portal
-		251-264: part
-		265: com.antelope.ci.bus.portal
-		266-280: service
-	251-280: com.antelope.ci.bus.gate
-		251-264: part
-		265: com.antelope.ci.bus.gate
-		266-280: service
+	221-230: com.antelope.ci.bus.server
+		221-224: part
+		225: com.antelope.ci.bus.server
+		226-230: service
+	231-240: com.antelope.ci.bus.portal
+		231-234: part
+		235: com.antelope.ci.bus.portal
+		236-240: service
+	241-250: com.antelope.ci.bus.gate
+		241-244: part
+		245: com.antelope.ci.bus.gate
+		246-250: service
 	281-300: preserve
 	
 400-500: preserve

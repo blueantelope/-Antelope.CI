@@ -1,8 +1,8 @@
 目录结构：
-bin				可执行程序
-etc				配置文件
-lib					系统运行时即加载的jar
-system			系统运行时，由系统加载应用包
-plugin			系统运行后，可自动加载的OSGI应用包
-log				日志目录
-.cache			osgi运行时缓存
+bin 可执行程序
+etc 配置文件
+lib 系统运行时即加载的jar
+system 系统运行时，由系统加载应用包
+plugin 系统运行后，可自动加载的OSGI应用包
+log 日志目录
+.cache osgi运行时缓存
