@@ -22,39 +22,46 @@ import java.io.Serializable;
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |    Sequence   |     Version   |            pid                |
+   |      Order    |    Identity   |     Version   |      OID      |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |    Status     |       Status Error Length     | Status Err Msg|
+   |      OID      |                OC             |       OT      |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                        Http Sequence                          |
+   |      BT       |                   BL                          |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |        Http Error Length      |       Http Error Message      |
+   |      BL       |                   EXT                         |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                       Https Sequence                          |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |        Https Error Length     |       Https Error Message     |
+   |                                   EXT                         |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-Sequence: 1 byte
-  byte stream order. 0: antive, 1:litten endian, 2:bit endian, 3: network endian. default 3
+Order: 1 byte
+  byte stream order. 0: native, 1:little endian, 2:big endian, 3: network endian, default 3.
+Type: 1 byte
+  API type, indicate API type.
 Version: 1 byte
   API version.
-Operation Id: 2 bytes
-  increment id of opreration.
-Operation Code: 1 byte
-  define code of operation that include sending and recieving. 0:query(normal), 1:add(exception), 2:delete, 3:edit
-Body Type: 1 byte
-  body cotent type. 1: json
-Body Length: 4 bytes
-  body content length.
+OID(operation identity): 2 bytes
+  indicate a group operations.
+OC(operation code): 2 bytes
+  define code of operation.
+OT(operation type): 1 byte
+  define type of operation that include sending and recieving. 0:query(normal), 1:add(exception), 2:delete, 3:edit
+BT(body type): 1 byte
+  body type. 1: json
+BL(body length): 4 bytes
+  body length.
+EXT(extension): 17 bytes
+  extension, for self define header.
 */
-public class APIHeader implements Serializable {
-  protected byte sequence;
-  protected byte version;
-  protected short oid; // operation id
-  protected byte oc; // operation code
+public class APIHeader {
+  protected byte order; // order
+  protected byte type; // identity
+  protected byte version; // version
+  protected short oid; // operation identity
+  protected short oc; // operation code
+  protected byte ot; // operation type
   protected byte bt; // body type
   protected int bl; // body length
+  protected byte[] ext; // extension
 
   public APIHeader() {
     super();
@@ -62,8 +69,10 @@ public class APIHeader implements Serializable {
   }
 
   protected void init() {
-    sequence = 0x03;
+    order = 0x03;
+    type = 0x00;
     version = 0x01;
+    ext = new byte[7];
   }
 
 
