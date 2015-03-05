@@ -40,6 +40,20 @@ public class PortalShellUtil {
 		return shell.getPalette(LAYOUT_CONTENT);
 	}
 	
+	public static String getNextStatus(String status, ClassLoader classLoader) {
+		String nextShell = getNextShell(status, classLoader);
+		if (nextShell == null) {			
+			return status;
+		} else {
+			try {
+				return ShellUtil.getStatus(nextShell, classLoader);
+			} catch (CIBusException e) {
+				DevAssistant.assert_exception(e);
+				return status;
+			}
+		}
+	}
+	
 	public static String getNextStatus(String status) {
 		String nextShell = getNextShell(status);
 		if (nextShell == null) {			
@@ -52,6 +66,26 @@ public class PortalShellUtil {
 				return status;
 			}
 		}
+	}
+	
+	public static String getNextShell(String status, ClassLoader classLoader) {
+		List<String> classNameList = config_helper.sortPortalShell();
+		int n = 0;
+		for (String className : classNameList) {
+			n++;
+			try {
+				String shellStatus = ShellUtil.getStatus(className, classLoader);
+				if (!StringUtil.empty(shellStatus) && shellStatus.equalsIgnoreCase(status)) {
+					int next = n;
+					if (next == classNameList.size())		next = 0;
+					return classNameList.get(next);
+				}
+			} catch (CIBusException e) {
+				DevAssistant.assert_exception(e);
+			}	
+		}
+		
+		return null;
 	}
 	
 	public static String getNextShell(String status) {

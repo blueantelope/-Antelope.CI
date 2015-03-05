@@ -32,4 +32,3 @@ public class ShellService {
 		return manager;
 	}
 }
-

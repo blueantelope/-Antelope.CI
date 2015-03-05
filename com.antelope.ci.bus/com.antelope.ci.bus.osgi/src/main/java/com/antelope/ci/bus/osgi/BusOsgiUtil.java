@@ -33,6 +33,7 @@ public class BusOsgiUtil {
 		return ClassFinder.findPacketResource(rootPackage, BusActivator.getClassLoader());
 	}
 	
+	/*
 	public static Class loadClass(String shellClassName) throws CIBusException {
 		Class shellClass;
 		try {
@@ -43,6 +44,7 @@ public class BusOsgiUtil {
 		}
 		return shellClass;
 	}
+	*/
 	
 	public static ClassLoader getBundleClassLoader(BundleContext m_context) {
 		try { 

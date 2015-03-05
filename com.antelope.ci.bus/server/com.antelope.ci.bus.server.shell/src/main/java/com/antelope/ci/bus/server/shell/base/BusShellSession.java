@@ -29,7 +29,7 @@ public abstract class BusShellSession {
 	protected ConnectionData setting;
 	
 	public BusShellSession() {
-	
+		super();
 	}
 	
 	public BusShellSession(InputStream in, OutputStream out, OutputStream err) {
@@ -85,4 +85,3 @@ public abstract class BusShellSession {
 	
 	public abstract void exit();
 }
-

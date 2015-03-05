@@ -57,5 +57,14 @@ public class BusGateSshServer extends BusSshServer {
 	protected void customizeInit() throws CIBusException {
 		
 	}
-
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.ssh.BusSshServer#toSummary()
+	 */
+	@Override
+	public String toSummary() {
+		return "Gate SSH Server";
+	}
 }

@@ -37,6 +37,10 @@ public abstract class BusShellLauncher {
 		this.condition = condition;
 	}
 	
+	public ClassLoader getClassLoader() {
+		return condition.getClassLoader();
+	}
+	
 	protected List<String> getShellList() {
 		return condition.getShellClassList();
 	}

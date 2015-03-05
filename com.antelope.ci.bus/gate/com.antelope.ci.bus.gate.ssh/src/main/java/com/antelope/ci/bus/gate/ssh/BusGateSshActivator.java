@@ -8,7 +8,6 @@
 
 package com.antelope.ci.bus.gate.ssh;
 
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;

@@ -59,4 +59,3 @@ public class BusShellManager {
 		return shellLauncher.createShell(session);
 	}
 }
-

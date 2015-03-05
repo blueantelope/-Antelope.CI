@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.service.auth.AuthService;
 
@@ -54,6 +55,12 @@ public abstract class BusServer {
 		customizeInit();
 	}
 	
+	public ClassLoader getClassLoader() {
+		if (bundle_context != null)
+			return BusOsgiUtil.getBundleClassLoader(bundle_context);
+		return this.getClass().getClassLoader();
+	}
+	
 	public void setWaitForStart(long waitForStart) {
 		this.waitForStart = waitForStart;
 	}
@@ -70,7 +77,7 @@ public abstract class BusServer {
 		writeLocker.lock();
 		try {
 			if (config.isSwitcher() && !running) {
-				log.info(toSummary() + " starting");
+				log.info(toString() + " starting");
 				start();
 				running= true;
 			}
@@ -83,7 +90,7 @@ public abstract class BusServer {
 		writeLocker.lock();
 		try {
 			if (running) {
-				log.info(toSummary() + " shutdowning");
+				log.info(toString() + " shutdowning");
 				shutdown();
 			}
 		} finally {
@@ -173,6 +180,15 @@ public abstract class BusServer {
 	protected BusServerConfig parseConfig() throws CIBusException {
 		BusServerConfig config = BusServerConfig.load(bundle_context);
 		return config;
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return refreshIdentity().toString();
 	}
 	
 	/*

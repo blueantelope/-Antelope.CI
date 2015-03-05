@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
@@ -62,8 +61,7 @@ public class BusPortalSshServer extends BusSshServer {
 	 */
 	@Override
 	protected void customizeInit() throws CIBusException {
-		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
-		configurationHelper.init();
+		
 	}
 
 	/**
@@ -78,6 +76,16 @@ public class BusPortalSshServer extends BusSshServer {
 	
 	protected void afterRun() throws CIBusException {
 		log.info("after run portal");
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.server.ssh.BusSshServer#toSummary()
+	 */
+	@Override
+	public String toSummary() {
+		return "Portal SSH Server";
 	}
 }
 

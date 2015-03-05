@@ -12,9 +12,9 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.shell.base.Shell;
 import com.antelope.ci.bus.server.shell.base.ShellText;
 
@@ -228,8 +228,15 @@ public class ShellUtil {
 		}
 	}
 	
+	public static String getStatus(String shellClassName, ClassLoader classLoader) throws CIBusException {
+		Class shellClass = ProxyUtil.loadClass(shellClassName, classLoader);
+		if (shellClass.isAnnotationPresent(Shell.class))
+			return ((Shell) shellClass.getAnnotation(Shell.class)).status();
+		return null;
+	}
+	
 	public static String getStatus(String shellClassName) throws CIBusException {
-		Class shellClass = BusOsgiUtil.loadClass(shellClassName);
+		Class shellClass = ProxyUtil.loadClass(shellClassName);
 		if (shellClass.isAnnotationPresent(Shell.class))
 			return ((Shell) shellClass.getAnnotation(Shell.class)).status();
 		return null;

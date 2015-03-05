@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusOsgiUtil;
 
 
 /**
@@ -31,8 +30,8 @@ public class ModelProxy {
 		modelClassMap = new ConcurrentHashMap<String, Class>();
 	}
 	
-	public static void addModelClass(String className) throws CIBusException {
-		Class clazz = BusOsgiUtil.loadClass(className);
+	public static void addModelClass(String className, ClassLoader classLoader) throws CIBusException {
+		Class clazz = ProxyUtil.loadClass(className, classLoader);
 		if (clazz.isAnnotationPresent(Model.class))
 			modelClassMap.put(className, clazz);
 	}

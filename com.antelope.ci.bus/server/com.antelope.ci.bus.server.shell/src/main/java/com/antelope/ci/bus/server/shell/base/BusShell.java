@@ -90,6 +90,10 @@ public abstract class BusShell {
 		lastEditMode = false;
 	}
 	
+	public ClassLoader getClassLoader() {
+		return this.getClass().getClassLoader();
+	}
+	
 	public void clearData() {
 		input.reset();
 	}
@@ -161,7 +165,7 @@ public abstract class BusShell {
 		if (clazz.isAnnotationPresent(Shell.class)) {
 			Shell sa = (Shell) clazz.getAnnotation(Shell.class);
 			String caCls = sa.commandAdapter();
-			commandAdapter = CommandAdapterFactory.getAdapter(caCls, this.getClass().getClassLoader());
+			commandAdapter = CommandAdapterFactory.getAdapter(caCls, getClassLoader());
 			status = sa.status();
 		}
 	}

@@ -35,6 +35,6 @@ public class SwitchPortalHit extends PortalHit {
 	 * @see com.antelope.ci.bus.portal.core.shell.command.PortalHit#invoke(com.antelope.ci.bus.portal.core.shell.BusPortalShell, java.lang.Object[])
 	 */
 	@Override protected String invoke(BusPortalShell shell, Object... args) {
-		return PortalShellUtil.getNextStatus(shell.getStatus());
+		return PortalShellUtil.getNextStatus(shell.getStatus(), shell.getClassLoader());
 	}
 }
