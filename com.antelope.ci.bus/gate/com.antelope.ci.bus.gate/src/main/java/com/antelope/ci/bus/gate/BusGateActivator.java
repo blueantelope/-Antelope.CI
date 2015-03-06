@@ -11,8 +11,11 @@ package com.antelope.ci.bus.gate;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.gate.core.service.ShellService;
 import com.antelope.ci.bus.osgi.BusActivator;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.ServicePublisher;
+import com.antelope.ci.bus.server.shell.launcher.BusShellCondition;
 
 
 /**
@@ -22,10 +25,12 @@ import com.antelope.ci.bus.osgi.ServicePublisher;
  * @Date	 2014年12月13日		下午8:00:59 
  */
 public class BusGateActivator extends BusActivator {
+	protected ShellService shellService;
+	protected BusShellCondition condition;
 
 	@Override
 	protected void customInit() throws CIBusException {
-		
+		condition = new BusShellCondition(getClassLoader());
 	}
 
 	@Override
@@ -57,6 +62,11 @@ public class BusGateActivator extends BusActivator {
 
 	@Override
 	protected void publishServices() throws CIBusException {
+		if (shellService == null) {
+			shellService = new ShellService(condition);
+			BusOsgiUtil.publishService(bundle_context, shellService, ShellService.NAME);
+		}
+		
 		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.gate.service");
 	}
 

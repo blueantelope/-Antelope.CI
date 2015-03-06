@@ -181,7 +181,16 @@
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
-		<!-- /system/ext/server/service -->
+		<!-- /system/ext/server/part -->
+		<copy todir="${app.portal.server.bundle.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.api-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.ssh-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/server/service 
 		<copy todir="${app.portal.server.bundle.service}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
@@ -190,6 +199,7 @@
 				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
 			</fileset>
 		</copy>
+		-->
 		<!--  /system/ext/server/service/lib -->
 		<!--
 		<copy todir="${app.portal.server.bundle.service.lib}">
@@ -260,6 +270,7 @@
 		<mkdir dir="${app.portal.server.bundle.lib}" />
 		<mkdir dir="${app.portal.server.bundle.service}" />
 		<mkdir dir="${app.portal.server.bundle.service.lib}" />
+		<mkdir dir="${app.portal.server.bundle.part}" />
 		<mkdir dir="${app.portal.service.bundle}" />
 		<mkdir dir="${app.portal.service.bundle.lib}" />
 		<mkdir dir="${app.portal.service.bundle.service}" />

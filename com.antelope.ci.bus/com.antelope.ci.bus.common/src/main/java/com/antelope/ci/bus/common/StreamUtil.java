@@ -101,7 +101,7 @@ public class StreamUtil {
 		return (short) ( (b[0] << 8) + (b[1] & 0xFF));
 	}
 	
-	// 无符号byte数组转换成short类型
+	// byte数组转换成无符号short类型
 	public static final int toUnsignedShort(byte[] b) {
 		int s1 = (toInt(b[0]) & 0xFF) << 8;
 		int s2 =  toInt(b[1]) & 0xFF;
@@ -147,5 +147,23 @@ public class StreamUtil {
 	// byte转换成无符号int
 	public static final int toInt(byte b) {
 		return b & 0xFF;
+	}
+	
+	public static byte[] unsignedShortToByteArray(int s) {
+		byte[] shortBuf = new byte[2];
+		for (int i = 0; i < 2; i++) {
+			int offset = (shortBuf.length - 1 - i) * 8;
+			shortBuf[i] = (byte) ((s >>> offset) & 0xff);
+		}
+		return shortBuf;
+	}
+	
+	public static byte[] unsignedIntToByteArray(long value) {
+		byte[] b = new byte[4];
+		for (int i = 0; i < 4; i++) {
+			int offset = (b.length - 1 - i) * 8;
+			b[i] = (byte) ((value >>> offset) & 0xFF);
+		}
+		return b;
 	}
 }

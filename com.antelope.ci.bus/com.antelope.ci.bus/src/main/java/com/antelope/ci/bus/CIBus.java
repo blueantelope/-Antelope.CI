@@ -494,6 +494,7 @@ public class CIBus {
 		        sl.setInitialBundleStartLevel(bundle_init_startlevel);
 		        runSystemEngine(); // 启动system引擎bundle
 				runSystemExt(); // 启动system扩展bundle
+				runPlugin(); // 启动plugin
 			} catch (Exception e) {
 				throw new CIBusException("", e);
 			}
@@ -539,6 +540,13 @@ public class CIBus {
 		for (BundleLoader loader : loaderList) {
 			new BundleExecutor(loader).execute();
 		}
+	}
+	
+	/*
+	 * plugin包, 支持plugin规范及CIBus自定义格式
+	 */
+	private void runPlugin() {
+		// TODO: 
 	}
 
 	/*
@@ -590,7 +598,7 @@ public class CIBus {
 						
 					case 4: // com.antelope.ci.bus.server
 						loadContaintFragments(context, startLevel, loaderList, loadSystemExtLib(),
-								root, BusConstants.SYSTEM_EXT_SERVER_DIRNAME, "service", null);
+								root, BusConstants.SYSTEM_EXT_SERVER_DIRNAME, "part", "service");
 						break;
 						
 					case 5: // com.antelope.ci.bus.service
@@ -631,6 +639,7 @@ public class CIBus {
 						loadContaintFragments(context, startLevel, loaderList, loadSystemEngineLib(),
 								root, BusConstants.SYSTEM_ENGINE_MANAGER_DIRNAME, "part", "service");
 						break;
+						
 					case 10: // com.antelope.ci.bus.gate
 						loadContaintFragments(context, startLevel, loaderList, loadSystemExtLib(),
 								root, BusConstants.SYSTEM_EXT_GATE_DIRNAME, "part", "service");

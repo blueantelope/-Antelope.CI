@@ -171,7 +171,16 @@
 				<include name="sshd*.jar" />
 			</fileset>
 		</copy>
-		<!-- /system/ext/server/service -->
+		<!-- /system/ext/server/part -->
+		<copy todir="${app.gate.server.bundle.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.api-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.ssh-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/server/service
 		<copy todir="${app.gate.server.bundle.service}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
@@ -180,6 +189,7 @@
 				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
 			</fileset>
 		</copy>
+		-->
 		<!-- /system/ext/service/lib -->
 		<!--
 		<copy todir="${app.gate.service.bundle.lib}">
@@ -235,6 +245,7 @@
 		<mkdir dir="${app.gate.server.bundle}" />
 		<mkdir dir="${app.gate.server.bundle.lib}" />
 		<mkdir dir="${app.gate.server.bundle.service}" />
+		<mkdir dir="${app.gate.server.bundle.part}" />
 		<mkdir dir="${app.gate.service.bundle}" />
 		<mkdir dir="${app.gate.service.bundle.lib}" />
 		<mkdir dir="${app.gate.service.bundle.service}" />

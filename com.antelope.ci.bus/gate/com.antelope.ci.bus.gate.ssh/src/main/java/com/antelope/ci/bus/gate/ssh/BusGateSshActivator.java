@@ -11,6 +11,8 @@ package com.antelope.ci.bus.gate.ssh;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.gate.core.service.ShellService;
+import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.BusServerTemplateActivator;
 
 
@@ -27,6 +29,10 @@ public class BusGateSshActivator extends BusServerTemplateActivator {
 	protected void run() throws CIBusException {
 		if (sshServer == null) {
 			sshServer = new BusGateSshServer(bundle_context);
+			Object shellService = fetchService(ShellService.NAME);
+			if (shellService != null)
+				sshServer.initShellLauncher(((ShellService)shellService).getManager().getProxyLauncher());
+			BusOsgiUtil.publishService(bundle_context, sshServer, BusGateSshServer.NAME);
 			System.out.println("*********************** @antelope.ci ssh gate server start, wait a moment... ***********************");
 			sshServer.open();
 			System.out.println("*********************** @antelope.ci ssh gate server finish stsart, enjoy it! ***********************");
@@ -67,7 +73,9 @@ public class BusGateSshActivator extends BusServerTemplateActivator {
 
 	@Override
 	protected String[] customLoadServices() {
-		return null;
+		return new String[] {
+				ShellService.NAME
+		};
 	}
 
 	@Override

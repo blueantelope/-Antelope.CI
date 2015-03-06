@@ -28,7 +28,7 @@ import com.antelope.ci.bus.server.shell.command.hit.HitAdapter;
  * @Date	 2014-4-14		下午4:43:28 
  */
 public class PortalCommandAdapter extends HitAdapter {
-	public static final String CLASS_NAME = "com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter";
+	public static final String NAME = "com.antelope.ci.bus.portal.core.shell.command.PortalCommandAdapter";
 	private static final String COMMAND_FORM_PREFIX = "command.status.global.shell.mode.form";
 	
 	public PortalCommandAdapter() {
