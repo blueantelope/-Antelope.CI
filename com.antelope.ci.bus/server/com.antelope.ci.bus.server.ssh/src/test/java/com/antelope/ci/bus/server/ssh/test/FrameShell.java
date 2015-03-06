@@ -124,7 +124,7 @@ public class FrameShell extends BusBaseFrameShell {
 	}
 
 	@Override
-	protected void custom() throws CIBusException {
+	protected void customShellEnv() throws CIBusException {
 		
 		// TODO Auto-generated method stub
 		

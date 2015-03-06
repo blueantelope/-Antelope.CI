@@ -12,8 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.common.BusChannel;
+import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.base.BusShell;
-import com.antelope.ci.bus.server.shell.base.BusShellSession;
 import com.antelope.ci.bus.server.shell.base.BusShellStatus;
 
 
@@ -37,15 +38,15 @@ public class BusShellContainerLauncher extends BusShellLauncher {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.launcher.BusShellLauncher#createShell(com.antelope.ci.bus.server.shell.base.BusShellSession)
+	 * @see com.antelope.ci.bus.server.common.BusLauncher#launch(com.antelope.ci.bus.server.common.BusSession)
 	 */
 	@Override
-	public BusShell createShell(BusShellSession session) throws CIBusException {
+	public BusChannel launch(BusSession session) throws CIBusException {
 		BusMultiShellCondition multiCondition = (BusMultiShellCondition) condition;
 		multiCondition.addShell(getShellList());
 		BusShell startShell = null;
 		Map<String, BusShell> shellMap = new HashMap<String, BusShell>();
-		Map<String, String> scmap = condition.getShellClassMap();
+		Map<String, String> scmap = multiCondition.getShellClassMap();
 		for (String status : scmap.keySet()) {
 			BusShell shell = multiCondition.createShell(status);
 			shell.attatchSession(session);

@@ -42,7 +42,7 @@ public class BusProjectPortalShell extends BusPortalShell {
 	}
 
 	@Override
-	protected void custom() throws CIBusException {
+	protected void customShellEnv() throws CIBusException {
 		commandAdapter.addCommand(new ProjectRunMainPortalHit());		
 		commandAdapter.addCommand(new ProjectAddHit());		
 	}

@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell.base;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.util.ConnectionData;
 import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
@@ -21,10 +22,7 @@ import com.antelope.ci.bus.server.shell.util.TerminalIO;
  * @version  0.1
  * @Date	 2013-10-14		下午2:41:05 
  */
-public abstract class BusShellSession {
-	protected InputStream in;
-	protected OutputStream out;
-	protected OutputStream err;
+public abstract class BusShellSession extends BusSession {
 	protected TerminalIO io;
 	protected ConnectionData setting;
 	
@@ -33,10 +31,7 @@ public abstract class BusShellSession {
 	}
 	
 	public BusShellSession(InputStream in, OutputStream out, OutputStream err) {
-		super();
-		this.in = in;
-		this.out = out;
-		this.err = err;
+		super(in, out, err);
 		init();
 	}
 	
@@ -48,24 +43,6 @@ public abstract class BusShellSession {
 	}
 	
 	// getter and setter
-	public InputStream getIn() {
-		return in;
-	}
-	public void setIn(InputStream in) {
-		this.in = in;
-	}
-	public OutputStream getOut() {
-		return out;
-	}
-	public void setOut(OutputStream out) {
-		this.out = out;
-	}
-	public OutputStream getErr() {
-		return err;
-	}
-	public void setErr(OutputStream err) {
-		this.err = err;
-	}
 	public TerminalIO getIo() {
 		return io;
 	}
@@ -82,6 +59,4 @@ public abstract class BusShellSession {
 	public abstract int getWidth();
 
 	public abstract int getHeigth();
-	
-	public abstract void exit();
 }

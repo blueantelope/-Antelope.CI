@@ -76,6 +76,71 @@ public class APIHeader {
 		ext = new byte[]
 				{(byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00};
 	}
+	
+	
+	// getter and setter
+	public short getOrder() {
+		return order;
+	}
+	public void setOrder(short order) {
+		this.order = order;
+	}
+
+	public short getType() {
+		return type;
+	}
+	public void setType(short type) {
+		this.type = type;
+	}
+
+	public short getVersion() {
+		return version;
+	}
+	public void setVersion(short version) {
+		this.version = version;
+	}
+
+	public int getOid() {
+		return oid;
+	}
+	public void setOid(int oid) {
+		this.oid = oid;
+	}
+
+	public int getOc() {
+		return oc;
+	}
+	public void setOc(int oc) {
+		this.oc = oc;
+	}
+
+	public short getOt() {
+		return ot;
+	}
+	public void setOt(short ot) {
+		this.ot = ot;
+	}
+
+	public short getBt() {
+		return bt;
+	}
+	public void setBt(short bt) {
+		this.bt = bt;
+	}
+
+	public long getBl() {
+		return bl;
+	}
+	public void setBl(long bl) {
+		this.bl = bl;
+	}
+
+	public byte[] getExt() {
+		return ext;
+	}
+	public void setExt(byte[] ext) {
+		this.ext = ext;
+	}
 
 	public byte[] toBytes() {
 		byte[] bytes = new byte[20];

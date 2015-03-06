@@ -42,7 +42,7 @@ public class BusDashboardPortalShell extends BusPortalShell {
 	}
 
 	@Override
-	protected void custom() throws CIBusException {
+	protected void customShellEnv() throws CIBusException {
 		
 	}
 

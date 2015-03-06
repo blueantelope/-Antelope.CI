@@ -4,8 +4,8 @@ Bundle-Name: com.antelope.ci.bus.server
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.server
 Bundle-Vendor: blueantelope@gmail.com
-Export-Package: com.antelope.ci.bus.server, com.antelope.ci.bus.server.service, 
- com.antelope.ci.bus.server.service.auth
+Export-Package: com.antelope.ci.bus.server, com.antelope.ci.bus.server.common,
+ com.antelope.ci.bus.server.service, com.antelope.ci.bus.server.service.auth
 Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service,
  com.antelope.ci.bus.engine.model.user
 Bundle-Activator: com.antelope.ci.bus.server.BusServerActivator

@@ -11,6 +11,7 @@ package com.antelope.ci.bus.server.shell.base;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
@@ -32,7 +33,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 		initForFrame();
 	}
 
-	public BusBaseFrameShell(BusShellSession session) {
+	public BusBaseFrameShell(BusSession session) {
 		super(session);
 		initForFrame();
 	}

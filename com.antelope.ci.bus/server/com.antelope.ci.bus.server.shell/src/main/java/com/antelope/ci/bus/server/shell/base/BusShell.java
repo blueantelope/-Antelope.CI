@@ -9,8 +9,6 @@
 package com.antelope.ci.bus.server.shell.base;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +17,8 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.common.BusChannel;
+import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.base.BusShellMode.BaseShellMode;
 import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
@@ -34,16 +34,10 @@ import com.antelope.ci.bus.server.shell.util.TerminalIO;
  * @version 0.1
  * @Date 2013-10-14 下午1:06:49
  */
-public abstract class BusShell {
+public abstract class BusShell extends BusChannel {
 	private static final Logger log = Logger.getLogger(BusShell.class);
-	protected BusShellSession session;
 	protected TerminalIO io;
 	protected ConnectionData setting;
-	protected InputStream in;
-	protected OutputStream out;
-	protected OutputStream err;
-	protected boolean opened;
-	protected boolean quit;
 	protected boolean keyBell;
 	private boolean statusSetted;
 	protected String status;
@@ -63,37 +57,15 @@ public abstract class BusShell {
 	protected volatile boolean editMode;
 	protected volatile boolean lastEditMode;
 	
-	public BusShell(BusShellSession session) {
-		this();
-		this.session = session;
-		this.sort = -1;
-	}
-	
 	public BusShell() {
-		opened = false;
-		quit = false;
-		keyBell = false;
-		status = BusShellStatus.ROOT;
-		statusSetted = false;
-		shellMap = null;
+		super();
+	}
+	
+	public BusShell(BusSession session) {
+		super(session);
 		this.sort = -1;
-		init();
-		actionStatus = BusShellStatus.INIT;
-		lastStatus = BusShellStatus.INIT;
-		paletteMap = new HashMap<String, ShellPalette>();
-		activeMoveAction = false;
-		activeEditAction = false;
-		activeUserAction = false;
-		mode = BusShellMode.MAIN;
-		controlKey = -1;
-		editMode = false;
-		lastEditMode = false;
 	}
-	
-	public ClassLoader getClassLoader() {
-		return this.getClass().getClassLoader();
-	}
-	
+
 	public void clearData() {
 		input.reset();
 	}
@@ -154,11 +126,28 @@ public abstract class BusShell {
 		return paletteMap.get(name);
 	}
 	
-	private void init() {
+	@Override
+	protected void init() {
+		quit = false;
+		keyBell = false;
+		status = BusShellStatus.ROOT;
+		statusSetted = false;
+		shellMap = null;
+		this.sort = -1;
 		Class clazz = this.getClass();
 		for (; commandAdapter == null && BusShell.class.isAssignableFrom(clazz); clazz = clazz.getSuperclass()) {
 			fetchShellInfo(clazz);
 		}
+		actionStatus = BusShellStatus.INIT;
+		lastStatus = BusShellStatus.INIT;
+		paletteMap = new HashMap<String, ShellPalette>();
+		activeMoveAction = false;
+		activeEditAction = false;
+		activeUserAction = false;
+		mode = BusShellMode.MAIN;
+		controlKey = -1;
+		editMode = false;
+		lastEditMode = false;
 	}
 
 	private void fetchShellInfo(Class clazz) {
@@ -176,14 +165,6 @@ public abstract class BusShell {
 
 	public void setShellMap(Map<String, BusShell> shellMap) {
 		this.shellMap = shellMap;
-	}
-
-	public void attatchSession(BusShellSession session) {
-		this.session = session;
-	}
-
-	public BusShellSession getSession() {
-		return this.session;
 	}
 
 	public ConnectionData getSetting() {
@@ -240,13 +221,8 @@ public abstract class BusShell {
 		}
 	}
 
-	public void open() throws CIBusException {
-		opened = true;
-		environment();
-		load();
-	}
-	
-	private void load() throws CIBusException {
+	@Override
+	protected void load() throws CIBusException {
 		refresh();
 		loopAction();
 	}
@@ -369,28 +345,10 @@ public abstract class BusShell {
 		return shellMap != null ? true : false;
 	}
 
-	public void close() throws CIBusException {
+	@Override
+	protected void release() throws CIBusException {
 		clear();
 		shutdown();
-		if (in != null) {
-			try {
-				in.close();
-			} catch (IOException e) {
-			}
-		}
-		if (out != null) {
-			try {
-				out.close();
-			} catch (IOException e) {
-			}
-		}
-		if (err != null) {
-			try {
-				err.close();
-			} catch (IOException e) {
-			}
-		}
-		session.exit();
 	}
 	
 	public void refresh() throws CIBusException {
@@ -466,13 +424,11 @@ public abstract class BusShell {
 		ShellUtil.shiftNext(io, str);
 	}
 	
-	private void environment() throws CIBusException {
-		in = session.getIn();
-		out = session.getOut();
-		err = session.getErr();
-		setting = session.getSetting();
-		io = session.getIo();
-		custom();
+	protected void customEnv() throws CIBusException {
+		BusShellSession shellSession = (BusShellSession) session;
+		setting = shellSession.getSetting();
+		io = shellSession.getIo();
+		customShellEnv();
 	}
 
 	protected void println(String text) {
@@ -606,11 +562,11 @@ public abstract class BusShell {
 	}
 
 	protected int getHeight() {
-		return session.getHeigth();
+		return ((BusShellSession) session).getHeigth();
 	}
 
 	protected int getWidth() {
-		return session.getWidth();
+		return ((BusShellSession) session).getWidth();
 	}
 	
 	public void left() {
@@ -725,7 +681,7 @@ public abstract class BusShell {
 		}
 	}
 
-	protected abstract void custom() throws CIBusException;
+	protected abstract void customShellEnv() throws CIBusException;
 	
 	protected abstract boolean userAction(int c) throws CIBusException;
 	

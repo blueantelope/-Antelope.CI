@@ -17,8 +17,8 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.shell.base.BusShell;
-import com.antelope.ci.bus.server.shell.launcher.BusShellLauncher;
+import com.antelope.ci.bus.server.common.BusChannel;
+import com.antelope.ci.bus.server.common.BusLauncher;
 
 
 /**
@@ -33,11 +33,11 @@ public class BusSshCommand implements Command {
 	protected OutputStream err;
 	protected ExitCallback callback;
 	protected Environment env;
-	protected BusShellLauncher shellLauncher;
+	protected BusLauncher launcher;
 	
-	public BusSshCommand(BusShellLauncher shellLauncher) {
+	public BusSshCommand(BusLauncher launcher) {
 		super();
-		this.shellLauncher = shellLauncher;
+		this.launcher = launcher;
 	}
 
 	@Override
@@ -65,14 +65,14 @@ public class BusSshCommand implements Command {
 		this.env = env;
 		new Thread() {
 			public void run() {
-				BusShell shell = null;
+				BusChannel channel = null;
 				try {
-					shell = shellLauncher.createShell(createShellSession());
-					shell.open();
+					channel = launcher.launch(createShellSession());
+					channel.open();
 				} catch (CIBusException e) {
-					if (shell != null) {
+					if (channel != null) {
 						try {
-							shell.close();
+							channel.close();
 						} catch (CIBusException ce) {
 						
 						}

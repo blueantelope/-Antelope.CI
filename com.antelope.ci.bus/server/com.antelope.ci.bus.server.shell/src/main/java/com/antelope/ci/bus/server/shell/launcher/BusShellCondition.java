@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.antelope.ci.bus.server.common.BusCondition;
+
 
 /**
  * shell条件参数
@@ -20,38 +22,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version  0.1
  * @Date	 2015年2月12日		下午1:14:46 
  */
-public class BusShellCondition {
+public class BusShellCondition extends BusCondition {
 	private final static String DEFAULT_SHELL = "shell.default";
-	protected ClassLoader classLoader;
 	protected Map<String, String> shellClassMap;
 	
 	public BusShellCondition() {
 		super();
-		init(null);
 	}
 	
 	public BusShellCondition(ClassLoader classLoader) {
-		super();
-		init(classLoader);
-	}
-	
-	private void init(ClassLoader classLoader) {
-		if (classLoader == null) {
-			this.classLoader = Thread.currentThread().getContextClassLoader();
-		} else {
-			this.classLoader = classLoader;
-		}
+		super(classLoader);
 		shellClassMap = new ConcurrentHashMap<String, String>();
 	}
 
-	public ClassLoader getClassLoader() {
-		return classLoader;
-	}
-
-	public void setClassLoader(ClassLoader classLoader) {
-		this.classLoader = classLoader;
-	}
-	
 	// shell class
 	public Map<String, String> getShellClassMap() {
 		return shellClassMap;
@@ -93,6 +76,4 @@ public class BusShellCondition {
 	public boolean isShellEmpty() {
 		return shellClassMap.isEmpty();
 	}
-	
-	
 }

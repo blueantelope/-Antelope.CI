@@ -15,6 +15,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.buffer.BusEchoBuffer;
 
 
@@ -33,7 +34,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 		initForEcho();
 	}
 	
-	public BusBaseEchoShell(BusShellSession session) {
+	public BusBaseEchoShell(BusSession session) {
 		super(session);
 		initForEcho();
 	}
@@ -67,7 +68,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	private void matchCommand() {
 		if (!input.exitSpace()) {
 			List<String> cmdList = commandAdapter.findCommands(input.read());
-			input.printTips(cmdList, session.getWidth());
+			input.printTips(cmdList, ((BusShellSession)session).getWidth());
 		}
 	}
 	

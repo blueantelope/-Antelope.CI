@@ -151,7 +151,7 @@ public abstract class BusSshServer extends BusServer {
 	
 	private void configShell() throws CIBusException {
 		BusSshCommand shellCommand = new BusSshCommand(shellLauncher);
-		BusSshShellFactory shellFactory = new BusSshShellFactory(shellCommand);;
+		BusSshFactory shellFactory = new BusSshFactory(shellCommand);;
 		sshServer.setShellFactory(shellFactory);
 	}
 	

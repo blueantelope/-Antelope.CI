@@ -56,6 +56,6 @@ public class BusShellManager {
 	}
 	
 	public BusShell createShell(BusShellLauncher shellLauncher, BusShellSession session) throws CIBusException {
-		return shellLauncher.createShell(session);
+		return (BusShell) shellLauncher.launch(session);
 	}
 }

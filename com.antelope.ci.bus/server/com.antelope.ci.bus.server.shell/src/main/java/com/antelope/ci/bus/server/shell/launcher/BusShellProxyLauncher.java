@@ -10,6 +10,8 @@ package com.antelope.ci.bus.server.shell.launcher;
 
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.common.BusChannel;
+import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.base.BusShell;
 import com.antelope.ci.bus.server.shell.base.BusShellSession;
 
@@ -30,14 +32,14 @@ public class BusShellProxyLauncher extends BusShellLauncher {
 	public BusShellProxyLauncher(BusShellCondition condition) {
 		super(condition);
 	}
-	
+
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.launcher.BusShellLauncher#createShell(com.antelope.ci.bus.server.shell.base.BusShellSession)
+	 * @see com.antelope.ci.bus.server.common.BusLauncher#launch(com.antelope.ci.bus.server.common.BusSession)
 	 */
 	@Override
-	public BusShell createShell(BusShellSession session) throws CIBusException {
+	public BusChannel launch(BusSession session) throws CIBusException {
 		if (getShellList().isEmpty())
 			return null;
 		String shellClass = getShellList().get(0);
