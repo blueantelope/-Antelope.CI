@@ -54,7 +54,8 @@ public abstract class ServicePublishHook extends Thread {
 						Class clazz = Class.forName(cls, false, BusOsgiUtil.getBundleClassLoader(m_context));
 						ServicePublishInfo info = fetchService(clazz);
 						if (info.canPublish) {
-							BusOsgiUtil.publishService(m_context, info.service, info.serviceName);
+							if (!((IService) info.service).publish(m_context))
+								BusOsgiUtil.publishService(m_context, info.service, info.serviceName);
 							serviceList.add(cls);
 							log.info("add service :" + cls_name);
 						}

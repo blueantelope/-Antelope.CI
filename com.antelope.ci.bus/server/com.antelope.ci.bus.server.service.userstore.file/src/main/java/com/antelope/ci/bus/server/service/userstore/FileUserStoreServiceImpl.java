@@ -37,9 +37,15 @@ public class FileUserStoreServiceImpl extends CommonServerService implements Use
 		PasswordHelper.getHelper().init();
 	}
 
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.IService#publish(org.osgi.framework.BundleContext)
+	 */
 	@Override
-	public void register(BundleContext m_context) throws CIBusException {
+	public boolean publish(BundleContext m_context) throws CIBusException {
 		BusOsgiUtil.publishService(m_context, this, NAME);
+		return true;
 	}
 
 	/**

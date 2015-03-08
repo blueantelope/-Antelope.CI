@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.StreamUtil;
-import com.antelope.ci.bus.server.api.APIHeader;
+import com.antelope.ci.bus.server.api.message.APIHeader;
 
 
 /**

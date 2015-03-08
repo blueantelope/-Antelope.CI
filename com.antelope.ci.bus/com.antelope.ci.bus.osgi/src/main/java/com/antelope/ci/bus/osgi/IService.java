@@ -21,11 +21,12 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  */
 public interface IService {
 	/**
-	 * 注册服务
+	 * 发布服务
 	 * @param  @param m_context
+	 * @param  @return
 	 * @param  @throws CIBusException
-	 * @return void
+	 * @return boolean 已发布true
 	 * @throws
 	 */
-	public void register(BundleContext m_context) throws CIBusException;
+	public boolean publish(BundleContext m_context) throws CIBusException;
 }

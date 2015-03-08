@@ -13,7 +13,6 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.common.BusChannel;
 import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.base.BusShell;
-import com.antelope.ci.bus.server.shell.base.BusShellSession;
 
 
 /**
@@ -50,4 +49,3 @@ public class BusShellProxyLauncher extends BusShellLauncher {
 		return shell;
 	}
 }
-

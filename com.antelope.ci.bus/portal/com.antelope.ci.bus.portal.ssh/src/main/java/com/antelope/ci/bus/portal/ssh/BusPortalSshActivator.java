@@ -32,7 +32,7 @@ public class BusPortalSshActivator extends BusServerTemplateActivator {
 			sshServer = new BusPortalSshServer(bundle_context);
 			Object shellService = fetchService(ShellService.NAME);
 			if (shellService != null)
-				sshServer.initShellLauncher(((ShellService)shellService).getManager().getContainerLauncher()) ;
+				sshServer.initLauncher(((ShellService)shellService).getManager().getContainerLauncher()) ;
 			BusOsgiUtil.publishService(bundle_context, sshServer, BusPortalSshServer.NAME);
 			Object service = fetchService(ConfigurationService.NAME);
 			if (service != null)

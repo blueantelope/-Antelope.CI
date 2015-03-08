@@ -112,17 +112,19 @@ public abstract class AbstractAuthService extends CommonServerService implements
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.service.BusServerService#register(org.osgi.framework.BundleContext, com.antelope.ci.bus.server.service.BusServerService)
+	 * @see com.antelope.ci.bus.osgi.IService#publish(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	public void register(BundleContext m_context) throws CIBusException {
+	public boolean publish(BundleContext m_context) throws CIBusException {
 		List<ServiceProperty> otherList = new ArrayList<ServiceProperty>(); 
-		if (auth_type != null) {
+		if (auth_type != null)
 			otherList.add(new ServiceProperty(SERVICE_AUTH_TYPE, auth_type.getName()));
-		}
-		otherList.addAll(extendServiceProperties());
-		BusOsgiUtil.publishService(m_context, this, "com.antelope.ci.bus.server.service.AuthService", 
+		List<ServiceProperty> extList = extendServiceProperties();
+		if (extList != null)
+			otherList.addAll(extendServiceProperties());
+		BusOsgiUtil.publishService(m_context, this, AuthService.NAME, 
 				otherList.toArray(new ServiceProperty[otherList.size()]));
+		return true;
 	}
 
 	protected abstract AUTH_TYPE initAuthType();

@@ -33,7 +33,7 @@ public class ServicePublisher {
 						Object serviceObj = clazz.newInstance();
 						String serviceName = service.name();
 						info.canPublish = true;
-						info.service = serviceObj;
+						info.service = (IService) serviceObj;
 						info.serviceName = serviceName;
 					} catch (Exception e) {
 						DevAssistant.errorln(e);

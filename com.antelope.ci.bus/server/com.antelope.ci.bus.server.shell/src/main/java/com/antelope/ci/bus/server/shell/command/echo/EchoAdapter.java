@@ -29,7 +29,7 @@ import com.antelope.ci.bus.server.shell.util.TerminalIO;
  * @version  0.1
  * @Date	 2013-11-25		下午9:23:21 
  */
-public abstract class EchoAdapter extends  CommandAdapter {
+public abstract class EchoAdapter extends CommandAdapter {
 	public EchoAdapter() {
 		super(CommandType.ECHO);
 	}

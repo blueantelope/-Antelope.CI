@@ -28,6 +28,7 @@ import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServer;
+import com.antelope.ci.bus.server.common.BusLauncher;
 import com.antelope.ci.bus.server.service.auth.AuthService;
 import com.antelope.ci.bus.server.service.auth.ssh.SshAuthService;
 import com.antelope.ci.bus.server.shell.launcher.BusShellLauncher;
@@ -43,7 +44,7 @@ import com.antelope.ci.bus.server.shell.launcher.BusShellLauncher;
 public abstract class BusSshServer extends BusServer {
 	private static final Logger log = Logger.getLogger(BusSshServer.class);
 	protected SshServer sshServer;
-	protected BusShellLauncher shellLauncher;
+	protected BusLauncher launcher;
 	
 	public BusSshServer() throws CIBusException {
 		super();
@@ -53,13 +54,13 @@ public abstract class BusSshServer extends BusServer {
 		super(bundle_context);
 	}
 	
-	public BusSshServer(BundleContext bundle_context, BusShellLauncher shellLauncher) throws CIBusException {
+	public BusSshServer(BundleContext bundle_context, BusShellLauncher launcher) throws CIBusException {
 		super(bundle_context);
-		this.shellLauncher = shellLauncher;
+		this.launcher = launcher;
 	}
 	
-	public void initShellLauncher(BusShellLauncher shellLauncher) {
-		this.shellLauncher = shellLauncher;
+	public void initLauncher(BusLauncher launcher) {
+		this.launcher = launcher;
 	}
 	
 	/**
@@ -115,10 +116,9 @@ public abstract class BusSshServer extends BusServer {
 		
 		switch(condition.getServerType()) {
 			case API:
-				
 			case SHELL:
 			default:
-				configShell();
+				configChannel();
 				break;
 		}
 		
@@ -149,10 +149,10 @@ public abstract class BusSshServer extends BusServer {
 		afterRun();
 	}
 	
-	private void configShell() throws CIBusException {
-		BusSshCommand shellCommand = new BusSshCommand(shellLauncher);
-		BusSshFactory shellFactory = new BusSshFactory(shellCommand);;
-		sshServer.setShellFactory(shellFactory);
+	private void configChannel() throws CIBusException {
+		BusSshCommand command = new BusSshCommand(launcher);
+		BusSshFactory factory = new BusSshFactory(command);;
+		sshServer.setShellFactory(factory);
 	}
 	
 	/*
