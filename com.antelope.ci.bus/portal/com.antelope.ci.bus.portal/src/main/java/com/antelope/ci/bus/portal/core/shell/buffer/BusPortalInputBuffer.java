@@ -15,7 +15,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShell;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving;
 import com.antelope.ci.bus.portal.core.shell.BusPortalShellLiving.BusPortalShellUnit;
-import com.antelope.ci.bus.server.shell.buffer.BusInputBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusShellInputBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
 
 
@@ -25,7 +25,7 @@ import com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION;
  * @version  0.1
  * @Date	 2014年10月10日		下午4:20:59 
  */
-public class BusPortalInputBuffer extends BusInputBuffer {
+public class BusPortalInputBuffer extends BusShellInputBuffer {
 	public enum NEIGHBOR{KEEP, UP, DOWN, LEFT, RIGHT};
 	protected String name;
 	protected BusPortalShell shell;
@@ -125,7 +125,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#rewriteAhead(int, int)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellAreaBuffer#rewriteAhead(int, int)
 	 */
 	@Override
 	protected void rewriteAhead(int x, int y) {
@@ -139,7 +139,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#rewriteLatter(int, int)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellAreaBuffer#rewriteLatter(int, int)
 	 */
 	@Override
 	protected void rewriteLatter(int x, int y) {
@@ -153,7 +153,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#userDown(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellAreaBuffer#userDown(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
 	 */
 	@Override
 	protected void userDown(DIRECTION direction) {
@@ -166,7 +166,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#userUp(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellAreaBuffer#userUp(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
 	 */
 	@Override
 	protected void userUp(DIRECTION direction) {
@@ -179,7 +179,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#userLeft(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellAreaBuffer#userLeft(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
 	 */
 	@Override
 	protected void userLeft(DIRECTION direction) {
@@ -192,7 +192,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#userRight(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellAreaBuffer#userRight(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
 	 */
 	@Override
 	protected void userRight(DIRECTION direction) {
@@ -205,7 +205,7 @@ public class BusPortalInputBuffer extends BusInputBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusAreaBuffer#move(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellAreaBuffer#move(com.antelope.ci.bus.server.shell.buffer.ShellArea.DIRECTION)
 	 */
 	@Override protected void move(DIRECTION direction) throws CIBusException {
 		try {

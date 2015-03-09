@@ -26,7 +26,7 @@ import com.antelope.ci.bus.server.shell.util.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-10		下午3:34:01 
  */
-public abstract class BusAreaBuffer extends BusBuffer {
+public abstract class BusShellAreaBuffer extends BusShellBuffer {
 	protected ShellArea area;
 	protected int put_index;
 	protected char[] put_chars;
@@ -34,23 +34,23 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	protected char[] latter_chars;
 	protected int successor_num;
 
-	public BusAreaBuffer(TerminalIO io, ShellArea area) {
+	public BusShellAreaBuffer(TerminalIO io, ShellArea area) {
 		super(io);
 		this.area = area;
 		init();
 	}
 
-	public BusAreaBuffer(TerminalIO io, int x, int y, int width, int height) {
+	public BusShellAreaBuffer(TerminalIO io, int x, int y, int width, int height) {
 		this(io, new ShellArea(new ShellCursor(x, y), width, height));
 	}
 	
-	public BusAreaBuffer(TerminalIO io, ShellArea area, int bufSize) {
+	public BusShellAreaBuffer(TerminalIO io, ShellArea area, int bufSize) {
 		super(io, bufSize);
 		this.area = area;
 		init();
 	}
 
-	public BusAreaBuffer(TerminalIO io, int x, int y, int width, int height, int bufSize) {
+	public BusShellAreaBuffer(TerminalIO io, int x, int y, int width, int height, int bufSize) {
 		this(io, new ShellArea(new ShellCursor(x, y), width, height), bufSize);
 	}
 	
@@ -71,7 +71,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#backspace()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#backspace()
 	 */
 	@Override
 	public boolean backspace() throws CIBusException {
@@ -87,7 +87,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#delete()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#delete()
 	 */
 	@Override
 	public boolean delete() throws CIBusException {
@@ -102,7 +102,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	
 	private void earse(int bacOrDel) throws CIBusException {
 		try {
-			String fromBuffer = read();
+			String fromBuffer = value();
 			int area_index = area.index();
 			if (bacOrDel == 0)
 				area_index--;
@@ -120,7 +120,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 				back(back_count);
 			else
 				area.decrease(back_count);
-			fromBuffer = read();
+			fromBuffer = value();
 			
 			int lines = area.linesToLimit();
 			int n = 0;
@@ -160,7 +160,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#left()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#left()
 	 */
 	@Override
 	public boolean left() {
@@ -179,7 +179,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#right()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#right()
 	 */
 	@Override
 	public boolean right() {
@@ -198,7 +198,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#down()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#down()
 	 */
 	@Override
 	public boolean down() {
@@ -217,7 +217,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#up()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#up()
 	 */
 	@Override
 	public boolean up() {
@@ -236,7 +236,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#tab()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#tab()
 	 */
 	@Override
 	public void tab() {
@@ -250,7 +250,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#space()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#space()
 	 */
 	@Override
 	public void space() {
@@ -264,7 +264,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#tabTip()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#tabTip()
 	 */
 	@Override
 	public void tabTip() {
@@ -274,7 +274,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#printTips(java.util.List, int)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#printTips(java.util.List, int)
 	 */
 	@Override
 	public void printTips(List<String> cmdList, int width) {
@@ -284,7 +284,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#exitSpace()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#exitSpace()
 	 */
 	@Override
 	public boolean exitSpace() {
@@ -299,7 +299,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#put(char)
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#put(char)
 	 */
 	@Override
 	public void put(char c) throws CIBusException {
@@ -320,7 +320,7 @@ public abstract class BusAreaBuffer extends BusBuffer {
 				char[] insert_chars = put_chars;
 				if (latter_chars != null) {
 					io.write(latter_chars);
-					read(latter_index);
+					charValue(latter_index);
 					io.moveLeft(StringUtil.lengthVT(new String(latter_chars)));
 					buffer.position(latter_index);
 					insert_chars = StringUtil.concat(put_chars, latter_chars);
@@ -338,11 +338,11 @@ public abstract class BusAreaBuffer extends BusBuffer {
 		if (buffer.position() ==0)
 			return;
 		
-		latter_index = StringUtil.subStringVT(read(), 0, area.index()).getBytes().length;
+		latter_index = StringUtil.subStringVT(value(), 0, area.index()).getBytes().length;
 		int length = buffer.position() - latter_index;
 		if (length > 0) {
 			latter_chars = new char[length];
-			read(latter_index, latter_chars);
+			copyValue(latter_index, latter_chars);
 		}
 		
 	}

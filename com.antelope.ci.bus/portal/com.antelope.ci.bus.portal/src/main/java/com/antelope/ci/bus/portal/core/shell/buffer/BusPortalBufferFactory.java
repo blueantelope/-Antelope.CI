@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
-import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusShellBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusShellHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellArea;
 import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
@@ -29,12 +29,12 @@ public class BusPortalBufferFactory {
 	private String name;
 	private List<BusPortalInputBuffer> bufferList;
 	private BusPortalInputBuffer activeBuffer;
-	private BusBuffer command;
+	private BusShellBuffer command;
 	
 	public BusPortalBufferFactory(String name, TerminalIO io) {
 		this.name = name;
 		bufferList = new ArrayList<BusPortalInputBuffer>();
-		command = new BusHitBuffer(io);
+		command = new BusShellHitBuffer(io);
 	}
 	
 	public String getName() {
@@ -158,12 +158,12 @@ public class BusPortalBufferFactory {
 		return false;
 	}
 	
-	public BusBuffer initCommand() {
+	public BusShellBuffer initCommand() {
 		command.reset();
 		return command;
 	}
 	
-	public BusBuffer getCommand() {
+	public BusShellBuffer getCommand() {
 		return command;
 	}
 	

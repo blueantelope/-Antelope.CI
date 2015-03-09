@@ -9,12 +9,12 @@
 package com.antelope.ci.bus.server.shell.buffer;
 
 import java.io.IOException;
-import java.nio.CharBuffer;
 import java.util.List;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.common.BusBuffer;
 import com.antelope.ci.bus.server.shell.util.TerminalIO;
 
 
@@ -24,57 +24,24 @@ import com.antelope.ci.bus.server.shell.util.TerminalIO;
  * @version  0.1
  * @Date	 2013-12-10		上午9:52:25 
  */
-public abstract class BusBuffer {
-	private static final int BUF_SIZE = 512;
-	protected int bufSize;
+public abstract class BusShellBuffer extends BusBuffer {
 	protected int tabSize;
-	protected CharBuffer buffer;
 	protected TerminalIO io;
 	protected boolean inTip;
 	
-	public BusBuffer(TerminalIO io) {
-		this(io, BUF_SIZE);
+	public BusShellBuffer(TerminalIO io) {
+		super();
+		this.io = io;
 	}
 	
-	public BusBuffer(TerminalIO io, int bufSize) {
+	public BusShellBuffer(TerminalIO io, int bufSize) {
+		super(bufSize);
 		this.io = io;
-		this.bufSize = bufSize;
-		buffer = CharBuffer.allocate(bufSize);
 		tabSize = 4;
 	}
 	
 	public void setTabSize(int tabSize) {
 		this.tabSize = tabSize;
-	}
-	
-	public void reset() {
-		buffer.clear();
-	}
-	
-	public String read() {
-		int mark = buffer.position();
-		buffer.flip();
-		String s = buffer.toString();
-		buffer.position(mark);
-		buffer.limit(buffer.capacity());
-		return s;
-	}
-	
-	public String read(int start, int end) {
-		int position = buffer.position();
-		int limit = buffer.limit();
-		buffer.position(start);
-		buffer.limit(end);
-		String s = buffer.toString();
-		buffer.position(position);
-		buffer.limit(limit);
-		return s;
-	}
-	
-	public void remove(int index, int length) {
-		char[] puts =  read(index+length);
-		buffer.position(index);
-		buffer.put(puts);
 	}
 	
 	public void put(char c) throws CIBusException {
@@ -201,26 +168,6 @@ public abstract class BusBuffer {
 		buffer.put(spaces);
 	}
 	
-	protected void read(int index, char[] dst) {
-		int current = buffer.position();
-		buffer.position(index);
-		buffer.get(dst);
-		buffer.position(current);
-	}
-	
-	protected char[] read(int index) {
-		int current = buffer.position();
-		char[] chs = new char[current - index];
-		buffer.position(index);
-		buffer.get(chs);
-		buffer.position(current);
-		return chs;
-	}
-	
-	@Override public String toString() {
-		return read();
-	}
-	
 	// 向左删除一个字符
 	public abstract boolean backspace() throws CIBusException;
 	
@@ -245,4 +192,3 @@ public abstract class BusBuffer {
 	
 	public abstract boolean exitSpace();
 }
-

@@ -53,8 +53,8 @@ EXT(extension): 7 bytes
   extension, for self define header.
 */
 public class APIHeader {
-	public static final byte SIZE = 0x20;
-	private static final byte EXT_SIZE = 0x07;
+	public static final byte HEADER_SIZE = 0x20;
+	private static final byte HEADER_EXT_SIZE = 0x07;
 	protected short order; // order
 	protected short type; // type
 	protected short version; // version
@@ -143,7 +143,7 @@ public class APIHeader {
 		this.ext = ext;
 	}
 
-	public byte[] toBytes() {
+	public byte[] toHeaderBytes() {
 		byte[] bytes = new byte[20];
 		bytes[0] = (byte) order;
 		bytes[1] = (byte) type;
@@ -153,13 +153,13 @@ public class APIHeader {
 		bytes[7] = (byte) ot;
 		bytes[8] = (byte) bt;
 		APIUtil.fill4Bytes(bl, bytes, 9);
-		APIUtil.fillBytes(ext, bytes, 13, EXT_SIZE);
+		APIUtil.fillBytes(ext, bytes, 13, HEADER_EXT_SIZE);
 		
 		return bytes;
 	}
 	
-	public void fromBytes(byte[] bytes) throws CIBusException {
-		if (bytes.length < SIZE)
+	public void fromHeaderBytes(byte[] bytes) throws CIBusException {
+		if (bytes.length < HEADER_SIZE)
 			throw new CIBusException("", "API header size too small");
 		order = bytes[0];
 		type = bytes[1];
@@ -169,6 +169,6 @@ public class APIHeader {
 		ot = bytes[7];
 		bt = bytes[8];
 		bl = APIUtil.from4Bytes(bytes, 9);
-		ext = APIUtil.fromBytes(bytes, 13, EXT_SIZE);
+		ext = APIUtil.fromBytes(bytes, 13, HEADER_EXT_SIZE);
 	}
 }

@@ -16,7 +16,7 @@ import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.common.BusSession;
-import com.antelope.ci.bus.server.shell.buffer.BusEchoBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusShellEchoBuffer;
 
 
 /**
@@ -67,7 +67,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	
 	private void matchCommand() {
 		if (!input.exitSpace()) {
-			List<String> cmdList = commandAdapter.findCommands(input.read());
+			List<String> cmdList = commandAdapter.findCommands(input.value());
 			input.printTips(cmdList, ((BusShellSession)session).getWidth());
 		}
 	}
@@ -80,7 +80,7 @@ public abstract class BusBaseEchoShell extends BusShell {
 	@Override
 	public void mainView() throws CIBusException {
 		try {
-			input = new BusEchoBuffer(io, prompt().length());
+			input = new BusShellEchoBuffer(io, prompt().length());
 			if (!StringUtil.empty(header()))
 				io.println(header());
 			io.write(prompt());

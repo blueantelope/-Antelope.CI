@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.server.api.message;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+
 
 
 /**
@@ -17,23 +19,40 @@ package com.antelope.ci.bus.server.api.message;
  * @Date	 2015年3月6日		下午3:48:25 
  */
 public class APIMessage extends APIHeader {
-	protected byte[] message;
+	protected byte[] body;
 	
 	public APIMessage() {
 		super();
 	}
 
-	public byte[] getMessage() {
-		return message;
+	public byte[] getBody() {
+		return body;
 	}
 
-	public void setMessage(byte[] message) {
-		this.message = message;
-		bl = message.length;
+	public void setBody(byte[] body) {
+		this.body = body;
+		bl = body.length;
 	}
 	
 	public int size() {
-		return APIHeader.SIZE + (int) bl;
+		return APIHeader.HEADER_SIZE + (int) bl;
+	}
+	
+	public byte[] toBytes() {
+		byte[] message = new byte[size()];
+		byte[] header = toHeaderBytes();
+		System.arraycopy(header, 0, message, 0, HEADER_SIZE);
+		System.arraycopy(body, 0, message, HEADER_SIZE, (int) bl);
+		
+		return message;
+	}
+	
+	public void fromBytes(byte[] bs) throws CIBusException {
+		super.fromHeaderBytes(bs);
+		int bodyLen = (int) bl;
+		if (bodyLen > 0) {
+			body = new byte[bodyLen];
+			System.arraycopy(body, 0, bs, HEADER_SIZE, bodyLen);
+		}
 	}
 }
-

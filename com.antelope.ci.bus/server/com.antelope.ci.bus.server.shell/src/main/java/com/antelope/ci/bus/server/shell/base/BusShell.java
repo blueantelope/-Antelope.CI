@@ -20,7 +20,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.common.BusChannel;
 import com.antelope.ci.bus.server.common.BusSession;
 import com.antelope.ci.bus.server.shell.base.BusShellMode.BaseShellMode;
-import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusShellBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.command.CommandAdapter;
 import com.antelope.ci.bus.server.shell.command.CommandAdapterFactory;
@@ -47,7 +47,7 @@ public abstract class BusShell extends BusChannel {
 	protected CommandAdapter commandAdapter;
 	protected int sort;
 	protected Map<String, ShellPalette> paletteMap;
-	protected BusBuffer input;
+	protected BusShellBuffer input;
 	protected boolean activeMoveAction;
 	protected boolean activeEditAction;
 	protected boolean activeUserAction;
@@ -70,7 +70,7 @@ public abstract class BusShell extends BusChannel {
 		input.reset();
 	}
 	
-	public void replaceBuffer(BusBuffer buffer) {
+	public void replaceBuffer(BusShellBuffer buffer) {
 		this.input = buffer;
 	}
 	

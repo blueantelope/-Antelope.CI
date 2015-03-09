@@ -8,6 +8,10 @@
 
 package com.antelope.ci.bus.server.api.base;
 
+import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.api.buffer.BusAPIBuffer;
+import com.antelope.ci.bus.server.api.message.APIMessage;
 import com.antelope.ci.bus.server.common.BusChannel;
 import com.antelope.ci.bus.server.common.BusSession;
 
@@ -19,6 +23,8 @@ import com.antelope.ci.bus.server.common.BusSession;
  * @Date	 2015年3月7日		下午9:59:43 
  */
 public abstract class BusAPI extends BusChannel {
+	protected BusAPIBuffer buffer;
+	
 	public BusAPI() {
 		super();
 	}
@@ -26,5 +32,20 @@ public abstract class BusAPI extends BusChannel {
 	public BusAPI(BusSession session) {
 		super(session);
 	}
+	
+	public void initBuffer() {
+		buffer.initIO(in, out);
+	}
+	
+	protected void recieve(APIMessage message) {
+		try {
+			buffer.read(message);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	protected void send(APIMessage message) {
+		buffer.write(message);
+	}
 }
-

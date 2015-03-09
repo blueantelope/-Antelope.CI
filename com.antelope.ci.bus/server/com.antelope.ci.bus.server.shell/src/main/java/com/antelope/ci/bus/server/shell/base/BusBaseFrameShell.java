@@ -12,7 +12,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.common.BusSession;
-import com.antelope.ci.bus.server.shell.buffer.BusHitBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusShellHitBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCommandArg;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
@@ -74,7 +74,7 @@ public abstract class BusBaseFrameShell extends BusShell {
 		ShellCursor cursor = initCursorPosistion();
 		shiftTop();
 		move(cursor.getX(), cursor.getY());
-		input = new BusHitBuffer(io);
+		input = new BusShellHitBuffer(io);
 		afterView();
 	}
 	

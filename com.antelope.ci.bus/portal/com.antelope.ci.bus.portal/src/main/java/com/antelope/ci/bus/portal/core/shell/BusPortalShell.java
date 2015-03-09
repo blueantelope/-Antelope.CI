@@ -45,7 +45,7 @@ import com.antelope.ci.bus.server.shell.base.Shell;
 import com.antelope.ci.bus.server.shell.base.ShellMode.BaseShellModeType;
 import com.antelope.ci.bus.server.shell.base.ShellPalette;
 import com.antelope.ci.bus.server.shell.base.ShellText;
-import com.antelope.ci.bus.server.shell.buffer.BusBuffer;
+import com.antelope.ci.bus.server.shell.buffer.BusShellBuffer;
 import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
 
 /**
@@ -80,7 +80,7 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	protected List<BusPortalBufferFactory> bufferFactoryList;
 	protected boolean inputInitialized;
 	protected boolean inputFinished;
-	protected BusBuffer mainBuffer;
+	protected BusShellBuffer mainBuffer;
 	protected boolean formControlMode;
 	protected PortalFormContext activeFormContext;
 	protected long form_command_wait;

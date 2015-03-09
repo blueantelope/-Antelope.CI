@@ -6,7 +6,7 @@
  * Copyright (c) 2015, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.gate.baseservice;
+package com.antelope.ci.bus.gate.api.service;
 
 import com.antelope.ci.bus.server.api.BusAPIManager;
 import com.antelope.ci.bus.server.api.launcher.BusAPICondition;
@@ -20,7 +20,7 @@ import com.antelope.ci.bus.server.api.launcher.BusAPICondition;
  * @Date	 2015年3月6日		上午10:12:14 
  */
 public class GateService {
-	public static final String NAME = "com.antelope.ci.bus.gate.baseservice.GateService";
+	public static final String NAME = "com.antelope.ci.bus.gate.api.service.GateService";
 	protected BusAPIManager manager;
 	
 	public GateService(BusAPICondition condition) {

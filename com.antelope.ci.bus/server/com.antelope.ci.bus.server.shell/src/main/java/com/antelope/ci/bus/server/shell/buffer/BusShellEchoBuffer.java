@@ -25,7 +25,7 @@ import com.antelope.ci.bus.server.shell.util.TerminalIO;
  * @version  0.1
  * @Date	 2013-11-26		上午10:10:07 
  */
-public class BusEchoBuffer extends BusBuffer {
+public class BusShellEchoBuffer extends BusShellBuffer {
 	private int cursor;
 	private final int cursorStart;
 	private List<Integer> spaceList;
@@ -39,7 +39,7 @@ public class BusEchoBuffer extends BusBuffer {
 	private int tipTabCol;
 	private int tipTabLine;
 	
-	public BusEchoBuffer(TerminalIO io, int cursorStart) {
+	public BusShellEchoBuffer(TerminalIO io, int cursorStart) {
 		super(io);
 		this.io = io;
 		this.cursorStart = cursorStart;
@@ -109,7 +109,7 @@ public class BusEchoBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#delete()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#delete()
 	 */
 	@Override public boolean delete() throws CIBusException {
 		if (inTip)
@@ -138,7 +138,7 @@ public class BusEchoBuffer extends BusBuffer {
 	/**
 	 * 
 	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.server.shell.buffer.BusBuffer#backspace()
+	 * @see com.antelope.ci.bus.server.shell.buffer.BusShellBuffer#backspace()
 	 */
 	@Override public boolean backspace() throws CIBusException {
 		if (inTip)

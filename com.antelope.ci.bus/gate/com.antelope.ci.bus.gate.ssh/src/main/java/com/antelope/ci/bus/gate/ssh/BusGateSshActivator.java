@@ -11,7 +11,7 @@ package com.antelope.ci.bus.gate.ssh;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.gate.baseservice.GateService;
+import com.antelope.ci.bus.gate.api.service.GateService;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.server.BusServerTemplateActivator;
 

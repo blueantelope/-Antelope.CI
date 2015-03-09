@@ -20,9 +20,9 @@ import com.antelope.ci.bus.server.shell.util.TerminalIO;
  * @version 0.1
  * @Date 2013-12-9 下午5:39:41
  */
-public class BusHitBuffer extends BusBuffer {
+public class BusShellHitBuffer extends BusShellBuffer {
 	
-	public BusHitBuffer(TerminalIO io) {
+	public BusShellHitBuffer(TerminalIO io) {
 		super(io, 64);
 	}
 	
