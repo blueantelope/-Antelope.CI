@@ -40,10 +40,6 @@ public abstract class BusChannel {
 		this.session = session;
 	}
 	
-	public ClassLoader getClassLoader() {
-		return this.getClass().getClassLoader();
-	}
-	
 	public void attatchSession(BusSession session) {
 		this.session = session;
 	}
@@ -87,6 +83,10 @@ public abstract class BusChannel {
 			}
 		}
 		session.exit();
+	}
+	
+	public ClassLoader getClassLoader() {
+		return this.getClass().getClassLoader();
 	}
 	
 	protected abstract void init();

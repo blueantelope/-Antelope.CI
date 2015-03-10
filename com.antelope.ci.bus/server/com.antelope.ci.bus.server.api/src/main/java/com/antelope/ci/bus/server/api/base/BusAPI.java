@@ -8,7 +8,10 @@
 
 package com.antelope.ci.bus.server.api.base;
 
+import java.io.IOException;
+
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.StreamUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.api.buffer.BusAPIBuffer;
 import com.antelope.ci.bus.server.api.message.APIMessage;
@@ -35,6 +38,22 @@ public abstract class BusAPI extends BusChannel {
 	
 	public void initBuffer() {
 		buffer.initIO(in, out);
+	}
+	
+	protected void load() throws CIBusException {
+		while (true) {
+			byte[] bs = new byte[512];
+			int index = -1;
+			try {
+				while ((index=in.read(bs)) != -1) {
+					byte[] b = new byte[index];
+					System.arraycopy(bs, 0, b, 0, index);
+					System.out.println(StreamUtil.toHex(b));
+				}
+			} catch (IOException e) {
+				DevAssistant.errorln(e);
+			}
+		}
 	}
 	
 	protected void recieve(APIMessage message) {

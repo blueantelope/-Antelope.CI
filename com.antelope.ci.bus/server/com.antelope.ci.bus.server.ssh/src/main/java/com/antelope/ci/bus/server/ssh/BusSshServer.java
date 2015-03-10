@@ -10,22 +10,29 @@ package com.antelope.ci.bus.server.ssh;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
+import org.apache.mina.core.session.IoSession;
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.Channel;
 import org.apache.sshd.common.NamedFactory;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
+import org.apache.sshd.common.session.AbstractSession;
+import org.apache.sshd.common.util.Buffer;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.channel.ChannelDirectTcpip;
 import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.server.session.SessionFactory;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.BusConstants;
 import com.antelope.ci.bus.common.FileUtil;
+import com.antelope.ci.bus.common.StreamUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServer;
 import com.antelope.ci.bus.server.common.BusLauncher;
@@ -94,9 +101,10 @@ public abstract class BusSshServer extends BusServer {
 	protected void initServer() {
 		sshServer = SshServer.setUpDefaultServer();
 		sshServer.setChannelFactories(Arrays.<NamedFactory<Channel>>asList(
-                new BusServerChannelSession.Factory(),
+                new BusSshServerChannelSession.Factory(),
                 new ChannelDirectTcpip.Factory()));
 		sshServer.setPort(config.getPort());
+		sshServer.setSessionFactory(new BusSshServerSessionFactory());
 	}
 	
 	protected void configServer() throws CIBusException {
@@ -178,7 +186,40 @@ public abstract class BusSshServer extends BusServer {
 		return key_path;
 	}
 	
-	protected static class BusServerChannelSession extends ChannelSession {
+	protected static class BusSshServerSessionFactory extends SessionFactory {
+		@Override
+		public void sessionOpened(IoSession ioSession) throws Exception {
+			super.sessionOpened(ioSession);
+			InetSocketAddress client = (InetSocketAddress) ioSession.getRemoteAddress();
+			System.out.println("*************** ssh client from " + client.getHostName() + ":" + client.getPort() + " ***************");
+		}
+		
+		@Override
+		protected AbstractSession doCreateSession(IoSession ioSession) throws Exception {
+	        return new ServerSession(server, ioSession) {
+	        	@Override
+	        	 protected void channelData(Buffer buffer) throws Exception {
+	        		Channel channel = getChannel(buffer);
+	        		
+	        		// debug
+	        		int rpos = buffer.rpos();
+	        		int len = buffer.getInt();
+	    			byte[] message = new byte[len];
+	    			System.arraycopy(buffer.array(), buffer.rpos(), message, 0, len);
+	    			String hex = StreamUtil.toHex(message);
+	    			InetSocketAddress client = (InetSocketAddress) ioSession.getRemoteAddress();
+	    			System.out.println("*************** " + client.getHostName() + ":" + client.getPort() + " ***************");
+	    			System.out.println(hex);
+	    			System.out.println("*************** " + client.getHostName() + ":" + client.getPort() + " ***************");
+	    			buffer.rpos(rpos);
+	        		
+	        		channel.handleData(buffer);
+	            }
+	        };
+	    }
+	}
+	
+	protected static class BusSshServerChannelSession extends ChannelSession {
 		public int getWidth() {
 			return Integer.valueOf(super.getEnvironment().getEnv().get(Environment.ENV_COLUMNS));
 		}

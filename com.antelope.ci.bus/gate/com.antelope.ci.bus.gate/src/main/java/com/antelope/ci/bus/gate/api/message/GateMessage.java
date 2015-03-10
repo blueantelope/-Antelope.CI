@@ -23,7 +23,7 @@ public class GateMessage extends APIMessage {
 	}
 	
 	@Override
-	protected void init() {
+	public void init() {
 		super.init();
 		type = 0x01;
 	}

@@ -24,6 +24,10 @@ public class APIMessage extends APIHeader {
 	public APIMessage() {
 		super();
 	}
+	
+	public void init() {
+		super.init();
+	}
 
 	public byte[] getBody() {
 		return body;

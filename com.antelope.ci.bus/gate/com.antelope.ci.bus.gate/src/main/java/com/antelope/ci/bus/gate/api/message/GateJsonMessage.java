@@ -21,7 +21,7 @@ public class GateJsonMessage extends GateMessage {
 	}
 	
 	@Override
-	protected void init() {
+	public void init() {
 		super.init();
 		bt = 0x01; // json
 	}

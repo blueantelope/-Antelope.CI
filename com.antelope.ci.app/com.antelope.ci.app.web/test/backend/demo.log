@@ -1,0 +1,14 @@
+DEB [20150310-14:04:41.274] thr=1   paramiko.transport: starting thread (client mode): 0x504cc810L
+INF [20150310-14:04:45.901] thr=1   paramiko.transport: Connected (version 2.0, client SSHD-CORE-0.8.0)
+DEB [20150310-14:04:45.915] thr=1   paramiko.transport: kex algos:[u'diffie-hellman-group1-sha1'] server key:[u'ssh-dss'] client encrypt:[u'aes128-ctr', u'aes128-cbc', u'3des-cbc', u'blowfish-cbc'] server encrypt:[u'aes128-ctr', u'aes128-cbc', u'3des-cbc', u'blowfish-cbc'] client mac:[u'hmac-md5', u'hmac-sha1', u'hmac-md5-96', u'hmac-sha1-96'] server mac:[u'hmac-md5', u'hmac-sha1', u'hmac-md5-96', u'hmac-sha1-96'] client compress:[u'none'] server compress:[u'none'] client lang:[u''] server lang:[u''] kex follows?False
+DEB [20150310-14:04:45.926] thr=1   paramiko.transport: Ciphers agreed: local=aes128-ctr, remote=aes128-ctr
+DEB [20150310-14:04:45.937] thr=1   paramiko.transport: using kex diffie-hellman-group1-sha1; server key type ssh-dss; cipher: local aes128-ctr, remote aes128-ctr; mac: local hmac-sha1, remote hmac-sha1; compression: local none, remote none
+DEB [20150310-14:04:46.155] thr=1   paramiko.transport: Switch to new keys ...
+DEB [20150310-14:04:58.770] thr=1   paramiko.transport: userauth is OK
+INF [20150310-14:04:58.792] thr=1   paramiko.transport: Authentication (password) successful!
+DEB [20150310-14:04:58.825] thr=2   paramiko.transport: [chan 0] Max packet in: 32768 bytes
+DEB [20150310-14:04:58.869] thr=1   paramiko.transport: [chan 0] Max packet out: 32768 bytes
+DEB [20150310-14:04:58.880] thr=1   paramiko.transport: Secsh channel 0 opened.
+DEB [20150310-14:04:58.913] thr=1   paramiko.transport: [chan 0] Sesch channel 0 request ok
+DEB [20150310-14:04:58.935] thr=1   paramiko.transport: [chan 0] Sesch channel 0 request ok
+ERR [20150310-14:05:08.717] thr=1   paramiko.transport: Socket exception: Connection reset by peer (104)

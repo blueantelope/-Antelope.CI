@@ -70,7 +70,7 @@ public class APIHeader {
 		init();
 	}
 
-	protected void init() {
+	public void init() {
 		order = 0x03;
 		type = 0x00;
 		version = 0x01;
