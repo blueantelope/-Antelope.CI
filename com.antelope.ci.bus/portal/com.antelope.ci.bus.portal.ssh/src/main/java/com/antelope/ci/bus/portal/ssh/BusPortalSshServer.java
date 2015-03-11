@@ -14,6 +14,7 @@ import org.osgi.framework.BundleContext;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServerCondition;
 import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.BusServerCondition.SERVER_TYPE;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
 
 /**
@@ -51,7 +52,7 @@ public class BusPortalSshServer extends BusSshServer {
 	 */
 	@Override
 	protected void attatchCondition(BusServerCondition server_condition) throws CIBusException {
-		
+		server_condition.setServerType(SERVER_TYPE.SHELL);
 	}
 
 	/**

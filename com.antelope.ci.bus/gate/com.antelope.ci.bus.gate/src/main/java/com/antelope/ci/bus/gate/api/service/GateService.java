@@ -8,8 +8,8 @@
 
 package com.antelope.ci.bus.gate.api.service;
 
-import com.antelope.ci.bus.server.api.BusAPIManager;
-import com.antelope.ci.bus.server.api.launcher.BusAPICondition;
+import com.antelope.ci.bus.server.api.BusApiManager;
+import com.antelope.ci.bus.server.api.launcher.BusApiCondition;
 
 
 
@@ -21,13 +21,13 @@ import com.antelope.ci.bus.server.api.launcher.BusAPICondition;
  */
 public class GateService {
 	public static final String NAME = "com.antelope.ci.bus.gate.api.service.GateService";
-	protected BusAPIManager manager;
+	protected BusApiManager manager;
 	
-	public GateService(BusAPICondition condition) {
-		manager = new BusAPIManager(condition);
+	public GateService(BusApiCondition condition) {
+		manager = new BusApiManager(condition);
 	}
 	
-	public BusAPIManager getManager() {
+	public BusApiManager getManager() {
 		return manager;
 	}
 }

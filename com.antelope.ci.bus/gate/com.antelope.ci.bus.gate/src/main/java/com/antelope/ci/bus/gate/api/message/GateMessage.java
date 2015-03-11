@@ -8,7 +8,7 @@
 
 package com.antelope.ci.bus.gate.api.message;
 
-import com.antelope.ci.bus.server.api.message.APIMessage;
+import com.antelope.ci.bus.server.api.message.ApiMessage;
 
 
 /**
@@ -17,7 +17,7 @@ import com.antelope.ci.bus.server.api.message.APIMessage;
  * @version  0.1
  * @Date	 2015年3月6日		下午3:56:17 
  */
-public class GateMessage extends APIMessage {
+public class GateMessage extends ApiMessage {
 	public GateMessage() {
 		super();
 	}

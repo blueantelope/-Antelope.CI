@@ -424,6 +424,7 @@ public abstract class BusShell extends BusChannel {
 		ShellUtil.shiftNext(io, str);
 	}
 	
+	@Override
 	protected void customEnv() throws CIBusException {
 		BusShellSession shellSession = (BusShellSession) session;
 		setting = shellSession.getSetting();

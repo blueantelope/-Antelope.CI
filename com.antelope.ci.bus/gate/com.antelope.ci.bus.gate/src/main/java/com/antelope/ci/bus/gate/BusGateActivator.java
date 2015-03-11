@@ -15,7 +15,7 @@ import com.antelope.ci.bus.gate.api.service.GateService;
 import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.ServicePublisher;
-import com.antelope.ci.bus.server.api.launcher.BusAPICondition;
+import com.antelope.ci.bus.server.api.launcher.BusApiCondition;
 
 
 /**
@@ -26,11 +26,11 @@ import com.antelope.ci.bus.server.api.launcher.BusAPICondition;
  */
 public class BusGateActivator extends BusActivator {
 	protected GateService gateService;
-	protected BusAPICondition condition;
+	protected BusApiCondition condition;
 
 	@Override
 	protected void customInit() throws CIBusException {
-		condition = new BusAPICondition(getClassLoader());
+		condition = new BusApiCondition(getClassLoader());
 	}
 
 	@Override

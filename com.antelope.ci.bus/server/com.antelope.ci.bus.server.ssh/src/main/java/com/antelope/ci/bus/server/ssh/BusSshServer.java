@@ -19,6 +19,7 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.sshd.SshServer;
 import org.apache.sshd.common.Channel;
 import org.apache.sshd.common.NamedFactory;
+import org.apache.sshd.common.SshConstants;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
 import org.apache.sshd.common.session.AbstractSession;
 import org.apache.sshd.common.util.Buffer;
@@ -101,7 +102,7 @@ public abstract class BusSshServer extends BusServer {
 	protected void initServer() {
 		sshServer = SshServer.setUpDefaultServer();
 		sshServer.setChannelFactories(Arrays.<NamedFactory<Channel>>asList(
-                new BusSshServerChannelSession.Factory(),
+                new BusSshServerChannelSession.ChannelFactory(),
                 new ChannelDirectTcpip.Factory()));
 		sshServer.setPort(config.getPort());
 		sshServer.setSessionFactory(new BusSshServerSessionFactory());
@@ -121,15 +122,7 @@ public abstract class BusSshServer extends BusServer {
 				sshServer.setKeyPairProvider(new FileKeyPairProvider(new String[] {key_path}));
 				break;
 		}
-		
-		switch(condition.getServerType()) {
-			case API:
-			case SHELL:
-			default:
-				configChannel();
-				break;
-		}
-		
+		configChannel();
 		for (AuthService authService : condition.getAuthServiceList()) {
 			switch (authService.getAuthType()) {
 				case PASSWORD:
@@ -158,7 +151,7 @@ public abstract class BusSshServer extends BusServer {
 	}
 	
 	private void configChannel() throws CIBusException {
-		BusSshCommand command = new BusSshCommand(launcher);
+		BusSshCommand command = new BusSshCommand(launcher, condition.getServerType());
 		BusSshFactory factory = new BusSshFactory(command);;
 		sshServer.setShellFactory(factory);
 	}
@@ -188,20 +181,33 @@ public abstract class BusSshServer extends BusServer {
 	
 	protected static class BusSshServerSessionFactory extends SessionFactory {
 		@Override
-		public void sessionOpened(IoSession ioSession) throws Exception {
-			super.sessionOpened(ioSession);
-			InetSocketAddress client = (InetSocketAddress) ioSession.getRemoteAddress();
-			System.out.println("*************** ssh client from " + client.getHostName() + ":" + client.getPort() + " ***************");
-		}
-		
-		@Override
 		protected AbstractSession doCreateSession(IoSession ioSession) throws Exception {
 	        return new ServerSession(server, ioSession) {
 	        	@Override
-	        	 protected void channelData(Buffer buffer) throws Exception {
+	        	protected void handleMessage(Buffer buffer) throws Exception {
+	        		SshConstants.Message cmd = null;
+	        		if (log.isDebugEnabled()) {
+		        		int rpos = buffer.rpos();
+		        		cmd = buffer.getCommand();
+		        		buffer.rpos(rpos);
+	        		}
+	        		super.handleMessage(buffer);
+	        		if (log.isDebugEnabled() && cmd == SshConstants.Message.SSH_MSG_CHANNEL_OPEN) {
+	        			InetSocketAddress client = (InetSocketAddress) ioSession.getRemoteAddress();
+	        			System.out.println("*************** ssh client from " + client.getHostName() + ":" + client.getPort() + " ***************");
+	        		}
+	        	}
+	        	
+	        	@Override
+	        	protected void channelData(Buffer buffer) throws Exception {
 	        		Channel channel = getChannel(buffer);
-	        		
-	        		// debug
+	        		if (log.isDebugEnabled())
+	        			debugchannelData(buffer);
+	        		channel.handleData(buffer);
+	        	}
+	        	
+	        	private void debugchannelData(Buffer buffer) throws Exception {
+	        		// {-- debug
 	        		int rpos = buffer.rpos();
 	        		int len = buffer.getInt();
 	    			byte[] message = new byte[len];
@@ -212,14 +218,22 @@ public abstract class BusSshServer extends BusServer {
 	    			System.out.println(hex);
 	    			System.out.println("*************** " + client.getHostName() + ":" + client.getPort() + " ***************");
 	    			buffer.rpos(rpos);
-	        		
-	        		channel.handleData(buffer);
-	            }
+	        		// debug --}
+	        	}
 	        };
 	    }
 	}
 	
 	protected static class BusSshServerChannelSession extends ChannelSession {
+		public static class ChannelFactory extends Factory {
+	        @Override
+			public Channel create() {
+	            return new ChannelSession() {
+	            	
+	            };
+	        }
+	    }
+		
 		public int getWidth() {
 			return Integer.valueOf(super.getEnvironment().getEnv().get(Environment.ENV_COLUMNS));
 		}
