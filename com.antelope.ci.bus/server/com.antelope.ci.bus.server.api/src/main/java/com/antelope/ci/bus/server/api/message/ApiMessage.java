@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.server.api.message;
 
+import com.antelope.ci.bus.common.StreamUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -42,13 +43,14 @@ public class ApiMessage extends ApiHeader {
 		return ApiHeader.HEADER_SIZE + (int) bl;
 	}
 	
-	public byte[] toBytes() {
-		byte[] message = new byte[size()];
-		byte[] header = toHeaderBytes();
-		System.arraycopy(header, 0, message, 0, HEADER_SIZE);
-		System.arraycopy(body, 0, message, HEADER_SIZE, (int) bl);
+	public byte[] getBytes() {
+		byte[] bytes = new byte[size()];
+		byte[] header = getHeaderBytes();
+		System.arraycopy(header, 0, bytes, 0, HEADER_SIZE);
+		if (bl > 0)
+			System.arraycopy(body, 0, bytes, HEADER_SIZE, (int) bl);
 		
-		return message;
+		return bytes;
 	}
 	
 	public void fromBytes(byte[] bs) throws CIBusException {
@@ -58,5 +60,10 @@ public class ApiMessage extends ApiHeader {
 			body = new byte[bodyLen];
 			System.arraycopy(body, 0, bs, HEADER_SIZE, bodyLen);
 		}
+	}
+	
+	@Override
+	public String toHexString() {
+		return StreamUtil.toHex(getBytes());
 	}
 }

@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.server.api.base;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.server.api.message.ApiMessage;
 
 
 /**
@@ -42,6 +43,13 @@ public class SimpleBusApi extends BusApi {
 
 	@Override
 	protected void release() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void handleInMessage(ApiMessage message) {
 		
 		// TODO Auto-generated method stub
 		

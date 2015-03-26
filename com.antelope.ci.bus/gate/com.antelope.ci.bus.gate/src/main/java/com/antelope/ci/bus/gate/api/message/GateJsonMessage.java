@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.gate.api.message;
 
+import com.antelope.ci.bus.server.api.message.BT;
+
 
 /**
  *
@@ -23,7 +25,7 @@ public class GateJsonMessage extends GateMessage {
 	@Override
 	public void init() {
 		super.init();
-		bt = 0x01; // json
+		bt = BT._json; // json
 	}
 	
 	// immutable setter method

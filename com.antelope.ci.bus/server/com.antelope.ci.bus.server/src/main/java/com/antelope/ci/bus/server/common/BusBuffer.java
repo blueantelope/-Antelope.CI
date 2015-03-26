@@ -75,7 +75,11 @@ public class BusBuffer {
 	public byte[] byteValue() {
 		char[] cs = charValue();
 		byte[] bs = new byte[cs.length];
-		System.arraycopy(cs, 0, bs, 0, cs.length);
+		int n = 0;
+		while (n < cs.length) {
+			bs[n] = (byte) cs[n];
+			n++;
+		}
 		return bs;
 	}
 	

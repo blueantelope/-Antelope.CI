@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.server.api.base;
 
+import org.apache.log4j.Logger;
+
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StreamUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -23,6 +25,7 @@ import com.antelope.ci.bus.server.common.BusSession;
  * @Date	 2015年3月7日		下午9:59:43 
  */
 public abstract class BusApi extends BusChannel {
+	private final static Logger log = Logger.getLogger(BusApi.class);
 	protected BusApiBuffer buffer;
 	protected ApiIO io;
 	
@@ -43,32 +46,48 @@ public abstract class BusApi extends BusChannel {
 	}
 	
 	protected void load() throws CIBusException {
-		byte[] bs = new byte[512];
-		int index = -1;
 		while (true) {
-			try {
-				while ((index=io.read(bs)) != -1) {
-					byte[] b = new byte[index];
-					System.arraycopy(bs, 0, b, 0, index);
-					System.out.println(StreamUtil.toHex(b));
+			final ApiMessage message = recieveMessage();
+			if (message != null) {
+				try {
+					System.out.println(message.toHexString());
+					new Thread() {
+						@Override public void run() {
+							handleInMessage(message);
+						}
+					}.start();
+				} catch (Exception e) {
+					DevAssistant.errorln(e);
 				}
-			} catch (CIBusException e) {
-				DevAssistant.errorln(e);
 			}
 		}
 	}
 	
-	protected void recieve(ApiMessage message) {
-		try {
-			buffer.read(message);
-		} catch (CIBusException e) {
-			DevAssistant.errorln(e);
+	protected void recieve() throws CIBusException {
+		byte[] bs = new byte[512];
+		int index = -1;
+		while (true) {
+			while ((index=io.read(bs)) != -1) {
+				try {
+					byte[] b = new byte[index];
+					System.arraycopy(bs, 0, b, 0, index);
+					System.out.println(StreamUtil.toHex(b));
+				} catch (Exception e) {
+					DevAssistant.errorln(e);
+				}
+			}
 		}
 	}
 	
-	protected void send(ApiMessage message) {
+	protected ApiMessage recieveMessage() throws CIBusException {
+		return buffer.readMessage();
+	}
+	
+	protected void sendMessage(ApiMessage message) {
 		buffer.write(message);
 	}
 	
 	protected abstract void customApiEnv() throws CIBusException;
+	
+	protected abstract void handleInMessage(ApiMessage message);
 }

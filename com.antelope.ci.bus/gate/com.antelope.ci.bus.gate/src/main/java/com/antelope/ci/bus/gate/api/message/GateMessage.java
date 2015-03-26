@@ -29,7 +29,7 @@ public class GateMessage extends ApiMessage {
 	}
 	
 	// immutable setter method
-	@Override public void setOrder(short order) { }
+	@Override public void setEndian(short endian) { }
 	@Override public void setVersion(short version) { }
 }
 

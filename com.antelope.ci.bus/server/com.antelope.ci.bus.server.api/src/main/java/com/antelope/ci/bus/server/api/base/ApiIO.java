@@ -47,5 +47,13 @@ public class ApiIO {
 			throw new CIBusException("", "Api IO read error", e);
 		}
 	}
+	
+	public int available() throws CIBusException {
+		try {
+			return m_In.available();
+		} catch (IOException e) {
+			throw new CIBusException("", "Api IO available error", e);
+		}
+	}
 }
 

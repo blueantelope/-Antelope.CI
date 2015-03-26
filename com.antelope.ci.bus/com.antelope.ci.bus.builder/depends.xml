@@ -163,6 +163,11 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.antelope.ci.bus.gate.api</groupId>
+			<artifactId>com.antelope.ci.bus.gate.api.user</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.bundlerepository</artifactId>
 			<version>1.6.6</version>

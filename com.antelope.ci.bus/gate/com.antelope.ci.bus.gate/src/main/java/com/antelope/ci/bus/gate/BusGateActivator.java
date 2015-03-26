@@ -11,6 +11,7 @@ package com.antelope.ci.bus.gate;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.gate.api.BusGateApi;
 import com.antelope.ci.bus.gate.api.service.GateService;
 import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
@@ -27,15 +28,19 @@ import com.antelope.ci.bus.server.api.launcher.BusApiCondition;
 public class BusGateActivator extends BusActivator {
 	protected GateService gateService;
 	protected BusApiCondition condition;
+	private GateApiScanner sanner;
 
 	@Override
 	protected void customInit() throws CIBusException {
 		condition = new BusApiCondition(getClassLoader());
+		condition.setApiClass(BusGateApi.class.getName());
 	}
 
 	@Override
 	protected void run() throws CIBusException {
-		
+		GateApiScanner sanner = GateApiScanner.getScanner();
+		sanner.setClassLoader(getClassLoader());
+		sanner.start();
 	}
 
 	@Override

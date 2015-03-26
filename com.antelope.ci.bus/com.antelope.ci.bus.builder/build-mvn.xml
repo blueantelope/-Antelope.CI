@@ -662,6 +662,27 @@
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>
 	</target>
+	
+	<!-- com.antelope.ci.bus.gate.api.user -->
+	<target name="gate.api.user.compile" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.api.user.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="gate.api.user.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.api.user.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="gate.api.user.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.gate.api.user.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
 
 	<target name="all" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">

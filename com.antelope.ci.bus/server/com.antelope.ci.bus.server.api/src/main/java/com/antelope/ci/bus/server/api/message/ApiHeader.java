@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.server.api.message;
 
+import com.antelope.ci.bus.common.StreamUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.api.base.ApiUtil;
 
@@ -53,9 +54,9 @@ EXT(extension): 7 bytes
   extension, for self define header.
 */
 public class ApiHeader {
-	public static final byte HEADER_SIZE = 0x20;
+	public static final byte HEADER_SIZE = 0x14;
 	private static final byte HEADER_EXT_SIZE = 0x07;
-	protected short order; // order
+	protected short endian; // endian
 	protected short type; // type
 	protected short version; // version
 	protected int oid; // operation identity
@@ -71,7 +72,7 @@ public class ApiHeader {
 	}
 
 	public void init() {
-		order = 0x03;
+		endian = Endian._network;
 		type = 0x00;
 		version = 0x01;
 		ext = new byte[]
@@ -80,11 +81,11 @@ public class ApiHeader {
 	
 	
 	// getter and setter
-	public short getOrder() {
-		return order;
+	public short getEndian() {
+		return endian;
 	}
-	public void setOrder(short order) {
-		this.order = order;
+	public void setEndian(short endian) {
+		this.endian = endian;
 	}
 
 	public short getType() {
@@ -143,9 +144,9 @@ public class ApiHeader {
 		this.ext = ext;
 	}
 
-	public byte[] toHeaderBytes() {
-		byte[] bytes = new byte[20];
-		bytes[0] = (byte) order;
+	public byte[] getHeaderBytes() {
+		byte[] bytes = new byte[HEADER_SIZE];
+		bytes[0] = (byte) endian;
 		bytes[1] = (byte) type;
 		bytes[2] = (byte) version;
 		ApiUtil.fill2Bytes(oid, bytes, 3);
@@ -161,7 +162,7 @@ public class ApiHeader {
 	public void fromHeaderBytes(byte[] bytes) throws CIBusException {
 		if (bytes.length < HEADER_SIZE)
 			throw new CIBusException("", "API header size too small");
-		order = bytes[0];
+		endian = bytes[0];
 		type = bytes[1];
 		version = bytes[2];
 		oid = ApiUtil.from2Bytes(bytes, 3);
@@ -170,5 +171,9 @@ public class ApiHeader {
 		bt = bytes[8];
 		bl = ApiUtil.from4Bytes(bytes, 9);
 		ext = ApiUtil.fromBytes(bytes, 13, HEADER_EXT_SIZE);
+	}
+	
+	public String toHexString() {
+		return StreamUtil.toHex(getHeaderBytes());
 	}
 }

@@ -16,7 +16,7 @@ package com.antelope.ci.bus.gate.api.message;
  * @version  0.1
  * @Date	 2015年3月6日		下午3:52:06 
  */
-public class GateJsonOutMessage extends GateJsonMessage {
+public class GateJsonOutMessage extends GateOutMessage {
 	public GateJsonOutMessage() {
 		super();
 	}

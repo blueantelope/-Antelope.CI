@@ -26,7 +26,7 @@ public class TestApiHeader_toBytes extends TestCase {
 
 	@Test public void test() {
 		ApiHeader header = new ApiHeader();
-		byte[] bytes = header.toHeaderBytes();
+		byte[] bytes = header.getHeaderBytes();
 		System.out.println(StreamUtil.toHex(bytes));
 	}
 	

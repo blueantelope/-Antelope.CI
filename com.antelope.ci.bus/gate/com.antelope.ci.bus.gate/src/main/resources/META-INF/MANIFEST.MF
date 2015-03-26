@@ -6,7 +6,8 @@ Bundle-SymbolicName: com.antelope.ci.bus.gate
 Bundle-Vendor: blueantelope@gmail.com
 Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service,
  com.antelope.ci.bus.server.api, com.antelope.ci.bus.server.api.base,
- com.antelope.ci.bus.server.api.message, com.antelope.ci.bus.server.api.launcher
+ com.antelope.ci.bus.server.api.message, com.antelope.ci.bus.server.api.launcher,
+ com.antelope.ci.bus.server.common
 DynamicImport-Package: com.antelope.ci.bus.server.service.*, com.antelope.ci.bus.engine.manager.project.*,
  com.antelope.ci.bus.gate.*
 Export-Package: com.antelope.ci.bus.gate.message, com.antelope.ci.bus.gate.api.service,

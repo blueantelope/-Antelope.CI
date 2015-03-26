@@ -26,6 +26,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.ssh.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.ssh.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="gate.api.user.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
@@ -56,6 +57,7 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.ssh.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.ssh.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="gate.api.user.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
@@ -209,6 +211,7 @@
 		<copy todir="${app.gate.bundle.part}">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.gate.shell-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.gate.api.user-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		<!-- /system/ext/gate/service -->
