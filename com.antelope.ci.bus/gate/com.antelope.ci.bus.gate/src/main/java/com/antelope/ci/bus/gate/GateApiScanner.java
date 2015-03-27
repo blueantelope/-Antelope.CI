@@ -38,19 +38,19 @@ public class GateApiScanner {
 	}
 	
 	
-	private Map<Short, IGateApi> apiMap;
+	private Map<Integer, IGateApi> apiMap;
 	private ClassLoader classLoaer;
 	
 	private GateApiScanner() {
-		apiMap = new ConcurrentHashMap<Short, IGateApi>();
+		apiMap = new ConcurrentHashMap<Integer, IGateApi>();
 	}
 	
 	public void setClassLoader(ClassLoader classLoaer) {
 		this.classLoaer = classLoaer;
 	}
 	
-	public IGateApi getGateApi(short bt) {
-		return apiMap.get(bt);
+	public IGateApi getGateApi(int oc) {
+		return apiMap.get(oc);
 	}
 	
 	public void start() {
@@ -73,8 +73,8 @@ public class GateApiScanner {
 						Class clazz = Class.forName(cls, false, classLoaer);
 						if (IGateApi.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(GateApi.class)) {
 							GateApi api = (GateApi) clazz.getAnnotation(GateApi.class);
-							if (!apiMap.containsKey(api.bt()))
-								apiMap.put(api.bt(), (IGateApi) ProxyUtil.newObject(clazz, classLoaer));
+							if (!apiMap.containsKey(api.oc()))
+								apiMap.put(api.oc(), (IGateApi) ProxyUtil.newObject(clazz, classLoaer));
 						}
 					}
 				} catch (Exception e) {

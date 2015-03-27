@@ -70,6 +70,10 @@ public class ApiHeader {
 		super();
 		init();
 	}
+	
+	public ApiHeader(ApiHeader header) {
+		cloneHeader(header);
+	}
 
 	public void init() {
 		endian = Endian._network;
@@ -175,5 +179,17 @@ public class ApiHeader {
 	
 	public String toHexString() {
 		return StreamUtil.toHex(getHeaderBytes());
+	}
+	
+	public void cloneHeader(ApiHeader src) {
+		endian = src.getEndian();
+		type = src.getType();
+		version = src.getVersion();
+		oid = src.getOid();
+		oc = src.getOc();
+		ot = src.getOt();
+		bt = src.getBt();
+		bl = src.getBl();
+		ext = src.getExt();
 	}
 }

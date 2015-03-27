@@ -64,9 +64,10 @@ public class BusGateApi extends BusApi {
 
 	@Override
 	protected void handleInMessage(ApiMessage message) {
-		IGateApi api = GateApiScanner.getScanner().getGateApi(message.getBt());
+		IGateApi api = GateApiScanner.getScanner().getGateApi(message.getOc());
 		if (api != null) {
-			GateInMessage inMessage = (GateInMessage) message;
+			GateInMessage inMessage = new GateInMessage();
+			inMessage.clone(message);
 			GateOutMessage outMessage;
 			switch (message.getOt()) {
 				case OT._query:

@@ -19,5 +19,9 @@ public class GateOutMessage extends GateMessage {
 	public GateOutMessage() {
 		super();
 	}
+	
+	public GateOutMessage(GateOutMessage message) {
+		super(message);
+	}
 }
 

@@ -22,10 +22,16 @@ public class GateJsonUserInMessage extends GateJsonInMessage {
 		super();
 	}
 	
+	public GateJsonUserInMessage(GateJsonUserInMessage message) {
+		super(message);
+	}
+	
 	@Override
 	public void init() {
 		super.init();
 		oc = 0x01;
 	}
+	
+	// immutable setter method
+	@Override public void setOc(int oc) { }
 }
-

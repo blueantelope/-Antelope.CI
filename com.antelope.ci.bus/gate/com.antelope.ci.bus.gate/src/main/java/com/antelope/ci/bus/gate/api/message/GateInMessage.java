@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.gate.api.message;
 
 
+
 /**
  *
  * @author   blueantelope
@@ -19,5 +20,8 @@ public class GateInMessage extends GateMessage {
 	public GateInMessage() {
 		super();
 	}
+	
+	public GateInMessage(GateInMessage message) {
+		super(message);
+	}
 }
-

@@ -20,4 +20,17 @@ public class GateJsonInMessage extends GateInMessage {
 	public GateJsonInMessage() {
 		super();
 	}
+	
+	public GateJsonInMessage(GateJsonInMessage message) {
+		super(message);
+	}
+	
+	@Override
+	public void init() {
+		super.init();
+		bt = 0x01;
+	}
+	
+	// immutable setter method
+	@Override public void setBt(short bt) { }
 }

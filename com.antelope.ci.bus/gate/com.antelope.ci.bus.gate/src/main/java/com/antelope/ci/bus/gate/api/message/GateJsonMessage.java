@@ -22,6 +22,10 @@ public class GateJsonMessage extends GateMessage {
 		super();
 	}
 	
+	public GateJsonMessage(GateJsonMessage message) {
+		super(message);
+	}
+	
 	@Override
 	public void init() {
 		super.init();

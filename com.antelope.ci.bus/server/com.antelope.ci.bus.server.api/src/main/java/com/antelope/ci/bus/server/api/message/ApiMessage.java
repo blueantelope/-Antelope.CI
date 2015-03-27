@@ -26,6 +26,10 @@ public class ApiMessage extends ApiHeader {
 		super();
 	}
 	
+	public ApiMessage(ApiMessage message) {
+		clone(message);
+	}
+	
 	public void init() {
 		super.init();
 	}
@@ -65,5 +69,10 @@ public class ApiMessage extends ApiHeader {
 	@Override
 	public String toHexString() {
 		return StreamUtil.toHex(getBytes());
+	}
+	
+	public void clone(ApiMessage src) {
+		super.cloneHeader(src);
+		body = src.getBody();
 	}
 }

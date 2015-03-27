@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.gate.api.user;
 
+import org.apache.log4j.Logger;
+
 import com.antelope.ci.bus.gate.api.GateApi;
 import com.antelope.ci.bus.gate.api.IGateApi;
 import com.antelope.ci.bus.gate.api.message.GateInMessage;
@@ -21,40 +23,39 @@ import com.antelope.ci.bus.gate.api.message.GateOutMessage;
  * @version  0.1
  * @Date	 2015年3月23日		下午3:54:39 
  */
-@GateApi(bt=0x01)
+@GateApi(oc=0x01)
 public class UserGateApi implements IGateApi {
+	private final static Logger log = Logger.getLogger(UserGateApi.class);
 
 	@Override
 	public GateOutMessage query(GateInMessage in) {
+		log.info(actionInfo("query"));
 		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
 
 	@Override
 	public GateOutMessage add(GateInMessage in) {
+		log.info(actionInfo("add"));
 		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
 
 	@Override
 	public GateOutMessage delete(GateInMessage in) {
+		log.info(actionInfo("delete"));
 		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
 
 	@Override
 	public GateOutMessage edit(GateInMessage in) {
+		log.info(actionInfo("edit"));
 		
-		// TODO Auto-generated method stub
 		return null;
-		
 	}
-
+	
+	protected String actionInfo(String actionName) {
+		return "User Gate Api -> " + actionName;
+	}
 }
-

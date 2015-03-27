@@ -22,6 +22,10 @@ public class GateMessage extends ApiMessage {
 		super();
 	}
 	
+	public GateMessage(GateMessage message) {
+		clone(message);
+	}
+	
 	@Override
 	public void init() {
 		super.init();
