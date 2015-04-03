@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: com.antelope.ci.bus.engine.manager.user
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.engine.manager.user
+Bundle-Vendor: blueantelope@gmail.com
+Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service,
+ com.antelope.ci.bus.engine.model.user;version="0.1.0", com.antelope.ci.bus.engine.manager,
+ com.antelope.ci.bus.engine.manager.user
+Export-Package: com.antelope.ci.bus.engine.manager.user;version="0.1.0"
+Fragment-Host: com.antelope.ci.bus.engine.manager; bundle-version="0.1.0"

@@ -15,6 +15,6 @@ package com.antelope.ci.bus.engine.manager.project;
  * @version  0.1
  * @Date	 2014年12月5日		下午8:51:57 
  */
-public class EngineProjectManagerConstants {
-	public static final String SERVICE_NAME = "com.antelope.ci.bus.engine.manager.project.EngineProjectManager";
+public final class EngineProjectManagerConstants {
+	public final static String SERVICE_NAME = "com.antelope.ci.bus.engine.manager.project.EngineProjectManager";
 }

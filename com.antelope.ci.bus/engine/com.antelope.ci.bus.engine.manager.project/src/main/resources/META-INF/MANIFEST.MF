@@ -3,8 +3,7 @@ Bundle-Version: 0.1.0
 Bundle-Name: com.antelope.ci.bus.engine.manager.project
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.engine.manager.project
-Export-Package: com.antelope.ci.bus.engine.manager.project;version="0.1.0"
-Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service,
- com.antelope.ci.bus.engine.model.project;version="0.1.0", com.antelope.ci.bus.engine.manager
 Bundle-Vendor: blueantelope@gmail.com
-Bundle-Activator: com.antelope.ci.bus.engine.manager.project.EngineProjectManagerActivator
+Import-Package: com.antelope.ci.bus.engine.model.project;version="0.1.0"
+Export-Package: com.antelope.ci.bus.engine.manager.project;version="0.1.0"
+Fragment-Host: com.antelope.ci.bus.engine.manager; bundle-version="0.1.0"

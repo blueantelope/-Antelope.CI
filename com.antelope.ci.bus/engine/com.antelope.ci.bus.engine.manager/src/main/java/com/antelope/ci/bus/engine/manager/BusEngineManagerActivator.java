@@ -13,7 +13,6 @@ import org.osgi.framework.ServiceReference;
 import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusActivator;
-import com.antelope.ci.bus.osgi.BusOsgiConstant;
 
 
 

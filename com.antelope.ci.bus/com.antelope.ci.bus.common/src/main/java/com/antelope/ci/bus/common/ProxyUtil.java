@@ -70,19 +70,19 @@ public class ProxyUtil {
 	}
 
 	// 新建类的实例对像 如果指定ClassLoader由此loader来加载
-	public static Object newObject(Class clazz, ClassLoader... loader) {
+	public static Object newObject(Class clazz, ClassLoader... loader) throws CIBusException {
 		Object o = null;
 		if (loader.length == 0) {
 			try {
 				o = clazz.newInstance();
 			} catch (Exception e) {
-
+				throw new CIBusException("", "create new object error: ", e);
 			}
 		} else {
 			try {
 				o = loader[0].loadClass(clazz.getName()).newInstance();
 			} catch (Exception e) {
-
+				throw new CIBusException("", "create new object error: ", e);
 			}
 		}
 

@@ -17,6 +17,8 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.realization.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile" />
@@ -48,6 +50,8 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.realization.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile.notest" />
@@ -146,10 +150,18 @@
 			</fileset>
 		</copy>
 		
+		<!-- /system/engine/manager/part -->
+		<copy todir="${app.gate.system.engine.manager.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager.user-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
 		<!-- /system/engine/manager/service -->
 		<copy todir="${app.gate.system.engine.manager.service}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.user.realization-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.manager.project.realization-${bus.version}.jar" />
 			</fileset>
 		</copy>

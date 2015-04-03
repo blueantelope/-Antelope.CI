@@ -320,6 +320,51 @@
 		end engine projects
 	-->
 	
+	<!-- com.antelope.ci.bus.engine.manger.user -->
+	<target name="engine.manager.user.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.user.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.manager.user.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.user.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.manager.user.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.user.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.manger.user.realization -->
+	<target name="engine.manager.user.realization.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.user.realization.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.manager.user.realization.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.user.realization.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.manager.user.realization.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.manager.user.realization.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	<!--
+		end engine users
+	-->
+	
 	<!-- com.antelope.ci.bus.server -->
 	<target name="server.compile">
 		<exec executable="${mvn}" failonerror="true">

@@ -44,37 +44,41 @@ public class EngineManagerPublisher {
 	private static class ServicePublishHook extends Thread {
 		private BundleContext m_context;
 		private EnginePublishInfo info;
+		private ClassLoader classLoader;
 		
 		private ServicePublishHook(BundleContext m_context, EnginePublishInfo info) {
 			this.m_context = m_context;
 			this.info = info;
+			classLoader = BusOsgiUtil.getBundleClassLoader(m_context);
 		}
 		
 		public void run() {
 			while (true) {
-				if (info.isCheckPart())
-					publish(info.getPartClasspath(), 1);
-				if (info.isCheckService())
-					publish(info.getServiceClasspath(), 2);
+				try {
+					if (info.isCheckPart())
+						publish(info.getPartClasspath(), 1);
+					if (info.isCheckService())
+						publish(info.getServiceClasspath(), 2);
+				} catch (CIBusException e) {
+					log.warn("publish enging manager: " + e);
+				}
 				try {
 					Thread.sleep(BusEngineManagerActivator.getPublishPeriod());
 				} catch (InterruptedException e) { }
 			}
 		}
 		
-		private void publish(String classpath, int type) {
-			String cls_name = "";
-			try {
-				List<String> classNameList = ClassFinder.findClasspath(classpath, BusOsgiUtil.getBundleClassLoader(m_context));
-				List<String> regList = new ArrayList<String>();
-				for (String className : classNameList) {
-					if (!isManager(className))
-						continue;
+		private void publish(String classpath, int type) throws CIBusException {
+			List<String> classNameList = ClassFinder.findClasspath(classpath, classLoader);
+			List<String> regList = new ArrayList<String>();
+			for (String className : classNameList) {
+				try {
+					if (!isManager(className)) continue;
+					if (managerMap.containsKey(className)) continue;
 					
-					Class clazz = ProxyUtil.loadClass(className, BusOsgiUtil.getBundleClassLoader(m_context));
+					Class clazz = ProxyUtil.loadClass(className, classLoader);
 					String serviceName = getServiceName(clazz);
-					if (serviceName == null)
-						continue;
+					if (serviceName == null) continue;
 					ServiceReference serviceReference = BusActivator.getServiceReference(serviceName, className);
 					
 					if (serviceReference == null && !parametersMap.containsKey(className)) {
@@ -83,43 +87,41 @@ public class EngineManagerPublisher {
 					}
 					
 					ManagerParameters parameters = parametersMap.get(className);
-					if (parameters == null)
-						continue;
+					if (parameters == null) continue;
 					
 					BusEngineManager manager = managerMap.get(className);
-						switch (parameters.getState()) {
-							case 	UNACTIVE:
-								if (serviceReference != null) {
-									m_context.ungetService(serviceReference);
-									manager.unregist(m_context);
-									log.info("unactive engine manager: " + cls_name);
-								}
-								break;
-							case ACTIVE:
-								if (serviceReference == null) {
-									registToContext(manager);
-									manager.regist(m_context);
-									log.info("active engine manager: " + cls_name);
-								}
-								break;
-							case UNLOAD:
-								if (serviceReference != null) {
-									m_context.ungetService(serviceReference);
-									manager.unregist(m_context);
-									managerMap.remove(className);
-									log.info("unload engine manager: " + cls_name);
-								}
-								break;
-							case LOAD:
-								if (serviceReference == null) {
-									loadManager(clazz, type, false);
-								break;
-						}
-						parameters.setState(parameters.getState());
+					switch (parameters.getState()) {
+						case 	UNACTIVE:
+							if (serviceReference != null) {
+								m_context.ungetService(serviceReference);
+								manager.unregist(m_context);
+								log.info("unactive engine manager: " + className);
+							}
+							break;
+						case ACTIVE:
+							if (serviceReference == null) {
+								registToContext(manager);
+								manager.regist(m_context);
+								log.info("active engine manager: " + className);
+							}
+							break;
+						case UNLOAD:
+							if (serviceReference != null) {
+								m_context.ungetService(serviceReference);
+								manager.unregist(m_context);
+								managerMap.remove(className);
+								log.info("unload engine manager: " + className);
+							}
+							break;
+						case LOAD:
+							if (serviceReference == null)
+								loadManager(clazz, type, false);
+							break;
 					}
+					parameters.setState(parameters.getState());
+				} catch (Exception e) {
+					log.warn("problem for add engine manager: " + className + "\n" + e);
 				}
-			} catch (Exception e) {
-				log.warn("problem for add engine manager: " + cls_name);
 			}
 		}
 		
@@ -148,7 +150,7 @@ public class EngineManagerPublisher {
 				if (type == 2) // publish service
 					isPublishType =  clazz.isAnnotationPresent(EngineService.class);
 				if (isPublishType) {
-					BusEngineManager manager = (BusEngineManager) clazz.newInstance();
+					BusEngineManager manager = (BusEngineManager) ProxyUtil.newObject(clazz, classLoader);
 					boolean load = true;
 					if (init) {
 						Properties props = new Properties();

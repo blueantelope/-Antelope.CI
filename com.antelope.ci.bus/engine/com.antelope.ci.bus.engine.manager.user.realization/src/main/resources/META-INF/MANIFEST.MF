@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.1.0
+Bundle-Name: com.antelope.ci.bus.engine.manager.user.realization
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.antelope.ci.bus.engine.manager.user.realization
+Bundle-Vendor: blueantelope@gmail.com
+Export-Package: com.antelope.ci.bus.engine.manager.user.realization;version="0.1.0"
+Import-Package: org.osgi.framework, com.antelope.ci.bus.logger.service,
+ com.antelope.ci.bus.engine.model.user;version="0.1.0", com.antelope.ci.bus.engine.manager,
+ com.antelope.ci.bus.engine.manager.user
+Bundle-Activator: com.antelope.ci.bus.engine.manager.user.realization.EngineUserManagerRealizationActivator
