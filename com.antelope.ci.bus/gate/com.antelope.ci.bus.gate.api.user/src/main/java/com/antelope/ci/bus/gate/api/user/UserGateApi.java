@@ -10,10 +10,13 @@ package com.antelope.ci.bus.gate.api.user;
 
 import org.apache.log4j.Logger;
 
+import com.antelope.ci.bus.engine.manager.user.EngineUserManager;
+import com.antelope.ci.bus.engine.manager.user.EngineUserManagerConstant;
 import com.antelope.ci.bus.gate.api.GateApi;
 import com.antelope.ci.bus.gate.api.IGateApi;
 import com.antelope.ci.bus.gate.api.message.GateInMessage;
 import com.antelope.ci.bus.gate.api.message.GateOutMessage;
+import com.antelope.ci.bus.osgi.Inject;
 
 
 
@@ -26,10 +29,16 @@ import com.antelope.ci.bus.gate.api.message.GateOutMessage;
 @GateApi(oc=0x01)
 public class UserGateApi implements IGateApi {
 	private final static Logger log = Logger.getLogger(UserGateApi.class);
+	private EngineUserManager userManager;
+	
+	@Inject(name=EngineUserManagerConstant.SERVICE_NAME)
+	public void setUserManager(EngineUserManager userManager) {
+		this.userManager = userManager;
+	}
 
 	@Override
-	public GateOutMessage query(GateInMessage in) {
-		log.info(actionInfo("query"));
+	public GateOutMessage ls(GateInMessage in) {
+		log.info(actionInfo("ls"));
 		
 		return null;
 	}
@@ -49,7 +58,7 @@ public class UserGateApi implements IGateApi {
 	}
 
 	@Override
-	public GateOutMessage edit(GateInMessage in) {
+	public GateOutMessage mod(GateInMessage in) {
 		log.info(actionInfo("edit"));
 		
 		return null;

@@ -8,7 +8,12 @@
 
 package com.antelope.ci.bus.engine.manager.user;
 
+import java.util.Set;
+
 import com.antelope.ci.bus.engine.manager.CommonEngineManager;
+import com.antelope.ci.bus.engine.model.user.Domain;
+import com.antelope.ci.bus.engine.model.user.Group;
+import com.antelope.ci.bus.engine.model.user.User;
 
 
 /**
@@ -19,5 +24,18 @@ import com.antelope.ci.bus.engine.manager.CommonEngineManager;
  */
 public abstract class CommonEngineUserManager
 		extends CommonEngineManager implements EngineUserManager { 
-
+	protected Set<Domain> domainSet;
+	protected Set<Group> groupSet;
+	protected Set<User> userSet;
+	
+	public CommonEngineUserManager() {
+		super();
+		init();
+	}
+	
+	protected void init() {
+		domainSet = Domain.initDomainSet();
+		groupSet = Group.initGroupSet();
+		userSet = User.initUserSet();
+	}
 }

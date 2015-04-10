@@ -8,6 +8,11 @@
 
 package com.antelope.ci.bus.engine.manager.user;
 
+import java.util.List;
+
+import com.antelope.ci.bus.engine.model.user.Group;
+import com.antelope.ci.bus.engine.model.user.User;
+
 
 /**
  *
@@ -16,6 +21,19 @@ package com.antelope.ci.bus.engine.manager.user;
  * @Date	 2015年3月30日		下午2:30:51 
  */
 public interface EngineUserManager {
-
+	public List<Group> lsGroup(Group condition);
+	
+	public void addGroup(Group group);
+	
+	public void rmGroup(Group group);
+	
+	public void modGroup(Group user, Group info);
+	
+	public List<User> lsUser(User condition);
+	
+	public void addUser(User user);
+	
+	public void rmUser(User user);
+	
+	public void modUser(User user, User info);
 }
-

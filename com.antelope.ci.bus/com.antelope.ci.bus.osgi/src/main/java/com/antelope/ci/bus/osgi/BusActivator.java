@@ -35,7 +35,9 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @author blueantelope
  * @version 0.1
  * @Date 2013-8-29 下午3:17:02
+ * @Deprecated replace by {@link #com.antelope.ci.bus.osgi.BusComplexActivator}
  */
+@Deprecated
 public abstract class BusActivator implements BundleActivator {
 	protected static final int FETCH_SERVICE_TIMES = 3;
 	protected static final long FETCH_SERVICE_SLEEP = 500;

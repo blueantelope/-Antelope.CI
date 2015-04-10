@@ -18,4 +18,3 @@ package com.antelope.ci.bus.engine.access.storage;
 public class StorageBox {
 
 }
-

@@ -19,8 +19,8 @@ import org.osgi.framework.BundleContext;
 import com.antelope.ci.bus.common.EncryptUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
-import com.antelope.ci.bus.engine.model.user.UserKey;
-import com.antelope.ci.bus.engine.model.user.UserPassword;
+import com.antelope.ci.bus.engine.model.user.Key;
+import com.antelope.ci.bus.engine.model.user.Passwd;
 import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
@@ -70,7 +70,7 @@ public abstract class AbstractAuthService extends CommonServerService implements
 			log.info("密码为空!");
 			return false;
 		}
-		UserPassword u_password = user.getPassword();
+		Passwd u_password = user.getPassword();
 		if (u_password == null) {
 			log.info("用户密码信息不存在!");
 			return false;
@@ -94,7 +94,7 @@ public abstract class AbstractAuthService extends CommonServerService implements
 			log.info("公钥为空!");
 			return false;
 		}
-		UserKey userKey = user.getKey();
+		Key userKey = user.getKey();
 		if (userKey == null) {
 			log.info("用户密钥信息不存在!");
 			return false;

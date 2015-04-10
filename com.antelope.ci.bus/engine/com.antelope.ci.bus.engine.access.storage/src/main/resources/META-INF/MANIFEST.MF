@@ -3,7 +3,7 @@ Bundle-Version: 0.1.0
 Bundle-Name: com.antelope.ci.bus.engine.access.storage
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.engine.access.storage
-Export-Package: com.antelope.ci.bus.engine.access.storage
-Import-Package: org.osgi.framework
 Bundle-Vendor: blueantelope@gmail.com
-Bundle-Activator: com.antelope.ci.bus.engine.access.storage.BusEngineStorageActivator
+Import-Package: org.osgi.framework
+Export-Package: com.antelope.ci.bus.engine.access.storage
+Bundle-Activator: com.antelope.ci.bus.engine.access.storage.BusEngineStorageComplexActivator

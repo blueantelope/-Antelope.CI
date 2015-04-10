@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.engine.model.user.User;
-import com.antelope.ci.bus.engine.model.user.UserKey;
-import com.antelope.ci.bus.engine.model.user.UserPassword;
+import com.antelope.ci.bus.engine.model.user.Key;
+import com.antelope.ci.bus.engine.model.user.Passwd;
 import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 
 
@@ -60,8 +60,8 @@ class PasswordHelper {
 					continue;
 				try {
 					User user = new User();
-					UserPassword uPasswd = new UserPassword();
-					UserKey uKey = new UserKey();
+					Passwd uPasswd = new Passwd();
+					Key uKey = new Key();
 					String[] es = line.split(":");
 					int n = 0;
 					for (final String e : es) {

@@ -81,10 +81,10 @@ public abstract class BusComplexActivator implements BundleActivator {
 		ClassLoader bundle_classloader = BusOsgiUtil.getBundleClassLoader(bundle_context);
 		BusActivatorContextProxy contextProxy = (BusActivatorContextProxy) ProxyUtil.invokeStaticRet(
 				bundle_classloader, BusActivatorContextProxy.class.getName(), "getContextProxy");
-		Object bus_context = ProxyUtil.newObject(bus_context_clazz, bundle_classloader);
+		bus_context = (BusActivatorContext) ProxyUtil.newObject(bus_context_clazz, bundle_classloader);
+		bus_context.setContext(bundle_context);
 		if (bus_context.getClass().isAssignableFrom(BusActivatorContext.class)) {
-			this.bus_context = (BusActivatorContext) bus_context;
-			contextProxy.initContext(this.bus_context);
+			contextProxy.initContext(bus_context);
 		} else {
 			throw new CIBusException("", "Error, Create Activator Context Object ");
 		}
@@ -267,7 +267,6 @@ public abstract class BusComplexActivator implements BundleActivator {
 
 	/**
 	 * bundle卸载时，需要进行的操作
-	 * 
 	 * @param
 	 * @return void
 	 * @throws
@@ -287,7 +286,6 @@ public abstract class BusComplexActivator implements BundleActivator {
 
 	/**
 	 * 处理卸载service后的操作
-	 * 
 	 * @param
 	 * @return void
 	 * @throws
@@ -305,7 +303,6 @@ public abstract class BusComplexActivator implements BundleActivator {
 
 	/**
 	 * 增加osgi service
-	 * 
 	 * @param @throws CIBusException
 	 * @return void
 	 * @throws
@@ -314,7 +311,6 @@ public abstract class BusComplexActivator implements BundleActivator {
 
 	/**
 	 * 清除osgi service
-	 * 
 	 * @param @throws CIBusException
 	 * @return void
 	 * @throws

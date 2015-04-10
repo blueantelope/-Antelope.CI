@@ -17,7 +17,7 @@ import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
  * @version  0.1
  * @Date	 2013-10-15		上午10:48:51 
  */
-public class UserPassword {
+public class Passwd {
 	private SYMMETRIC_ALGORITHM algorithm; 
 	private String seed;
 	private String originPwd;
@@ -49,4 +49,3 @@ public class UserPassword {
 		this.originPwd = originPwd;
 	}
 }
-

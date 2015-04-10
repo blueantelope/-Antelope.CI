@@ -39,6 +39,7 @@ public class BusGateActivator extends BusActivator {
 	@Override
 	protected void run() throws CIBusException {
 		GateApiScanner sanner = GateApiScanner.getScanner();
+		sanner.setServiceMap(serviceMap);
 		sanner.setClassLoader(getClassLoader());
 		sanner.start();
 	}

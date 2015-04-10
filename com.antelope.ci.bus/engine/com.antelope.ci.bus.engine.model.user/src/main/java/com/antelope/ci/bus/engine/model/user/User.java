@@ -8,6 +8,10 @@
 
 package com.antelope.ci.bus.engine.model.user;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.BaseModel;
 import com.antelope.ci.bus.engine.model.Model;
@@ -52,38 +56,142 @@ public class User extends BaseModel {
 		}
 	}
 	
-	private int auth_type;
-	private String username;
-	private UserKey key;
-	private UserPassword password;
+	protected int id;
+	protected String username;
+	protected Passwd password;
+	protected int auth_type;
+	protected Group group;
+	protected Set<Domain> domainSet;
+	protected Key key;
 	
 	public User() {
-		auth_type = AUTH_TYPE.PASSWORD.code | AUTH_TYPE.PUBLICKEY.code;
+		super();
+		init();
 	}
 	
+	public User(int id, String username, Group group) {
+		this();
+		this.id = id;
+		this.username = username;
+		this.group = group;
+	}
+
+	protected void init() {
+		auth_type = AUTH_TYPE.PASSWORD.code | AUTH_TYPE.PUBLICKEY.code;
+		domainSet = new HashSet<Domain>();
+	}
+	
+	
+	// getter and setter
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public int getAuth_type() {
 		return auth_type;
 	}
 	public void setAuth_type(int auth_type) {
 		this.auth_type = auth_type;
 	}
+	
 	public String getUsername() {
 		return username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public UserKey getKey() {
+	
+	public Key getKey() {
 		return key;
 	}
-	public void setKey(UserKey key) {
+	public void setKey(Key key) {
 		this.key = key;
 	}
-	public UserPassword getPassword() {
+	
+	public Passwd getPassword() {
 		return password;
 	}
-	public void setPassword(UserPassword password) {
+	public void setPassword(Passwd password) {
 		this.password = password;
 	}
-}
 
+	public Group getGroup() {
+		return group;
+	}
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+	
+	public Set<Domain> getDomainSet() {
+		return domainSet;
+	}
+	public void setDomainSet(Set<Domain> domainSet) {
+		this.domainSet = domainSet;
+	}
+	
+	// add base domain
+	public void addPortalDomain() {
+		try {
+			domainSet.add(Domain.newPortal());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public void addPortalShellDomain() {
+		try {
+			domainSet.add(Domain.newPortalShell());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public void addGateDomain() {
+		try {
+			domainSet.add(Domain.newGate());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public void addGateApiDomain() {
+		try {
+			domainSet.add(Domain.newGateApi());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public void addGateShellDomain() {
+		try {
+			domainSet.add(Domain.newGateShell());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public void addAppDomain() {
+		try {
+			domainSet.add(Domain.newApp());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public void addAppWebDomain() {
+		try {
+			domainSet.add(Domain.newAppWeb());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		}
+	}
+	
+	public static Set<User> initUserSet() {
+		Set<User> userSet = new HashSet<User>();
+		userSet.add(new User(0, "admin", new Group(0)));
+		return userSet;
+	}
+}

@@ -254,7 +254,7 @@ public class CIBus {
 			    │   │   └── service
 			    │   ├── com.antelope.ci.bus.engine.access
 			    │   │   ├── lib
-			    │  	│  	├── part
+			    │	 │   ├── part
 			    │   │   └── service
 			    │   ├── com.antelope.ci.bus.engine.manager
 			    │   │   ├── lib
@@ -737,8 +737,9 @@ public class CIBus {
 			try {
 				File bundle_dir = bundle_files[0];
 				File[] bundle_jar_files = FileUtil.getChildFiles(bundle_dir, ".jar");
-				if (bundle_jar_files != null && bundle_jar_files.length == 1) {
-					File bundle_jar_file = bundle_jar_files[0];
+//				if (bundle_jar_files != null && bundle_jar_files.length == 1) {
+//					File bundle_jar_file = bundle_jar_files[0];
+				for (File bundle_jar_file : bundle_jar_files) {
 					File[] bundle_lib_files = FileUtil.getChildFiles(bundle_dir, "lib");
 					if (bundle_lib_files != null && bundle_lib_files.length == 1) {
 						libUrlList.addAll(FileUtil.getAllJar(bundle_lib_files[0].getPath()));

@@ -35,7 +35,7 @@ public class BusGateShellSshActivator extends BusServerTemplateActivator {
 			BusOsgiUtil.publishService(bundle_context, sshServer, BusGateShellSshServer.NAME);
 			System.out.println("*********************** @antelope.ci ssh gate shell server start, wait a moment... ***********************");
 			sshServer.open();
-			System.out.println("*********************** @antelope.ci ssh gate shell server finish stsart, enjoy it! ***********************");
+			System.out.println("*********************** @antelope.ci ssh gate shell server finish, enjoy it! ***********************");
 		}
 	}
 

@@ -13,7 +13,7 @@
 		<antcall target="make" />
 	</target>
 
-	<target name="build-notest" depends="init">
+	<target name="build.notest" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />

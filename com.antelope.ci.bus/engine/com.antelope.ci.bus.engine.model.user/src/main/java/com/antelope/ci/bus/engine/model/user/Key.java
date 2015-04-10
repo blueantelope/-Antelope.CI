@@ -16,7 +16,7 @@ import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
  * @version  0.1
  * @Date	 2013-10-15		上午10:49:22 
  */
-public class UserKey {
+public class Key {
 	private ASYMMETRIC_ALGORITHM algorithm;
 	private String privateKey;
 	private String publicKey;

@@ -128,6 +128,48 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.engine.model.vcs.input -->
+	<target name="engine.model.vcs.input.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.model.vcs.input.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.model.vcs.input.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.model.vcs.input.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.model.vcs.input.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.model.vcs.input.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.model.vcs.output -->
+	<target name="engine.model.vcs.output.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.model.vcs.output.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.model.vcs.output.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.model.vcs.output.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.model.vcs.output.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.model.vcs.output.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
 	<!-- com.antelope.ci.bus.engine.model.user -->
 	<target name="engine.model.user.compile">
 		<exec executable="${mvn}" failonerror="true">
@@ -249,6 +291,90 @@
 	<target name="engine.access.storage.ldap.depends" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.ldap.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.access.vcs -->
+	<target name="engine.access.vcs.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.access.vcs.cvs -->
+	<target name="engine.access.vcs.cvs.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.cvs.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.cvs.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.cvs.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.cvs.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.cvs.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.access.vcs.svn -->
+	<target name="engine.access.vcs.svn.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.svn.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.svn.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.svn.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.svn.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.svn.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+	
+	<!-- com.antelope.ci.bus.engine.access.vcs.git -->
+	<target name="engine.access.vcs.git.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.git.pom}" />
+			<arg line="install" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.git.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.git.pom}" />
+			<arg line="install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.vcs.git.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.vcs.git.pom}" />
 			<arg line="dependency:copy-dependencies" />
 			<arg value="-DexcludeGroupIds=junit" />
 		</exec>

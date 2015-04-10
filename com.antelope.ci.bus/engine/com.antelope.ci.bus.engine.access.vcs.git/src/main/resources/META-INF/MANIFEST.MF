@@ -3,6 +3,6 @@ Bundle-Version: 0.1.0
 Bundle-Name: com.antelope.ci.bus.engine.access.vcs.git
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.engine.access.vcs.git
-Import-Package: com.antelope.ci.bus.engine.access.vcs; bundle-version="0.1.0"
-Export-Package: com.antelope.ci.bus.engine.access.vcs.git; version="0.1.0"
 Bundle-Vendor: blueantelope@gmail.com
+Fragment-Host: com.antelope.ci.bus.engine.access.vcs; bundle-version="0.1.0"
+Export-Package: com.antelope.ci.bus.engine.access.vcs.git; version="0.1.0"

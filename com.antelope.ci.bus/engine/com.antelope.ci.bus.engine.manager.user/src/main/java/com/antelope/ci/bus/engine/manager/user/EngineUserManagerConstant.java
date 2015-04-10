@@ -15,6 +15,6 @@ package com.antelope.ci.bus.engine.manager.user;
  * @version  0.1
  * @Date	 2015年3月30日		下午2:32:11 
  */
-public final class EngineUserManagerConstants {
+public final class EngineUserManagerConstant {
 	public final static String SERVICE_NAME = "com.antelope.ci.bus.engine.manager.user.EngineUserManager";
 }

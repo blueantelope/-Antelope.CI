@@ -70,8 +70,8 @@ public class BusGateApi extends BusApi {
 			inMessage.clone(message);
 			GateOutMessage outMessage;
 			switch (message.getOt()) {
-				case OT._query:
-					outMessage = api.query(inMessage);
+				case OT._ls:
+					outMessage = api.ls(inMessage);
 					break;
 				case OT._add:
 					outMessage = api.add(inMessage);
@@ -79,8 +79,8 @@ public class BusGateApi extends BusApi {
 				case OT._delete:
 					outMessage = api.delete(inMessage);
 					break;
-				case OT._edit:
-					outMessage = api.edit(inMessage);
+				case OT._mod:
+					outMessage = api.mod(inMessage);
 					break;
 				default:
 					log.warn("invalidate OT(operation type) : " + message.getOt());

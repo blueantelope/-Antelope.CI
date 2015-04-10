@@ -160,7 +160,7 @@ public class ProxyUtil {
 	}
 
 	// 代理 执行静态函数 无参数无返回值
-	public static void InvokeStatic(Class clazz, String function) throws CIBusException {
+	public static void staticInvoke(Class clazz, String function) throws CIBusException {
 		try {
 			Method method = clazz.getMethod(function, null);
 			method.invoke(null, null);
@@ -170,7 +170,7 @@ public class ProxyUtil {
 	}
 
 	// 代理 执行静态函数 有参数无返回值
-	public static void InvokeStatic(Class clazz, String function, Object[] args) throws CIBusException {
+	public static void staticInvoke(Class clazz, String function, Object[] args) throws CIBusException {
 		try {
 			Method method = getMethod(clazz, function, args);
 			method.invoke(null, null);
@@ -180,7 +180,7 @@ public class ProxyUtil {
 	}
 
 	// 代理 执行静态函数 无参数有返回值
-	public static Object invokeStaticRet(Class clazz, String function) throws CIBusException {
+	public static Object staticRetInvoke(Class clazz, String function) throws CIBusException {
 		Object ret = null;
 		try {
 			Method method = clazz.getMethod(function, null);
@@ -193,7 +193,7 @@ public class ProxyUtil {
 	}
 
 	// 代理 执行静态函数 有参数有返回值
-	public static Object invokeStaticRet(Class clazz, String function, Object[] args) throws CIBusException {
+	public static Object staticRetInvoke(Class clazz, String function, Object[] args) throws CIBusException {
 		Object ret = null;
 		try {
 			Method method = getMethod(clazz, function, args);
@@ -280,6 +280,16 @@ public class ProxyUtil {
 		} finally {
 			return setter;
 		}
+	}
+	
+	public static List<Method> getSetter(Class clazz) {
+		List<Method> setterList = new ArrayList<Method>();
+		for (Method method : clazz.getMethods()) {
+			if (method.getName().startsWith("set") && method.getParameterTypes().length == 1)
+				setterList.add(method);
+		}
+		
+		return setterList;
 	}
 
 	// 取得泛型变量中的泛型类型
@@ -491,7 +501,7 @@ public class ProxyUtil {
 		Object ret = null;
 		try {
 			Class clazz = loadClass(className, loader);
-			Method method = getMethod(clazz, function, null);
+			Method method = getMethod(clazz, function);
 			ret = method.invoke(null, null);
 		} catch (Exception e) {
 			throw new CIBusException("", e);

@@ -16,8 +16,8 @@ package com.antelope.ci.bus.server.api.message;
  * @Date	 2015年3月23日		上午11:10:02 
  */
 public final class OT {
-	/* query */
-	public final static short _query = 0x01;
+	/* list */
+	public final static short _ls = 0x01;
 	
 	/* add */
 	public final static short _add = 0x02;
@@ -25,6 +25,6 @@ public final class OT {
 	/* delete */
 	public final static short _delete = 0x03;
 	
-	/* edit */
-	public final static short _edit = 0x04;
+	/* modify */
+	public final static short _mod = 0x04;
 }

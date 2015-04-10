@@ -38,6 +38,16 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.antelope.ci.bus.engine.model.vcs</groupId>
+			<artifactId>com.antelope.ci.bus.engine.model.vcs.input</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus.engine.model.vcs</groupId>
+			<artifactId>com.antelope.ci.bus.engine.model.vcs.output</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.antelope.ci.bus.engine.model</groupId>
 			<artifactId>com.antelope.ci.bus.engine.model.user</artifactId>
 			<version>0.1.0</version>
@@ -65,6 +75,26 @@
 		<dependency>
 			<groupId>com.antelope.ci.bus.engine.access.storage</groupId>
 			<artifactId>com.antelope.ci.bus.engine.access.storage.ldap</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus.engine.access</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.vcs</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus.engine.access.vcs</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.vcs.cvs</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus.engine.access.vcs</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.vcs.svn</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus.engine.access.vcs</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.vcs.git</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>

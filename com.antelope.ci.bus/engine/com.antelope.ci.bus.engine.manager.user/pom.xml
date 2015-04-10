@@ -4,7 +4,6 @@
 	<groupId>com.antelope.ci.bus.engine.manager</groupId>
 	<artifactId>com.antelope.ci.bus.engine.manager.user</artifactId>
 	<version>0.1.0</version>
-	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>

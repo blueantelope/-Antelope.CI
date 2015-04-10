@@ -101,6 +101,10 @@ public class BusActivatorContext {
 		return bus_props_helper.getBanner();
 	}
 	
+	public void setContext(BundleContext bundle_context) {
+		this.bundle_context = bundle_context;
+	}
+	
 	public BundleContext getContext() {
 		return bundle_context;
 	}

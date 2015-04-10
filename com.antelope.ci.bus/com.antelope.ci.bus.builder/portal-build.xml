@@ -35,7 +35,7 @@
 		<antcall target="make" />
 	</target>
 
-	<target name="build-notest" depends="init">
+	<target name="build.notest" depends="init">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
@@ -68,7 +68,7 @@
 		<antcall target="make" />
 	</target>
 	
-	<target name="build-portal-notest">
+	<target name="build.portal.notest">
 		<ant antfile="${basedir}/build-mvn.xml" target="portal.compile.notest" />
 		<copy todir="${app.portal.bundle}" overwrite="true">
 			<fileset dir="${target.depends}">

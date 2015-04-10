@@ -18,6 +18,8 @@ import com.antelope.ci.bus.common.ClassFinder;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.gate.api.GateApi;
 import com.antelope.ci.bus.gate.api.IGateApi;
+import com.antelope.ci.bus.osgi.BusServiceInfo;
+import com.antelope.ci.bus.osgi.InjectHelper;
 
 
 /**
@@ -37,12 +39,16 @@ public class GateApiScanner {
 		return scanner;
 	}
 	
-	
 	private Map<Integer, IGateApi> apiMap;
+	private Map<String, List<BusServiceInfo>> serviceMap;
 	private ClassLoader classLoaer;
 	
 	private GateApiScanner() {
 		apiMap = new ConcurrentHashMap<Integer, IGateApi>();
+	}
+	
+	public void setServiceMap(Map<String, List<BusServiceInfo>> serviceMap) {
+		this.serviceMap = serviceMap;
 	}
 	
 	public void setClassLoader(ClassLoader classLoaer) {
@@ -73,8 +79,11 @@ public class GateApiScanner {
 						Class clazz = Class.forName(cls, false, classLoaer);
 						if (IGateApi.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(GateApi.class)) {
 							GateApi api = (GateApi) clazz.getAnnotation(GateApi.class);
-							if (!apiMap.containsKey(api.oc()))
-								apiMap.put(api.oc(), (IGateApi) ProxyUtil.newObject(clazz, classLoaer));
+							if (!apiMap.containsKey(api.oc())) {
+								IGateApi gateApi = (IGateApi) ProxyUtil.newObject(clazz, classLoaer);
+								InjectHelper.injectService(gateApi, ProxyUtil.getSetter(clazz), serviceMap);
+								apiMap.put(api.oc(), gateApi);
+							}
 						}
 					}
 				} catch (Exception e) {
