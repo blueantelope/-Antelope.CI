@@ -81,7 +81,7 @@ public class GateApiScanner {
 							GateApi api = (GateApi) clazz.getAnnotation(GateApi.class);
 							if (!apiMap.containsKey(api.oc())) {
 								IGateApi gateApi = (IGateApi) ProxyUtil.newObject(clazz, classLoaer);
-								InjectHelper.injectService(gateApi, ProxyUtil.getSetter(clazz), serviceMap);
+								InjectHelper.injectService(gateApi, serviceMap);
 								apiMap.put(api.oc(), gateApi);
 							}
 						}

@@ -5,3 +5,4 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.gate.api.user
 Bundle-Vendor: blueantelope@gmail.com
 Fragment-Host: com.antelope.ci.bus.gate; bundle-version="0.1.0"
+Import-Package: com.antelope.ci.bus.engine.manager.user; bundle-version="0.1.0"
