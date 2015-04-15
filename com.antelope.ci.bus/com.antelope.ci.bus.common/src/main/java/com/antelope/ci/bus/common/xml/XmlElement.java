@@ -16,7 +16,6 @@ import java.lang.annotation.Target;
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1

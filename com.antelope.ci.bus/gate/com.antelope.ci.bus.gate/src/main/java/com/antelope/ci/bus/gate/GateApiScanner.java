@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.gate;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +32,7 @@ import com.antelope.ci.bus.osgi.InjectHelper;
  */
 public class GateApiScanner {
 	private final static Logger log = Logger.getLogger(GateApiScanner.class);
+	private final static long SCAN_START_DELAY = 2 * 1000;
 	private final static long SCAN_PERIOD = 2 * 1000;
 	private final static String SCAN_PACKAGE = "com.antelope.ci.bus.gate.api";
 	
@@ -40,11 +43,13 @@ public class GateApiScanner {
 	}
 	
 	private Map<Integer, IGateApi> apiMap;
+	private Map<Integer, List<Method>> setterMap;
 	private Map<String, List<BusServiceInfo>> serviceMap;
 	private ClassLoader classLoaer;
 	
 	private GateApiScanner() {
 		apiMap = new ConcurrentHashMap<Integer, IGateApi>();
+		setterMap = new ConcurrentHashMap<Integer, List<Method>>();
 	}
 	
 	public void setServiceMap(Map<String, List<BusServiceInfo>> serviceMap) {
@@ -63,6 +68,11 @@ public class GateApiScanner {
 		new Thread() {
 			@Override
 			public void run() {
+				if (SCAN_START_DELAY > 0) {
+					try {
+						Thread.sleep(SCAN_START_DELAY);
+					} catch (InterruptedException e1) {}
+				}
 				while (true) {
 					scan();
 					try {
@@ -77,13 +87,19 @@ public class GateApiScanner {
 					List<String>  classList = ClassFinder.findClasspath(SCAN_PACKAGE, classLoaer);
 					for (String cls : classList) {
 						Class clazz = Class.forName(cls, false, classLoaer);
+						boolean first = false;
 						if (IGateApi.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(GateApi.class)) {
 							GateApi api = (GateApi) clazz.getAnnotation(GateApi.class);
+							if (!setterMap.containsKey(api.oc()))
+								setterMap.put(api.oc(), new ArrayList<Method>());
+							List setterList = setterMap.get(api.oc());
 							if (!apiMap.containsKey(api.oc())) {
-								IGateApi gateApi = (IGateApi) ProxyUtil.newObject(clazz, classLoaer);
-								InjectHelper.injectService(gateApi, serviceMap);
-								apiMap.put(api.oc(), gateApi);
+								first = true;
+								apiMap.put(api.oc(), (IGateApi)ProxyUtil.newObject(clazz, classLoaer));
 							}
+							IGateApi gateApi = apiMap.get(api.oc());
+							if (first || !setterList.isEmpty())
+								InjectHelper.injectService(gateApi, serviceMap, setterList);
 						}
 					}
 				} catch (Exception e) {

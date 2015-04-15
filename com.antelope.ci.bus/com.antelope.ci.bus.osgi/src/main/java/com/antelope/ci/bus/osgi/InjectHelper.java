@@ -35,7 +35,42 @@ public class InjectHelper {
 					Object service = infoList.get(0).getService();
 					Object[] args = new Object[] {service};
 					ProxyUtil.invoke(obj, method, args);
-					break;
+				}
+			}
+		}
+	}
+	
+	public static void injectService(
+			Object obj,
+			Map<String, List<BusServiceInfo>> serviceMap,
+			List<Method> setterList) throws CIBusException {
+		for (Method method : obj.getClass().getMethods()) {
+			if (method.isAnnotationPresent(Inject.class) &&
+					method.getName().startsWith("set") &&
+					method.getParameterTypes().length == 1) {
+				Inject inject = (Inject) method.getAnnotation(Inject.class);
+				if ("".equals(inject.name())) continue;
+				List<BusServiceInfo> infoList =  serviceMap.get(inject.name());
+				if (infoList != null && !infoList.isEmpty()) {
+					Object service = infoList.get(0).getService();
+					Object[] args = new Object[] {service};
+					ProxyUtil.invoke(obj, method, args);
+					for (Method setter : setterList) {
+						if (setter == method) {
+							setterList.remove(setter);
+							break;
+						}
+					}
+				} else {
+					boolean exist = false;
+					for (Method setter : setterList) {
+						if (setter.equals(method)) {
+							exist = true;
+							break;
+						}
+					}
+					if (!exist)
+						setterList.add(method);
 				}
 			}
 		}
@@ -51,10 +86,8 @@ public class InjectHelper {
 					Object service = infoList.get(0).getService();
 					Object[] args = new Object[] {service};
 					ProxyUtil.invoke(obj, setter, args);
-					break;
 				}
 			}
 		}
 	}
 }
-
