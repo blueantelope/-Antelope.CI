@@ -12,9 +12,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.BaseModel;
 import com.antelope.ci.bus.engine.model.Model;
+import com.antelope.ci.bus.engine.model.ModelData;
 
 
 /**
@@ -56,12 +58,19 @@ public class User extends BaseModel {
 		}
 	}
 	
+	@ModelData
 	protected int id;
+	@ModelData
 	protected String username;
+	@ModelData
 	protected Passwd password;
+	@ModelData(name="auth")
 	protected int auth_type;
+	@ModelData
 	protected Group group;
+	@ModelData(name="domains")
 	protected Set<Domain> domainSet;
+	@ModelData
 	protected Key key;
 	
 	public User() {
@@ -76,13 +85,16 @@ public class User extends BaseModel {
 		this.group = group;
 	}
 
+	@Override
 	protected void init() {
 		auth_type = AUTH_TYPE.PASSWORD.code | AUTH_TYPE.PUBLICKEY.code;
 		domainSet = new HashSet<Domain>();
+		message.setOc(0x01);
 	}
 	
 	
 	// getter and setter
+	
 	public int getId() {
 		return id;
 	}

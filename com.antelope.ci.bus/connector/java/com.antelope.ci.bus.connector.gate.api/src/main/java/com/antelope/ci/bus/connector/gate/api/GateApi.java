@@ -8,6 +8,11 @@
 
 package com.antelope.ci.bus.connector.gate.api;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.connector.Attribute;
+import com.antelope.ci.bus.connector.ConnectorAdapter;
+import com.antelope.ci.bus.connector.IConnector;
+
 
 /**
  *
@@ -16,5 +21,14 @@ package com.antelope.ci.bus.connector.gate.api;
  * @Date	 2015年4月15日		下午4:48:37 
  */
 public class GateApi {
+	protected IConnector connector;
 	
+	public GateApi() throws CIBusException {
+		super();
+		connector = ConnectorAdapter.getConnector(this.getClass());
+	}
+	
+	public void initConnector(Attribute attribute) {
+		connector.init(attribute);
+	}
 }

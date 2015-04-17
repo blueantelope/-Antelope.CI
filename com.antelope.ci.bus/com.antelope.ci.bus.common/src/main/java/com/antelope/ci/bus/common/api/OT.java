@@ -6,7 +6,7 @@
  * Copyright (c) 2015, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.api.message;
+package com.antelope.ci.bus.common.api;
 
 
 /**

@@ -6,7 +6,7 @@
  * Copyright (c) 2015, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.api.base;
+package com.antelope.ci.bus.common.api;
 
 import com.antelope.ci.bus.common.StreamUtil;
 
@@ -44,4 +44,3 @@ public class ApiUtil {
 		return value;
 	}
 }
-

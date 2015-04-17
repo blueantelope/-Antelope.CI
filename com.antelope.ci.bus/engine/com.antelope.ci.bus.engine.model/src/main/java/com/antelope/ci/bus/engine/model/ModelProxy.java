@@ -8,12 +8,14 @@
 
 package com.antelope.ci.bus.engine.model;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.ProxyUtil;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -46,15 +48,26 @@ public class ModelProxy {
 	public static Object createModel(String className, Map<String, Object> dataMap) throws CIBusException {
 		if (modelClassMap.containsKey(className)) {
 			Object model = ProxyUtil.createObject(modelClassMap.get(className));
-			for (Method method : model.getClass().getMethods()) {
-				if (method.isAnnotationPresent(ModelData.class)) {
-					ModelData modelData = (ModelData) method.getAnnotation(ModelData.class);
-					String dataName = modelData.name();
-					if (dataMap.containsKey(dataName)) {
-						Object[] args = new Object[] {dataMap.get(dataName)};
-						ProxyUtil.invoke(model, method, args);
-						break;
+			
+			Field[] fields = model.getClass().getDeclaredFields();
+			Map<String, String> tempMap = new HashMap<String, String>(); 
+			for (Field field : fields) {
+				try {
+					field.setAccessible(true);
+					if (field.isAnnotationPresent(ModelData.class)) {
+						ModelData mdata = field.getAnnotation(ModelData.class);
+						String dataName = mdata.name();
+						if (dataMap.containsKey(dataName)) {
+							String setter = mdata.setter();
+							if (StringUtil.empty(setter))
+								setter = "set" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+							Object[] args = new Object[] {dataMap.get(dataName)};
+							ProxyUtil.invoke(model, setter, args);
+							break;
+						}
 					}
+				} catch (Exception e) {
+					DevAssistant.errorln(e);
 				}
 			}
 			
@@ -62,19 +75,6 @@ public class ModelProxy {
 		}
 		
 		return null;
-	}
-	
-	private static boolean setModelData(Object model, String varName, Map<String, Object> dataMap) throws CIBusException {
-		for (Method method : model.getClass().getMethods()) {
-			if (method.isAnnotationPresent(ModelData.class)) {
-				ModelData modelData = (ModelData) method.getAnnotation(ModelData.class);
-				Object[] args = new Object[] {dataMap.get(varName)};
-				ProxyUtil.invoke(model, method, args);
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	public static Map<String, Map<String, Object>> classify(Map<String, Object> fromMap) {
@@ -98,4 +98,3 @@ public class ModelProxy {
 		return resultMap;
 	}
 }
-

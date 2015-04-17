@@ -8,8 +8,8 @@
 
 package com.antelope.ci.bus.gate.api.user.test;
 
+import com.antelope.ci.bus.common.api.OT;
 import com.antelope.ci.bus.gate.api.user.GateJsonUserInMessage;
-import com.antelope.ci.bus.server.api.message.OT;
 
 
 /**

@@ -8,7 +8,8 @@
 
 package com.antelope.ci.bus.gate.api.message;
 
-import com.antelope.ci.bus.server.api.message.ApiMessage;
+import com.antelope.ci.bus.common.api.ApiMessage;
+
 
 
 /**

@@ -18,9 +18,11 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2015年4月15日		下午4:01:56 
  */
 public interface IConnector {
+	public void init(Attribute attribute);
+	
 	public void connect() throws CIBusException;
 	
-	public byte[] read() throws CIBusException;
+	public byte[] recieve() throws CIBusException;
 
 	public void send(byte[] datas) throws CIBusException;
 

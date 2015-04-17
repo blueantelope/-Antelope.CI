@@ -12,8 +12,8 @@ import org.apache.log4j.Logger;
 
 import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.StreamUtil;
+import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.api.message.ApiMessage;
 import com.antelope.ci.bus.server.common.BusChannel;
 import com.antelope.ci.bus.server.common.BusSession;
 

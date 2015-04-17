@@ -6,14 +6,14 @@
  * Copyright (c) 2015, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.server.api.test;
+package com.antelope.ci.bus.common.api.test;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.StreamUtil;
-import com.antelope.ci.bus.server.api.message.ApiHeader;
+import com.antelope.ci.bus.common.api.ApiHeader;
 
 
 /**

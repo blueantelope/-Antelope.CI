@@ -21,18 +21,25 @@ import com.antelope.ci.bus.engine.model.ModelData;
  * @version  0.1
  * @Date	 2014-7-1		下午5:50:11 
  */
-@Model
+@Model()
 public class Project extends BaseModel {
+	@ModelData()
 	protected String name;
+	@ModelData()
 	protected String desc;
+	@ModelData(name="createDate")
 	protected Date createDate;
+	@ModelData()
 	protected String creater;
 	
+	@Override
+	protected void init() {
+		message.setOc(0x02);
+	}
 	
 	public String getName() {
 		return name;
 	}
-	@ModelData(name="name")
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -40,7 +47,6 @@ public class Project extends BaseModel {
 	public String getDesc() {
 		return desc;
 	}
-	@ModelData(name="desc")
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
@@ -48,7 +54,6 @@ public class Project extends BaseModel {
 	public Date getCreateDate() {
 		return createDate;
 	}
-	@ModelData(name="createDate")
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
@@ -56,9 +61,7 @@ public class Project extends BaseModel {
 	public String getCreater() {
 		return creater;
 	}
-	@ModelData(name="creater")
 	public void setCreater(String creater) {
 		this.creater = creater;
 	}
 }
-

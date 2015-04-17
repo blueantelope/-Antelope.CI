@@ -11,8 +11,8 @@ package com.antelope.ci.bus.server.api.base;
 import java.nio.CharBuffer;
 
 import com.antelope.ci.bus.common.DevAssistant;
+import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.api.message.ApiMessage;
 import com.antelope.ci.bus.server.common.BusBuffer;
 
 

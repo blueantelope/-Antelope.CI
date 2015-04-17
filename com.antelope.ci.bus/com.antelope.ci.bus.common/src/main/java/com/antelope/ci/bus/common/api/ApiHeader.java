@@ -6,11 +6,10 @@
  * Copyright (c) 2015, Antelope CI Team All Rights Reserved.
  */
 
-package com.antelope.ci.bus.server.api.message;
+package com.antelope.ci.bus.common.api;
 
 import com.antelope.ci.bus.common.StreamUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.api.base.ApiUtil;
 
 /**
  *

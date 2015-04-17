@@ -8,8 +8,8 @@
 
 package com.antelope.ci.bus.gate.ssh.test;
 
+import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.gate.ssh.CommonGateSshClient;
-import com.antelope.ci.bus.server.api.message.ApiMessage;
 
 
 /**

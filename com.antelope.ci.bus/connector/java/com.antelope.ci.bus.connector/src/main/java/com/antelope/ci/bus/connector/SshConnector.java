@@ -32,9 +32,19 @@ public class SshConnector implements IConnector {
 	protected ClientChannel channel;
 	protected byte[] buffer;
 	
+	public SshConnector() {
+		super();
+	}
+	
 	public SshConnector(SshAttribute attribute) {
 		super();
-		this.attribute = attribute;
+		init(attribute);
+	}
+	
+	@Override
+	public void init(Attribute attribute) {
+		if (SshAttribute.class.isAssignableFrom(attribute.getClass()))
+			this.attribute = (SshAttribute) attribute;
 		buffer = new byte[attribute.getBufsize()];
 	}
 	
@@ -56,7 +66,7 @@ public class SshConnector implements IConnector {
 	}
 	
 	@Override
-	public byte[] read() throws CIBusException {
+	public byte[] recieve() throws CIBusException {
 		try {
 			PipedInputStream in = attribute.getIn();
 			ByteArrayOutputStream output = new ByteArrayOutputStream();

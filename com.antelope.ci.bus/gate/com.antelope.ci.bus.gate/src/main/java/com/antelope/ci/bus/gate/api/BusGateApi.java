@@ -12,13 +12,13 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.antelope.ci.bus.common.api.ApiMessage;
+import com.antelope.ci.bus.common.api.OT;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.gate.GateApiScanner;
 import com.antelope.ci.bus.gate.api.message.GateInMessage;
 import com.antelope.ci.bus.gate.api.message.GateOutMessage;
 import com.antelope.ci.bus.server.api.base.BusApi;
-import com.antelope.ci.bus.server.api.message.ApiMessage;
-import com.antelope.ci.bus.server.api.message.OT;
 import com.antelope.ci.bus.server.common.BusSession;
 
 

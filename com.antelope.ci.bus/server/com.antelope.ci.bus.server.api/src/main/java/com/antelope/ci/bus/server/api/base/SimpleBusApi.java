@@ -8,8 +8,8 @@
 
 package com.antelope.ci.bus.server.api.base;
 
+import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.server.api.message.ApiMessage;
 
 
 /**

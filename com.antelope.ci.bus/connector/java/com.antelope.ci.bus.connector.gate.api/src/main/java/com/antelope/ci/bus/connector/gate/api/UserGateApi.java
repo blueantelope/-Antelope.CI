@@ -9,8 +9,7 @@
 package com.antelope.ci.bus.connector.gate.api;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.connector.ConnectorAdapter;
-import com.antelope.ci.bus.connector.IConnector;
+import com.antelope.ci.bus.engine.model.user.User;
 
 
 /**
@@ -20,16 +19,13 @@ import com.antelope.ci.bus.connector.IConnector;
  * @Date	 2015年4月15日		下午4:43:32 
  */
 public class UserGateApi extends GateApi {
-	private IConnector connector;
-	
 	public UserGateApi() throws CIBusException {
 		super();
-		connector = ConnectorAdapter.getConnector(this.getClass());
 	}
 	
-	public byte[] getUser() throws CIBusException {
+	public User getUser(User user) throws CIBusException {
 		connector.connect();
-		
+		connector.send(user.toApi().getBytes());
 		return null;
 	}
 }

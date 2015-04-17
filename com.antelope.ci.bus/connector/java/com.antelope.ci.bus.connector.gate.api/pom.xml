@@ -12,6 +12,11 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.antelope.ci.bus.engine.model</groupId>
+			<artifactId>com.antelope.ci.bus.engine.model.user</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.antelope.ci.bus</groupId>
 			<artifactId>com.antelope.ci.bus.connector</artifactId>
 			<version>0.1.0</version>

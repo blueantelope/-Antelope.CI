@@ -11,6 +11,7 @@ package com.antelope.ci.bus.gate.api.user;
 import com.antelope.ci.bus.gate.api.message.GateJsonInMessage;
 
 
+
 /**
  *
  * @author   blueantelope

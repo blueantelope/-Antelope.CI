@@ -21,10 +21,11 @@ import java.lang.annotation.Target;
  * @version  0.1
  * @Date	 2014年11月24日		上午11:38:48 
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)  
 @Documented
 public @interface ModelData {
-	String name();
+	String name() default "";
+	String getter() default "";
+	String setter() default "";
 }
-
