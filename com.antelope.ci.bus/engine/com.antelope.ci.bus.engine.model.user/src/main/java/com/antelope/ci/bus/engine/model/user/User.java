@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.antelope.ci.bus.common.DevAssistant;
-import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.BaseModel;
 import com.antelope.ci.bus.engine.model.Model;

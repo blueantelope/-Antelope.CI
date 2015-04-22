@@ -76,8 +76,8 @@ public class BusGateApi extends BusApi {
 				case OT._add:
 					outMessage = api.add(inMessage);
 					break;
-				case OT._delete:
-					outMessage = api.delete(inMessage);
+				case OT._rm:
+					outMessage = api.rm(inMessage);
 					break;
 				case OT._mod:
 					outMessage = api.mod(inMessage);

@@ -41,7 +41,6 @@ public abstract class BaseModel implements Serializable, IModel {
 		init();
 	}
 	
-	@Override
 	public void fromMap(Map<String, String> modelMap) throws CIBusException {
 		String className = StringUtil.getLastName(this.getClass().getName(), "//"+BusConstants.DOT);
 		for (String name : modelMap.keySet()) {
@@ -65,13 +64,12 @@ public abstract class BaseModel implements Serializable, IModel {
 		return null;
 	}
 	
-	@Override
-	public ApiMessage getApi() {
+	public ApiMessage getMessage() {
 		return message;
 	}
 	
 	@Override
-	public ApiMessage toApi() {
+	public ApiMessage toMessage() {
 		short bt = message.getBt();
 		switch (bt) {
 			case BT._binary:
@@ -86,7 +84,7 @@ public abstract class BaseModel implements Serializable, IModel {
 	}
 	
 	@Override
-	public IModel fromApi(ApiMessage message) {
+	public IModel fromMessage(ApiMessage message) {
 		
 		return null;
 	}

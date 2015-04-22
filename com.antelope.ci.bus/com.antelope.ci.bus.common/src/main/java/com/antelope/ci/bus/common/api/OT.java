@@ -22,8 +22,8 @@ public final class OT {
 	/* add */
 	public final static short _add = 0x02;
 	
-	/* delete */
-	public final static short _delete = 0x03;
+	/* remove */
+	public final static short _rm = 0x03;
 	
 	/* modify */
 	public final static short _mod = 0x04;

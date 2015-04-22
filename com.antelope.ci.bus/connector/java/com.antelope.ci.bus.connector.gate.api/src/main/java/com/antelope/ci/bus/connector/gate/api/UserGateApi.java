@@ -25,7 +25,7 @@ public class UserGateApi extends GateApi {
 	
 	public User getUser(User user) throws CIBusException {
 		connector.connect();
-		connector.send(user.toApi().getBytes());
+		connector.send(user.toMessage().getBytes());
 		return null;
 	}
 }

@@ -51,8 +51,8 @@ public class UserGateApi implements IGateApi {
 	}
 
 	@Override
-	public GateOutMessage delete(GateInMessage in) {
-		log.info(actionInfo("delete"));
+	public GateOutMessage rm(GateInMessage in) {
+		log.info(actionInfo("rm"));
 		
 		return null;
 	}

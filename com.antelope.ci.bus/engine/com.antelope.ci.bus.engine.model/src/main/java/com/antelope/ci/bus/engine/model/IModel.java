@@ -8,10 +8,7 @@
 
 package com.antelope.ci.bus.engine.model;
 
-import java.util.Map;
-
 import com.antelope.ci.bus.common.api.ApiMessage;
-import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -21,15 +18,11 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @Date	 2015年4月16日		下午3:26:30 
  */
 public interface IModel {
-	public void fromMap(Map<String, String> modelMap) throws CIBusException;
-	
 	public String toJson();
 	
 	public IModel fromJson(String json);
 	
-	public ApiMessage getApi();
+	public ApiMessage toMessage();
 	
-	public ApiMessage toApi();
-	
-	public IModel fromApi(ApiMessage message);
+	public IModel fromMessage(ApiMessage message);
 }

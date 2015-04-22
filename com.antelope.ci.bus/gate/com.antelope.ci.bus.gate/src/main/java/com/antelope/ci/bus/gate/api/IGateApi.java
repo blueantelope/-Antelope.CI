@@ -23,7 +23,7 @@ public interface IGateApi {
 	
 	public GateOutMessage add(GateInMessage in);
 	
-	public GateOutMessage delete(GateInMessage in);
+	public GateOutMessage rm(GateInMessage in);
 	
 	public GateOutMessage mod(GateInMessage in);
 }

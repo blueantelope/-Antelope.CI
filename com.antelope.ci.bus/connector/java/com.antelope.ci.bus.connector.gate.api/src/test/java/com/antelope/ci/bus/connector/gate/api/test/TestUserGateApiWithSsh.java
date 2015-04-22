@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.antelope.ci.bus.common.api.ApiHeader;
 import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.api.BT;
 import com.antelope.ci.bus.common.api.OT;
@@ -57,10 +58,10 @@ public class TestUserGateApiWithSsh extends TestCase {
 	@Test
 	public void testGetUser() throws CIBusException {
 		User user = new User();
-		ApiMessage message = user.getApi();
+		user.setUsername(USERNAME);
+		ApiMessage message = user.getMessage();
 		message.setOt(OT._ls);
 		message.setBt(BT._json);
-		user.setUsername(USERNAME);
 		userGateApi.getUser(user);
 	}
 	
