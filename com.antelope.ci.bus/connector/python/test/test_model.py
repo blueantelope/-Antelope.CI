@@ -19,12 +19,20 @@ class ModelTestCase(unittest.TestCase, BaseTestCase):
         BaseTestCase.tearDown(self)
 
     def test_user(self):
+        """
         message = Message()
         message.bt = 1
+        message.body = 2
         user = User(message=message, id=1)
+        """
+        user = User()
         print user.message
         print user.id
-
+        bs = user.serialize()
+        print "to bytes: " + bs
+        user.deserialize(bs)
+        print "from deserialize: " + str(user.message)
 
 if __name__ == "__main__":
     unittest.main()
+
