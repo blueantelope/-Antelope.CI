@@ -74,6 +74,10 @@ class Message(object):
         }
         return s
 
+    def makeBody(self, body):
+        self.body = body
+        self.bl = len(self.body)
+
     def format_header(self, _endian=None):
         order = "!"
         if _endian is None:
@@ -94,7 +98,7 @@ class Message(object):
             "order" : order,
             "message_fmt" : message_fmt
         }
-        logger.debug(fmt)
+        logger.debug("header format: %s" %(fmt))
         return fmt
 
     def tobytes(self):
@@ -103,6 +107,8 @@ class Message(object):
         fmt = self.format_header()
         if self.bl > 0:
             fmt += str(self.bl) + "s"
+            fmt_args.append(self.body)
+        logger.debug("format: %s" %(fmt))
         return pack(fmt, *fmt_args)
 
     def frombytes(self, bs):
@@ -128,7 +134,14 @@ class Model(object):
         else:
             self.id = 0
 
+    def _json(self, k, v):
+        return ("\"%s\":\"%s\"" % (k, v))
+
+    def toJson(self):
+        return ("{%s}" % (self._json("id", str(self.id))))
+
     def serialize(self):
+        self.message.makeBody(self.toJson())
         return self.message.tobytes()
 
     def deserialize(self, bs):
@@ -146,4 +159,7 @@ class User(Model):
 
         if user.has_key("username"):
             self.username = user["username"]
+
+    def toJson(self):
+        return ("{%s, %s}" %(self._json("id", str(self.id)), self._json("username", self.username)))
 

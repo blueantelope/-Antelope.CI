@@ -17,6 +17,7 @@ import java.util.Map;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.EncryptUtil;
+import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.engine.model.user.Key;
@@ -91,15 +92,19 @@ public abstract class AbstractAuthService extends CommonServerService implements
 	// 公钥验证
 	protected boolean validtePublickey(User user, PublicKey publicKey) {
 		if (publicKey == null) {
-			log.info("公钥为空!");
+			log.info("public key is null from key.");
 			return false;
 		}
 		Key userKey = user.getKey();
 		if (userKey == null) {
-			log.info("用户密钥信息不存在!");
+			log.info("user key is null on server.");
 			return false;
 		}
 		String user_pubkey = userKey.getPublicKey();
+		if (StringUtil.empty(user_pubkey)) {
+			log.info("public key do not exists on server.");
+			return false;
+		}
 		try {
 			return EncryptUtil.verify_asymmetric(publicKey, user_pubkey);
 		} catch (CIBusException e) {

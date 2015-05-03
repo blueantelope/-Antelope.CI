@@ -28,19 +28,17 @@ import com.antelope.ci.bus.server.common.BusLauncher;
  * @version  0.1
  * @Date	 2015年2月16日		上午11:28:11 
  */
-public class BusSshCommand implements Command {
+public abstract class BusSshCommand implements Command {
 	protected InputStream in;
 	protected OutputStream out;
 	protected OutputStream err;
 	protected ExitCallback callback;
 	protected Environment env;
 	protected BusLauncher launcher;
-	protected SERVER_TYPE serverType;
 	
-	public BusSshCommand(BusLauncher launcher, SERVER_TYPE serverType) {
+	public BusSshCommand(BusLauncher launcher) {
 		super();
 		this.launcher = launcher;
-		this.serverType = serverType;
 	}
 
 	@Override
@@ -62,14 +60,21 @@ public class BusSshCommand implements Command {
 	public void setExitCallback(ExitCallback callback) {
 		this.callback = callback;
 	}
-
+	
+	@Override
+	public void destroy() {
+		callback.onExit(0);
+	}
+	
 	@Override
 	public void start(final Environment env) throws IOException {
 		new Thread() {
 			public void run() {
 				BusChannel channel = null;
 				try {
-					channel = launcher.launch(BusSshSessionCreater.create(serverType, in, out, err, callback, env));
+					channel = launcher.launch(BusSshSessionCreater.create(
+							customizeType(), in, out, err, callback, env));
+					cumstomizeContext();
 					channel.open();
 				} catch (CIBusException e) {
 					if (channel != null) {
@@ -83,9 +88,8 @@ public class BusSshCommand implements Command {
 			}
 		}.start();
 	}
-
-	@Override
-	public void destroy() {
-		callback.onExit(0);
-	}
+	
+	protected abstract SERVER_TYPE customizeType();
+	
+	protected abstract void cumstomizeContext() throws CIBusException;
 }

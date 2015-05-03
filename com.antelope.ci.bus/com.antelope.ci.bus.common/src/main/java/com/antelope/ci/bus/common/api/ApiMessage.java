@@ -62,7 +62,7 @@ public class ApiMessage extends ApiHeader {
 		int bodyLen = (int) bl;
 		if (bodyLen > 0) {
 			body = new byte[bodyLen];
-			System.arraycopy(body, 0, bs, HEADER_SIZE, bodyLen);
+			System.arraycopy(bs, HEADER_SIZE, body, 0, bodyLen);
 		}
 	}
 	

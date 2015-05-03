@@ -17,10 +17,10 @@ import org.apache.sshd.server.Command;
  * @version  0.1
  * @Date	 2013-10-14		下午12:43:31 
  */
-public class BusSshFactory implements Factory<Command> {
+public class BusSshShellFactory implements Factory<Command> {
 	private BusSshCommand command;
 	
-	public BusSshFactory(BusSshCommand command) {
+	public BusSshShellFactory(BusSshCommand command) {
 		this.command = command;
 	}
 
@@ -28,5 +28,4 @@ public class BusSshFactory implements Factory<Command> {
 	public Command create() {
 		return command;
 	}
-	
 }

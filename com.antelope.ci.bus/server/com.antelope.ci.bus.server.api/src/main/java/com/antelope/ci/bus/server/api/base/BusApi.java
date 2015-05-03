@@ -45,6 +45,7 @@ public abstract class BusApi extends BusChannel {
 		customApiEnv();
 	}
 	
+	@Override
 	protected void load() throws CIBusException {
 		while (true) {
 			final ApiMessage message = recieveMessage();

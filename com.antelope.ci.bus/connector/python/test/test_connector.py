@@ -20,9 +20,10 @@ class ModelTestCase(unittest.TestCase, BaseTestCase):
         BaseTestCase.tearDown(self)
 
     def test_sshclient(self):
-        sshClient = SshClient(host="localhost", port=22, username="root", password="root")
+        sshClient = SshClient(hostname="localhost", port=22, username="root", password="root")
         sshClient.send("ls")
 
 
 if __name__ == "__main__":
     unittest.main()
+

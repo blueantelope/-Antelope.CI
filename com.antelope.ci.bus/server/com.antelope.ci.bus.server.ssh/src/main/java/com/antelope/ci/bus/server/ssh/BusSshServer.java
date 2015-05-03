@@ -151,9 +151,18 @@ public abstract class BusSshServer extends BusServer {
 	}
 	
 	private void configChannel() throws CIBusException {
-		BusSshCommand command = new BusSshCommand(launcher, condition.getServerType());
-		BusSshFactory factory = new BusSshFactory(command);;
-		sshServer.setShellFactory(factory);
+		switch (condition.getServerType()) {
+			case SHELL:
+				BusSshShellCommand shellCommand = new BusSshShellCommand(launcher);
+				BusSshShellFactory shellFactory = new BusSshShellFactory(shellCommand);;
+				sshServer.setShellFactory(shellFactory);
+				break;
+			case API:
+				BusSshApiCommand apiCommand = new BusSshApiCommand(launcher);
+				BusSshApiFactory apiFactory = new BusSshApiFactory(apiCommand);
+				sshServer.setCommandFactory(apiFactory);
+				break;
+		}
 	}
 	
 	/*

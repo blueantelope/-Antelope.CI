@@ -26,7 +26,6 @@ import com.antelope.ci.bus.server.common.BusSession;
  * @Date	 2015年3月11日		下午3:54:10 
  */
 public class BusSshSessionCreater {
-
 	public static BusSession create(SERVER_TYPE serverType, InputStream in, OutputStream out, OutputStream err, 
 			ExitCallback callback, Environment env) throws CIBusException {
 		switch (serverType) {

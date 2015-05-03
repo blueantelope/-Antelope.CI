@@ -35,7 +35,7 @@ public class ApiUtil {
 	}
 	
 	public static long from4Bytes(byte[] bytes, int index) {
-		return StreamUtil.toUnsignedShort(new byte[]{bytes[index], bytes[index+1], bytes[index+2], bytes[index+3]});
+		return StreamUtil.toUnsignedInt(new byte[]{bytes[index], bytes[index+1], bytes[index+2], bytes[index+3]});
 	}
 	
 	public static byte[] fromBytes(byte[] bytes, int index, int length) {
