@@ -191,4 +191,19 @@ public class ApiHeader {
 		bl = src.getBl();
 		ext = src.getExt();
 	}
+	
+	@Override
+	public String toString() {
+		return "{" +
+			"endian:" + Endian.value(endian) + "," +
+			"type:" + type + "," +
+			"version:" + version + "," +
+			"oid:" + oid + "," +
+			"oc:" + oc + "," +
+			"ot:" + ot + "," +
+			"bt:" + bt + "," +
+			"bl:" + bl + "," +
+			"ext:" + ext +
+		"}";
+	}
 }

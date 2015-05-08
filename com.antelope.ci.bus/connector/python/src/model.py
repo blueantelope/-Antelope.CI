@@ -90,7 +90,7 @@ class Message(object):
             order = "<"
         elif _endian == 3:
             order = ">"
-        message_fmt = "BBBHHBBI7s"
+        message_fmt = "BBBHHBBI7B"
         fmt = (
             "%(order)s"
             "%(message_fmt)s"
@@ -102,8 +102,8 @@ class Message(object):
         return fmt
 
     def tobytes(self):
-        extstr = ''.join(str(e) for e in self.ext)
-        fmt_args = [self.endian, self.type, self.version, self.oid, self.oc, self.ot, self.bt, self.bl, extstr]
+        fmt_args = [self.endian, self.type, self.version, self.oid, self.oc, self.ot, self.bt, self.bl]
+        fmt_args.extend(self.ext)
         fmt = self.format_header()
         if self.bl > 0:
             fmt += str(self.bl) + "s"
@@ -118,10 +118,10 @@ class Message(object):
             fmt += str(size-20) + "s"
         array = unpack(fmt, bs)
         logger.debug(array)
-        self.endian, self.type, self.version, self.oid, self.oc, self.ot, self.bt, self.bl, extstr = array[0:9]
-        self.ext = tuple(extstr)
+        self.endian, self.type, self.version, self.oid, self.oc, self.ot, self.bt, self.bl = array[0:8]
+        self.ext = array[8:15]
         if size > 20:
-            self.body = tuple(array[9])
+            self.body = tuple(array[15])
 
 class Model(object):
     def __init__(self, message=None, id=None):

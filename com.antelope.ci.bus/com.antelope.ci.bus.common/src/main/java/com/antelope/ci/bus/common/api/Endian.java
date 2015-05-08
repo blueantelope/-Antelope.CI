@@ -27,4 +27,19 @@ public final class Endian {
 	
 	/* network endian */
 	public final static short _network = 0x04;
+	
+	public final static String value(short endian) {
+		switch (endian) {
+			case _native:
+				return "native";
+			case _litttle:
+				return "little";
+			case _big:
+				return "big";
+			case _network:
+				return "network";
+		}
+		
+		return "";
+	}
 }
