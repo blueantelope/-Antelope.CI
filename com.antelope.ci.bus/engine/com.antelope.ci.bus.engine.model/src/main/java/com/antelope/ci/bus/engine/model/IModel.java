@@ -9,6 +9,7 @@
 package com.antelope.ci.bus.engine.model;
 
 import com.antelope.ci.bus.common.api.ApiMessage;
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -20,9 +21,9 @@ import com.antelope.ci.bus.common.api.ApiMessage;
 public interface IModel {
 	public String toJson();
 	
-	public IModel fromJson(String json);
+	public void fromJson(String json) throws CIBusException;
 	
 	public ApiMessage toMessage();
 	
-	public IModel fromMessage(ApiMessage message);
+	public void fromMessage(ApiMessage message) throws CIBusException;
 }

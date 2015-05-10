@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.gate.api;
 
+import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.gate.api.message.GateInMessage;
 import com.antelope.ci.bus.gate.api.message.GateOutMessage;
 
@@ -19,11 +20,11 @@ import com.antelope.ci.bus.gate.api.message.GateOutMessage;
  * @Date	 2015年3月25日		下午5:08:56 
  */
 public interface IGateApi {
-	public GateOutMessage ls(GateInMessage in);
+	public GateOutMessage ls(GateInMessage in) throws CIBusException;
 	
-	public GateOutMessage add(GateInMessage in);
+	public GateOutMessage add(GateInMessage in) throws CIBusException;
 	
-	public GateOutMessage rm(GateInMessage in);
+	public GateOutMessage rm(GateInMessage in) throws CIBusException;
 	
-	public GateOutMessage mod(GateInMessage in);
+	public GateOutMessage mod(GateInMessage in) throws CIBusException;
 }

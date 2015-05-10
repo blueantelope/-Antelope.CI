@@ -25,7 +25,7 @@ class ModelTestCase(unittest.TestCase, BaseTestCase):
         message.body = 2
         user = User(message=message, id=1)
         """
-        user = User()
+        user = User(username="test")
         print user.message
         print user.id
         bs = user.serialize()

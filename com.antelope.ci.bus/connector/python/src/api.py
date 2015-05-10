@@ -14,11 +14,14 @@ from connector import *
 
 logger = logging.getLogger("api")
 
+OC = {"user":0x01}
+
 class Api(object):
     def __init__(self, **server):
         self.connector = createConnector(**server)
 
     def getUser(self, **user):
         _user = User(**user)
+        _user.ls()
         self.connector.send(_user.serialize())
 

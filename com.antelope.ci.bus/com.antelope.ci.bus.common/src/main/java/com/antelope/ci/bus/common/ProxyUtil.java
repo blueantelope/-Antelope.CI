@@ -23,6 +23,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,6 +94,25 @@ public class ProxyUtil {
 	public static void invoke(Object obj, String function, Object[] args) throws CIBusException {
 		try {
 			Method method = getMethod(obj.getClass(), function);
+			method.invoke(obj, args);
+		} catch (Exception e) {
+			throw new CIBusException("", e);
+		}
+
+	}
+	
+	public static void invokeSetter(Object obj, Method method, String parameter) throws CIBusException {
+		try {
+			Class pt = method.getParameterTypes()[0];
+			Object[] args = new Object[1];
+			if (String.class.isAssignableFrom(pt)) args[0] = parameter;
+			else if (Byte.class.isAssignableFrom(pt)) args[0] = Byte.valueOf(parameter);
+			else if (Short.class.isAssignableFrom(pt)) args[0] = Short.valueOf(parameter);
+			else if (Integer.class.isAssignableFrom(pt)) args[0] = Integer.valueOf(parameter);
+			else if (Long.class.isAssignableFrom(pt)) args[0] = Long.valueOf(parameter);
+			else if (Float.class.isAssignableFrom(pt)) args[0] = Float.valueOf(parameter);
+			else if (Double.class.isAssignableFrom(pt)) args[0] = Double.valueOf(parameter);
+			else if (Date.class.isAssignableFrom(pt)) args[0] = new SimpleDateFormat().parse(parameter);
 			method.invoke(obj, args);
 		} catch (Exception e) {
 			throw new CIBusException("", e);

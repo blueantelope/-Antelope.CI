@@ -13,6 +13,20 @@ from struct import *
 
 logger = logging.getLogger("model")
 
+OC = {"user":0x01}
+
+OT = {
+    "ls" : 0x01,
+    "add" : 0x02,
+    "rm" : 0x03,
+    "mod" : 0x04
+}
+
+BT = {
+    "binary" : 0x01,
+    "json" : 0x02
+}
+
 class Message(object):
     endian = 0x04
     type = 0x00
@@ -134,6 +148,25 @@ class Model(object):
         else:
             self.id = 0
 
+    def ls(self):
+        self._set("ls")
+
+    def add(self):
+        self._set("add")
+
+    def rm(self):
+        self._set("rm")
+
+    def mod(self):
+        self._set("mod")
+
+    def _set(self, otkey):
+        self.message.ot = OT[otkey]
+        self._setBT("json")
+
+    def _setBT(self, key):
+        self.message.bt = BT[key]
+
     def _json(self, k, v):
         return ("\"%s\":\"%s\"" % (k, v))
 
@@ -156,6 +189,7 @@ class User(Model):
         if user.has_key("id"):
             _id = user["id"]
         super(User, self).__init__(_message, _id)
+        self.message.oc = OC["user"]
 
         if user.has_key("username"):
             self.username = user["username"]

@@ -8,6 +8,14 @@
 
 package com.antelope.ci.bus.common.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.antelope.ci.bus.common.JsonUtil;
 import com.antelope.ci.bus.common.StreamUtil;
 
 
@@ -42,5 +50,9 @@ public class ApiUtil {
 		byte[] value = new byte[length];
 		System.arraycopy(bytes, index, value, 0, length);
 		return value;
+	}
+	
+	public static List<Map<String, String>> fromJson(String json) {
+		return JsonUtil.toMapList(json, new String[]{"name", "value", "conditioin"});
 	}
 }

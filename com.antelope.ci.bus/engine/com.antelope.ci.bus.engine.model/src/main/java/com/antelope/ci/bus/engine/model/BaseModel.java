@@ -10,8 +10,10 @@ package com.antelope.ci.bus.engine.model;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -34,7 +36,8 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 public abstract class BaseModel implements Serializable, IModel {
 	private static final Logger log = Logger.getLogger(BaseModel.class);
 	protected ApiMessage message;
-	
+	protected List<Map<String, String>> bodyList;
+
 	public BaseModel() {
 		super();
 		message = new ApiMessage();
@@ -55,13 +58,26 @@ public abstract class BaseModel implements Serializable, IModel {
 		}
 	}
 	
+	
+	public List<Map<String, String>> parseBody() throws CIBusException {
+		if (bodyList == null)
+			bodyList = ModelUtil.parseBody(message);
+		return bodyList;
+	}
+	
 	@Override
 	public String toJson() {
 		return genJson();
 	}
 	
-	public IModel fromJson(String json) {
-		return null;
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.engine.model.IModel#fromJson(java.lang.String)
+	 */
+	@Override
+	public void fromJson(String json) throws CIBusException {
+		// TODO: generate
 	}
 	
 	public ApiMessage getMessage() {
@@ -83,10 +99,27 @@ public abstract class BaseModel implements Serializable, IModel {
 		return message;
 	}
 	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.engine.model.IModel#fromMessage(com.antelope.ci.bus.common.api.ApiMessage)
+	 */
 	@Override
-	public IModel fromMessage(ApiMessage message) {
+	public void fromMessage(ApiMessage message) throws CIBusException {
+		if (bodyList == null)
+			ModelUtil.parseBody(message);
+		if (bodyList == null || bodyList.isEmpty())
+			return;
 		
-		return null;
+		Map<String, String> vMap = ModelUtil.makeValueMap(bodyList);
+		if (vMap.isEmpty())
+			return;
+		
+		Map<String, Method> setterMap = ModelUtil.fetchSetter(this);
+		for (String name : vMap.keySet()) {
+			if (setterMap.containsKey(name))
+				ProxyUtil.invokeSetter(this, setterMap.get(name), vMap.get(name));
+		}
 	}
 	
 	protected String genJson() {

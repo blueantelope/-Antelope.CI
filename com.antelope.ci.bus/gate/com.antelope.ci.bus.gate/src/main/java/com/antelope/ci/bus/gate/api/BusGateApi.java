@@ -69,22 +69,26 @@ public class BusGateApi extends BusApi {
 			GateInMessage inMessage = new GateInMessage();
 			inMessage.clone(message);
 			GateOutMessage outMessage;
-			switch (message.getOt()) {
-				case OT._ls:
-					outMessage = api.ls(inMessage);
-					break;
-				case OT._add:
-					outMessage = api.add(inMessage);
-					break;
-				case OT._rm:
-					outMessage = api.rm(inMessage);
-					break;
-				case OT._mod:
-					outMessage = api.mod(inMessage);
-					break;
-				default:
-					log.warn("invalidate OT(operation type) : " + message.getOt());
-					break;
+			try {
+				switch (message.getOt()) {
+					case OT._ls:
+						outMessage = api.ls(inMessage);
+						break;
+					case OT._add:
+						outMessage = api.add(inMessage);
+						break;
+					case OT._rm:
+						outMessage = api.rm(inMessage);
+						break;
+					case OT._mod:
+						outMessage = api.mod(inMessage);
+						break;
+					default:
+						log.warn("invalidate OT(operation type) : " + message.getOt());
+						break;
+				}
+			} catch (CIBusException e) {
+				log.error(e);
 			}
 		}
 	}
