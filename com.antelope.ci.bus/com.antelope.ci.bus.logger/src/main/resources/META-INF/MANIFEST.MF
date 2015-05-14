@@ -5,4 +5,4 @@ Bundle-ManifestVersion: 2
 Export-Package: com.antelope.ci.bus.logger.service; version="0.1.0"
 Import-Package: org.osgi.framework
 Bundle-SymbolicName: com.antelope.ci.bus.logger
-Bundle-Activator: com.antelope.ci.bus.logger.BusLoggerActivator
+Bundle-Activator: com.antelope.ci.bus.logger.BusLoggerComplexActivator

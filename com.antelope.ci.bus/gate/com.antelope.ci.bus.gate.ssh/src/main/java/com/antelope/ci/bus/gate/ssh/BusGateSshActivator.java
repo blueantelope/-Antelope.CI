@@ -8,6 +8,7 @@
 
 package com.antelope.ci.bus.gate.ssh;
 
+import org.apache.log4j.Logger;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
@@ -23,20 +24,34 @@ import com.antelope.ci.bus.server.BusServerTemplateActivator;
  * @Date	 2015年2月19日		下午1:13:08 
  */
 public class BusGateSshActivator extends BusServerTemplateActivator {
+	private static final Logger log = Logger.getLogger(BusGateSshActivator.class);
 	private BusGateSshServer sshServer; 
 	
 	@Override
 	protected void run() throws CIBusException {
-		if (sshServer == null) {
-			sshServer = new BusGateSshServer(bundle_context);
-			Object shellService = fetchService(GateService.NAME);
-			if (shellService != null)
-				sshServer.initLauncher(((GateService)shellService).getManager().getLauncher());
-			BusOsgiUtil.publishService(bundle_context, sshServer, BusGateSshServer.NAME);
-			System.out.println("*********************** @antelope.ci ssh gate server start, wait a moment... ***********************");
-			sshServer.open();
-			System.out.println("*********************** @antelope.ci ssh gate server finish stsart, enjoy it! ***********************");
-		}
+		new Thread() {
+			@Override public void run() {
+				try {
+					try {
+						Thread.sleep(5 * 1000);
+					} catch (InterruptedException e) { }
+					if (sshServer == null) {
+						sshServer = new BusGateSshServer(bundle_context);
+						Object shellService = fetchService(GateService.NAME);
+						if (shellService != null)
+							sshServer.initLauncher(((GateService)shellService).getManager().getLauncher());
+						BusOsgiUtil.publishService(bundle_context, sshServer, BusGateSshServer.NAME);
+						System.out.println("*********************** @antelope.ci ssh gate server start, wait a moment... ***********************");
+						sshServer.open();
+						System.out.println("*********************** @antelope.ci ssh gate server finish stsart, enjoy it! ***********************");
+					}
+				} catch (CIBusException e) {
+					log.error("ERROR - start gate server\n" + e);
+				}
+			}
+		}.start();
+		
+		
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,6 +25,8 @@ import org.json.JSONObject;
  * @Date	 2015年5月10日		上午11:29:33 
  */
 public class JsonUtil {
+	private static final Logger log = Logger.getLogger(JsonUtil.class);
+	
 	public static List<Map<String, String>> toMapList(String json, String[] keys) {
 		List<Map<String, String>> mList = new ArrayList<Map<String, String>>();
 		JSONArray jarr = new JSONArray(json);
@@ -32,9 +35,13 @@ public class JsonUtil {
 			JSONObject jobj = jarr.getJSONObject(n);
 			Map<String, String> m = new HashMap<String, String>();
 			for (String key : keys) {
-				String value = jobj.getString(key);
-				if (!StringUtil.empty(value))
-					m.put(key, value);
+				try {
+					String value = jobj.getString(key);
+					if (!StringUtil.empty(value))
+						m.put(key, value);
+				} catch (Exception e) {
+					log.warn("parse json error - " + key + ":\n" + e);
+				}
 			}
 			if (!m.isEmpty())
 				mList.add(m);

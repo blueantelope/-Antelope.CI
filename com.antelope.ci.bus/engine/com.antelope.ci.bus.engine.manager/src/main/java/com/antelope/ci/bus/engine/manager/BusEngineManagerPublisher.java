@@ -1,9 +1,9 @@
-// com.antelope.ci.bus.server.service.ServiceManager.java
+// com.antelope.ci.bus.engine.manager.BusEngineManagerPublisher.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
  * ------------------------------------------------------------------------
- * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
+ * Copyright (c) 2015, Antelope CI Team All Rights Reserved.
 */
 
 package com.antelope.ci.bus.engine.manager;
@@ -23,35 +23,30 @@ import com.antelope.ci.bus.common.PropertiesUtil;
 import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
-import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
  * manager对外提供servcie管理
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-10-15		下午12:31:45 
- * @Deprecated replace by {@link #com.antelope.ci.bus.engine.manager.BusEngineManagerPublisher}
+ * @Date	 2015年5月14日		下午4:21:20 
  */
-@Deprecated
-public class EngineManagerPublisher {
+public class BusEngineManagerPublisher {
 	private static final Logger log = Logger.getLogger(EngineManagerPublisher.class);
 	private static Map<String, BusEngineManager> managerMap = new ConcurrentHashMap<String, BusEngineManager>();
 	private static Map<String, ManagerParameters> parametersMap = new ConcurrentHashMap<String, ManagerParameters>();
 
-	public static void publish(BundleContext m_context, EnginePublishInfo info) {
-		new ServicePublishHook(m_context, info).start();
+	public static void publish(BusEngineManagerActivatorContext context, EnginePublishInfo info) {
+		new ServicePublishHook(context, info).start();
 	}
 	
 	private static class ServicePublishHook extends Thread {
-		private BundleContext m_context;
+		private BusEngineManagerActivatorContext context;
 		private EnginePublishInfo info;
-		private ClassLoader classLoader;
 		
-		private ServicePublishHook(BundleContext m_context, EnginePublishInfo info) {
-			this.m_context = m_context;
+		private ServicePublishHook(BusEngineManagerActivatorContext context, EnginePublishInfo info) {
+			this.context = context;
 			this.info = info;
-			classLoader = BusOsgiUtil.getBundleClassLoader(m_context);
 		}
 		
 		public void run() {
@@ -65,12 +60,14 @@ public class EngineManagerPublisher {
 					log.warn("publish enging manager: " + e);
 				}
 				try {
-					Thread.sleep(BusEngineManagerActivator.getPublishPeriod());
+					Thread.sleep(context.getPublishPeriod());
 				} catch (InterruptedException e) { }
 			}
 		}
 		
 		private void publish(String classpath, int type) throws CIBusException {
+			BundleContext m_context = context.getBundleContext();
+			ClassLoader classLoader = context.getClassLoader();
 			List<String> classNameList = ClassFinder.findClasspath(classpath, classLoader);
 			List<String> regList = new ArrayList<String>();
 			for (String className : classNameList) {
@@ -81,7 +78,7 @@ public class EngineManagerPublisher {
 					Class clazz = ProxyUtil.loadClass(className, classLoader);
 					String serviceName = getServiceName(clazz);
 					if (serviceName == null) continue;
-					ServiceReference serviceReference = BusActivator.getServiceReference(serviceName, className);
+					ServiceReference serviceReference = context.getServiceReference(serviceName, className);
 					
 					if (serviceReference == null && !parametersMap.containsKey(className)) {
 						loadManager(clazz, type, true);
@@ -136,7 +133,7 @@ public class EngineManagerPublisher {
 		}
 			
 		private boolean isManager(String cls) throws CIBusException {
-			Class clazz = ProxyUtil.loadClass(cls, BusOsgiUtil.getBundleClassLoader(m_context));
+			Class clazz = ProxyUtil.loadClass(cls, context.getClassLoader());
 			if (clazz.isAnnotationPresent(EngineManager.class)) {
 				return true;
 			}
@@ -152,7 +149,7 @@ public class EngineManagerPublisher {
 				if (type == 2) // publish service
 					isPublishType =  clazz.isAnnotationPresent(EngineService.class);
 				if (isPublishType) {
-					BusEngineManager manager = (BusEngineManager) ProxyUtil.newObject(clazz, classLoader);
+					BusEngineManager manager = (BusEngineManager) ProxyUtil.newObject(clazz, context.getClassLoader());
 					boolean load = true;
 					if (init) {
 						Properties props = new Properties();
@@ -170,6 +167,7 @@ public class EngineManagerPublisher {
 					if (load) {
 						String serviceName = getServiceName(clazz);
 						if (serviceName != null) {
+							BundleContext m_context = context.getBundleContext();
 							BusOsgiUtil.publishService(m_context, manager, serviceName);
 							manager.regist(m_context);
 							managerMap.put(clazzName, manager);
@@ -185,7 +183,8 @@ public class EngineManagerPublisher {
 		private void registToContext(BusEngineManager service) {
 			Class clazz = service.getClass();
 			EngineManager em =  (EngineManager) clazz.getAnnotation(EngineManager.class);
-			BusOsgiUtil.publishService(m_context, service, em.service_name());
+			BusOsgiUtil.publishService(context.getBundleContext(), service, em.service_name());
 		}
 	}
 }
+

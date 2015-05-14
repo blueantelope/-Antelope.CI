@@ -170,8 +170,19 @@ class Model(object):
     def _json(self, k, v):
         return ("\"%s\":\"%s\"" % (k, v))
 
+    def id_json(self):
+        return ("{%s, %s}" % (
+                self._json("name", "id"),
+                self._json("value", str(self.id))
+            )
+        )
+
     def toJson(self):
-        return ("{%s}" % (self._json("id", str(self.id))))
+        return ("{%s, %s}" % (
+                self._json("name", "id"),
+                self._json("value", str(self.id))
+            )
+        )
 
     def serialize(self):
         self.message.makeBody(self.toJson())
@@ -194,6 +205,17 @@ class User(Model):
         if user.has_key("username"):
             self.username = user["username"]
 
+    def username_json(self):
+        return ("{%s, %s}" % (
+                self._json("name", "username"),
+                self._json("value", str(self.username))
+            )
+        )
+
     def toJson(self):
-        return ("{%s, %s}" %(self._json("id", str(self.id)), self._json("username", self.username)))
+        return ("[%s, %s]" % (
+                self.id_json(),
+                self.username_json()
+            )
+        )
 

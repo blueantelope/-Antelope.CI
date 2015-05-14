@@ -23,7 +23,9 @@ import com.antelope.ci.bus.osgi.BusActivator;
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-7-31		上午10:56:57 
+ * @Deprecated replace by {@link #com.antelope.ci.bus.logger.BusLoggerComplexActivator}
  */
+@Deprecated
 public class BusLoggerActivator extends BusActivator {
 	/**
 	 * 

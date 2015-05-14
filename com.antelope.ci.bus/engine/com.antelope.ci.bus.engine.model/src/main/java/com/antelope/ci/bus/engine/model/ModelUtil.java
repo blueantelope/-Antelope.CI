@@ -51,7 +51,7 @@ public class ModelUtil {
 				mList = ApiUtil.fromJson(bstr);
 				break;
 			default:
-				throw new CIBusException("", "");
+				throw new CIBusException("", "unkown bt");
 		}
 		
 		return mList;

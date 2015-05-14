@@ -15,13 +15,13 @@
 	<target name="framework.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.framework.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="framework.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.framework.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -29,13 +29,13 @@
 	<target name="common.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="common.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -43,7 +43,7 @@
 	<target name="common.test.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.test.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="common.test.depends" depends="mvn_env">
@@ -58,13 +58,13 @@
 	<target name="osgi.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.osgi.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="osgi.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.osgi.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -72,13 +72,13 @@
 	<target name="logger.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.logger.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="logger.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.logger.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="logger.depends" depends="mvn_env">
@@ -93,13 +93,13 @@
 	<target name="bus.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.bus.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="bus.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.bus.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	
@@ -111,13 +111,13 @@
 	<target name="engine.model.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.model.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.model.depends" depends="mvn_env">
@@ -132,13 +132,13 @@
 	<target name="engine.model.vcs.input.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.vcs.input.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.model.vcs.input.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.vcs.input.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.model.vcs.input.depends" depends="mvn_env">
@@ -153,13 +153,13 @@
 	<target name="engine.model.vcs.output.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.vcs.output.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.model.vcs.output.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.vcs.output.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.model.vcs.output.depends" depends="mvn_env">
@@ -174,13 +174,13 @@
 	<target name="engine.model.user.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.user.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.model.user.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.user.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.model.user.depends" depends="mvn_env">
@@ -195,13 +195,13 @@
 	<target name="engine.model.project.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.project.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.model.project.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.model.project.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.model.project.depends" depends="mvn_env">
@@ -216,13 +216,13 @@
 	<target name="engine.access.storage.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.depends" depends="mvn_env">
@@ -237,13 +237,13 @@
 	<target name="engine.access.storage.database.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.database.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.database.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.database.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.database.depends" depends="mvn_env">
@@ -258,13 +258,13 @@
 	<target name="engine.access.storage.flatfile.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.flatfile.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.flatfile.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.flatfile.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.flatfile.depends" depends="mvn_env">
@@ -279,13 +279,13 @@
 	<target name="engine.access.storage.ldap.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.ldap.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.ldap.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.storage.ldap.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.storage.ldap.depends" depends="mvn_env">
@@ -300,13 +300,13 @@
 	<target name="engine.access.vcs.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.depends" depends="mvn_env">
@@ -321,13 +321,13 @@
 	<target name="engine.access.vcs.cvs.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.cvs.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.cvs.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.cvs.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.cvs.depends" depends="mvn_env">
@@ -342,13 +342,13 @@
 	<target name="engine.access.vcs.svn.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.svn.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.svn.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.svn.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.svn.depends" depends="mvn_env">
@@ -363,13 +363,13 @@
 	<target name="engine.access.vcs.git.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.git.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.git.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.access.vcs.git.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.access.vcs.git.depends" depends="mvn_env">
@@ -384,13 +384,13 @@
 	<target name="engine.manager.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.manager.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.manager.depends" depends="mvn_env">
@@ -405,13 +405,13 @@
 	<target name="engine.manager.project.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.project.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.manager.project.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.project.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.manager.project.depends" depends="mvn_env">
@@ -426,13 +426,13 @@
 	<target name="engine.manager.project.realization.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.project.realization.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.manager.project.realization.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.project.realization.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.manager.project.realization.depends" depends="mvn_env">
@@ -450,13 +450,13 @@
 	<target name="engine.manager.user.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.user.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.manager.user.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.user.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.manager.user.depends" depends="mvn_env">
@@ -471,13 +471,13 @@
 	<target name="engine.manager.user.realization.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.user.realization.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="engine.manager.user.realization.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.engine.manager.user.realization.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="engine.manager.user.realization.depends" depends="mvn_env">
@@ -495,13 +495,13 @@
 	<target name="server.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="server.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="server.depends" depends="mvn_env">
@@ -516,13 +516,13 @@
 	<target name="server.shell.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.shell.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="server.shell.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.shell.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="server.shell.depends" depends="mvn_env">
@@ -537,13 +537,13 @@
 	<target name="server.api.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.api.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="server.api.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.api.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="server.api.depends" depends="mvn_env">
@@ -558,13 +558,13 @@
 	<target name="server.ssh.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.ssh.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="server.ssh.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.ssh.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="server.ssh.depends" depends="mvn_env">
@@ -579,13 +579,13 @@
 	<target name="server.service.userstorefile.compile">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.service.userstorefile.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="server.service.userstorefile.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.server.service.userstorefile.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="server.service.userstorefile.depends" depends="mvn_env">
@@ -600,13 +600,13 @@
 	<target name="portal.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="portal.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="portal.depends" depends="mvn_env">
@@ -619,7 +619,7 @@
 	<target name="common.test.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.common.test.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 
@@ -627,13 +627,13 @@
 	<target name="portal.ssh.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.ssh.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="portal.ssh.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.ssh.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="portal.ssh.depends" depends="mvn_env">
@@ -648,13 +648,13 @@
 	<target name="portal.dashboard.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.dashboard.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="portal.dashboard.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.dashboard.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="portal.dashboard.depends" depends="mvn_env">
@@ -669,13 +669,13 @@
 	<target name="portal.project.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.project.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="portal.project.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.project.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="portal.project.depends" depends="mvn_env">
@@ -690,13 +690,13 @@
 	<target name="portal.usecase.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.usecase.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="portal.usecase.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.usecase.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="portal.usecase.depends" depends="mvn_env">
@@ -711,13 +711,13 @@
 	<target name="portal.target.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.target.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="portal.target.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.target.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="portal.target.depends" depends="mvn_env">
@@ -732,14 +732,14 @@
 	<target name="portal.version.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.version.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<!-- com.antelope.ci.bus.portal.dashboard -->
 	<target name="portal.version.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.portal.version.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="portal.version.depends" depends="mvn_env">
@@ -754,13 +754,13 @@
 	<target name="gate.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="gate.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="gate.depends" depends="mvn_env">
@@ -775,13 +775,13 @@
 	<target name="gate.ssh.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.ssh.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="gate.ssh.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.ssh.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="gate.ssh.depends" depends="mvn_env">
@@ -796,13 +796,13 @@
 	<target name="gate.shell.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.shell.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="gate.shell.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.shell.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="gate.shell.depends" depends="mvn_env">
@@ -817,13 +817,13 @@
 	<target name="gate.shell.ssh.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.shell.ssh.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="gate.shell.ssh.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.shell.ssh.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="gate.shell.ssh.depends" depends="mvn_env">
@@ -838,13 +838,13 @@
 	<target name="gate.api.user.compile" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.api.user.pom}" />
-			<arg line="install" />
+			<arg line="clean install" />
 		</exec>
 	</target>
 	<target name="gate.api.user.compile.notest" depends="mvn_env">
 		<exec executable="${mvn}" failonerror="true">
 			<arg line="-f ${prj.gate.api.user.pom}" />
-			<arg line="install ${mvn.notest}" />
+			<arg line="clean install ${mvn.notest}" />
 		</exec>
 	</target>
 	<target name="gate.api.user.depends" depends="mvn_env">

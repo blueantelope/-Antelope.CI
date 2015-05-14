@@ -78,12 +78,12 @@ public abstract class BusComplexActivator implements BundleActivator {
 	}
 	
 	protected void loadBusContext() throws CIBusException {
-		ClassLoader bundle_classloader = BusOsgiUtil.getBundleClassLoader(bundle_context);
+		ClassLoader bundle_classloader = classLoader();
 		BusActivatorContextProxy contextProxy = (BusActivatorContextProxy) ProxyUtil.invokeStaticRet(
 				bundle_classloader, BusActivatorContextProxy.class.getName(), "getContextProxy");
 		bus_context = (BusActivatorContext) ProxyUtil.newObject(bus_context_clazz, bundle_classloader);
 		bus_context.setContext(bundle_context);
-		if (bus_context.getClass().isAssignableFrom(BusActivatorContext.class)) {
+		if (BusActivatorContext.class.isAssignableFrom(bus_context.getClass())) {
 			contextProxy.initContext(bus_context);
 		} else {
 			throw new CIBusException("", "Error, Create Activator Context Object ");
@@ -156,7 +156,6 @@ public abstract class BusComplexActivator implements BundleActivator {
 	}
 	
 	private class BusServiceTrackerCustomizer implements ServiceTrackerCustomizer {
-		
 		private BusServiceTrackerCustomizer() {
 		}
 
@@ -247,6 +246,10 @@ public abstract class BusComplexActivator implements BundleActivator {
 		}
 		
 		return null;
+	}
+	
+	protected ClassLoader classLoader() {
+		return BusOsgiUtil.getBundleClassLoader(bundle_context);
 	}
 	
 	/**

@@ -18,9 +18,10 @@ import com.antelope.ci.bus.osgi.BusActivator;
  *
  * @author   blueantelope
  * @version  0.1
- * 
  * @Date	 2014年11月24日		下午5:30:37 
+ * @Deprecated replace by {@link #com.antelope.ci.bus.engine.model.BusEngineModelComplexActivator}
  */
+@Deprecated
 public class BusEngineModelActivator extends BusActivator {
 
 	@Override

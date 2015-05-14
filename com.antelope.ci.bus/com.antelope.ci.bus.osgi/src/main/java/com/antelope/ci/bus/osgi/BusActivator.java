@@ -317,9 +317,8 @@ public abstract class BusActivator implements BundleActivator {
 			}
 		} else {
 			BusServiceInfo info = new BusServiceInfo(service_class_name, service, ref);
-			if (serviceMap.get(service_name) == null) {
+			if (serviceMap.get(service_name) == null)
 				serviceMap.put(service_name, new ArrayList<BusServiceInfo>());
-			}
 			List<BusServiceInfo> infoList = serviceMap.get(service_name);
 			infoList.add(info);
 		}

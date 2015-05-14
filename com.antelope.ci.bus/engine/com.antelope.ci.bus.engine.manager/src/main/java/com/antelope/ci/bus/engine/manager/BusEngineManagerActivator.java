@@ -21,7 +21,9 @@ import com.antelope.ci.bus.osgi.BusActivator;
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014年11月24日		下午5:16:30 
+ * @Deprecated replace by {@link #com.antelope.ci.bus.engine.manager.BusEngineManagerComplexActivator}
  */
+@Deprecated
 public class BusEngineManagerActivator extends BusActivator {
 	private static final String PUBLISH_PERIOD = "publish.period";
 	private static final long DEF_PUBLISH_PERIOD = 1 * 1000;

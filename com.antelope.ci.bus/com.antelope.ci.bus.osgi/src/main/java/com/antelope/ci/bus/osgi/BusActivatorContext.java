@@ -63,6 +63,11 @@ public class BusActivatorContext {
 		loadServiceList = new Vector<String>();
 	}
 	
+	// need not load log service
+	public void undesiredLoadLogService() {
+		logServiceProvider = true;
+	}
+	
 	public List<String> getServiceList() {
 		return loadServiceList;
 	}
@@ -105,7 +110,7 @@ public class BusActivatorContext {
 		this.bundle_context = bundle_context;
 	}
 	
-	public BundleContext getContext() {
+	public BundleContext getBundleContext() {
 		return bundle_context;
 	}
 	

@@ -106,6 +106,7 @@ public abstract class BaseModel implements Serializable, IModel {
 	 */
 	@Override
 	public void fromMessage(ApiMessage message) throws CIBusException {
+		this.message = message;
 		if (bodyList == null)
 			ModelUtil.parseBody(message);
 		if (bodyList == null || bodyList.isEmpty())

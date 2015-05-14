@@ -124,6 +124,7 @@
 				<include name="jaxen*.jar" />
 				<include name="dom4j*.jar" />
 				<include name="xml-apis*.jar" />
+				<include name="json*.jar" />
 				<include name="com.antelope.ci.bus.common-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.osgi-${bus.version}.jar" />
 			</fileset>

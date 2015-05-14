@@ -71,10 +71,11 @@ public class GateApiScanner {
 				if (SCAN_START_DELAY > 0) {
 					try {
 						Thread.sleep(SCAN_START_DELAY);
-					} catch (InterruptedException e1) {}
+					} catch (InterruptedException e) {}
 				}
 				while (true) {
-					scan();
+					if (serviceMap != null && !serviceMap.isEmpty())
+						scan();
 					try {
 						Thread.sleep(SCAN_PERIOD);
 					} catch (InterruptedException e) { }
@@ -87,18 +88,18 @@ public class GateApiScanner {
 					List<String>  classList = ClassFinder.findClasspath(SCAN_PACKAGE, classLoaer);
 					for (String cls : classList) {
 						Class clazz = Class.forName(cls, false, classLoaer);
-						boolean first = false;
+						boolean apiLoaded = false;
 						if (IGateApi.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(GateApi.class)) {
 							GateApi api = (GateApi) clazz.getAnnotation(GateApi.class);
 							if (!setterMap.containsKey(api.oc()))
 								setterMap.put(api.oc(), new ArrayList<Method>());
 							List setterList = setterMap.get(api.oc());
 							if (!apiMap.containsKey(api.oc())) {
-								first = true;
+								apiLoaded = true;
 								apiMap.put(api.oc(), (IGateApi)ProxyUtil.newObject(clazz, classLoaer));
 							}
 							IGateApi gateApi = apiMap.get(api.oc());
-							if (first || !setterList.isEmpty())
+							if (!apiLoaded || !setterList.isEmpty())
 								InjectHelper.injectService(gateApi, serviceMap, setterList);
 						}
 					}

@@ -6,4 +6,4 @@ Bundle-SymbolicName: com.antelope.ci.bus.engine.model
 Export-Package: com.antelope.ci.bus.engine.model;version="0.1.0"
 Import-Package: org.osgi.framework
 Bundle-Vendor: blueantelope@gmail.com
-Bundle-Activator: com.antelope.ci.bus.engine.model.BusEngineModelActivator
+Bundle-Activator: com.antelope.ci.bus.engine.model.BusEngineModelComplexActivator
