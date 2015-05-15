@@ -14,6 +14,7 @@ import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.model.user.User;
+import com.antelope.ci.bus.osgi.BusContext;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.Service;
 import com.antelope.ci.bus.server.service.CommonServerService;
@@ -36,18 +37,7 @@ public class FileUserStoreServiceImpl extends CommonServerService implements Use
 	private void init() {
 		PasswordHelper.getHelper().init();
 	}
-
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.IService#publish(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	public boolean publish(BundleContext m_context) throws CIBusException {
-		BusOsgiUtil.publishService(m_context, this, NAME);
-		return true;
-	}
-
+	
 	/**
 	 * 
 	 * (non-Javadoc)
@@ -66,5 +56,30 @@ public class FileUserStoreServiceImpl extends CommonServerService implements Use
 	@Override
 	public User getUser(String username) {
 		return PasswordHelper.getHelper().userMap.get(username);
+	}
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.IService#publish(org.osgi.framework.BundleContext)
+	 * @Deprecated replace by {@link #publish(BusContext context)}
+	 */
+	@Deprecated
+	@Override
+	public boolean publish(BundleContext m_context) throws CIBusException {
+		BusOsgiUtil.publishService(m_context, this, NAME);
+		return true;
+	}
+
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.IService#publish(com.antelope.ci.bus.osgi.BusContext)
+	 */
+	@Override
+	public boolean publish(BusContext context) throws CIBusException {
+		BusOsgiUtil.publishService(context.getBundleContext(), this, NAME);
+		return true;
 	}
 }

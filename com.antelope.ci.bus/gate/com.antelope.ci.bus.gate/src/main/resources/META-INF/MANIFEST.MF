@@ -12,4 +12,4 @@ DynamicImport-Package: com.antelope.ci.bus.server.service.*, com.antelope.ci.bus
  com.antelope.ci.bus.engine.manager.user.*
 Export-Package: com.antelope.ci.bus.gate.message, com.antelope.ci.bus.gate.api.service,
  com.antelope.ci.bus.gate.service
-Bundle-Activator: com.antelope.ci.bus.gate.BusComplexActivator
+Bundle-Activator: com.antelope.ci.bus.gate.BusGateComplexActivator

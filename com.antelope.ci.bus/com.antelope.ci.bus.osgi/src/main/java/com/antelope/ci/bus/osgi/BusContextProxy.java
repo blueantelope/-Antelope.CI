@@ -15,27 +15,27 @@ package com.antelope.ci.bus.osgi;
  * @version  0.1
  * @Date	 2015年2月11日		下午12:55:24 
  */
-public class BusActivatorContextProxy {
-	private static final BusActivatorContextProxy contextProxy = new BusActivatorContextProxy();
+public class BusContextProxy {
+	private static final BusContextProxy contextProxy = new BusContextProxy();
 	
-	public static final BusActivatorContextProxy getContextProxy() {
+	public static final BusContextProxy getContextProxy() {
 		return contextProxy;
 	}
 	
-	private BusActivatorContext context;
+	private BusContext context;
 	private boolean init;
-	private BusActivatorContextProxy() {
+	private BusContextProxy() {
 		init = false;
 	}
 	
-	public void initContext(BusActivatorContext context) {
+	public void initContext(BusContext context) {
 		if (!init) {
 			this.context = context;
 			init = true;
 		}
 	}
 	
-	public BusActivatorContext getContext() {
+	public BusContext getContext() {
 		return context;
 	}
 }

@@ -27,6 +27,18 @@ public interface IService {
 	 * @param  @throws CIBusException
 	 * @return boolean 已发布true
 	 * @throws
+	 * @Deprecated replace by {@link #publish(BusContext context)}
 	 */
+	@Deprecated
 	public boolean publish(BundleContext m_context) throws CIBusException;
+	
+	/**
+	 * 发布服务
+	 * @param  @param context
+	 * @param  @return
+	 * @param  @throws CIBusException
+	 * @return boolean
+	 * @throws
+	 */
+	public boolean publish(BusContext context) throws CIBusException;
 }

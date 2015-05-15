@@ -36,9 +36,9 @@ public class PortalFormContextFactory {
 	}
 	
 	
-	private static final Logger log = Logger.getLogger(PortalFormContextFactory.class);
-	private static final long CHECK_START = 5 * 1000;
-	private static final long CHECK_PERIOD = 30 * 1000;
+	private final static Logger log = Logger.getLogger(PortalFormContextFactory.class);
+	private final static long CHECK_START = 5 * 1000;
+	private final static long CHECK_PERIOD = 30 * 1000;
 	private static Map<BusPortalShell, List<PortalFormContext>> formContextMap;
 	private static List<BusPortalShell> shellList;
 	

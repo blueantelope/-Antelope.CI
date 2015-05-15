@@ -43,6 +43,7 @@ public class BusApiLauncher extends BusLauncher {
 		BusApi api = (BusApi) ProxyUtil.newObject(apiClass);
 		if (api == null)
 			api = (BusApi) ProxyUtil.newObject(apiClass, condition.getClassLoader());
+		api.setContext(condition.getContexts());
 		api.attatchSession(session);
 		return api;
 	}

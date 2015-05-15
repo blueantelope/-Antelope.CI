@@ -45,6 +45,7 @@ public class BusShellProxyLauncher extends BusShellLauncher {
 		BusShell shell = (BusShell) ProxyUtil.newObject(shellClass);
 		if (shell == null)
 			shell = (BusShell) ProxyUtil.newObject(shellClass, condition.getClassLoader());
+		shell.setContext(condition.getContexts());
 		shell.attatchSession(session);
 		return shell;
 	}

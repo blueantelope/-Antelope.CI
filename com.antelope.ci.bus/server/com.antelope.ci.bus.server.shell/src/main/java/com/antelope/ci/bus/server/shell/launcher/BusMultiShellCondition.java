@@ -33,8 +33,12 @@ public class BusMultiShellCondition extends BusShellCondition {
 		super(classLoader);
 	}
 	
-	public BusMultiShellCondition(ClassLoader classLoader, List<String> shellClsList) throws CIBusException {
-		this(classLoader);
+	public BusMultiShellCondition(Object[] contexts,  ClassLoader classLoader) {
+		super(contexts, classLoader);
+	}
+	
+	public BusMultiShellCondition(Object[] contexts, ClassLoader classLoader, List<String> shellClsList) throws CIBusException {
+		this(contexts, classLoader);
 		addShell(shellClsList);
 	}
 	
@@ -85,9 +89,11 @@ public class BusMultiShellCondition extends BusShellCondition {
 		return null;
 	}
 	
-	public BusShell createShell(String status) throws CIBusException {
+	public BusShell createShell(String status, Object... contexts) throws CIBusException {
 		String clsName = shellClassMap.get(status);
-		return (BusShell) ProxyUtil.newObject(clsName, classLoader);
+		BusShell shell =   (BusShell) ProxyUtil.newObject(clsName, classLoader);
+		shell.setContext(contexts);
+		return shell;
 	}
 
 	public String getShellClass(String status) {

@@ -36,6 +36,7 @@ import com.antelope.ci.bus.common.FileUtil;
 import com.antelope.ci.bus.common.StreamUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServer;
+import com.antelope.ci.bus.server.BusServerContext;
 import com.antelope.ci.bus.server.common.BusLauncher;
 import com.antelope.ci.bus.server.service.auth.AuthService;
 import com.antelope.ci.bus.server.service.auth.ssh.SshAuthService;
@@ -58,12 +59,20 @@ public abstract class BusSshServer extends BusServer {
 		super();
 	}
 	
+	/**
+	 * @Deprecated replace by {@link #BusSshServer(BusServerContext context)}
+	 */
+	@Deprecated
 	public BusSshServer(BundleContext bundle_context) throws CIBusException {
 		super(bundle_context);
 	}
 	
-	public BusSshServer(BundleContext bundle_context, BusShellLauncher launcher) throws CIBusException {
-		super(bundle_context);
+	public BusSshServer(BusServerContext context) throws CIBusException {
+		super(context);
+	}
+	
+	public BusSshServer(BusServerContext context, BusShellLauncher launcher) throws CIBusException {
+		super(context);
 		this.launcher = launcher;
 	}
 	

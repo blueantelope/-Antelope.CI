@@ -17,15 +17,20 @@ package com.antelope.ci.bus.server.common;
  * @Date	 2015年3月6日		下午4:34:08 
  */
 public class BusCondition {
+	protected Object[] contexts;
 	protected ClassLoader classLoader;
 	
 	public BusCondition() {
-		super();
-		init(null);
+		this(null, null);
 	}
 	
 	public BusCondition(ClassLoader classLoader) {
+		this(null, classLoader);
+	}
+	
+	public BusCondition(Object[] contexts, ClassLoader classLoader) {
 		super();
+		this.contexts = contexts;
 		init(classLoader);
 	}
 	
@@ -35,6 +40,14 @@ public class BusCondition {
 		} else {
 			this.classLoader = classLoader;
 		}
+	}
+	
+	// getter and setter
+	public Object[] getContexts() {
+		return contexts;
+	}
+	public void setContexts(Object[] contexts) {
+		this.contexts = contexts;
 	}
 
 	public ClassLoader getClassLoader() {

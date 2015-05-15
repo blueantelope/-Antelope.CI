@@ -140,7 +140,7 @@ public abstract class PortalHit extends Hit {
 		String[] commands = splitCommand();
 		ClassLoader loader = null;
 		try {
-			loader = BusActivator.getClassLoader();
+			loader = shell.getClassLoader();
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 		}

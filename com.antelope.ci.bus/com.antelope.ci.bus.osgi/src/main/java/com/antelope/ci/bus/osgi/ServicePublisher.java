@@ -23,8 +23,32 @@ import com.antelope.ci.bus.common.DevAssistant;
 public class ServicePublisher {
 	private static final Logger log = Logger.getLogger(ServicePublisher.class);
 	
+	@Deprecated
 	public static void publish(BundleContext m_context, String scan_path) {
 		new ServicePublishHook(m_context, scan_path) {
+			@Override protected ServicePublishInfo fetchService(Class clazz) {
+				ServicePublishInfo info = new ServicePublishInfo();
+				if (IService.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Service.class)) {
+					try {
+						Service service =  (Service) clazz.getAnnotation(Service.class);
+						Object serviceObj = clazz.newInstance();
+						String serviceName = service.name();
+						info.canPublish = true;
+						info.service = (IService) serviceObj;
+						info.serviceName = serviceName;
+					} catch (Exception e) {
+						DevAssistant.errorln(e);
+						log.error(e);
+					}
+				}
+				return info;
+			}
+			
+		}.start();
+	}
+	
+	public static void publish(BusContext context, String scan_path) {
+		new ServicePublishHook(context, scan_path) {
 			@Override protected ServicePublishInfo fetchService(Class clazz) {
 				ServicePublishInfo info = new ServicePublishInfo();
 				if (IService.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(Service.class)) {

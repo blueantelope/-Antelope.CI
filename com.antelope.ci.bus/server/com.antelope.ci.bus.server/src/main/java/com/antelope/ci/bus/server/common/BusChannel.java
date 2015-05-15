@@ -96,4 +96,6 @@ public abstract class BusChannel {
 	protected abstract void load() throws CIBusException;
 	
 	protected abstract void release() throws CIBusException;
+	
+	public abstract void setContext(Object... contexts);
 }

@@ -27,7 +27,7 @@ import com.antelope.ci.bus.server.common.BusLauncher;
  * @Date	 2015年5月2日		下午8:47:11 
  */
 public class BusSshApiCommand extends BusSshCommand {
-	private static final Logger log = Logger.getLogger(BusSshApiCommand.class);
+	private final static Logger log = Logger.getLogger(BusSshApiCommand.class);
 	protected String input;
 	
 	public void setInput(String input) {

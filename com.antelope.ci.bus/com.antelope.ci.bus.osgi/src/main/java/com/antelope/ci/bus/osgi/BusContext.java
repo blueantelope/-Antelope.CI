@@ -31,7 +31,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  * @version  0.1
  * @Date	 2015年2月11日		下午12:55:00 
  */
-public class BusActivatorContext {
+public class BusContext {
 	public static final int FETCH_SERVICE_TIMES = 3;
 	public static final long FETCH_SERVICE_SLEEP = 500;
 	public static final String LOG_SERVICE_NAME = "com.antelope.ci.bus.logger.service.BusLogService";
@@ -50,7 +50,7 @@ public class BusActivatorContext {
 	protected ServiceReference log_ref;
 	protected Object logService;
 	
-	public BusActivatorContext() {
+	public BusContext() {
 		super();
 		init();
 	}

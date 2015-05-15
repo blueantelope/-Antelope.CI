@@ -8,15 +8,23 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.input.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.output.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.user.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.project.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.database.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.cvs.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.svn.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.git.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.compile" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.realization.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile" />
@@ -41,15 +49,23 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.input.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.output.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.user.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.project.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.database.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.cvs.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.svn.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.git.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.compile.notest" />
+		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.realization.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile.notest" />
@@ -82,7 +98,7 @@
 		<copy todir="${app.portal.bin}">
 			<fileset dir="${script.root}" />
 		</copy>
-		<chmod dir="${app.gate.bin}" perm="ugo+rx" includes="**/*.sh"/>
+		<chmod dir="${app.portal.bin}" perm="ugo+rx" includes="**/*.sh"/>
 		<!-- /etc -->
 		<copy todir="${app.portal.etc}">
 			<fileset dir="${prj.bus.etc}" />
@@ -112,6 +128,7 @@
 				<include name="jaxen*.jar" />
 				<include name="dom4j*.jar" />
 				<include name="xml-apis*.jar" />
+				<include name="json*.jar" />
 				<include name="com.antelope.ci.bus.common-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.osgi-${bus.version}.jar" />
 			</fileset>
@@ -127,7 +144,6 @@
 			</fileset>
 		</copy>
 		
-		
 		<!-- /system/engine/model -->
 		<copy todir="${app.portal.system.engine.model}">
 			<fileset dir="${target.depends}">
@@ -138,8 +154,30 @@
 		<!-- /system/engine/model/part -->
 		<copy todir="${app.portal.system.engine.model.part}">
 			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.model.vcs.input-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.model.vcs.output-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.model.project-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.model.user-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/access -->
+		<copy todir="${app.portal.system.engine.access}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/access/part -->
+		<copy todir="${app.portal.system.engine.access.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access.storage.database-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.flatfile-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.ldap-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs.cvs-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs.svn-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs.git-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		
@@ -150,10 +188,18 @@
 			</fileset>
 		</copy>
 		
+		<!-- /system/engine/manager/part -->
+		<copy todir="${app.portal.system.engine.manager.part}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager.user-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
 		<!-- /system/engine/manager/service -->
 		<copy todir="${app.portal.system.engine.manager.service}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.user.realization-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.engine.manager.project.realization-${bus.version}.jar" />
 			</fileset>
 		</copy>

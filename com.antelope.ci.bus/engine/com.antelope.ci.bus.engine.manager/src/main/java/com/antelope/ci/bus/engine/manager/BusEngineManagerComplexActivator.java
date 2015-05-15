@@ -22,7 +22,7 @@ import com.antelope.ci.bus.osgi.BusComplexActivator;
  */
 public class BusEngineManagerComplexActivator extends BusComplexActivator {
 	public BusEngineManagerComplexActivator() {
-		super(BusEngineManagerActivatorContext.CONTEXT_CLAZZ);
+		super(BusEngineManagerContext.CONTEXT_CLAZZ);
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public class BusEngineManagerComplexActivator extends BusComplexActivator {
 
 	@Override
 	protected void addServices() throws CIBusException {
-		BusEngineManagerPublisher.publish((BusEngineManagerActivatorContext) bus_context, EnginePublishInfo.createPartPublish("com.antelope.ci.bus.engine.manager"));
+		BusEngineManagerPublisher.publish((BusEngineManagerContext) context, EnginePublishInfo.createPartPublish("com.antelope.ci.bus.engine.manager"));
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.gate.shell.BusGateShell;
+import com.antelope.ci.bus.osgi.BusContext;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.IService;
 import com.antelope.ci.bus.osgi.Service;
@@ -35,11 +36,18 @@ public class GateShellService implements IService {
 		super();
 	}
 	
+	
+	public BusShellManager getManager() {
+		return manager;
+	}
+	
 	/**
 	 * 
 	 * (non-Javadoc)
 	 * @see com.antelope.ci.bus.osgi.IService#publish(org.osgi.framework.BundleContext)
+	 * @Deprecated replace by {@link #publish(BusContext context)}
 	 */
+	@Deprecated
 	@Override
 	public boolean publish(BundleContext m_context) throws CIBusException {
 		BusShellCondition condition = new BusShellCondition(BusOsgiUtil.getBundleClassLoader(m_context));
@@ -47,8 +55,18 @@ public class GateShellService implements IService {
 		manager = new BusShellManager(condition);
 		return false;
 	}
-	
-	public BusShellManager getManager() {
-		return manager;
+
+
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.IService#publish(com.antelope.ci.bus.osgi.BusContext)
+	 */
+	@Override
+	public boolean publish(BusContext context) throws CIBusException {
+		BusShellCondition condition = new BusShellCondition(new Object[]{context}, context.getClassLoader());
+		condition.addDefaultShellClass(BusGateShell.class.getName());
+		manager = new BusShellManager(condition);
+		return false;
 	}
 }

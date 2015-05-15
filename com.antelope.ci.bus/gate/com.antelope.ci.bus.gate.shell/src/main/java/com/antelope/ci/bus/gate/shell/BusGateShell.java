@@ -86,4 +86,11 @@ public class BusGateShell extends BusBaseEchoShell {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setContext(Object... contexts) {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

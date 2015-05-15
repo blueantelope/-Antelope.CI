@@ -47,6 +47,8 @@ public class BusGateApi extends BusApi {
 	@Override
 	protected void customApiEnv() throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -59,6 +61,7 @@ public class BusGateApi extends BusApi {
 	@Override
 	protected void release() throws CIBusException {
 		
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -91,5 +94,10 @@ public class BusGateApi extends BusApi {
 				log.error(e);
 			}
 		}
+	}
+
+	@Override
+	public void setContext(Object... contexts) {
+		
 	}
 }

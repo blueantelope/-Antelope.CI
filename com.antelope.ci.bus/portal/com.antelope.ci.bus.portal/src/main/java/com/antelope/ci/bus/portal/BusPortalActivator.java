@@ -17,7 +17,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.ServicePublisher;
-import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.configuration.StaleBusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalFormHelper;
 import com.antelope.ci.bus.portal.core.entrance.EntranceManager;
 import com.antelope.ci.bus.portal.core.service.ConfigurationService;
@@ -30,7 +30,9 @@ import com.antelope.ci.bus.server.shell.launcher.BusShellCondition;
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-10-21		下午12:10:23 
+ * @Deprecated replace by {@link #com.antelope.ci.bus.portal.BusPortalComplexActivator}
  */
+@Deprecated
 public class BusPortalActivator extends BusActivator {
 	protected static final String BANNER = "bus.portal.banner";
 	private final static String PARSER = "bus.portal.parser";	
@@ -82,7 +84,7 @@ public class BusPortalActivator extends BusActivator {
 	@Override
 	protected void customInit() throws CIBusException {
 		condition = new BusMultiShellCondition(getClassLoader());
-		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
+		StaleBusPortalConfigurationHelper configurationHelper = StaleBusPortalConfigurationHelper.getHelper();
 		configurationHelper.setClassLoader(getClassLoader());
 		configurationHelper.init();
 		BusPortalFormHelper.initClassLoader(getClassLoader());

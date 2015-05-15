@@ -13,7 +13,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.configuration.StaleBusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_LAYOUT;
 
@@ -29,8 +29,8 @@ public class TestParse extends TestCase {
 
 	@Test
 	public void test() throws CIBusException {
-		BusPortalConfigurationHelper.getHelper().init();
-		Portal portal = BusPortalConfigurationHelper.getHelper().getPortal();
+		StaleBusPortalConfigurationHelper.getHelper().init();
+		Portal portal = StaleBusPortalConfigurationHelper.getHelper().getPortal();
 		System.out.println(portal.getPlaceMap().get(EU_LAYOUT.CENTER.getName()));
 		System.out.println(portal);
 		System.out.println(portal.getPartMap().get("help").getValue());

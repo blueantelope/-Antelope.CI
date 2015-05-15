@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.configuration.StaleBusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
 
 
@@ -30,7 +30,7 @@ public class TestExtentionParse extends TestCase {
 
 	@Test
 	public void test() throws CIBusException, IOException {
-		BusPortalConfigurationHelper helper = BusPortalConfigurationHelper.getHelper();
+		StaleBusPortalConfigurationHelper helper = StaleBusPortalConfigurationHelper.getHelper();
 		helper.init();
 		System.out.println(helper.getPortal());
 		Portal portal_ext = helper.parseExtention("com.antelope.ci.bus.portal.core.test");

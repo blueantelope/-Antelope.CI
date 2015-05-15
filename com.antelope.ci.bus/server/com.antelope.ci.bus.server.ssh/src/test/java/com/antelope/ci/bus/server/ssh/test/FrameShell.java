@@ -192,4 +192,11 @@ public class FrameShell extends BusBaseFrameShell {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setContext(Object... contexts) {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

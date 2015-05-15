@@ -38,5 +38,13 @@ public abstract class BusLauncher {
 		return condition.getClassLoader();
 	}
 	
+	/**
+	 * launch bus channel
+	 * @param  @param session
+	 * @param  @return
+	 * @param  @throws CIBusException
+	 * @return BusChannel
+	 * @throws
+	 */
 	public abstract BusChannel launch(BusSession session) throws CIBusException;
 }

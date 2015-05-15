@@ -27,11 +27,15 @@ public class BusShellCondition extends BusCondition {
 	protected Map<String, String> shellClassMap;
 	
 	public BusShellCondition() {
-		super();
+		this(null, null);
 	}
 	
 	public BusShellCondition(ClassLoader classLoader) {
-		super(classLoader);
+		this(null, classLoader);
+	}
+	
+	public BusShellCondition(Object[] contexts, ClassLoader classLoader) {
+		super(contexts, classLoader);
 		shellClassMap = new ConcurrentHashMap<String, String>();
 	}
 

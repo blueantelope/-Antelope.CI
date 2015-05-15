@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.portal.ssh.BusPortalSshActivator.java
+// com.antelope.ci.bus.portal.ssh.BusPortalSshComplexActivator.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -11,27 +11,37 @@ package com.antelope.ci.bus.portal.ssh;
 import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
+import com.antelope.ci.bus.osgi.BusComplexActivator;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.portal.BusPortalContext;
 import com.antelope.ci.bus.portal.core.service.ConfigurationService;
 import com.antelope.ci.bus.portal.core.service.ShellService;
-import com.antelope.ci.bus.server.BusServerTemplateActivator;
+
 
 /**
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2015年2月9日		下午1:53:55 
- * @Deprecated replace by {@link #com.antelope.ci.bus.portal.ssh.BusPortalSshComplexActivator}
+ * @Date	 2015年5月15日		下午5:25:44 
  */
-@Deprecated
-public class BusPortalSshActivator extends BusServerTemplateActivator {
-	private BusPortalSshServer sshServer; 
+public class BusPortalSshComplexActivator extends BusComplexActivator{
+	private BusPortalSshServer sshServer;
 	
+	public BusPortalSshComplexActivator() {
+		super(BusPortalSshContext.CONTEXT_CLAZZ);
+	}
+
+	@Override
+	protected void customInit() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	protected void run() throws CIBusException {
 		if (sshServer == null) {
-			sshServer = new BusPortalSshServer(bundle_context);
+			sshServer = new BusPortalSshServer((BusPortalSshContext) context);
 			Object shellService = fetchService(ShellService.NAME);
 			if (shellService != null)
 				sshServer.initLauncher(((ShellService)shellService).getManager().getContainerLauncher()) ;
@@ -50,11 +60,15 @@ public class BusPortalSshActivator extends BusServerTemplateActivator {
 	@Override
 	protected void destroy() throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void handleLoadService(String clsName, ServiceReference ref,
 			Object service) throws CIBusException {
+		
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -62,38 +76,30 @@ public class BusPortalSshActivator extends BusServerTemplateActivator {
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void handleStopAllService() throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.BusActivator#publishServices()
-	 */
 	@Override
-	protected void publishServices() throws CIBusException {
+	protected void addServices() throws CIBusException {
+		
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
 		
-	}
-
-	@Override
-	protected String[] customLoadServices() {
-		return new String[] {
-				ShellService.NAME,
-				ConfigurationService.NAME
-		};
-	}
-
-	@Override
-	protected void customInit() throws CIBusException {
+		// TODO Auto-generated method stub
 		
-	}
+	} 
+
 }
+

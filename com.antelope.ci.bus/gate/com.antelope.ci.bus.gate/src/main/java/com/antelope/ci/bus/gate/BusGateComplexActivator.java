@@ -44,7 +44,7 @@ public class BusGateComplexActivator extends BusComplexActivator {
 				try {
 					Thread.sleep(5 * 1000);
 				} catch (InterruptedException e) { }
-				sanner.setServiceMap(bus_context.getServiceMap());
+				sanner.setServiceMap(context.getServiceMap());
 			}
 		}.start();
 		sanner.setClassLoader(classLoader());

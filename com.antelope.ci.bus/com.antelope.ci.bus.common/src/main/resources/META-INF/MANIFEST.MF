@@ -4,5 +4,5 @@ Bundle-Name: CI Bus Common
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.common
 Export-Package: com.antelope.ci.bus.common;version="0.1.0", com.antelope.ci.bus.common.configration;version="0.1.0",
- com.antelope.ci.bus.common.exception;version="0.1.0", com.antelope.ci.bus.common.api;version="0.1.0",
+ com.antelope.ci.bus.common.exception;version="0.1.0", com.antelope.ci.bus.common.api;version="0.1.0", 
  com.antelope.ci.bus.common.xml;version="0.1.0"

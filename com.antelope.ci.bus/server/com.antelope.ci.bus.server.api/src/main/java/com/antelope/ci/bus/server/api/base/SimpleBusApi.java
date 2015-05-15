@@ -54,4 +54,11 @@ public class SimpleBusApi extends BusApi {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setContext(Object... contexts) {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

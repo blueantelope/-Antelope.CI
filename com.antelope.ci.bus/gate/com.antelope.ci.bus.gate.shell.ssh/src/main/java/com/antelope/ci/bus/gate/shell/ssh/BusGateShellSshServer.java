@@ -13,8 +13,9 @@ import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServerCondition;
-import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.BusServerCondition.SERVER_TYPE;
+import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.BusServerContext;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
 
 
@@ -28,8 +29,16 @@ public class BusGateShellSshServer extends BusSshServer {
 	private static final Logger log = Logger.getLogger(BusGateShellSshServer.class);
 	public static final String NAME = "com.antelope.ci.bus.gate.shell.ssh.BusGateShellSshServer";
 	
+	/**
+	 * @Deprecated replace by {@link #BusGateShellSshServer(BusServerContext context)}
+	 */
+	@Deprecated
 	public BusGateShellSshServer(BundleContext bundle_context) throws CIBusException {
 		super(bundle_context);
+	}
+	
+	public BusGateShellSshServer(BusServerContext context) throws CIBusException {
+		super(context);
 	}
 
 	@Override

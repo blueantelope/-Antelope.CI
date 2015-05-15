@@ -17,4 +17,4 @@ Export-Package: com.antelope.ci.bus.portal.core.configuration, com.antelope.ci.b
  com.antelope.ci.bus.portal.core.configuration.xo.portal, com.antelope.ci.bus.portal.core.entrance,
  com.antelope.ci.bus.portal.core.shell, com.antelope.ci.bus.portal.core.shell.command,
  com.antelope.ci.bus.portal.core.service
-Bundle-Activator: com.antelope.ci.bus.portal.BusPortalActivator
+Bundle-Activator: com.antelope.ci.bus.portal.BusPortalComplexActivator

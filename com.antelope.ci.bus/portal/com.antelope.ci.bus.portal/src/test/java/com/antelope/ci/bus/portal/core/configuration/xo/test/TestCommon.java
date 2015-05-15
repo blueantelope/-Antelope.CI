@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
+import com.antelope.ci.bus.portal.core.configuration.StaleBusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
 
 
@@ -29,8 +29,8 @@ public abstract class TestCommon extends TestCase {
 	
 	@Before
 	protected void setUp() throws CIBusException {
-		BusPortalConfigurationHelper.getHelper().init();
-		portal = BusPortalConfigurationHelper.getHelper().getPortal();
+		StaleBusPortalConfigurationHelper.getHelper().init();
+		portal = StaleBusPortalConfigurationHelper.getHelper().getPortal();
 	}
 	
 	@Test

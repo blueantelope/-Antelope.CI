@@ -22,7 +22,6 @@ import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.common.xml.BusXmlHelper.SetterGetterPair;
 import com.antelope.ci.bus.common.xml.XmlElement;
 import com.antelope.ci.bus.common.xml.XmlEntity;
-import com.antelope.ci.bus.osgi.BusActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_LAYOUT;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
 import com.antelope.ci.bus.portal.core.configuration.xo.portal.Action;
@@ -318,8 +317,8 @@ public class Portal implements Serializable {
 		return null;
 	}
 	
-	public Portal clonePortal() throws CIBusException {
-		return (Portal) ProxyUtil.deepClone(this, BusActivator.getClassLoader());
+	public Portal clonePortal(ClassLoader classLoader) throws CIBusException {
+		return (Portal) ProxyUtil.deepClone(this, classLoader);
 	}
 	
 	public Map<String, PlaceParts> makePlacePartsMap() {

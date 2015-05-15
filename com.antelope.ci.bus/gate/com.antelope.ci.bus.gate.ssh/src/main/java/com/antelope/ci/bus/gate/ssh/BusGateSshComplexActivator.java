@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.gate.ssh.BusGateActivator.java
+// com.antelope.ci.bus.gate.ssh.BusGateSshComplexActivator.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -13,22 +13,31 @@ import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.gate.api.service.GateService;
+import com.antelope.ci.bus.osgi.BusComplexActivator;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
-import com.antelope.ci.bus.server.BusServerTemplateActivator;
 
 
 /**
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2015年2月19日		下午1:13:08 
- * @Deprecated replace by {@link #com.antelope.ci.bus.gate.ssh.BusGateSshComplexActivator}
+ * @Date	 2015年5月15日		下午5:07:22 
  */
-@Deprecated
-public class BusGateSshActivator extends BusServerTemplateActivator {
-	private static final Logger log = Logger.getLogger(BusGateSshActivator.class);
+public class BusGateSshComplexActivator extends BusComplexActivator {
+	private static final Logger log = Logger.getLogger(BusGateSshComplexActivator.class);
 	private BusGateSshServer sshServer; 
 	
+	public BusGateSshComplexActivator() {
+		super(BusGateSshContext.CONTEXT_CLAZZ);
+	}
+
+	@Override
+	protected void customInit() throws CIBusException {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	protected void run() throws CIBusException {
 		new Thread() {
@@ -38,7 +47,7 @@ public class BusGateSshActivator extends BusServerTemplateActivator {
 						Thread.sleep(5 * 1000);
 					} catch (InterruptedException e) { }
 					if (sshServer == null) {
-						sshServer = new BusGateSshServer(bundle_context);
+						sshServer = new BusGateSshServer((BusGateSshContext) context);
 						Object shellService = fetchService(GateService.NAME);
 						if (shellService != null)
 							sshServer.initLauncher(((GateService)shellService).getManager().getLauncher());
@@ -52,12 +61,12 @@ public class BusGateSshActivator extends BusServerTemplateActivator {
 				}
 			}
 		}.start();
-		
-		
 	}
 
 	@Override
 	protected void destroy() throws CIBusException {
+		
+		// TODO Auto-generated method stub
 		
 	}
 
@@ -65,38 +74,38 @@ public class BusGateSshActivator extends BusServerTemplateActivator {
 	protected void handleLoadService(String clsName, ServiceReference ref,
 			Object service) throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void handleUnloadService(ServiceReference ref)
 			throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void handleStopAllService() throws CIBusException {
 		
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	protected void publishServices() throws CIBusException {
+	protected void addServices() throws CIBusException {
+		
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
 		
-	}
-
-	@Override
-	protected String[] customLoadServices() {
-		return new String[] {
-				GateService.NAME
-		};
-	}
-
-	@Override
-	protected void customInit() throws CIBusException {
+		// TODO Auto-generated method stub
 		
 	}
+
 }
+

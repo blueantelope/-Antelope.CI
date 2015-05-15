@@ -33,24 +33,24 @@ import com.antelope.ci.bus.common.exception.CIBusException;
  */
 public abstract class BusComplexActivator implements BundleActivator {
 	protected BundleContext bundle_context;
-	protected BusActivatorContext bus_context;
-	protected String bus_context_clazz;
+	protected BusContext context;
+	protected String context_clazz;
 
 	public BusComplexActivator() {
 		super();
 		construct();
 	}
 	
-	public BusComplexActivator(String bus_context_clazz) {
+	public BusComplexActivator(String context_clazz) {
 		super();
-		this.bus_context_clazz = bus_context_clazz;
+		this.context_clazz = context_clazz;
 		construct();
 	}
 	
 	private void construct() {
 		System.out.println(">>>>>> start bus activator: " + this.getClass().getName() + " <<<<<<");
-		if (StringUtil.empty(bus_context_clazz))
-			this.bus_context_clazz = BusActivatorContext.class.getName();
+		if (StringUtil.empty(context_clazz))
+			this.context_clazz = BusContext.class.getName();
 	}
 
 
@@ -79,12 +79,12 @@ public abstract class BusComplexActivator implements BundleActivator {
 	
 	protected void loadBusContext() throws CIBusException {
 		ClassLoader bundle_classloader = classLoader();
-		BusActivatorContextProxy contextProxy = (BusActivatorContextProxy) ProxyUtil.invokeStaticRet(
-				bundle_classloader, BusActivatorContextProxy.class.getName(), "getContextProxy");
-		bus_context = (BusActivatorContext) ProxyUtil.newObject(bus_context_clazz, bundle_classloader);
-		bus_context.setContext(bundle_context);
-		if (BusActivatorContext.class.isAssignableFrom(bus_context.getClass())) {
-			contextProxy.initContext(bus_context);
+		BusContextProxy contextProxy = (BusContextProxy) ProxyUtil.invokeStaticRet(
+				bundle_classloader, BusContextProxy.class.getName(), "getContextProxy");
+		context = (BusContext) ProxyUtil.newObject(context_clazz, bundle_classloader);
+		context.setContext(bundle_context);
+		if (BusContext.class.isAssignableFrom(context.getClass())) {
+			contextProxy.initContext(context);
 		} else {
 			throw new CIBusException("", "Error, Create Activator Context Object ");
 		}
@@ -104,7 +104,7 @@ public abstract class BusComplexActivator implements BundleActivator {
 	 * 加载环境配置
 	 */
 	private void loadEnv() throws CIBusException {
-		bus_context.loadBusProperties(); // 加载bus.properties
+		context.loadBusProperties(); // 加载bus.properties
 	}
 
 	/*
@@ -112,17 +112,17 @@ public abstract class BusComplexActivator implements BundleActivator {
 	 */
 	private void initDefaultServices() {
 		// log service
-		bus_context.addLogService();
+		context.addLogService();
 	}
 	
 	/*
 	 * 初始化service列表 由bus.properties中的bus.load.services一项中得到
 	 */
 	private void initLoadServices() {
-		String load_services = bus_context.getLoadServiceProps();
+		String load_services = context.getLoadServiceProps();
 		if (load_services != null) {
-			for (String load_service : load_services.split(BusActivatorContext.DIVISION))
-				bus_context.addLoadService(load_service.trim());
+			for (String load_service : load_services.split(BusContext.DIVISION))
+				context.addLoadService(load_service.trim());
 		}
 	}
 
@@ -143,12 +143,12 @@ public abstract class BusComplexActivator implements BundleActivator {
 	 * 使用serviceTrack加载所有定义的service
 	 */
 	private void loadServices() throws CIBusException {
-		for (String  service : bus_context.getServiceList()) {
+		for (String  service : context.getServiceList()) {
 			try {
 				Filter filter = bundle_context.createFilter("(objectClass=" + service + ")");
 				ServiceTracker tracker = new ServiceTracker(bundle_context, filter, new BusServiceTrackerCustomizer());  
 				tracker.open();
-				bus_context.addTracker(tracker);
+				context.addTracker(tracker);
 			} catch (InvalidSyntaxException e) {
 				e.printStackTrace();
 			}
@@ -193,10 +193,10 @@ public abstract class BusComplexActivator implements BundleActivator {
 		Object service = bundle_context.getService(ref);
 		String service_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_NAME);
 		String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
-		if (service_name.equals(BusActivatorContext.LOG_SERVICE_NAME)) {
-			bus_context.loadLogService(ref, service);
+		if (service_name.equals(BusContext.LOG_SERVICE_NAME)) {
+			context.loadLogService(ref, service);
 		} else {
-			bus_context.putService(ref);
+			context.putService(ref);
 		}
 		handleLoadService(service_class_name, ref, service);
 		DevAssistant.assert_out("service类：" + service.getClass().getName() +", 调用者：" + this.getClass().getName());
@@ -208,7 +208,7 @@ public abstract class BusComplexActivator implements BundleActivator {
 	 */
 	protected void unloadService(String service_name, String servcie_class_name, ServiceReference ref) throws CIBusException {
 		bundle_context.ungetService(ref);
-		bus_context.removeService(service_name, servcie_class_name);
+		context.removeService(service_name, servcie_class_name);
 		handleUnloadService(ref);
 	}
 
@@ -216,11 +216,11 @@ public abstract class BusComplexActivator implements BundleActivator {
 	 * 停止注册的service
 	 */
 	protected void stopAllService() throws CIBusException {
-		Map<String, List<BusServiceInfo>> serviceMap = bus_context.getServiceMap();
+		Map<String, List<BusServiceInfo>> serviceMap = context.getServiceMap();
 		for (String service_name : serviceMap.keySet()) {
 			if (serviceMap.get(service_name) != null) {
 				for (BusServiceInfo info : serviceMap.get(service_name)) {
-					bus_context.unloadLogService(service_name);
+					context.unloadLogService(service_name);
 					ServiceReference ref = info.ref;
 					Object service = info.service;
 					String service_class_name = (String) ref.getProperty(BusOsgiConstant.SERVICE_CLASS_NAME);
@@ -228,20 +228,20 @@ public abstract class BusComplexActivator implements BundleActivator {
 				}
 			}
 		}
-		bus_context.clearTracker();
+		context.clearTracker();
 		handleStopAllService();
-		bus_context.clearService();
+		context.clearService();
 	}
 	
 	protected Object fetchService(String serviceName) {
 		int n = 0;
-		while (n < BusActivatorContext.FETCH_SERVICE_TIMES) {
-			Object service = bus_context.getUsingService(serviceName);
+		while (n < BusContext.FETCH_SERVICE_TIMES) {
+			Object service = context.getUsingService(serviceName);
 			if (service != null)
 				return service;
 			n++;
 			try {
-				Thread.sleep(BusActivatorContext.FETCH_SERVICE_SLEEP);
+				Thread.sleep(BusContext.FETCH_SERVICE_SLEEP);
 			} catch (InterruptedException e) {}
 		}
 		

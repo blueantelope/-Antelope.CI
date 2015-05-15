@@ -19,7 +19,9 @@ import com.antelope.ci.bus.osgi.ServicePublisher;
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-7		下午6:14:57 
- */
+ * @Deprecated replace by {@link #com.antelope.ci.bus.server.BusServerTemplateComplexActivator}
+  */
+@Deprecated
 public class BusServerActivator extends BusServerTemplateActivator {
 	
 	/**

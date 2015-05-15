@@ -13,8 +13,9 @@ import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServerCondition;
-import com.antelope.ci.bus.server.BusServerConfig;
 import com.antelope.ci.bus.server.BusServerCondition.SERVER_TYPE;
+import com.antelope.ci.bus.server.BusServerConfig;
+import com.antelope.ci.bus.server.BusServerContext;
 import com.antelope.ci.bus.server.ssh.BusSshServer;
 
 /**
@@ -31,8 +32,16 @@ public class BusPortalSshServer extends BusSshServer {
 		super();
 	}
 	
+	/**
+	 * @Deprecated replace by {@link #BusPortalSshServer(BusServerContext context)}
+	 */
+	@Deprecated
 	public BusPortalSshServer(BundleContext bundle_context) throws CIBusException {
 		super(bundle_context);
+	}
+	
+	public BusPortalSshServer(BusServerContext context) throws CIBusException {
+		super(context);
 	}
 	
 	/**

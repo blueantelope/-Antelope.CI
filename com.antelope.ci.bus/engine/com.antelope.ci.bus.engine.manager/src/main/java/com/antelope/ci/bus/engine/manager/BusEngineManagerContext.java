@@ -9,7 +9,7 @@
 package com.antelope.ci.bus.engine.manager;
 
 import com.antelope.ci.bus.common.PropertiesUtil;
-import com.antelope.ci.bus.osgi.BusActivatorContext;
+import com.antelope.ci.bus.osgi.BusContext;
 
 
 /**
@@ -18,8 +18,8 @@ import com.antelope.ci.bus.osgi.BusActivatorContext;
  * @version  0.1
  * @Date	 2015年5月14日		下午3:55:14 
  */
-public class BusEngineManagerActivatorContext extends BusActivatorContext {
-	static final String CONTEXT_CLAZZ = BusEngineManagerActivatorContext.class.getName();
+public class BusEngineManagerContext extends BusContext {
+	static final String CONTEXT_CLAZZ = BusEngineManagerContext.class.getName();
 	private static final String PUBLISH_PERIOD = "publish.period";
 	private static final long DEF_PUBLISH_PERIOD = 1 * 1000;
 	

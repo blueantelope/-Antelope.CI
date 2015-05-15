@@ -22,7 +22,7 @@ import com.antelope.ci.bus.common.DevAssistant;
 import com.antelope.ci.bus.common.NetVTKey;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.portal.BusPortalActivator;
+import com.antelope.ci.bus.portal.BusPortalContext;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.core.configuration.PortalConfiguration;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
@@ -56,18 +56,19 @@ import com.antelope.ci.bus.server.shell.buffer.ShellCursor;
  */
 @Shell(name="base.frame", commandAdapter=PortalCommandAdapter.NAME)
 public abstract class BusPortalShell extends BusBaseFrameShell {
-	protected static final Logger log = Logger.getLogger(BusPortalShell.class);
+	private static final Logger log = Logger.getLogger(BusPortalShell.class);
 	
 	public enum CONTROLAIM{SILENT, ACTION, COMMAND, INPUT};
 	protected static final EU_LAYOUT[] LAYOUT_ORDER		= new EU_LAYOUT[] 
 			{EU_LAYOUT.NORTH, EU_LAYOUT.SOUTH, EU_LAYOUT.WEST, EU_LAYOUT.EAST, EU_LAYOUT.CENTER};
-	protected final static Map<String, Integer> CONTENT_SCALE = new HashMap<String, Integer>();
+	protected static final Map<String, Integer> CONTENT_SCALE = new HashMap<String, Integer>();
 	static {
 		CONTENT_SCALE.put(EU_LAYOUT.WEST.getName(), 2);
 		CONTENT_SCALE.put(EU_LAYOUT.CENTER.getName(), 6);
 		CONTENT_SCALE.put(EU_LAYOUT.EAST.getName(), 2);
 	}
 	
+	protected BusPortalContext context;
 	protected Portal portal;
 	protected ShellPalette contentPalette;
 	protected PortalBlock activeBlock;
@@ -96,27 +97,42 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 
 	public BusPortalShell() throws CIBusException {
 		super();
-		contentPalette = null;
-		Class thisCls = this.getClass();
-		if (thisCls.isAnnotationPresent(Shell.class)) {
-			Shell sa = (Shell) thisCls.getAnnotation(Shell.class);
-			this.sort = BusShellStatus.code(sa.status());
-		} 
-		customInit();
-		parsePortal();
-		mainBlocks = new ArrayList<PortalBlock>();
-		loadMainblock = true;
-		minorBlocksSet = new HashMap<String, List<PortalBlock>>();
-		shellLiving = new BusPortalShellLiving();
-		initPosition = new ShellCursor(0, 0);
-		bufferFactoryList = new ArrayList<BusPortalBufferFactory>();
-		inputInitialized = false;
-		inputFinished = false;
-		formControlMode = false;
-		lastFormCommandTime = -1;
-		form_command_wait = BusPortalActivator.getFormCommandWait();
+		try {
+			contentPalette = null;
+			Class thisCls = this.getClass();
+			if (thisCls.isAnnotationPresent(Shell.class)) {
+				Shell sa = (Shell) thisCls.getAnnotation(Shell.class);
+				this.sort = BusShellStatus.code(sa.status());
+			} 
+			customInit();
+			parsePortal();
+			mainBlocks = new ArrayList<PortalBlock>();
+			loadMainblock = true;
+			minorBlocksSet = new HashMap<String, List<PortalBlock>>();
+			shellLiving = new BusPortalShellLiving();
+			initPosition = new ShellCursor(0, 0);
+			bufferFactoryList = new ArrayList<BusPortalBufferFactory>();
+			inputInitialized = false;
+			inputFinished = false;
+			formControlMode = false;
+			lastFormCommandTime = -1;
+		} catch (Exception e) {
+			log.error("ERROR - new BusPortalShell:\n" + e);
+		}
 		if (portal == null)
 			throw new CIBusException("", "must set configration of portal");
+	}
+	
+	
+	@Override public void setContext(Object... contexts) {
+		if (contexts != null && contexts.length > 0) {
+			context = (BusPortalContext) contexts[0];
+			form_command_wait = context.getFormCommandWait();
+		}
+	}
+	
+	public BusPortalContext getContext() {
+		return context;
 	}
 	
 	public void startFormCommand() {
@@ -306,7 +322,6 @@ public abstract class BusPortalShell extends BusBaseFrameShell {
 	}
 	
 	protected void parsePortal() throws CIBusException {
-		portal = null;
 		Class thisCls = this.getClass();
 		BusPortalConfigurationHelper configHelper = BusPortalConfigurationHelper.getHelper();
 		if (thisCls.isAnnotationPresent(PortalConfiguration.class)) {

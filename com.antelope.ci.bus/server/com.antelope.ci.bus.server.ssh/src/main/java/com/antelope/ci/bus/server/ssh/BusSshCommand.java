@@ -20,6 +20,7 @@ import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.server.BusServerCondition.SERVER_TYPE;
 import com.antelope.ci.bus.server.common.BusChannel;
 import com.antelope.ci.bus.server.common.BusLauncher;
+import com.antelope.ci.bus.server.common.BusSession;
 
 
 /**
@@ -72,8 +73,8 @@ public abstract class BusSshCommand implements Command {
 			public void run() {
 				BusChannel channel = null;
 				try {
-					channel = launcher.launch(BusSshSessionCreater.create(
-							customizeType(), in, out, err, callback, env));
+					BusSession sessioin = BusSshSessionCreater.create(customizeType(), in, out, err, callback, env);
+					channel = launcher.launch(sessioin);
 					cumstomizeContext();
 					channel.open();
 				} catch (CIBusException e) {

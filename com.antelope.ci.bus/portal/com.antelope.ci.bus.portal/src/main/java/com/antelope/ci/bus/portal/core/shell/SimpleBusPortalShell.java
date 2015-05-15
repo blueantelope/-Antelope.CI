@@ -42,4 +42,11 @@ public class SimpleBusPortalShell extends BusPortalShell {
 	protected PortalBlock loadBlock() {
 		return null;
 	}
+
+	@Override
+	public void setContext(Object... contexts) {
+		
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -48,7 +48,7 @@ public class BusShellContainerLauncher extends BusShellLauncher {
 		Map<String, BusShell> shellMap = new HashMap<String, BusShell>();
 		Map<String, String> scmap = multiCondition.getShellClassMap();
 		for (String status : scmap.keySet()) {
-			BusShell shell = multiCondition.createShell(status);
+			BusShell shell = multiCondition.createShell(status, condition.getContexts());
 			shell.attatchSession(session);
 			shellMap.put(status, shell);
 			

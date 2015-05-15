@@ -1,4 +1,4 @@
-// com.antelope.ci.bus.server.BusServerTemplateActivator.java
+// com.antelope.ci.bus.server.BusServerTemplateContext.java
 /**
  * Antelope CI平台，持续集成平台
  * 支持分布式部署测试，支持基于工程、任务多种集成模式
@@ -11,7 +11,7 @@ package com.antelope.ci.bus.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.antelope.ci.bus.osgi.BusActivator;
+import com.antelope.ci.bus.osgi.BusContext;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.service.auth.AuthService;
 
@@ -20,23 +20,19 @@ import com.antelope.ci.bus.server.service.auth.AuthService;
  *
  * @author   blueantelope
  * @version  0.1
- * @Date	 2015年2月10日		下午1:05:08 
+ * @Date	 2015年5月15日		下午4:49:25 
  */
-@Deprecated
-public abstract class BusServerTemplateActivator extends BusActivator {
-	/**
-	 * 
-	 * (non-Javadoc)
-	 * @see com.antelope.ci.bus.osgi.BusActivator#initLoadServices()
-	 */
+public class BusServerContext extends BusContext {
+	static final String CONTEXT_CLAZZ = BusServerContext.class.getName();
+	
 	@Override
-	protected void initLoadServices() {
-		super.initLoadServices();
-		serviceList.add(UserStoreServerService.NAME);
-		serviceList.add(AuthService.NAME);
+	protected void init() {
+		super.init();
+		loadServiceList.add(UserStoreServerService.NAME);
+		loadServiceList.add(AuthService.NAME);
 	}
 	
-	public static List<AuthService> getAuthServices() {
+	public List<AuthService> getAuthServices() {
 		List<AuthService> authServices = new ArrayList<AuthService>();
 		List serviceList = getServices(AuthService.NAME);
 		if (serviceList != null) {
@@ -46,7 +42,8 @@ public abstract class BusServerTemplateActivator extends BusActivator {
 		return authServices;
 	}
 	
-	public static UserStoreServerService getUserStoreService() {
+	public UserStoreServerService getUserStoreService() {
 		return (UserStoreServerService) getUsingService(UserStoreServerService.NAME);
 	}
 }
+

@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusOsgiUtil;
+import com.antelope.ci.bus.osgi.BusContext;
 import com.antelope.ci.bus.server.service.UserStoreServerService;
 import com.antelope.ci.bus.server.service.auth.AuthService;
 
@@ -38,6 +38,7 @@ public abstract class BusServer {
 	protected long waitForStart;
 	protected boolean running;
 	protected BundleContext bundle_context;
+	protected BusServerContext context;
 	private ReadWriteLock locker = new ReentrantReadWriteLock();
 	private Lock readLocker = locker.readLock();
 	private Lock writeLocker = locker.writeLock();
@@ -48,6 +49,10 @@ public abstract class BusServer {
 		customizeInit();
 	}
 	
+	/**
+	 * @Deprecated replace by {@link #BusServer(BusContext context)}
+	 */
+	@Deprecated
 	public BusServer(BundleContext bundle_context) throws CIBusException {
 		super();
 		this.bundle_context = bundle_context;
@@ -55,9 +60,16 @@ public abstract class BusServer {
 		customizeInit();
 	}
 	
+	public BusServer(BusServerContext context) throws CIBusException {
+		super();
+		this.context = context;
+		init();
+		customizeInit();
+	}
+	
 	public ClassLoader getClassLoader() {
-		if (bundle_context != null)
-			return BusOsgiUtil.getBundleClassLoader(bundle_context);
+		if (context != null)
+			return context.getClassLoader();
 		return this.getClass().getClassLoader();
 	}
 	
@@ -138,7 +150,7 @@ public abstract class BusServer {
 				Thread.sleep(SLEEP_WAIT_INIT);
 			} catch (InterruptedException e) {}
 			if (userstore_added) {
-				List<AuthService> authServices = BusServerTemplateActivator.getAuthServices();
+				List<AuthService> authServices = context.getAuthServices();
 				for (AuthService authService : authServices) {
 					switch (authService.getAuthType()) {
 						case PASSWORD:
@@ -160,7 +172,7 @@ public abstract class BusServer {
 				if (pwd_added && key_added)
 					break;
 			} else {
-				UserStoreServerService userStoreService = BusServerTemplateActivator.getUserStoreService();
+				UserStoreServerService userStoreService = context.getUserStoreService();
 				if (userStoreService == null)
 					continue;
 				condition.setUserMap(userStoreService.getUserMap());
@@ -178,7 +190,7 @@ public abstract class BusServer {
 	 * 解析bus.properties配置
 	 */
 	protected BusServerConfig parseConfig() throws CIBusException {
-		BusServerConfig config = BusServerConfig.load(bundle_context);
+		BusServerConfig config = BusServerConfig.load(context.getBundleContext());
 		return config;
 	}
 	

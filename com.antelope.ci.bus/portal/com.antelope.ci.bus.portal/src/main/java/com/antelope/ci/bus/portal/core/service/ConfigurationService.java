@@ -10,7 +10,7 @@ package com.antelope.ci.bus.portal.core.service;
 
 import java.util.Properties;
 
-import com.antelope.ci.bus.portal.BusPortalActivator;
+import com.antelope.ci.bus.portal.BusPortalContext;
 
 
 /**
@@ -28,7 +28,7 @@ public class ConfigurationService {
 	}
 	
 	public long getStartWait() {
-		return (Long) properties.get(BusPortalActivator.START_WAIT);
+		return (Long) properties.get(BusPortalContext.START_WAIT);
 	}
 }
 

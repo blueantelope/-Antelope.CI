@@ -11,10 +11,11 @@ package com.antelope.ci.bus.common.test.portal;
 import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.engine.model.user.User;
-import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
 import com.antelope.ci.bus.engine.model.user.Key;
 import com.antelope.ci.bus.engine.model.user.Passwd;
+import com.antelope.ci.bus.engine.model.user.User;
+import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
+import com.antelope.ci.bus.portal.BusPortalContext;
 import com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper;
 import com.antelope.ci.bus.portal.ssh.BusPortalSshServer;
 import com.antelope.ci.bus.server.BusServerCondition;
@@ -111,7 +112,7 @@ public class TestCommonPortalServer extends BusPortalSshServer {
 	@Override
 	protected void customizeInit() throws CIBusException {
 		BusPortalConfigurationHelper configurationHelper = BusPortalConfigurationHelper.getHelper();
-		configurationHelper.init();
+		configurationHelper.init(new BusPortalContext());
 	}
 	
 	@Override

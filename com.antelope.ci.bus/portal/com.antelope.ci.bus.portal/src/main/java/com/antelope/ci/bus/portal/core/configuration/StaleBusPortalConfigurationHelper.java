@@ -35,7 +35,8 @@ import com.antelope.ci.bus.common.configration.ResourceReader;
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.common.xml.BusXmlHelper;
 import com.antelope.ci.bus.common.xml.XmlEntity;
-import com.antelope.ci.bus.portal.BusPortalContext;
+import com.antelope.ci.bus.osgi.BusActivator;
+import com.antelope.ci.bus.portal.BusPortalActivator;
 import com.antelope.ci.bus.portal.core.configuration.xo.Portal;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_ORIGIN;
 import com.antelope.ci.bus.portal.core.configuration.xo.meta.EU_Point;
@@ -60,18 +61,20 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
  * @author   blueantelope
  * @version  0.1
  * @Date	 2013-11-14		上午11:15:09 
+ * @Deprecated replace by {@link #com.antelope.ci.bus.portal.core.configuration.BusPortalConfigurationHelper}
  */
-public class BusPortalConfigurationHelper {
-	private static final BusPortalConfigurationHelper helper = new BusPortalConfigurationHelper();
+@Deprecated
+public class StaleBusPortalConfigurationHelper {
+	private static final StaleBusPortalConfigurationHelper helper = new StaleBusPortalConfigurationHelper();
 	
-	public final static BusPortalConfigurationHelper getHelper() {
+	public final static StaleBusPortalConfigurationHelper getHelper() {
 		return helper;
 	}
 	
-	private final static Logger log = Logger.getLogger(BusPortalConfigurationHelper.class);
 	private static final String PORTAL_XSD = "/com/antelope/ci/bus/portal/core/configuration/portal.xsd";
 	private static final String PORTAL_XML = "/com/antelope/ci/bus/portal/core/configuration/portal.xml";
 	private static final String PORTAL_RESOURCE = "com.antelope.ci.bus.portal.core.configuration.portal";
+	private static Logger log;
 	private Portal portal;
 	private Portal usablePortal; // 配置文件转换后
 	private ResourceReader reader;
@@ -84,44 +87,33 @@ public class BusPortalConfigurationHelper {
 	private static InputStream xsd_in = null;
 	private final static PARSER_TYPE DEF_PARSER_TYPE = PARSER_TYPE.STATICAL;
 	
-	private BusPortalConfigurationHelper() {
-	
-	}
-	
-	public synchronized void init(BusPortalContext context) throws CIBusException {
-		if (!inited) {
-//			try {
-//				log = context.getLog4j(BusPortalConfigurationHelper.class);
-//			} catch (CIBusException e) {
-//				DevAssistant.errorln(e);
-//			} 
-			try {
-				String parserValue = context.getParser();
-				parserType = PARSER_TYPE.toType(parserValue);
-			} catch (CIBusException e) {
-				DevAssistant.errorln(e);
-				parserType = DEF_PARSER_TYPE;
-			} 
-			configPairMap = new ConcurrentHashMap<String, PortalPair>();
-			classLoader = context.getClassLoader();
-			null_name_index = 0;
-			portalExtMap = new ConcurrentHashMap<String, Portal>();
-			xsd_in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_XSD);
-			
-			if (parserType == PARSER_TYPE.STATICAL) {
-				portal = parsePortal(PORTAL_XML);
-				reader = parseResource(PORTAL_RESOURCE, classLoader);
-				usablePortal = portal.clonePortal(classLoader);
-				convert(usablePortal, reader);
-			}
-			inited = true;
-		}
-		
+	private StaleBusPortalConfigurationHelper() {
+		try {
+			log = BusActivator.getLog4j(this.getClass());
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+		} 
+		try {
+			String parserValue = BusPortalActivator.getParser();
+			parserType = PARSER_TYPE.toType(parserValue);
+		} catch (CIBusException e) {
+			DevAssistant.errorln(e);
+			parserType = DEF_PARSER_TYPE;
+		} 
+		configPairMap = new ConcurrentHashMap<String, PortalPair>();
+		classLoader = this.getClass().getClassLoader();
+		null_name_index = 0;
+		portalExtMap = new ConcurrentHashMap<String, Portal>();
+		xsd_in = StaleBusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_XSD);
 	}
 	
 	public void addConfigPair(String name, String props_name, String xml_name, boolean validate) {
 		PortalPair pair = new PortalPair(props_name, xml_name, validate);
 		configPairMap.put(name, pair);
+	}
+	
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
 	}
 	
 	public Portal parse(String shellClass) throws CIBusException {
@@ -342,6 +334,16 @@ public class BusPortalConfigurationHelper {
 		return sortPortalMap(portalExtMap);
 	}
 	
+	public synchronized void init() throws CIBusException {
+		if (!inited && parserType == PARSER_TYPE.STATICAL) {
+			portal = parsePortal(PORTAL_XML);
+			reader = parseResource(PORTAL_RESOURCE, classLoader);
+			usablePortal = portal.clonePortal(classLoader);
+			convert(usablePortal, reader);
+			inited = true;
+		}
+	}
+	
 	public Map<String, Portal> getPortalExtMap() {
 		return portalExtMap;
 	}
@@ -410,7 +412,7 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private InputStream getXmlStream(String xpath) throws Exception {
-		return ResourceUtil.getXmlStream(BusPortalConfigurationHelper.class, xpath);
+		return ResourceUtil.getXmlStream(StaleBusPortalConfigurationHelper.class, xpath);
 	}
 	
 	private String trunckConfig(String config) {
@@ -441,12 +443,12 @@ public class BusPortalConfigurationHelper {
 	}
 	
 	private Portal parsePortal(String xml_path) throws CIBusException {
-		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
+		InputStream in = StaleBusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
 		return (Portal) BusXmlHelper.parse(Portal.class, in);
 	}
 	
 	private Portal validateAndParsePortal(String xml_path) throws CIBusException {
-		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
+		InputStream in = StaleBusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
 		return (Portal) BusXmlHelper.parse(Portal.class, in, xsd_in);
 	}
 

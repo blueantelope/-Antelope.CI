@@ -14,15 +14,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.EncryptUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.engine.model.user.Key;
 import com.antelope.ci.bus.engine.model.user.Passwd;
+import com.antelope.ci.bus.engine.model.user.User;
 import com.antelope.ci.bus.engine.model.user.User.AUTH_TYPE;
+import com.antelope.ci.bus.osgi.BusContext;
 import com.antelope.ci.bus.osgi.BusOsgiUtil;
 import com.antelope.ci.bus.osgi.BusOsgiUtil.ServiceProperty;
 import com.antelope.ci.bus.server.service.CommonServerService;
@@ -34,7 +36,8 @@ import com.antelope.ci.bus.server.service.CommonServerService;
  * @Date	 2013-10-15		下午12:55:02 
  */
 public abstract class AbstractAuthService extends CommonServerService implements AuthService {
-	public static final String SERVICE_AUTH_TYPE = "service.auth.type";
+	private final static Logger log = Logger.getLogger(AbstractAuthService.class);
+	public final static String SERVICE_AUTH_TYPE = "service.auth.type";
 	protected Map<String, User> userStore = new HashMap<String, User>();
 	protected AUTH_TYPE auth_type = null;
 	
@@ -79,7 +82,7 @@ public abstract class AbstractAuthService extends CommonServerService implements
 		try {
 			String password_src = EncryptUtil.decrypt_symmetric(u_password.getAlgorithm(), u_password.getSeed(), password);
 			if (u_password.getPassword().equals(password_src)) {
-//				log.debug("password login succesful");
+//				log.debug("password login successful");
 				return true;
 			}
 		} catch (CIBusException e) {
@@ -118,7 +121,9 @@ public abstract class AbstractAuthService extends CommonServerService implements
 	 * 
 	 * (non-Javadoc)
 	 * @see com.antelope.ci.bus.osgi.IService#publish(org.osgi.framework.BundleContext)
+	 * @Deprecated replace by {@link #publish(BusContext context)}
 	 */
+	@Deprecated
 	@Override
 	public boolean publish(BundleContext m_context) throws CIBusException {
 		List<ServiceProperty> otherList = new ArrayList<ServiceProperty>(); 
@@ -128,6 +133,24 @@ public abstract class AbstractAuthService extends CommonServerService implements
 		if (extList != null)
 			otherList.addAll(extendServiceProperties());
 		BusOsgiUtil.publishService(m_context, this, AuthService.NAME, 
+				otherList.toArray(new ServiceProperty[otherList.size()]));
+		return true;
+	}
+	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see com.antelope.ci.bus.osgi.IService#publish(com.antelope.ci.bus.osgi.BusContext)
+	 */
+	@Override
+	public boolean publish(BusContext context) throws CIBusException {
+		List<ServiceProperty> otherList = new ArrayList<ServiceProperty>(); 
+		if (auth_type != null)
+			otherList.add(new ServiceProperty(SERVICE_AUTH_TYPE, auth_type.getName()));
+		List<ServiceProperty> extList = extendServiceProperties();
+		if (extList != null)
+			otherList.addAll(extendServiceProperties());
+		BusOsgiUtil.publishService(context.getBundleContext(), this, AuthService.NAME, 
 				otherList.toArray(new ServiceProperty[otherList.size()]));
 		return true;
 	}

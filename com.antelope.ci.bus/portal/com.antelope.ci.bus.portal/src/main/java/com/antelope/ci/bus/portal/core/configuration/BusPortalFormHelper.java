@@ -71,7 +71,7 @@ public class BusPortalFormHelper {
 		try {
 			reader.addConfig(name);
 		} catch(Exception e) {
-			DevAssistant.errorln(e);
+			DevAssistant.assert_exception(e);
 			reader.addConfig(name, _classLoader);
 		}
 		Properties properties = reader.getIsolateProps(name);

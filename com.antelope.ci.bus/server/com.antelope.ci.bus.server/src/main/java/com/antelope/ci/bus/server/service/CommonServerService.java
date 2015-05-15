@@ -8,10 +8,6 @@
 
 package com.antelope.ci.bus.server.service;
 
-import org.apache.log4j.Logger;
-
-import com.antelope.ci.bus.common.exception.CIBusException;
-import com.antelope.ci.bus.osgi.BusActivator;
 
 
 /**
@@ -21,14 +17,9 @@ import com.antelope.ci.bus.osgi.BusActivator;
  * @Date	 2013-11-8		下午12:21:38 
  */
 public abstract class CommonServerService {
-	protected static Logger log;
 	
 	public CommonServerService() {
-		try {
-			log = BusActivator.getLog4j(this.getClass());
-		} catch (CIBusException e) {
-			e.printStackTrace();
-		}
+		
 	}
 }
 

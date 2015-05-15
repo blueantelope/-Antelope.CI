@@ -25,13 +25,20 @@ import com.antelope.ci.bus.common.ClassFinder;
  */
 public abstract class ServicePublishHook extends Thread {
 	protected BundleContext m_context;
+	protected BusContext context;
 	protected List<String> serviceList = new Vector<String>();
 	protected List<String> scanedList = new Vector<String>();
 	protected static final Logger log = Logger.getLogger(ServicePublishHook.class);
 	protected String packetpath;
 	
+	@Deprecated
 	public ServicePublishHook(BundleContext m_context, String packetpath) {
 		this.m_context = m_context;
+		this.packetpath = packetpath;
+	}
+	
+	public ServicePublishHook(BusContext context, String packetpath) {
+		this.context = context;
 		this.packetpath = packetpath;
 	}
 	
@@ -54,8 +61,12 @@ public abstract class ServicePublishHook extends Thread {
 						Class clazz = Class.forName(cls, false, BusOsgiUtil.getBundleClassLoader(m_context));
 						ServicePublishInfo info = fetchService(clazz);
 						if (info.canPublish) {
-							if (!((IService) info.service).publish(m_context))
+							if (context != null) {
+								if (!((IService) info.service).publish(context))
+									BusOsgiUtil.publishService(context.getBundleContext(), info.service, info.serviceName);
+							} else if (!((IService) info.service).publish(m_context)) {
 								BusOsgiUtil.publishService(m_context, info.service, info.serviceName);
+							}
 							serviceList.add(cls);
 							log.info("add service :" + cls_name);
 						}

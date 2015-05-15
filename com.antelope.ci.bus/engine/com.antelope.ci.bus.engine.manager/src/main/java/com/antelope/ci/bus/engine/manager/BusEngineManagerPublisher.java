@@ -36,15 +36,15 @@ public class BusEngineManagerPublisher {
 	private static Map<String, BusEngineManager> managerMap = new ConcurrentHashMap<String, BusEngineManager>();
 	private static Map<String, ManagerParameters> parametersMap = new ConcurrentHashMap<String, ManagerParameters>();
 
-	public static void publish(BusEngineManagerActivatorContext context, EnginePublishInfo info) {
+	public static void publish(BusEngineManagerContext context, EnginePublishInfo info) {
 		new ServicePublishHook(context, info).start();
 	}
 	
 	private static class ServicePublishHook extends Thread {
-		private BusEngineManagerActivatorContext context;
+		private BusEngineManagerContext context;
 		private EnginePublishInfo info;
 		
-		private ServicePublishHook(BusEngineManagerActivatorContext context, EnginePublishInfo info) {
+		private ServicePublishHook(BusEngineManagerContext context, EnginePublishInfo info) {
 			this.context = context;
 			this.info = info;
 		}
