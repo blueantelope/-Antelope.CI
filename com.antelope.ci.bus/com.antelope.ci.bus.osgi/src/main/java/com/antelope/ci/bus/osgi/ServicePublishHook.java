@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.osgi.framework.BundleContext;
 
 import com.antelope.ci.bus.common.ClassFinder;
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -24,29 +25,43 @@ import com.antelope.ci.bus.common.ClassFinder;
  * @Date	 2014-7-9		上午11:59:28 
  */
 public abstract class ServicePublishHook extends Thread {
-	protected BundleContext m_context;
+	private static final Logger log = Logger.getLogger(ServicePublishHook.class);
+	protected enum CONTEXT_TYPE{BUS, BUNDLE};
 	protected BusContext context;
+	protected BundleContext m_context;
 	protected List<String> serviceList = new Vector<String>();
 	protected List<String> scanedList = new Vector<String>();
-	protected static final Logger log = Logger.getLogger(ServicePublishHook.class);
 	protected String packetpath;
+	protected CONTEXT_TYPE ctype;
 	
+	/**
+	 * @Deprecated replace by {@link #ServicePublishHook(BusContext context, String packetpath)}
+	 */
 	@Deprecated
 	public ServicePublishHook(BundleContext m_context, String packetpath) {
 		this.m_context = m_context;
 		this.packetpath = packetpath;
+		ctype = CONTEXT_TYPE.BUNDLE;
 	}
 	
 	public ServicePublishHook(BusContext context, String packetpath) {
 		this.context = context;
 		this.packetpath = packetpath;
+		ctype = CONTEXT_TYPE.BUS;
 	}
 	
 	public void run() {
+		ClassLoader cloader;
+		try {
+			cloader = fetchClassloader();
+		} catch (CIBusException e) {
+			return;
+		}
+		
 		while (true) {
 			String cls_name = "";
 			try {
-				List<String>  classList = ClassFinder.findClasspath(packetpath, BusOsgiUtil.getBundleClassLoader(m_context));
+				List<String>  classList = ClassFinder.findClasspath(packetpath, cloader);
 				for (String cls : classList) {
 					cls_name = cls;
 					boolean scaned = false;
@@ -58,17 +73,28 @@ public abstract class ServicePublishHook extends Thread {
 					}
 					if (!scaned) {
 						scanedList.add(cls);
-						Class clazz = Class.forName(cls, false, BusOsgiUtil.getBundleClassLoader(m_context));
+						Class clazz = Class.forName(cls, false, cloader);
 						ServicePublishInfo info = fetchService(clazz);
 						if (info.canPublish) {
-							if (context != null) {
-								if (!((IService) info.service).publish(context))
-									BusOsgiUtil.publishService(context.getBundleContext(), info.service, info.serviceName);
-							} else if (!((IService) info.service).publish(m_context)) {
-								BusOsgiUtil.publishService(m_context, info.service, info.serviceName);
+							boolean published = false;
+							switch (ctype) {
+								case BUS:
+									if (!((IService) info.service).publish(context)) {
+										BusOsgiUtil.publishService(context.getBundleContext(), info.service, info.serviceName);
+										published = true;
+									}
+									break;
+								case BUNDLE:
+									if (!((IService) info.service).publish(m_context)) {
+										BusOsgiUtil.publishService(m_context, info.service, info.serviceName);
+										published = true;
+									}
+									break;
 							}
-							serviceList.add(cls);
-							log.info("add service :" + cls_name);
+							if (published) {
+								log.info("add service :" + cls_name);
+								serviceList.add(cls);
+							}
 						}
 					}
 				}
@@ -80,6 +106,18 @@ public abstract class ServicePublishHook extends Thread {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
 			}
+		}
+	}
+	
+	private ClassLoader fetchClassloader() throws CIBusException {
+		switch (ctype) {
+			case BUS:
+				return context.getClassLoader();
+			case BUNDLE:
+				log.warn("depreacted publish context BundleContext, replace by BusContext");
+				return BusOsgiUtil.getBundleClassLoader(m_context);
+			default:
+				throw new CIBusException("", "unknown publish context type");
 		}
 	}
 	

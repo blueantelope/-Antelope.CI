@@ -88,7 +88,7 @@ public class BusGateComplexActivator extends BusComplexActivator {
 			BusOsgiUtil.publishService(bundle_context, gateService, GateService.NAME);
 		}
 		
-		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.gate.service");
+		ServicePublisher.publish(context, "com.antelope.ci.bus.gate.service");
 	}
 
 	@Override

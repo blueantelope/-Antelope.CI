@@ -91,7 +91,7 @@ public class BusPortalComplexActivator extends BusComplexActivator {
 		}
 		ConfigurationService configurationService = ((BusPortalContext) context).getConfigurationService();
 		BusOsgiUtil.publishService(bundle_context, configurationService, ConfigurationService.NAME);
-		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.portal.service");
+		ServicePublisher.publish(context, "com.antelope.ci.bus.portal.service");
 	}
 
 	@Override

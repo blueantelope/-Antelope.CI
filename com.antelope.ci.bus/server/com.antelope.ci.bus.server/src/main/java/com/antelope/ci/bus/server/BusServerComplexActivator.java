@@ -72,14 +72,14 @@ public class BusServerComplexActivator extends BusComplexActivator {
 
 	@Override
 	protected void addServices() throws CIBusException {
-		
-		// TODO Auto-generated method stub
-		
+		ServicePublisher.publish(context, "com.antelope.ci.bus.server.service");
 	}
 
 	@Override
 	protected void removeServices() throws CIBusException {
-		ServicePublisher.publish(bundle_context, "com.antelope.ci.bus.server.service");
+		
+		// TODO Auto-generated method stub
+		
 	}
 
 }
