@@ -21,19 +21,19 @@ import com.antelope.ci.bus.engine.model.user.User;
  * @Date	 2015年3月30日		下午2:30:51 
  */
 public interface EngineUserManager {
-	public List<Group> lsGroup(Group condition);
+	public List<Group> lsGroup(Group group);
 	
 	public void addGroup(Group group);
 	
 	public void rmGroup(Group group);
 	
-	public void modGroup(Group user, Group info);
+	public void alterGroup(Group group, Group update);
 	
-	public List<User> lsUser(User condition);
+	public List<User> lsUser(User user);
 	
 	public void addUser(User user);
 	
 	public void rmUser(User user);
 	
-	public void modUser(User user, User info);
+	public void alterUser(User user, User update);
 }

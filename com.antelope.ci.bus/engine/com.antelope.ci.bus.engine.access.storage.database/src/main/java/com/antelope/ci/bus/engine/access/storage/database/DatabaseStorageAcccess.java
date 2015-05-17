@@ -8,7 +8,7 @@
 
 package com.antelope.ci.bus.engine.access.storage.database;
 
-import com.antelope.ci.bus.engine.access.storage.StorageService;
+import com.antelope.ci.bus.engine.access.Access;
 
 
 /**
@@ -17,7 +17,7 @@ import com.antelope.ci.bus.engine.access.storage.StorageService;
  * @version  0.1
  * @Date	 2014-7-9		下午12:37:31 
  */
-@StorageService(serviceName="com.antelope.ci.bus.storage.database")
+@Access(name="com.antelope.ci.bus.storage.database")
 public class DatabaseStorageAcccess {
 
 }

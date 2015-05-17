@@ -11,6 +11,7 @@ package com.antelope.ci.bus.engine.model;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.api.ApiUtil;
 import com.antelope.ci.bus.common.api.BT;
+import com.antelope.ci.bus.common.aql.AqlEntry;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -78,7 +80,56 @@ public class ModelUtil {
 	}
 	
 	public static Map<String, Method> fetchSetter(IModel model) {
-		Map<String, String> tempMap = new HashMap<String, String>();
+		List<ModelStatement> statementList = fetchStatement(model);
+		
+		Map<String, Method> setterMap = new HashMap<String, Method>();
+		for (Method method : model.getClass().getMethods()) {
+			String mname = method.getName();
+			if (method.getParameterTypes().length == 1) {
+				for (ModelStatement statement : statementList) {
+					if (statement.setter.equals(mname))
+						setterMap.put(statement.name, method);
+				}
+			}
+		}
+
+		return setterMap;
+	}
+	
+	public static List<AqlEntry> toAqlEntries(IModel model, Map<String, String> conditionMap) {
+		List<ModelStatement> statementList = fetchStatement(model);
+		
+		List<AqlEntry> entries = new ArrayList<AqlEntry>();
+		for (Method method : model.getClass().getMethods()) {
+			String mname = method.getName();
+			if (method.getParameterTypes() == null || method.getParameterTypes().length < 1) {
+				for (ModelStatement statement : statementList) {
+					if (statement.getter.equals(mname)) {
+						try {
+							String s_name = statement.name;
+							String s_value = ProxyUtil.invokeRet(model, method).toString();
+							AqlEntry entry = new AqlEntry(s_name, s_value);
+							if (conditionMap != null && conditionMap.containsKey(s_name)) {
+								try {
+									entry.codeToKeyword(conditionMap.get(s_name));
+								} catch (CIBusException e) {
+									log.warn("set AQL Logic From Name : " + e);
+								}
+							}
+						} catch (CIBusException e) {
+							log.warn("create AQL Entry : \n" + e);
+						}
+					}
+						
+				}
+			}
+		}
+		
+		return entries;
+	}
+	
+	private static List<ModelStatement> fetchStatement(IModel model) {
+		List<ModelStatement> statementList = new ArrayList<ModelStatement>();
 		Field[] fields = model.getClass().getDeclaredFields();
 		for (Field field : fields) {
 			try {
@@ -89,21 +140,32 @@ public class ModelUtil {
 					if (StringUtil.empty(name))
 						name = field.getName();
 					String setter = mdata.setter();
-					tempMap.put(setter, name);
+					String getter = mdata.getter();
+					statementList.add(new ModelStatement(name, getter, setter));
 				}
 			} catch (Exception e) {
 				DevAssistant.errorln(e);
 			}
 		}
 		
-		Map<String, Method> setterMap = new HashMap<String, Method>();
-		for (Method method : model.getClass().getMethods()) {
-			String mname = method.getName();
-			if (tempMap.containsKey(mname) && method.getParameterTypes().length == 1)
-				setterMap.put(tempMap.get(mname), method);
+		return statementList;
+	}
+	
+	private static class ModelStatement {
+		String name;
+		String getter;
+		String setter;
+		
+		public ModelStatement() {
+			super();
 		}
-
-		return setterMap;
+		
+		public ModelStatement(String name, String getter, String setter) {
+			super();
+			this.name = name;
+			this.getter = getter;
+			this.setter = setter;
+		}
 	}
 }
 

@@ -5,6 +5,6 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.antelope.ci.bus.engine.access.vcs
 Bundle-Vendor: blueantelope@gmail.com
 Import-Package: org.osgi.framework, com.antelope.ci.bus.engine.model.vcs.input,
- com.antelope.ci.bus.engine.model.vcs.output
+ com.antelope.ci.bus.engine.model.vcs.output, com.antelope.ci.bus.engine.access;version=0.1.0
 Export-Package: com.antelope.ci.bus.engine.access.vcs
 Bundle-Activator: com.antelope.ci.bus.engine.access.vcs.BusEngineVcsAccessComplexActivator

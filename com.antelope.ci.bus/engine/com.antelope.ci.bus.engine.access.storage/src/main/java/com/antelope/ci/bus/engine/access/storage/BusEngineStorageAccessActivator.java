@@ -12,7 +12,6 @@ import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.osgi.BusActivator;
-import com.antelope.ci.bus.osgi.ServicePublishHook;
 
 
 /**
@@ -20,10 +19,10 @@ import com.antelope.ci.bus.osgi.ServicePublishHook;
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-7-9		上午11:46:26 
- * @Deprecated replace by {@link #com.antelope.ci.bus.engine.access.storage.BusEngineStorageComplexActivator}
+ * @Deprecated replace by {@link #com.antelope.ci.bus.engine.access.storage.BusEngineStorageAccessComplexActivator}
  */
 @Deprecated
-public class BusEngineStorageActivator extends BusActivator {
+public class BusEngineStorageAccessActivator extends BusActivator {
 	@Override
 	protected void customInit() throws CIBusException {
 		
@@ -58,25 +57,26 @@ public class BusEngineStorageActivator extends BusActivator {
 
 	@Override
 	protected void publishServices() throws CIBusException {
-		new ServicePublishHook(bundle_context, "com.antelope.ci.bus.storage") {
-			@Override protected ServicePublishInfo fetchService(Class clazz) {
-				ServicePublishInfo info = new ServicePublishInfo();
-				if (StorageAcesss.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(StorageService.class)) {
-					try {
-						StorageService ss =  (StorageService) clazz.getAnnotation(StorageService.class);
-						StorageAcesss service = (StorageAcesss) clazz.newInstance();
-						String serviceName = ss.serviceName();
-						info.canPublish = true;
-						info.service = service;
-						info.serviceName = serviceName;
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				return info;
-			}
-			
-		}.start();
+//		new ServicePublishHook(bundle_context, "com.antelope.ci.bus.storage") {
+//			@Override protected ServicePublishInfo fetchService(Class clazz) {
+//				ServicePublishInfo info = new ServicePublishInfo();
+//				if (IStorageAcesss.class.isAssignableFrom(clazz) && clazz.isAnnotationPresent(StorageAccess.class)) {
+//					try {
+//						StorageAccess ss =  (StorageAccess) clazz.getAnnotation(StorageAccess.class);
+//						IStorageAcesss service = (IStorageAcesss) clazz.newInstance();
+//						String serviceName = ss.name();
+//						info.canPublish = true;
+//						info.service = service;
+//						info.serviceName = serviceName;
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//				return info;
+//			}
+//			
+//		}.start();
+
 	}
 
 	@Override

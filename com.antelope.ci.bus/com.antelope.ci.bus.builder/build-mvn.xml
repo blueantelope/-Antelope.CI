@@ -212,6 +212,27 @@
 		</exec>
 	</target>
 	
+	<!-- com.antelope.ci.bus.engine.access -->
+	<target name="engine.access.compile">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.pom}" />
+			<arg line="clean install" />
+		</exec>
+	</target>
+	<target name="engine.access.compile.notest" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.pom}" />
+			<arg line="clean install ${mvn.notest}" />
+		</exec>
+	</target>
+	<target name="engine.access.depends" depends="mvn_env">
+		<exec executable="${mvn}" failonerror="true">
+			<arg line="-f ${prj.engine.access.pom}" />
+			<arg line="dependency:copy-dependencies" />
+			<arg value="-DexcludeGroupIds=junit" />
+		</exec>
+	</target>
+		
 	<!-- com.antelope.ci.bus.engine.access.storage -->
 	<target name="engine.access.storage.compile">
 		<exec executable="${mvn}" failonerror="true">

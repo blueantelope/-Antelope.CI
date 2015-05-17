@@ -17,12 +17,16 @@ import java.util.List;
  * @version  0.1
  * @Date	 2014-7-2		上午10:39:41 
  */
-public interface StorageAcesss {
-	public void save(StorageBox box);
+public interface IStorageAcesss {
+	public List<StorageBox> ls(StorageCondition condition);
 	
-	public List<StorageBox> get();
+	public void add(StorageBox box);
+	
+	public void add(List<StorageBox> boxes);
 	
 	public void rm(StorageBox box);
+	
+	public void rm(List<StorageBox> boxes);
 	
 	public void mv(StorageBox src, StorageBox dst);
 	

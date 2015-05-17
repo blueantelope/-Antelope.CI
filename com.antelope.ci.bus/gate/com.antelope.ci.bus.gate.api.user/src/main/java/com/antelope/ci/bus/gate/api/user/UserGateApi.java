@@ -59,7 +59,9 @@ public class UserGateApi implements IGateApi {
 	public GateOutMessage ls(GateInMessage in) throws CIBusException {
 		log.info(actionInfo("ls"));
 		User inUser = in2User(in);
-		Map<String, String> ucondition = makeCondition(inUser);
+		Map<String, String> inConditionMap = makeCondition(inUser);
+		if (inConditionMap != null)
+			inUser.setConditionMap(inConditionMap);
 		List<User> userList = userManager.lsUser(inUser);
 		
 		return null;

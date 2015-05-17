@@ -8,18 +8,18 @@
 
 package com.antelope.ci.bus.engine.access.storage.ladp;
 
-import com.antelope.ci.bus.engine.access.storage.StorageService;
+import com.antelope.ci.bus.engine.access.Access;
+
 
 
 
 /**
- * TODO 描述
  *
  * @author   blueantelope
  * @version  0.1
  * @Date	 2014-7-9		上午11:25:05 
  */
-@StorageService(serviceName="com.antelope.ci.bus.storage.ldap")
+@Access(name="com.antelope.ci.bus.storage.ldap")
 public class LdapStorageAccess {
 
 }

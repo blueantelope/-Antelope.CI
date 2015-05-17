@@ -3,81 +3,33 @@
 	<property file="build.properties" />
 
 	<target name="build" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="common.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.input.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.output.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.user.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.project.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.database.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.cvs.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.svn.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.git.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.realization.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.ssh.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile" />
+		<antcall target="compile" />
+		<antcall target="make" />
+	</target>
+
+	<target name="build.notest" depends="init">
+		<antcall target="compile.notest" />
+		<antcall target="make" />
+	</target>
+	
+	<target name="compile">
+		<ant antfile="${basedir}/build-common.xml" target="before.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.ssh.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.ssh.compile" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.api.user.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile" />
-		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
-		<antcall target="make" />
+		<ant antfile="${basedir}/build-common.xml" target="after.compile" />
 	</target>
-
-	<target name="build.notest" depends="init">
-		<ant antfile="${basedir}/build-mvn.xml" target="common.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="framework.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="osgi.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="logger.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.input.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.vcs.output.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.user.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.model.project.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.database.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.flatfile.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.storage.ldap.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.cvs.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.svn.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.access.vcs.git.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.project.realization.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="engine.manager.user.realization.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.shell.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.api.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.ssh.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="server.service.userstorefile.compile.notest" />
+	
+	<target name="compile.notest">
+		<ant antfile="${basedir}/build-common.xml" target="before.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.ssh.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.shell.ssh.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="gate.api.user.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="common.test.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
-		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
-		<antcall target="make" />
+		<ant antfile="${basedir}/build-common.xml" target="after.compile.notest" />
 	</target>
 	
 	<target name="build.gate.notest">
@@ -161,8 +113,7 @@
 		<!-- /system/engine/access -->
 		<copy todir="${app.gate.system.engine.access}">
 			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.vcs-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		
@@ -178,12 +129,13 @@
 			</fileset>
 		</copy>
 		
-		<!-- /system/engine/access/service 
+		<!-- /system/engine/access/service -->
 		<copy todir="${app.gate.system.engine.access.service}">
 			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs-${bus.version}.jar" />
 			</fileset>
 		</copy>
-		-->
 		
 		<!-- /system/engine/manager -->
 		<copy todir="${app.gate.system.engine.manager}">

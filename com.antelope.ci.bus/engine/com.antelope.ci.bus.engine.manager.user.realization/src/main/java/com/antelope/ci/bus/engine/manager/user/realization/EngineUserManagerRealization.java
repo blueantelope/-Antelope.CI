@@ -14,6 +14,7 @@ import com.antelope.ci.bus.engine.manager.EngineManager;
 import com.antelope.ci.bus.engine.manager.EngineService;
 import com.antelope.ci.bus.engine.manager.user.CommonEngineUserManager;
 import com.antelope.ci.bus.engine.manager.user.EngineUserManagerConstant;
+import com.antelope.ci.bus.engine.model.ModelUtil;
 import com.antelope.ci.bus.engine.model.user.Group;
 import com.antelope.ci.bus.engine.model.user.User;
 
@@ -31,7 +32,7 @@ import com.antelope.ci.bus.engine.model.user.User;
 public class EngineUserManagerRealization extends CommonEngineUserManager {
 
 	@Override
-	public List<Group> lsGroup(Group condition) {
+	public List<Group> lsGroup(Group group) {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -53,15 +54,15 @@ public class EngineUserManagerRealization extends CommonEngineUserManager {
 	}
 
 	@Override
-	public void modGroup(Group user, Group info) {
+	public void alterGroup(Group group, Group update) {
 		
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public List<User> lsUser(User condition) {
-		
+	public List<User> lsUser(User user) {
+		user.genKeywordMap();
 		// TODO Auto-generated method stub
 		return null;
 		
@@ -82,10 +83,11 @@ public class EngineUserManagerRealization extends CommonEngineUserManager {
 	}
 
 	@Override
-	public void modUser(User user, User info) {
+	public void alterUser(User user, User update) {
 		
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

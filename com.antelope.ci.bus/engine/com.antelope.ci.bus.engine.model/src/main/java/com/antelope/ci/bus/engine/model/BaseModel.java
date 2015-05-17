@@ -24,6 +24,8 @@ import com.antelope.ci.bus.common.ProxyUtil;
 import com.antelope.ci.bus.common.StringUtil;
 import com.antelope.ci.bus.common.api.ApiMessage;
 import com.antelope.ci.bus.common.api.BT;
+import com.antelope.ci.bus.common.aql.AQLKeyword;
+import com.antelope.ci.bus.common.aql.AqlEntry;
 import com.antelope.ci.bus.common.exception.CIBusException;
 
 
@@ -37,10 +39,12 @@ public abstract class BaseModel implements Serializable, IModel {
 	private static final Logger log = Logger.getLogger(BaseModel.class);
 	protected ApiMessage message;
 	protected List<Map<String, String>> bodyList;
+	protected Map<String, String> conditionMap;
 
 	public BaseModel() {
 		super();
 		message = new ApiMessage();
+		conditionMap = new HashMap<String, String>();
 		init();
 	}
 	
@@ -57,7 +61,6 @@ public abstract class BaseModel implements Serializable, IModel {
 			}
 		}
 	}
-	
 	
 	public List<Map<String, String>> parseBody() throws CIBusException {
 		if (bodyList == null)
@@ -123,6 +126,36 @@ public abstract class BaseModel implements Serializable, IModel {
 		}
 	}
 	
+	public Map<String, String> getConditionMap() {
+		return conditionMap;
+	}
+
+	public void setConditionMap(Map<String, String> conditionMap) {
+		this.conditionMap = conditionMap;
+	}
+	
+	public void setConditionMap(String conditionName, String conditionValue) {
+		conditionMap.put(conditionName, conditionValue);
+	}
+	
+	public List<AqlEntry> toAqlEntries() {
+		return ModelUtil.toAqlEntries(this, conditionMap);
+	}
+	
+	public Map<String, AQLKeyword> genKeywordMap() {
+		Map<String, AQLKeyword> keywordMap = new HashMap<String, AQLKeyword>();
+		for (String name : conditionMap.keySet()) {
+			try {
+				keywordMap.put(name, AQLKeyword.fromCode(conditionMap.get(name)));
+			} catch (CIBusException e) {
+				log.warn("condition convert to keywory {name:" 
+						+ name + ", value:" + conditionMap.get(name) + "}\n" + e);
+			}
+		}
+		
+		return keywordMap;
+	}
+
 	protected String genJson() {
 		Field[] fields = this.getClass().getDeclaredFields();
 		Map<String, String> tempMap = new HashMap<String, String>(); 
