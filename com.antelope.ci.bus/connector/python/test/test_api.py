@@ -17,8 +17,8 @@ class ApiTestCase(unittest.TestCase, BaseTestCase):
         BaseTestCase.setUp(self, "api.py")
         self.api = Api(
                 type = "ssh",
-                hostname = "127.0.0.1",
-                #hostname = "192.168.31.1",
+                #hostname = "127.0.0.1",
+                hostname = "192.168.31.1",
                 port = 9428,
                 username = "blueantelope",
                 password = "blueantelope")

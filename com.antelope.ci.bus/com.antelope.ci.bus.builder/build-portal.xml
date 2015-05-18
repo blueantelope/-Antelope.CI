@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="ant build for portal" basedir="." default="build">
+	<property name="app.product.name" value="com.antelope.ci.bus.portal" />
 	<property file="build.properties" />
 
 	<target name="build" depends="init">
@@ -42,181 +43,21 @@
 	</target>
 
 	<target name="make">
-		<!-- /bin -->
-		<copy todir="${app.portal.bin}">
-			<fileset dir="${script.root}" />
-		</copy>
-		<chmod dir="${app.portal.bin}" perm="ugo+rx" includes="**/*.sh"/>
-		<!-- /etc -->
-		<copy todir="${app.portal.etc}">
-			<fileset dir="${prj.bus.etc}" />
-		</copy>
-		<!-- /lib -->
-		<copy todir="${app.portal.lib}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.framework-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system -->
-		<copy todir="${app.portal.system}">
-			<fileset dir="${target.depends}">
-				<include name="org.apache.felix.bundlerepository*.jar" />
-				<include name="org.apache.felix.gogo*.jar" />
-				<include name="com.antelope.ci.bus.logger-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/lib -->
-		<copy todir="${app.portal.system.lib}">
-			<fileset dir="${target.depends}">
-				<include name="log4j*.jar" />
-				<include name="slf4j*.jar" />
-				<include name="jaxen*.jar" />
-				<include name="dom4j*.jar" />
-				<include name="xml-apis*.jar" />
-				<include name="json*.jar" />
-				<include name="com.antelope.ci.bus.common-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.osgi-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/lib -->
-		<copy todir="${app.portal.system.engine.lib}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.storage.database-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.storage.flatfile-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.storage.ldap-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/model -->
-		<copy todir="${app.portal.system.engine.model}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.model-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/model/part -->
-		<copy todir="${app.portal.system.engine.model.part}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.model.vcs.input-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.model.vcs.output-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.model.project-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.model.user-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/access -->
-		<copy todir="${app.portal.system.engine.access}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.vcs-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/access/part -->
-		<copy todir="${app.portal.system.engine.access.part}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.access.storage.database-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.storage.flatfile-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.storage.ldap-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.vcs.cvs-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.vcs.svn-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.access.vcs.git-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/manager -->
-		<copy todir="${app.portal.system.engine.manager}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.manager-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/manager/part -->
-		<copy todir="${app.portal.system.engine.manager.part}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.manager.user-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/engine/manager/service -->
-		<copy todir="${app.portal.system.engine.manager.service}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.engine.manager.user.realization-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.engine.manager.project.realization-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		
-		<!-- /system/ext -->
-		<!--
-		<copy todir="${app.portal.system.ext}">
-		</copy>
-		-->
-		<!-- /system/ext/lib -->
-		<!--
-		<copy todir="${app.portal.system.ext.lib}">
-		</copy>
-		-->
-		<!-- /system/ext/server -->
-		<copy todir="${app.portal.server.bundle}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.server-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		<!-- /system/ext/server/lib -->
-		<copy todir="${app.portal.server.bundle.lib}">
-			<fileset dir="${target.depends}">
-				<include name="mina*.jar" />
-				<include name="sshd*.jar" />
-			</fileset>
-		</copy>
-		<!-- /system/ext/server/part -->
-		<copy todir="${app.portal.server.bundle.part}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.server.api-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.server.ssh-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		<!-- /system/ext/server/service 
-		<copy todir="${app.portal.server.bundle.service}">
-			<fileset dir="${target.depends}">
-				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.server.api-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.server.ssh-${bus.version}.jar" />
-				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
-			</fileset>
-		</copy>
-		-->
-		<!--  /system/ext/server/service/lib -->
-		<!--
-		<copy todir="${app.portal.server.bundle.service.lib}">
-			<fileset dir="${target.depends}">
-				<include name="mina*.jar" />
-				<include name="sshd*.jar" />
-			</fileset>
-		</copy>
-		-->
+		<ant antfile="${basedir}/build-common.xml" target="make" />
 		<!-- /system/ext/portal -->
-		<copy todir="${app.portal.bundle}">
+		<copy todir="${app.portal.bundle}" overwrite="true">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.portal-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		<!-- /system/ext/portal/service -->
-		<copy todir="${app.portal.bundle.service}">
+		<copy todir="${app.portal.bundle.service}" overwrite="true">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.portal.ssh-${bus.version}.jar" />
 			</fileset>
 		</copy>
 		<!-- /system/ext/portal/part -->
-		<copy todir="${app.portal.bundle.part}">
+		<copy todir="${app.portal.bundle.part}" overwrite="true">
 			<fileset dir="${target.depends}">
 				<include name="com.antelope.ci.bus.portal.dashboard-${bus.version}.jar" />
 				<include name="com.antelope.ci.bus.portal.project-${bus.version}.jar" />

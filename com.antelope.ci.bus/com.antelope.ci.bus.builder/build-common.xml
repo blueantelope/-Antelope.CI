@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant common build" basedir="." default="build">
+<project name="ant common build" basedir=".">
 	<property file="build.properties" />
+	
+	<!--
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${libs.root}/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+	-->
 
 	<target name="before.compile">
 		<ant antfile="${basedir}/build-mvn.xml" target="common.compile" />
@@ -78,4 +86,176 @@
 		<ant antfile="${basedir}/build-mvn.xml" target="bus.compile.notest" />
 		<ant antfile="${basedir}/build-mvn.xml" target="depends" />
 	</target>
+	
+	<target name="make">
+		<!-- /bin -->
+		<copy todir="${app.product.bin}" overwrite="true">
+			<fileset dir="${script.root}" />
+		</copy>
+		<chmod dir="${app.product.bin}" perm="ugo+rx" includes="**/*.sh"/>
+		<!-- /etc -->
+		<copy todir="${app.product.etc}" overwrite="true">
+			<fileset dir="${prj.bus.etc}" />
+		</copy>
+		<!-- /lib -->
+		<copy todir="${app.product.lib}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.framework-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system -->
+		<copy todir="${app.product.system}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="org.apache.felix.bundlerepository*.jar" />
+				<include name="org.apache.felix.gogo*.jar" />
+				<include name="com.antelope.ci.bus.logger-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/lib -->
+		<copy todir="${app.product.system.lib}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="log4j*.jar" />
+				<include name="slf4j*.jar" />
+				<include name="jaxen*.jar" />
+				<include name="dom4j*.jar" />
+				<include name="xml-apis*.jar" />
+				<include name="json*.jar" />
+				<include name="com.antelope.ci.bus.common-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.osgi-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/lib -->
+		<copy todir="${app.product.system.engine.lib}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.database-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.flatfile-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.ldap-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/model -->
+		<copy todir="${app.product.system.engine.model}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.model-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/model/part -->
+		<copy todir="${app.product.system.engine.model.part}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.model.vcs.input-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.model.vcs.output-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.model.project-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.model.user-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/access -->
+		<copy todir="${app.product.system.engine.access}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/access/part -->
+		<copy todir="${app.product.system.engine.access.part}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access.storage.database-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.flatfile-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.storage.ldap-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs.cvs-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs.svn-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs.git-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/access/service -->
+		<copy todir="${app.product.system.engine.access.service}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.access.storage-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.access.vcs-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/manager -->
+		<copy todir="${app.product.system.engine.manager}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/manager/part -->
+		<copy todir="${app.product.system.engine.manager.part}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager.user-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.project-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/engine/manager/service -->
+		<copy todir="${app.product.system.engine.manager.service}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.engine.manager.user.realization-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.engine.manager.project.realization-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- /system/ext -->
+		<!--
+		<copy todir="${app.product.system.ext}">
+		</copy>
+		-->
+		<!-- /system/ext/lib -->
+		<!--
+		<copy todir="${app.product.system.ext.lib}">
+		</copy>
+		-->
+		<!-- /system/ext/server -->
+		<copy todir="${app.product.server.bundle}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/server/lib -->
+		<copy todir="${app.product.server.bundle.lib}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="mina*.jar" />
+				<include name="sshd*.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/server/part -->
+		<copy todir="${app.product.server.bundle.part}" overwrite="true">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.api-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.ssh-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		<!-- /system/ext/server/service 
+		<copy todir="${app.product.server.bundle.service}">
+			<fileset dir="${target.depends}">
+				<include name="com.antelope.ci.bus.server.shell-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.api-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.ssh-${bus.version}.jar" />
+				<include name="com.antelope.ci.bus.server.service.userstore.file-${bus.version}.jar" />
+			</fileset>
+		</copy>
+		-->
+		<!--  /system/ext/server/service/lib -->
+		<!--
+		<copy todir="${app.product.server.bundle.service.lib}">
+			<fileset dir="${target.depends}">
+				<include name="mina*.jar" />
+				<include name="sshd*.jar" />
+			</fileset>
+		</copy>
+		-->
+	</target>
+	
 </project>
