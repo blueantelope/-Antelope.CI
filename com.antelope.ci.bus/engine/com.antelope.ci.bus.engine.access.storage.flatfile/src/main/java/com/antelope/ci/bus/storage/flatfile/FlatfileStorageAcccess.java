@@ -8,7 +8,12 @@
 
 package com.antelope.ci.bus.storage.flatfile;
 
+import java.util.List;
+
 import com.antelope.ci.bus.engine.access.Access;
+import com.antelope.ci.bus.engine.access.storage.IStorageAcesss;
+import com.antelope.ci.bus.engine.access.storage.StorageBox;
+import com.antelope.ci.bus.engine.access.storage.StorageCondition;
 
 
 
@@ -19,7 +24,57 @@ import com.antelope.ci.bus.engine.access.Access;
  * @Date	 2014-7-9		上午11:20:46 
  */
 @Access(name="com.antelope.ci.bus.storage.flatfile")
-public class FlatfileStorageAcccess {
+public class FlatfileStorageAcccess implements IStorageAcesss {
+
+	@Override
+	public List<StorageBox> ls(StorageCondition condition) {
+		
+		// TODO Auto-generated method stub
+		return null;
+		
+	}
+
+	@Override
+	public void add(StorageBox box) {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void add(List<StorageBox> boxes) {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void rm(StorageBox box) {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void rm(List<StorageBox> boxes) {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mv(StorageBox src, StorageBox dst) {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cp(StorageBox src, StorageBox dst) {
+		
+		// TODO Auto-generated method stub
+		
+	}
 
 }
 

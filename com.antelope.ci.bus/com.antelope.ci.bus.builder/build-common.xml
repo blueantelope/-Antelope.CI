@@ -95,7 +95,7 @@
 		<chmod dir="${app.product.bin}" perm="ugo+rx" includes="**/*.sh"/>
 		<!-- /etc -->
 		<copy todir="${app.product.etc}" overwrite="true">
-			<fileset dir="${prj.bus.etc}" />
+			<fileset dir="${etc.dir}" />
 		</copy>
 		<!-- /lib -->
 		<copy todir="${app.product.lib}" overwrite="true">

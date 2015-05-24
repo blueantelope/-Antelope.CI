@@ -9,6 +9,8 @@
 package com.antelope.ci.bus.engine.model.user;
 
 import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
+import com.antelope.ci.bus.engine.model.BaseModel;
+import com.antelope.ci.bus.engine.model.Model;
 
 /**
  * 用户密钥信息
@@ -16,7 +18,8 @@ import com.antelope.ci.bus.common.EncryptUtil.ASYMMETRIC_ALGORITHM;
  * @version  0.1
  * @Date	 2013-10-15		上午10:49:22 
  */
-public class Key {
+@Model
+public class Key extends BaseModel {
 	private ASYMMETRIC_ALGORITHM algorithm;
 	private String privateKey;
 	private String publicKey;
@@ -46,6 +49,12 @@ public class Key {
 	}
 	public void setPassphase(String passphase) {
 		this.passphase = passphase;
+	}
+	@Override
+	protected void init() {
+		
+		// TODO Auto-generated method stub
+		
 	}
 }
 

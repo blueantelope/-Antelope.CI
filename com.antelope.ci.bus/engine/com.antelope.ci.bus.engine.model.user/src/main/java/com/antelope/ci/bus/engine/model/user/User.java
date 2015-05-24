@@ -93,7 +93,6 @@ public class User extends BaseModel {
 	
 	
 	// getter and setter
-	
 	public int getId() {
 		return id;
 	}

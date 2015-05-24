@@ -9,6 +9,8 @@
 package com.antelope.ci.bus.engine.model.user;
 
 import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
+import com.antelope.ci.bus.engine.model.BaseModel;
+import com.antelope.ci.bus.engine.model.Model;
 
 
 /**
@@ -17,7 +19,8 @@ import com.antelope.ci.bus.common.EncryptUtil.SYMMETRIC_ALGORITHM;
  * @version  0.1
  * @Date	 2013-10-15		上午10:48:51 
  */
-public class Passwd {
+@Model
+public class Passwd extends BaseModel {
 	private SYMMETRIC_ALGORITHM algorithm; 
 	private String seed;
 	private String originPwd;
@@ -47,5 +50,11 @@ public class Passwd {
 	}
 	public void setOriginPwd(String originPwd) {
 		this.originPwd = originPwd;
+	}
+	@Override
+	protected void init() {
+		
+		// TODO Auto-generated method stub
+		
 	}
 }

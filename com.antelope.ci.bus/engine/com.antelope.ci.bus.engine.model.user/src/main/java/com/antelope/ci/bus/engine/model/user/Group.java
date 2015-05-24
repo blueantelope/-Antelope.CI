@@ -11,6 +11,9 @@ package com.antelope.ci.bus.engine.model.user;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.antelope.ci.bus.engine.model.BaseModel;
+import com.antelope.ci.bus.engine.model.Model;
+
 
 /**
  *
@@ -18,7 +21,8 @@ import java.util.Set;
  * @version  0.1
  * @Date	 2015年4月7日		下午1:56:07 
  */
-public class Group {
+@Model
+public class Group extends BaseModel {
 	protected int id;
 	protected String name;
 	protected Set<User> userSet;
@@ -64,5 +68,12 @@ public class Group {
 		Set<Group> groupSet = new HashSet<Group>();
 		groupSet.add(new Group(0, "admin"));
 		return groupSet;
+	}
+
+	@Override
+	protected void init() {
+		
+		// TODO Auto-generated method stub
+		
 	}
 }

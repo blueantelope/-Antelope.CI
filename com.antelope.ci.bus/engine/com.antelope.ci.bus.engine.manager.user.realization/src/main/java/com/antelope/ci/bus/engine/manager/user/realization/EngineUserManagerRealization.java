@@ -9,7 +9,9 @@
 package com.antelope.ci.bus.engine.manager.user.realization;
 
 import java.util.List;
+import java.util.Map;
 
+import com.antelope.ci.bus.common.aql.AQLKeyword;
 import com.antelope.ci.bus.engine.manager.EngineManager;
 import com.antelope.ci.bus.engine.manager.EngineService;
 import com.antelope.ci.bus.engine.manager.user.CommonEngineUserManager;
@@ -62,7 +64,7 @@ public class EngineUserManagerRealization extends CommonEngineUserManager {
 
 	@Override
 	public List<User> lsUser(User user) {
-		user.genKeywordMap();
+		Map<String, AQLKeyword> keywordMap = user.genKeywordMap();
 		// TODO Auto-generated method stub
 		return null;
 		

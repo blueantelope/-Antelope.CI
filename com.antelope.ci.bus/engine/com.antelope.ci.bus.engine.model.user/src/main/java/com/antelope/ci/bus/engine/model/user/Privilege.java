@@ -8,6 +8,9 @@
 
 package com.antelope.ci.bus.engine.model.user;
 
+import com.antelope.ci.bus.engine.model.BaseModel;
+import com.antelope.ci.bus.engine.model.Model;
+
 
 /**
  *
@@ -15,7 +18,8 @@ package com.antelope.ci.bus.engine.model.user;
  * @version  0.1
  * @Date	 2015年4月7日		下午3:02:51 
  */
-public class Privilege {
+@Model
+public class Privilege extends BaseModel {
 	protected Group group;
 	protected User user;
 	protected int group_privilege;
@@ -70,5 +74,12 @@ public class Privilege {
 	}
 	public void setOthers_privilege(int others_privilege) {
 		this.others_privilege = others_privilege;
+	}
+
+	@Override
+	protected void init() {
+		
+		// TODO Auto-generated method stub
+		
 	}
 }
