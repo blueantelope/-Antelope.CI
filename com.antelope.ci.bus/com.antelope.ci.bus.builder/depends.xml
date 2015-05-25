@@ -68,18 +68,23 @@
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.engine.access.storage</groupId>
-			<artifactId>com.antelope.ci.bus.engine.access.storage.database</artifactId>
+			<groupId>com.antelope.ci.bus.engine.access.storage.target</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.storage.target.database</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.engine.access.storage</groupId>
-			<artifactId>com.antelope.ci.bus.engine.access.storage.flatfile</artifactId>
+			<groupId>com.antelope.ci.bus.engine.access.storage.target</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.storage.target.flatfile</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antelope.ci.bus.engine.access.storage</groupId>
-			<artifactId>com.antelope.ci.bus.engine.access.storage.ldap</artifactId>
+			<groupId>com.antelope.ci.bus.engine.access.storage.target</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.storage.target.ldap</artifactId>
+			<version>0.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antelope.ci.bus.engine.access.storage.produce</groupId>
+			<artifactId>com.antelope.ci.bus.engine.access.storage.produce.user</artifactId>
 			<version>0.1.0</version>
 		</dependency>
 		<dependency>

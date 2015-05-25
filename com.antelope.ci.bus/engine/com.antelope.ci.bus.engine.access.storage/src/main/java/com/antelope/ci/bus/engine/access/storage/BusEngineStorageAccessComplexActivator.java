@@ -12,6 +12,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.antelope.ci.bus.common.exception.CIBusException;
 import com.antelope.ci.bus.engine.access.AccessUtil;
+import com.antelope.ci.bus.engine.access.storage.target.IStorageTargetAcesss;
 import com.antelope.ci.bus.osgi.BusComplexActivator;
 
 
@@ -68,7 +69,7 @@ public class BusEngineStorageAccessComplexActivator extends BusComplexActivator 
 
 	@Override
 	protected void addServices() throws CIBusException {
-		AccessUtil.publish(context, "com.antelope.ci.bus.engine.access.storage", IStorageAcesss.class);
+		AccessUtil.publish(context, "com.antelope.ci.bus.engine.access.storage", IStorageTargetAcesss.class);
 	}
 
 	@Override

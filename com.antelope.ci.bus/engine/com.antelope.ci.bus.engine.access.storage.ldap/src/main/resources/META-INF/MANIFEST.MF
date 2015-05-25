@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-Version: 0.1.0
-Bundle-Name: com.antelope.ci.bus.engine.access.storage.ldap
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: com.antelope.ci.bus.engine.access.storage.ldap
-Bundle-Vendor: blueantelope@gmail.com
-Fragment-Host: com.antelope.ci.bus.engine.access.storage; bundle-version="0.1.0"
-Export-Package: com.antelope.ci.bus.engine.access.storage.ldap; version="0.1.0"
