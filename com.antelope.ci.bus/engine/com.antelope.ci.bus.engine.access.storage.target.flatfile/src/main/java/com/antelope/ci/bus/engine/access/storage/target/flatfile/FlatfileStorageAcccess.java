@@ -9,8 +9,8 @@
 package com.antelope.ci.bus.engine.access.storage.target.flatfile;
 
 import java.util.List;
+import java.util.Properties;
 
-import com.antelope.ci.bus.engine.access.Access;
 import com.antelope.ci.bus.engine.access.storage.target.IStorageTargetAcesss;
 import com.antelope.ci.bus.engine.access.storage.target.StorageTargetBox;
 import com.antelope.ci.bus.engine.access.storage.target.StorageTargetCondition;
@@ -23,8 +23,18 @@ import com.antelope.ci.bus.engine.access.storage.target.StorageTargetCondition;
  * @version  0.1
  * @Date	 2014-7-9		上午11:20:46 
  */
-@Access(name="com.antelope.ci.bus.storage.flatfile")
 public class FlatfileStorageAcccess implements IStorageTargetAcesss {
+	
+	public void open(Properties properties) {
+		
+		properties.getUrlList();
+	}
+	
+	public FlatfileStorageAcccess() {
+		super();
+	}
+	
+	public 
 
 	@Override
 	public List<StorageTargetBox> ls(StorageTargetCondition condition) {

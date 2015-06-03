@@ -135,5 +135,19 @@ public class PropertiesUtil {
 			return true;
 		return false;
 	}
+	
+	public static <E> E[] getArray(Properties props, String key) {
+		if (props != null) {
+			try {
+				Object o = props.get(key);
+				if (o != null)
+					return (E[]) o;
+			} catch (Exception e) {
+				DevAssistant.errorln(e);
+			}
+		}
+		
+		return null;
+	}
 }
 

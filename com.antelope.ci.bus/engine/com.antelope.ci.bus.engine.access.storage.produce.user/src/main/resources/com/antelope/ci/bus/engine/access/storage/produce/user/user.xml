@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<storage>
+	<target name="flatfile" active="on">
+		<parameter name="path.user" value="user.cfg" />
+		<parameter name="path.passwd" value="passwd.cfg" />
+		<parameter name="path.group" value="group.cfg" />
+		<parameter name="path.domain" value="domain.cfg" />	
+	</target>
+	
+	<target name="ldap" active="off">
+		
+	</target>
+	
+	<target name="database" active="off">
+		
+	</target>
+</storage>
+

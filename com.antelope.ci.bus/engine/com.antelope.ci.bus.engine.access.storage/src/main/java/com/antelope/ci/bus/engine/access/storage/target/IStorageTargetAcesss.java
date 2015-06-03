@@ -9,6 +9,9 @@
 package com.antelope.ci.bus.engine.access.storage.target;
 
 import java.util.List;
+import java.util.Properties;
+
+import com.antelope.ci.bus.common.exception.CIBusException;
 
 
 /**
@@ -18,6 +21,8 @@ import java.util.List;
  * @Date	 2014-7-2		上午10:39:41 
  */
 public interface IStorageTargetAcesss {
+	public void open(Properties properties) throws CIBusException;
+	
 	public List<StorageTargetBox> ls(StorageTargetCondition condition);
 	
 	public void add(StorageTargetBox box);

@@ -8,6 +8,8 @@
 
 package com.antelope.ci.bus.engine.access.storage.produce;
 
+import java.util.List;
+
 
 /**
  *
@@ -16,5 +18,17 @@ package com.antelope.ci.bus.engine.access.storage.produce;
  * @Date	 2015年5月25日		上午11:11:42 
  */
 public interface IStorageProduceAcesss {
-
+	public List<StorageProduceBox> ls(StorageProduceCondition condition);
+	
+	public void add(StorageProduceBox box);
+	
+	public void add(List<StorageProduceBox> boxes);
+	
+	public void rm(StorageProduceBox box);
+	
+	public void rm(List<StorageProduceBox> boxes);
+	
+	public void mv(StorageProduceBox src, StorageProduceBox dst);
+	
+	public void cp(StorageProduceBox src, StorageProduceBox dst);
 }

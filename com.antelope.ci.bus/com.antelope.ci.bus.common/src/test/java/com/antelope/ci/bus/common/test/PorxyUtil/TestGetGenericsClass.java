@@ -18,10 +18,7 @@ import org.junit.Test;
 
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
-import com.antelope.ci.bus.common.ProxyUtil;
-
 /**
- * TODO 描述
  * 
  * @author blueantelope
  * @version 0.1
