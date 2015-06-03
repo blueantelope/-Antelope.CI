@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common.test.classfinder;
+package com.antelope.ci.bus.common.test.ClassFinder;
 
 import java.io.IOException;
 import java.util.List;

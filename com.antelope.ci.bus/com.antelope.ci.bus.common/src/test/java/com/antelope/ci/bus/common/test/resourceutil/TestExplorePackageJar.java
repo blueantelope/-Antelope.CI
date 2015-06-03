@@ -6,7 +6,7 @@
  * Copyright (c) 2013, Antelope CI Team All Rights Reserved.
 */
 
-package com.antelope.ci.bus.common.test.resourceutil;
+package com.antelope.ci.bus.common.test.ResourceUtil;
 
 import java.io.IOException;
 import java.net.URL;
