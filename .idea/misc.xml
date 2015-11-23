@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/gate/com.antelope.ci.bus.gate.shell.ssh/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.vcs.git/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal.version/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.model.vcs.input/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.vcs.svn/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal.dashboard/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal.project/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.storage.target.ldap/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal.ssh/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.manager.project/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.manager.user/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.test/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/connector/java/com.antelope.ci.bus.connector/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.model/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal.target/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/gate/com.antelope.ci.bus.gate.api.user/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.model.vcs.output/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.service.userstore.file/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.vcs.cvs/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.shell/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.storage.target.flatfile/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.model.user/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.osgi/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.api/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.storage.produce.user/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/gate/com.antelope.ci.bus.gate.shell/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common.test/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.manager/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.ssh/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/connector/java/com.antelope.ci.bus.connector.gate.api/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.manager.project.realization/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/gate/com.antelope.ci.bus.gate.ssh/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.vcs/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.storage/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access.storage.target.database/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.manager.user.realization/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.framework/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.model.project/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/gate/com.antelope.ci.bus.gate/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.logger/pom.xml" />
+        <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal.usecase/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

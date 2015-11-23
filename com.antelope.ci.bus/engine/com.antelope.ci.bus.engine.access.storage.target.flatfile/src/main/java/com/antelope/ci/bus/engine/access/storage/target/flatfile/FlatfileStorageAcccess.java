@@ -26,15 +26,13 @@ import com.antelope.ci.bus.engine.access.storage.target.StorageTargetCondition;
 public class FlatfileStorageAcccess implements IStorageTargetAcesss {
 	
 	public void open(Properties properties) {
-		
-		properties.getUrlList();
+		//properties.getUrlList();
 	}
-	
+
 	public FlatfileStorageAcccess() {
 		super();
 	}
 	
-	public 
 
 	@Override
 	public List<StorageTargetBox> ls(StorageTargetCondition condition) {
@@ -46,9 +44,9 @@ public class FlatfileStorageAcccess implements IStorageTargetAcesss {
 
 	@Override
 	public void add(StorageTargetBox box) {
-		
+
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -67,9 +65,9 @@ public class FlatfileStorageAcccess implements IStorageTargetAcesss {
 
 	@Override
 	public void rm(List<StorageTargetBox> boxes) {
-		
+
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

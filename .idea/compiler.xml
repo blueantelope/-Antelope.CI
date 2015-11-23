@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <resourceExtensions />
+    <wildcardResourcePatterns>
+      <entry name="!?*.java" />
+      <entry name="!?*.form" />
+      <entry name="!?*.class" />
+      <entry name="!?*.groovy" />
+      <entry name="!?*.scala" />
+      <entry name="!?*.flex" />
+      <entry name="!?*.kt" />
+      <entry name="!?*.clj" />
+      <entry name="!?*.aj" />
+    </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.server.service.userstore.file" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.server.service.userstore.file" />
+      </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.test" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.vcs.git" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.vcs.git" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.gate.shell" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.gate.shell" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.vcs" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.vcs" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.portal.target" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.portal.target" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.gate.ssh" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.gate.ssh" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.model.vcs.input" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.model.vcs.input" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.vcs.svn" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.vcs.svn" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.gate.api.user" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.gate.api.user" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.storage.target.flatfile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.storage.target.flatfile" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.common.test" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.common.test" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.portal" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.portal" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.portal.ssh" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.portal.ssh" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.manager.project" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.manager.project" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.portal.version" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.portal.version" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.connector.gate.api" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.connector.gate.api" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.manager.user" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.manager.user" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.gate.shell.ssh" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.gate.shell.ssh" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.model" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.model" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.model.user" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.model.user" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.portal.dashboard" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.portal.dashboard" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.storage.target.ldap" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.storage.target.ldap" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.framework" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.framework" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.osgi" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.osgi" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.manager" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.manager" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.portal.usecase" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.portal.usecase" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.connector" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.connector" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.manager.project.realization" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.manager.project.realization" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.manager.user.realization" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.manager.user.realization" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.logger" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.logger" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.server.ssh" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.server.ssh" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.server" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.server" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.model.vcs.output" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.model.vcs.output" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.server.api" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.server.api" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.model.project" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.model.project" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.storage.produce.user" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.storage.produce.user" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.common" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.common" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.portal.project" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.portal.project" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.gate" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.gate" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.vcs.cvs" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.vcs.cvs" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.storage" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.storage" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.storage.target.database" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.engine.access.storage.target.database" />
+      </profile>
+      <profile default="false" name="Annotation profile for com.antelope.ci.bus.server.shell" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="com.antelope.ci.bus.server.shell" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="com.antelope.ci.bus" target="1.6" />
+      <module name="com.antelope.ci.bus.common" target="1.6" />
+      <module name="com.antelope.ci.bus.common.test" target="1.6" />
+      <module name="com.antelope.ci.bus.connector" target="1.6" />
+      <module name="com.antelope.ci.bus.connector.gate.api" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.storage" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.storage.produce.user" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.storage.target.database" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.storage.target.flatfile" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.storage.target.ldap" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.vcs" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.vcs.cvs" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.vcs.git" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.access.vcs.svn" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.manager" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.manager.project" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.manager.project.realization" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.manager.user" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.manager.user.realization" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.model" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.model.project" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.model.user" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.model.vcs.input" target="1.6" />
+      <module name="com.antelope.ci.bus.engine.model.vcs.output" target="1.6" />
+      <module name="com.antelope.ci.bus.framework" target="1.6" />
+      <module name="com.antelope.ci.bus.gate" target="1.6" />
+      <module name="com.antelope.ci.bus.gate.api.user" target="1.6" />
+      <module name="com.antelope.ci.bus.gate.shell" target="1.6" />
+      <module name="com.antelope.ci.bus.gate.shell.ssh" target="1.6" />
+      <module name="com.antelope.ci.bus.gate.ssh" target="1.6" />
+      <module name="com.antelope.ci.bus.logger" target="1.6" />
+      <module name="com.antelope.ci.bus.osgi" target="1.6" />
+      <module name="com.antelope.ci.bus.portal" target="1.6" />
+      <module name="com.antelope.ci.bus.portal.dashboard" target="1.6" />
+      <module name="com.antelope.ci.bus.portal.project" target="1.6" />
+      <module name="com.antelope.ci.bus.portal.ssh" target="1.6" />
+      <module name="com.antelope.ci.bus.portal.target" target="1.6" />
+      <module name="com.antelope.ci.bus.portal.usecase" target="1.6" />
+      <module name="com.antelope.ci.bus.portal.version" target="1.6" />
+      <module name="com.antelope.ci.bus.server" target="1.6" />
+      <module name="com.antelope.ci.bus.server.api" target="1.6" />
+      <module name="com.antelope.ci.bus.server.service.userstore.file" target="1.6" />
+      <module name="com.antelope.ci.bus.server.shell" target="1.6" />
+      <module name="com.antelope.ci.bus.server.ssh" target="1.6" />
+      <module name="com.antelope.ci.bus.test" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
