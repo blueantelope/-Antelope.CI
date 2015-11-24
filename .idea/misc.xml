@@ -21,7 +21,6 @@
         <option value="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server/pom.xml" />
         <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.access/pom.xml" />
         <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.manager.user/pom.xml" />
-        <option value="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.test/pom.xml" />
         <option value="$PROJECT_DIR$/com.antelope.ci.bus/connector/java/com.antelope.ci.bus.connector/pom.xml" />
         <option value="$PROJECT_DIR$/com.antelope.ci.bus/engine/com.antelope.ci.bus.engine.model/pom.xml" />
         <option value="$PROJECT_DIR$/com.antelope.ci.bus/portal/com.antelope.ci.bus.portal.target/pom.xml" />

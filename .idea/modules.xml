@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.builder/com.antelope.ci.bus.builder.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.builder/com.antelope.ci.bus.builder.iml" />
-      <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.builder/com.antelope.ci.bus.builder.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.builder/com.antelope.ci.bus.builder.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common/com.antelope.ci.bus.common.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common/com.antelope.ci.bus.common.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common.test/com.antelope.ci.bus.common.test.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common.test/com.antelope.ci.bus.common.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/connector/java/com.antelope.ci.bus.connector/com.antelope.ci.bus.connector.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/connector/java/com.antelope.ci.bus.connector/com.antelope.ci.bus.connector.iml" />
@@ -50,7 +49,6 @@
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.service.userstore.file/com.antelope.ci.bus.server.service.userstore.file.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.service.userstore.file/com.antelope.ci.bus.server.service.userstore.file.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.shell/com.antelope.ci.bus.server.shell.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.shell/com.antelope.ci.bus.server.shell.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.ssh/com.antelope.ci.bus.server.ssh.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/server/com.antelope.ci.bus.server.ssh/com.antelope.ci.bus.server.ssh.iml" />
-      <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.test/com.antelope.ci.bus.test.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.test/com.antelope.ci.bus.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.thirdpart/com.antelope.ci.bus.thirdpart.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.thirdpart/com.antelope.ci.bus.thirdpart.iml" />
     </modules>
   </component>

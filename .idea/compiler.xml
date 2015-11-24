@@ -24,13 +24,6 @@
         <processorPath useClasspath="true" />
         <module name="com.antelope.ci.bus.server.service.userstore.file" />
       </profile>
-      <profile default="false" name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="com.antelope.ci.bus.test" />
-      </profile>
       <profile default="false" name="Annotation profile for com.antelope.ci.bus.engine.access.vcs.git" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />

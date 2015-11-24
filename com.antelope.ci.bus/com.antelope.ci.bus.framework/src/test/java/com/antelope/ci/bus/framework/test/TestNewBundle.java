@@ -33,7 +33,7 @@ public class TestNewBundle extends TestCreateBundleCache {
 		super.test();
 		Class clazz = Class.forName("org.apache.felix.framework.BundleImpl");
 		Object[] args = new Object[] {felix, m_archive};
-		Bundle bundle = TestUtils.newInstance(clazz, args);
+		Bundle bundle = (Bundle) TestUtils.newInstance(clazz, args);
 		System.out.println(bundle);
 	}
 	
