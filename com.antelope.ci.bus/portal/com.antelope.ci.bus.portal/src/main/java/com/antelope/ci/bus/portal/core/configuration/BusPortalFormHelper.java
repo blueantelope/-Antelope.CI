@@ -49,9 +49,13 @@ public class BusPortalFormHelper {
 	
 	public static void initClassLoader(ClassLoader classLoader) {
 		if (_classLoader == null)
-			_classLoader = classLoader;
+			getClassLoader() = classLoader;
 	}
-	
+
+	private static ClassLoader getClassLoader() {
+		return _classLoader;
+	}
+
 	public static Form getForm(String name) {
 		return formMap.get(name);
 	}

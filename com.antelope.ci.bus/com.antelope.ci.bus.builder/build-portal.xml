@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ant build for portal" basedir="." default="build">
+<project name="ant build for portal" basedir="." default="build.notest">
 	<property name="app.product.name" value="com.antelope.ci.bus.portal" />
 	<property file="build.properties" />
 

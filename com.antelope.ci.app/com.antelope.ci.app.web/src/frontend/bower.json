@@ -1,0 +1,7 @@
+{
+  "name": "com.antelope.ci.app.web",
+  "private": true,
+  "dependencies": {
+    "lodash": "~3.9.3"
+  }
+}

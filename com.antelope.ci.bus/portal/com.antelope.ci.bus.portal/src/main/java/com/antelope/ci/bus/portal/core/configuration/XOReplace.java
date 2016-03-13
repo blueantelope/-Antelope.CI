@@ -52,7 +52,7 @@ public class XOReplace {
 	}
 	
 	public <T extends XOReplace> boolean exist(T comPr) {
-		if (parent == comPr.getParent() && setter == comPr.getSetter() 
+		if (parent == comPr.getParent() && setter == comPr.getSetter()
 				&& value == comPr.getValue())
 			return true;
 		return false;

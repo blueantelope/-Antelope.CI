@@ -59,15 +59,15 @@ import com.antelope.ci.bus.portal.core.configuration.xo.portal.RenderFont;
  * configraiton reader for portal (include main and part)
  * @author   blueantelope
  * @version  0.1
- * @Date	 2013-11-14		上午11:15:09 
+ * @Date	 2013-11-14		上午11:15:09
  */
 public class BusPortalConfigurationHelper {
 	private static final BusPortalConfigurationHelper helper = new BusPortalConfigurationHelper();
-	
+
 	public final static BusPortalConfigurationHelper getHelper() {
 		return helper;
 	}
-	
+
 	private final static Logger log = Logger.getLogger(BusPortalConfigurationHelper.class);
 	private static final String PORTAL_XSD = "/com/antelope/ci/bus/portal/core/configuration/portal.xsd";
 	private static final String PORTAL_XML = "/com/antelope/ci/bus/portal/core/configuration/portal.xml";
@@ -83,31 +83,26 @@ public class BusPortalConfigurationHelper {
 	private PARSER_TYPE parserType;
 	private static InputStream xsd_in = null;
 	private final static PARSER_TYPE DEF_PARSER_TYPE = PARSER_TYPE.STATICAL;
-	
+
 	private BusPortalConfigurationHelper() {
-	
+
 	}
-	
+
 	public synchronized void init(BusPortalContext context) throws CIBusException {
 		if (!inited) {
-//			try {
-//				log = context.getLog4j(BusPortalConfigurationHelper.class);
-//			} catch (CIBusException e) {
-//				DevAssistant.errorln(e);
-//			} 
 			try {
 				String parserValue = context.getParser();
 				parserType = PARSER_TYPE.toType(parserValue);
 			} catch (CIBusException e) {
 				DevAssistant.errorln(e);
 				parserType = DEF_PARSER_TYPE;
-			} 
+			}
 			configPairMap = new ConcurrentHashMap<String, PortalPair>();
 			classLoader = context.getClassLoader();
 			null_name_index = 0;
 			portalExtMap = new ConcurrentHashMap<String, Portal>();
 			xsd_in = BusPortalConfigurationHelper.class.getResourceAsStream(PORTAL_XSD);
-			
+
 			if (parserType == PARSER_TYPE.STATICAL) {
 				portal = parsePortal(PORTAL_XML);
 				reader = parseResource(PORTAL_RESOURCE, classLoader);
@@ -116,14 +111,14 @@ public class BusPortalConfigurationHelper {
 			}
 			inited = true;
 		}
-		
+
 	}
-	
+
 	public void addConfigPair(String name, String props_name, String xml_name, boolean validate) {
 		PortalPair pair = new PortalPair(props_name, xml_name, validate);
 		configPairMap.put(name, pair);
 	}
-	
+
 	public Portal parse(String shellClass) throws CIBusException {
 		switch (parserType) {
 			case DYNAMICAL:
@@ -133,7 +128,7 @@ public class BusPortalConfigurationHelper {
 				return parseStatic(shellClass);
 		}
 	}
-	
+
 	private Portal parseDynamic(String shellClass) throws CIBusException {
 		PortalPair portalPair = configPairMap.get(shellClass);
 		Portal global_portal;
@@ -143,13 +138,13 @@ public class BusPortalConfigurationHelper {
 			else
 				throw new CIBusException("", "validate error");
 		}
-		
+
 		global_portal = parsePortal(PORTAL_XML);
 		ResourceReader global_reader = parseResource(PORTAL_RESOURCE, classLoader);
-		
+
 		return global_portal;
 	}
-	
+
 	private Portal parseStatic(String shellClass) throws CIBusException {
 		Map<String, Portal> minorPortalMap = new HashMap<String, Portal>();
 		Portal majorExt = null;
@@ -162,14 +157,14 @@ public class BusPortalConfigurationHelper {
 				if (configPairName.equals(shellClass)) {
 					if (portalPair != null && portalPair.isValidate())
 						majorExt = validateAndParsePortal(xml_in);
-					else 
+					else
 						majorExt = parsePortal(xml_in);
 					majorExtReader = parseProperties(configPairMap.get(configPairName).getProps_name(), configPairName, classLoader);
 					extPortal = majorExt;
 				} else {
 					if (portalPair != null && portalPair.isValidate())
 						extPortal = validateAndParsePortal(xml_in);
-					else 
+					else
 						extPortal = parsePortal(xml_in);
 					minorPortalMap.put(configPairName, extPortal);
 				}
@@ -179,13 +174,13 @@ public class BusPortalConfigurationHelper {
 			}
 		}
 		List<String> sortList = sortPortalMap(minorPortalMap);
-		
+
 		if (majorExt != null) {
 			majorExt = extend(majorExt);
 		} else {
 			majorExt = usablePortal;
 		}
-		
+
 		List<PortalReplace> replaceList = genPortalReplaceList(majorExt);
 		for (PortalReplace portalReplace : replaceList) {
 			String new_value = "";
@@ -203,7 +198,7 @@ public class BusPortalConfigurationHelper {
 			if (!StringUtil.empty(new_value))
 				ProxyUtil.invoke(portalReplace.getParent(), portalReplace.getSetter(), new Object[]{new_value});
 		}
-		
+
 		Map<String, PlacePart> renderMap = majorExt.getPalcePartRenderMap();
 		for (String renderName : renderMap.keySet()) {
 			PlacePart placePart =  renderMap.get(renderName);
@@ -220,7 +215,7 @@ public class BusPortalConfigurationHelper {
 				delimiter_position = delimiter.getEU_Position();
 				delimiter_margin = delimiter.getMarginObject();
 			}
-			
+
 			Part majorPart = majorExt.getPart(placePart.getName());
 			if (majorPart == null) {
 				try {
@@ -232,11 +227,11 @@ public class BusPortalConfigurationHelper {
 				}
 			}
 			majorPart.addContentsFont(hit_font);
-			
+
 			List<Contents> newContentsList = new ArrayList<Contents>();
 			if (delimiter_position == EU_Position.START)
 				newContentsList.addAll(Part.createStartContentsList(delimiter_value, delimiter_margin));
-			
+
 			List<PortalclassPart> portalClassPartList =  new ArrayList<PortalclassPart>();
 			int major_order = majorExt.getOrder();
 			boolean added = false;
@@ -253,7 +248,7 @@ public class BusPortalConfigurationHelper {
 			}
 			if (!added)
 				portalClassPartList.add(new PortalclassPart("", majorPart));
-			
+
 			try {
 				Collections.sort(portalClassPartList, new Comparator<PortalclassPart>() {
 					@Override
@@ -264,7 +259,7 @@ public class BusPortalConfigurationHelper {
 			} catch (Exception e) {
 				log.warn(e);
 			}
-		
+
 			int extList_count = 0;
 			EU_Position position = EU_Position.START;
 			if (portalClassPartList.size() > 1) {
@@ -287,15 +282,15 @@ public class BusPortalConfigurationHelper {
 					if (position == EU_Position.START)
 						position = EU_Position.MIDDLE;
 				}
-			}	
+			}
 			if (delimiter_position == EU_Position.END)
 				newContentsList.addAll(Part.createEndContentsList(delimiter_value, delimiter_margin));
 			majorPart.setAllContentsList(newContentsList);
 		}
-		
+
 		return majorExt;
 	}
-	
+
 	private static class PortalclassPart {
 		private String portalClass;
 		private Part part;
@@ -310,7 +305,7 @@ public class BusPortalConfigurationHelper {
 			return part;
 		}
 	}
-	
+
 	private List<String> sortPortalMap(Map<String, Portal> portalMap) {
 		List<String> resutlList = new ArrayList<String>();
 		Map<String, Integer> sortMap = new TreeMap<String, Integer>();
@@ -331,32 +326,32 @@ public class BusPortalConfigurationHelper {
 				return o1.getValue() - o2.getValue();
 			}
 		});
-		
+
 		for (Map.Entry<String, Integer> entry : sortList)
 			resutlList.add(entry.getKey());
 		resutlList.addAll(unsortList);
 		return resutlList;
 	}
-	
+
 	public List<String> sortPortalShell() {
 		return sortPortalMap(portalExtMap);
 	}
-	
+
 	public Map<String, Portal> getPortalExtMap() {
 		return portalExtMap;
 	}
-	
+
 	public Portal getPortalExtention(String name) {
 		return portalExtMap.get(name);
 	}
-	
+
 	private void addExtention(String name, Portal portalExt) {
 		for (String key : portalExtMap.keySet())
 			if (name.equalsIgnoreCase(key))
 				return;
 		portalExtMap.put(name, portalExt);
 	}
-	
+
 	@Deprecated
 	public void addExtention(String package_path) throws CIBusException {
 		Portal portalExt = parseExtention(package_path);
@@ -366,7 +361,7 @@ public class BusPortalConfigurationHelper {
 			portalExtMap.put(name, portalExt);
 		}
 	}
-	
+
 	public Portal parseExtention(String package_path) throws CIBusException {
 		ClassLoader cl = classLoader==null ? this.getClass().getClassLoader() : classLoader;
 		List<URL> xmlUrls = ClassFinder.findXmlUrl(package_path, cl);
@@ -387,10 +382,10 @@ public class BusPortalConfigurationHelper {
 				break;
 			}
 		}
-		
+
 		return transfer(portal_ext, reader_ext);
 	}
-	
+
 	public Portal parseExtention(InputStream xml_in, String config, boolean isResource, String packageName) throws CIBusException {
 		ClassLoader cl = classLoader==null ? this.getClass().getClassLoader() : classLoader;
 		Portal portal_ext = (Portal) BusXmlHelper.parse(Portal.class, xml_in);
@@ -405,46 +400,46 @@ public class BusPortalConfigurationHelper {
 			reader_ext = new CfgFileReader();
 			reader_ext.addConfig(config);
 		}
-		
+
 		return transfer(portal_ext, reader_ext);
 	}
-	
+
 	private InputStream getXmlStream(String xpath) throws Exception {
 		return ResourceUtil.getXmlStream(BusPortalConfigurationHelper.class, xpath);
 	}
-	
+
 	private String trunckConfig(String config) {
 		String new_config = config;
 		if (config.startsWith(BusConstants.CP_SUFFIX))
 			new_config = config.substring(BusConstants.CP_SUFFIX.length());
-		
+
 		if (new_config.startsWith(BusConstants.FILE_SUFFIX))
 			new_config = config.substring(BusConstants.FILE_SUFFIX.length());
-		
+
 		return new_config;
 	}
-	
+
 	private Portal transfer(Portal portal_ext, BasicConfigrationReader reader_ext) throws CIBusException {
 		if (portal_ext != null && reader_ext != null)
 			convert(portal_ext, reader_ext);
-		
+
 		if (portal_ext != null)
 			portal_ext = extend(portal_ext);
-		
+
 		return portal_ext;
 	}
-		
+
 	private boolean isPortalResource(String res, String  deco) {
 		String name = StringUtil.getLastName(res,  deco);
 		if (name.startsWith("portal")) return true;
 		return false;
 	}
-	
+
 	private Portal parsePortal(String xml_path) throws CIBusException {
 		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
 		return (Portal) BusXmlHelper.parse(Portal.class, in);
 	}
-	
+
 	private Portal validateAndParsePortal(String xml_path) throws CIBusException {
 		InputStream in = BusPortalConfigurationHelper.class.getResourceAsStream(xml_path);
 		return (Portal) BusXmlHelper.parse(Portal.class, in, xsd_in);
@@ -453,11 +448,11 @@ public class BusPortalConfigurationHelper {
 	private Portal parsePortal(InputStream xml_in) throws CIBusException {
 		return (Portal) BusXmlHelper.parse(Portal.class, xml_in);
 	}
-	
+
 	private Portal validateAndParsePortal(InputStream xml_in) throws CIBusException {
 		return (Portal) BusXmlHelper.parse(Portal.class, xml_in, xsd_in);
 	}
-	
+
 	private BasicConfigrationReader parseProperties(String path, String packageName, ClassLoader cl) throws CIBusException {
 		String rPath = trunckConfig(path);
 		BasicConfigrationReader r;
@@ -466,15 +461,15 @@ public class BusPortalConfigurationHelper {
 				r = parseResource(rPath, cl);
 			} catch (CIBusException e) {
 				r = parseResource(packageName+"."+path, cl);
-			}
+			RR
 		} else {
 			r = new CfgFileReader();
 			r.addConfig(path);
 		}
-		
+
 		return r;
 	}
-	
+
 	private ResourceReader parseResource(String resource_path, ClassLoader cl) throws CIBusException {
 		ResourceReader r = new ResourceReader();
 		if (cl != null) {
@@ -482,10 +477,10 @@ public class BusPortalConfigurationHelper {
 		} else {
 			r.addConfig(resource_path);
 		}
-		
+
 		return r;
 	}
-	
+
 	private Portal exend(Portal globalPortal, Portal extPortal) throws CIBusException {
 		Portal new_portal = extPortal;
 		try {
@@ -517,20 +512,20 @@ public class BusPortalConfigurationHelper {
 		} catch (Exception e) {
 			DevAssistant.errorln(e);
 		}
-		
+
 		return new_portal;
 	}
-	
+
 	private Portal extend(Portal extPortal) throws CIBusException {
 		return exend(portal, extPortal);
 	}
-	
-	
+
+
 	private void extendBase(Extension extension, Portal new_portal) throws CIBusException {
 		Base extBase = extension.getBase();
-		if (extBase == null) 
+		if (extBase == null)
 			return;
-		
+
 		Base base = new_portal.getBase();
 		if (base == null) {
 			base = extBase;
@@ -552,15 +547,15 @@ public class BusPortalConfigurationHelper {
 					break;
 			}
 		}
-		
+
 		new_portal.setBase(base);
 	}
-	
+
 	private void extendAction(Extension extension, Portal new_portal) throws CIBusException {
 		Action extAction = extension.getAction();
 		if (extAction != null)
 			extAction.deweight();
-		
+
 		Action action = new_portal.getAction();
 		if (action == null) {
 			new_portal.setAction(extAction);
@@ -570,7 +565,7 @@ public class BusPortalConfigurationHelper {
 				action.merge(extAction);
 		}
 	}
-	
+
 	private void extendLayout(Extension extension, Portal new_portal) throws CIBusException {
 		List<PlaceParts> partsList = extension.getPlacePartList();
 		if (partsList == null) return;
@@ -581,7 +576,7 @@ public class BusPortalConfigurationHelper {
 				String[] p2s = p2.getName().split(".");
 				return p1s.length - p2s.length;
 			}
-			
+
 		});
 		Map<String, PlaceParts> ppsMap = new_portal.makePlacePartsMap();
 		Layout layout = new_portal.getLayout();
@@ -605,7 +600,7 @@ public class BusPortalConfigurationHelper {
 							String addPname = pname.substring(index);
 							List<String> pnameList = new ArrayList();
 							PlaceParts find_pps = null;
-							for (; index != -1; 
+							for (; index != -1;
 									index=nameKey.lastIndexOf("."), nameKey = nameKey.substring(0, index), addPname = nameKey.substring(index)) {
 								find_pps = ppsMap.get(nameKey);
 								if (find_pps != null)
@@ -644,12 +639,12 @@ public class BusPortalConfigurationHelper {
 						}
 						break;
 				}
-				
+
 			}
 			new_portal.setLayout(n_layout);
 		}
 	}
-	
+
 	private void extendParts(Extension extension, Portal new_portal) {
 		Parts newParts = new_portal.getParts();
 		for (Part part : extension.getPartList()) {
@@ -663,7 +658,7 @@ public class BusPortalConfigurationHelper {
 			}
 		}
 	}
-	
+
 	private void convert(Portal p, BasicConfigrationReader r) throws CIBusException {
 		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
 		findReplace(replaceList, p);
@@ -674,14 +669,14 @@ public class BusPortalConfigurationHelper {
 			ProxyUtil.invoke(pr.getParent(), pr.getSetter(), new Object[]{new_value});
 		}
 	}
-	
+
 	private List<PortalReplace> genPortalReplaceList(Portal root) {
 		List<PortalReplace> replaceList = new ArrayList<PortalReplace>();
 		PortalReplaceTree<PortalReplace, PortalReplaceTree> tree = genPortalReplaceTree(root);
 		genPortalReplaceList(replaceList, tree);
 		return replaceList;
 	}
-	
+
 	private void genPortalReplaceList(List<PortalReplace> replaceList, PortalReplaceTree<PortalReplace, PortalReplaceTree> tree) {
 		if (tree.hasValue()) {
 			PortalReplace pr = (PortalReplace) tree.getValue();
@@ -695,22 +690,22 @@ public class BusPortalConfigurationHelper {
 			if (added)
 				replaceList.add(pr);
 		}
-		
+
 		for (Object child : tree.getChildren())
 			genPortalReplaceList(replaceList, (PortalReplaceTree) child);
 	}
-	
+
 	private PortalReplaceTree genPortalReplaceTree(Portal root) {
 		PortalReplaceTree<PortalReplace, PortalReplaceTree> tree = new PortalReplaceTree<PortalReplace, PortalReplaceTree>();
 		tree.isRoot();
 		genPortalReplaceTree(root, tree, root, EU_ORIGIN.GLOBAL);
 		return tree;
 	}
-	
+
 	private void genPortalReplaceTree(Portal replacePortal, PortalReplaceTree tree, Object root, EU_ORIGIN origin) {
 		List<PortalReplaceTree<PortalReplace, PortalReplaceTree>> deepList = new ArrayList<PortalReplaceTree<PortalReplace, PortalReplaceTree>>();
 		EU_ORIGIN child_origin = origin;
-		
+
 		if (root instanceof Part) {
 			Part p = (Part) root;
 			PlacePart placePart = replacePortal.getPlacePart(p.getName());
@@ -725,7 +720,7 @@ public class BusPortalConfigurationHelper {
 				try {
 					originMethod = root.getClass().getMethod("getOrigin");
 				} catch (Exception e) {}
-				
+
 				if (originMethod != null) {
 					String origin_str = "";
 					try {
@@ -737,11 +732,11 @@ public class BusPortalConfigurationHelper {
 				DevAssistant.assert_exception(e);
 			}
 		}
-		
+
 		for (Method method : root.getClass().getMethods()) {
-			if (method.getName().startsWith("get") 
-					&& !method.getName().startsWith("getClass") 
-					&& !method.getName().startsWith("getOrigin") 
+			if (method.getName().startsWith("get")
+					&& !method.getName().startsWith("getClass")
+					&& !method.getName().startsWith("getOrigin")
 					&& !ProxyUtil.hasArguments(method)) {
 				try {
 					Object o = ProxyUtil.invokeRet(root, method);
@@ -791,13 +786,13 @@ public class BusPortalConfigurationHelper {
 			}
 		}
 	}
-	
+
 	private void findReplace(List<PortalReplace> replaceList, Object root, Class... replaceClasses) throws CIBusException {
 		List<Object> deepList = new ArrayList<Object>();
-		
+
 		for (Method method : root.getClass().getMethods()) {
-			if (method.getName().startsWith("get") 
-					&& !method.getName().startsWith("getClass") 
+			if (method.getName().startsWith("get")
+					&& !method.getName().startsWith("getClass")
 					&& !ProxyUtil.hasArguments(method)) {
 				try {
 					Object o = ProxyUtil.invokeRet(root, method);
@@ -828,7 +823,7 @@ public class BusPortalConfigurationHelper {
 				findReplace(replaceList, deep);
 		}
 	}
-	
+
 	private void addReplaceEntry(List<PortalReplace> replaceList, Object root, Method method, Object o) throws CIBusException {
 		try {
 			String setter = "set" + method.getName().substring(3);
@@ -843,22 +838,22 @@ public class BusPortalConfigurationHelper {
 				}
 				if (!StringUtil.empty(orgin) && orgin.equalsIgnoreCase(EU_ORIGIN.PART.getName()))
 					pr.setPartForOrigin();
-					
+
 				replaceList.add(pr);
 			}
 		} catch (Exception e) {
 			new CIBusException("", e);
 		}
 	}
-	
+
 	public Portal getPortal() {
 		return portal;
 	}
-	
+
 	public void addPart(Part part) throws CIBusException {
 		portal.addPart(part);
 	}
-	
+
 	public void addPortalPair(String packagePath) {
 		try {
 			List<String> propsList = ClassFinder.getPropsResource(packagePath, classLoader);
@@ -866,16 +861,16 @@ public class BusPortalConfigurationHelper {
 			DevAssistant.errorln(e);
 		}
 	}
-	
+
 	private static class PortalReplaceTree<R extends PortalReplace, Tree extends PortalReplaceTree> extends XOReplaceTree {
 		public PortalReplaceTree() {
 			super();
 		}
 	}
-	
+
 	private static class PortalReplace extends XOReplace {
 		private EU_ORIGIN origin;
-		
+
 		public PortalReplace(Object parent, String setter, Object value) {
 			super(parent, setter, value);
 			this.origin = EU_ORIGIN.GLOBAL;
@@ -884,26 +879,26 @@ public class BusPortalConfigurationHelper {
 			super(parent, setter, value);
 			this.origin = origin;
 		}
-		
+
 		public EU_ORIGIN getOrigin() {
 			return origin;
 		}
 		public void setOrigin(EU_ORIGIN origin) {
 			this.origin = origin;
 		}
-		
+
 		public void setPartForOrigin() {
 			this.origin = EU_ORIGIN.PART;
 		}
-		
+
 		@Override public <T extends XOReplace> boolean exist(T comPr) {
-			if (parent == comPr.getParent() && setter == comPr.getSetter() 
+			if (parent == comPr.getParent() && setter == comPr.getSetter()
 					&& value == comPr.getValue() && origin == ((PortalReplace) comPr).getOrigin())
 				return true;
 			return false;
 		}
 	}
-	
+
 	private static class PortalPair {
 		private String props_name;
 		private String xml_name;

@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" />
-      <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus/com.antelope.ci.bus.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.builder/com.antelope.ci.bus.builder.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.builder/com.antelope.ci.bus.builder.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common/com.antelope.ci.bus.common.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common/com.antelope.ci.bus.common.iml" />
       <module fileurl="file://$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common.test/com.antelope.ci.bus.common.test.iml" filepath="$PROJECT_DIR$/com.antelope.ci.bus/com.antelope.ci.bus.common.test/com.antelope.ci.bus.common.test.iml" />
